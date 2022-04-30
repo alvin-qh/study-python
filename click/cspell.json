@@ -1,0 +1,17 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "addfinalizer",
+        "finalizer",
+        "gedit",
+        "isleap",
+        "looponfail",
+        "skipif",
+        "skipifmark",
+        "xdist",
+        "xfailed",
+        "xpass"
+    ],
+    "flagWords": []
+}

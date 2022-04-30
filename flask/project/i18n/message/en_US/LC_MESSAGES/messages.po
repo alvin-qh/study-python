@@ -1,0 +1,72 @@
+# English (United States) translations for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2019-10-12 14:12+0800\n"
+"PO-Revision-Date: 2018-09-23 13:16+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en_US\n"
+"Language-Team: en_US <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: app.py:48
+msgid "zh_CN"
+msgstr "Simplified Chinese"
+
+#: app.py:48
+msgid "en_US"
+msgstr "English"
+
+#: templates/index.html:17
+msgid "Current language is:"
+msgstr "Current language is: "
+
+#: templates/index.html:31
+msgid "Spring Goeth All in White"
+msgstr "Spring Goeth All in White"
+
+#: templates/index.html:33
+msgid "Robert Bridges"
+msgstr "Robert Bridges"
+
+#: templates/index.html:36
+msgid "Spring goeth all in white,"
+msgstr "Spring goeth all in white,"
+
+#: templates/index.html:37
+msgid "crowned with milk-white may;"
+msgstr "crowned with milk-white may;"
+
+#: templates/index.html:38
+msgid "In fleecy flocks of light,"
+msgstr "In fleecy flocks of light,"
+
+#: templates/index.html:39
+msgid "o'er heaven the white clouds stray;"
+msgstr "o'er heaven the white clouds stray;"
+
+#: templates/index.html:40
+msgid "White butterflies in the air;"
+msgstr "White butterflies in the air;"
+
+#: templates/index.html:41
+msgid "White daisies prank the ground;"
+msgstr "White daisies prank the ground;"
+
+#: templates/index.html:42
+msgid "The cherry and hoary pear,"
+msgstr "The cherry and hoary pear,"
+
+#: templates/index.html:43
+msgid "Scatter their snow around."
+msgstr "Scatter their snow around."
+

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-type" content="text/html" charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="{{ assets.css('common.css') }}" />
+
+    <title>Intercept Demo</title>
+  </head>
+  <body>
+    <div role="main">
+      <main class="container">
+        <form class="login-form" action="/login" method="post">
+          <div class="row">
+            <div class="title">User Login</div>
+          </div>
+
+          <div class="row inline-input">
+            <label class="label">{{ form.account.label }}: </label>
+            <div class="field">{{ form.account }}</div>
+            {% if form.account.errors %}
+            <div class="error">{{ form.account.errors[0] }}</div>
+            {% endif %}
+          </div>
+
+          <div class="row inline-input">
+            <label class="label">{{ form.password.label }}: </label>
+            <div class="field">{{ form.password }}</div>
+            {% if form.password.errors %}
+            <div class="error">{{ form.password.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <div class="row buttons">
+            <button class="btn">Login</button>
+          </div>
+        </form>
+      </main>
+    </div>
+  </body>
+</html>

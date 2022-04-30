@@ -1,0 +1,76 @@
+@charset "UTF-8";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif;
+  font-size  : 14px;
+}
+
+.container {
+  width : 960px;
+  margin: 0 auto;
+}
+
+.current-lang {
+  margin-top: 20px;
+  font-size : 20px;
+  text-align: center;
+}
+
+.row {
+  margin-top: 50px;
+}
+
+.row:after {
+  content: '';
+  display: block;
+  clear  : both;
+}
+
+.row>.lang-block {
+  width  : 50%;
+  float  : left;
+  padding: 10px;
+}
+
+.row>.lang-block a {
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+  width          : 100%;
+  height         : 150px;
+  background     : #f5f5dc;
+  font-size      : 80px;
+  text-decoration: none;
+}
+
+.row>.lang-block a:hover {
+  background: #e7e7ce;
+}
+
+.text-area {
+  text-indent: 2em;
+  font-size  : 30px;
+  text-align : center;
+}
+
+.text-area .text-header {
+  line-height: 0.5em;
+}
+
+.text-area .text-header a {
+  text-decoration: none;
+}
+
+.text-area .text-header .auth {
+  font-size: 20px;
+  color    : #b0b0b0;
+}
+
+.text-area .text-body {
+  margin-top : 50px;
+  line-height: 0.8em;
+}

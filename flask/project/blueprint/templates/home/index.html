@@ -1,0 +1,42 @@
+
+{% extends "layout.html" %}
+
+{% block title %}
+Blueprint Demo
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block footer %}
+<script src="{{ assets.js('home.js') }}"></script>
+<script>
+  window.home.index();
+</script>
+{% endblock %}
+
+{% block content %}
+<header>
+  <h2 class="text-center">Blueprint demo</h2>
+</header>
+<main class="container">
+  <div class="py-4">
+    <div>
+      <p class="title text-center">This is flask blueprint demo</p>
+
+      <form method="post" action="/">
+        <div class="form-group">
+          <label class="console-label">Name: </label>
+          <input
+            class="form-control"
+            type="text"
+            name="user"
+            placeholder="Please input your name"
+          />
+        </div>
+      </form>
+    </div>
+    <div class="text-right">Goto <a href="/user">User page</a></div>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,6 @@
+sqlalchemy
+alembic
+pymysql
+dbutils
+pytest
+cryptography

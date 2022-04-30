@@ -1,0 +1,20 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "autopep",
+        "configurator",
+        "disturl",
+        "jupyterlab",
+        "labextension",
+        "lckr",
+        "nbextensions",
+        "pyenv",
+        "ryantam",
+        "serverextension",
+        "variableinspector",
+        "venv",
+        "virtualenv"
+    ],
+    "flagWords": []
+}
