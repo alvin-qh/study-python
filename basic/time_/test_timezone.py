@@ -30,6 +30,10 @@ ZONE = "Asia/Shanghai"
 def test_pytz() -> None:
     """
     测试 pytz 库的时区
+
+    注意, pytz 的时区使用的时 LMT (Local Mean Time), 例如 Asia/Shanghai 这个时区并不是
+    中国标准时区, 具体的值为 UTC+08:06, 即比标准中国时区多 6 分钟
+    ! Asia/Shanghai 时区用于时区转换的结果是正确的, 但如果直接用其来设置时区则会出多 6 分钟的问题
     """
     # 获取内置的所有时区
     zones = pytz.all_timezones_set
@@ -47,8 +51,21 @@ def test_pytz() -> None:
     assert tzinfo.tzname(t_nozone) == "CST"
     # 获取时区偏移量
     assert tzinfo.utcoffset(t_nozone) == timedelta(hours=8)
-    # 获取本地时区时间 (不改变时间本身值, 只是赋予时区信息)
+    # 获取本地化时区时间 (不改变时间本身值, 只是赋予时区信息)
     assert tzinfo.localize(t_nozone).isoformat() == "2022-04-01T12:00:00+08:00"
+
+    t = datetime(2022, 4, 1, 12, tzinfo=tzinfo)
+    # 注意, Asia/Shanghai 这个时区比标准东八区多 6 分钟
+    assert t.isoformat() == "2022-04-01T12:00:00+08:06"
+
+    t = tzinfo.localize(datetime(2022, 4, 1, 12))
+    # 用 pytz 时区的 localize 函数处理一个不带时区的时间, 可以得到正确的结果
+    assert t.isoformat() == "2022-04-01T12:00:00+08:00"
+
+    t = datetime(2022, 4, 1, 4, tzinfo=pytz.UTC)
+    # 将 UTC 时间转为 Asia/Shanghai 时区结果是标准东八区
+    t = t.astimezone(tzinfo)
+    assert t.isoformat() == "2022-04-01T12:00:00+08:00"
 
 
 def test_change_timezone() -> None:
