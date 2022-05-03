@@ -5,3 +5,4 @@ pytest-assume
 sortedcontainers
 python-dateutil
 pytz
+atomics
