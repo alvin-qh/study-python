@@ -1,8 +1,13 @@
+import calendar
 import time
 import timeit
 from datetime import date, datetime
+from datetime import time as time_
+from datetime import timedelta
 
-from dateutil import parser, tz
+from dateutil import parser
+from dateutil import relativedelta as rd
+from dateutil import tz
 
 from .format import iso8601_format
 
@@ -82,9 +87,11 @@ class TestTime:
         assert tu.tm_isdst == 0  # 非夏令时
         assert tu.tm_zone == "GMT"  # 格林尼治标准时间
 
+        # 格式化时间
         s = time.strftime("%Y-%m-%dT%H:%M:%S", tu)
         assert s == "2022-04-01T04:13:14"
 
+        # 从字符串还原时间
         tl = time.strptime("2022-04-01T04:13:14", "%Y-%m-%dT%H:%M:%S")
         assert tl.tm_year == 2022
         assert tl.tm_mon == 4
@@ -108,6 +115,8 @@ class TestDatetime:
     def test_date(self) -> None:
         """
         测试日期类型
+
+        `datetime` 包下的 `date` 类型表示一个日期
         """
         # 定义一个日期类型
         d = date(2022, 4, 1)
@@ -133,11 +142,30 @@ class TestDatetime:
         assert d < today
 
     def test_time(self) -> None:
-        pass
+        """
+        测试时间类型
+
+        `datetime` 包下的 `time` 类型表示一个时间
+        """
+        # 定义一个
+        t = time_(12, 0, 0)
+        assert t.hour == 12
+        assert t.minute == 0
+        assert t.second == 0
+        assert t.microsecond == 0
+
+        assert t.isoformat() == "12:00:00"
+
+        t = time_(12, 0, 0, tzinfo=tz.UTC)
+        assert t.tzname() == "UTC"
+        assert t.utcoffset() == timedelta(hours=0)
+        assert t.isoformat() == "12:00:00+00:00"
 
     def test_datetime(self) -> None:
         """
         测试时间日期类型
+
+        `datetime` 包下的 `datetime` 类型表示一个完整的日期时间
         """
         zone = "Asia/Shanghai"
 
@@ -162,6 +190,152 @@ class TestDatetime:
         assert iso8601_format(dt) == "2022-04-01T04:13:14Z"
         # dateutil.parser 的 isoparse 支持带 Z 后缀的时间格式
         assert parser.isoparse("2022-04-01T04:13:14Z") == dt
+
+    def test_timedelta(self) -> None:
+        """
+        测试时间差
+
+        `datetime` 包下的 `timedelta` 类型表示两个时间的差值
+        """
+        t1 = datetime(2022, 4, 1, 12)
+        t2 = datetime(2022, 4, 1, 16)
+
+        # 计算两个时间的差值
+        d = t2 - t1
+        assert d == timedelta(hours=4)
+
+        # 计算两个时间的差值
+        d = t1 - t2
+        assert d == timedelta(hours=-4)
+
+        # 计算时间和一个时间差值的计算结果
+        d = timedelta(hours=4)
+        assert t2 == t1 + d
+        assert t1 == t2 - d
+
+        # 计算指定日期的前一个周日的日期
+        t = t1 - timedelta(days=(t1.weekday() - calendar.SUNDAY) % 7)
+        assert t == datetime(2022, 3, 27, 12)
+        assert t.weekday() == calendar.SUNDAY
+
+    def test_relativedelta(self) -> None:
+        """
+        更复杂的时间差类型
+
+        `dateutil.relativedelta` 包下的 `relativedelta` 类型提供了更为复杂的时间差计算方式
+        不仅可以计算两个时间的时间差, 也支持通过周, 天数, 闰年天等多个维度设置时间差
+        """
+        t1 = datetime(2022, 4, 1, 12)
+        t2 = datetime(2022, 4, 1, 16)
+
+        # 计算两个时间的时间差
+        d = rd.relativedelta(t2, t1)
+        assert d == rd.relativedelta(hours=4)
+
+        # 设置时间差为 1 周
+        d = rd.relativedelta(weeks=1)
+        # 计算时间和时间差的计算结果
+        assert t1 + d == datetime(2022, 4, 8, 12)
+
+        t1 = datetime(2024, 3, 1, 12)
+        # 设置时间差为 -1 闰年天
+        # 当时间的年份是闰年, 且日期在 2月28日 之后, 这个时间差可以起作用
+        d = rd.relativedelta(leapdays=-1)
+        assert t1 + d == datetime(2024, 2, 29, 12)
+
+    def test_datetime_parse(self) -> None:
+        """
+        测试 `datetime` 类型的字符串解析和格式化
+
+        `datetime::strptime` 通过一个时间字符串和格式字符串还原一个日期时间对象
+        日期时间对象的 `strftime` 通过一个格式字符串输出格式化结果
+        """
+        zone = "Asia/Shanghai"
+
+        # 日期时间字符串
+        s = "2022-04-01T12:13:14+0800"
+        # 日期时间格式
+        p = "%Y-%m-%dT%H:%M:%S%z"
+
+        # 通过格式字符串将日期时间字符串进行解析
+        # 得到一个日期时间对象
+        d = datetime.strptime(s, p)
+        assert d == datetime(2022, 4, 1, 12, 13, 14, tzinfo=tz.gettz(zone))
+
+        # 日期时间对象通过格式字符串输出格式化结果
+        assert d.strftime(p) == s
+
+    def test_dateutil_parser(self) -> None:
+        """
+        `dateutil` 包下的 `parser` 对象可以对日期时间字符串做多种标准的解析
+        """
+        zone = "Asia/Shanghai"
+
+        # 解析标准日期时间字符串
+        d = parser.parse("2022-4-1 20:22:22")
+        assert d == datetime(2022, 4, 1, 20, 22, 22)
+
+        # 解析 ISO8601 格式日期时间字符串
+        # 时区为 UTC 时区
+        d = parser.parse("2022-4-1T20:22:22Z")
+        assert d == datetime(2022, 4, 1, 20, 22, 22, tzinfo=tz.UTC)
+
+        # 解析 ISO8601 格式日期时间字符串
+        # 时区为东八区
+        d = parser.parse("2022-4-1T20:22:22.1234+08:00")
+        assert d == datetime(
+            2022, 4, 1, 20, 22, 22, 123400, tzinfo=tz.gettz(zone),
+        )
+
+        # 解析 ISO8601 格式日期时间字符串
+        # 忽略字符串中包含的时区信息
+        d = parser.parse("2022-4-1T20:22:22.1234+08:00", ignoretz=True)
+        assert d == datetime(2022, 4, 1, 20, 22, 22, 123400)
+
+        # 解析一个带时区的时间字符串
+        # 时区为东八区
+        # default 参数表示一个默认的日期时间对象, 缺失的分量从这个对象中获取 (例如年月日)
+        d = parser.parse("10:10+8:00", default=datetime(2022, 4, 1))
+        assert d == datetime(
+            2022, 4, 1, 10, 10, tzinfo=tz.gettz(zone),
+        )
+
+        # 解析斜杠分隔的日期
+        # 月/日/年 格式
+        d = parser.parse("4/1/22")
+        assert d == datetime(2022, 4, 1)
+
+        # 日/月/年 格式
+        d = parser.parse("1/4/22", dayfirst=True)
+        assert d == datetime(2022, 4, 1)
+
+        # 年/月/日 格式
+        d = parser.parse("22/4/1", yearfirst=True)
+        assert d == datetime(2022, 4, 1)
+
+        # 定义一个自定义时区字典
+        #   自定义时区名称: 时区偏移量
+        tzs = {
+            "CN": tz.tzoffset(None, 8 * 3600),
+            "US": tz.tzoffset(None, -4 * 3600),
+        }
+
+        # 解析自定义时区后缀的字符串
+        d = parser.parse("2022-4-1 20:22:22 CN", tzinfos=tzs)
+        assert d == datetime(2022, 4, 1, 20, 22, 22, tzinfo=tz.gettz(zone))
+
+        # 解析自定义时区后缀的字符串
+        d = parser.parse("2022-4-1 20:22:22 US", tzinfos=tzs)
+        assert d == datetime(
+            2022, 4, 1, 20, 22, 22, tzinfo=tz.gettz("America/New_York"),
+        )
+
+        # 模糊解析, 从字符串中摘取有效的日期时间信息
+        s = "今天是 2022-4-1, 时间是 12:00:22, 时区为 +8:00"
+        d = parser.parse(s, fuzzy=True)
+        assert d == datetime(
+            2022, 4, 1, 12, 0, 22, tzinfo=tz.gettz(zone),
+        )
 
 
 class TestTimeCount:
