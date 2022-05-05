@@ -1,5 +1,8 @@
 import threading
 import time
+import timeit
+from multiprocessing import cpu_count
+from multiprocessing.pool import ThreadPool
 from typing import Dict, Optional, Tuple
 
 import atomics
@@ -219,6 +222,38 @@ def test_condition() -> None:
     当线程进入锁后, 需要等待另一个线程对锁进行通知操作
     - `notify` 通知所有等待方的其中一个
     - `notify_all` 同时通知所有等待方
+
+    使用方法
+
+    ```python
+    # 消费者方
+    try:
+        cond.acquire()  # 先进入 Condition 对象的锁
+        cond.wait() # 等待 Condition 对象被通知
+        ...
+    finally:
+        cond.release() # 释放 Condition 对象的锁
+
+    # 生成者方
+    try:
+        cond.acquire()  # 先进入 Condition 对象的锁
+        cond.notify() # 发送信号
+    finally:
+        cond.release() # 释放 Condition 对象的锁
+    ```
+
+    或者通过 `with` 语句简化
+
+    ```python
+    # 消费者方
+    with cond:
+        cond.wait()
+        ...
+
+    # 生产者方
+    with cond:
+        cond.notify()
+    ```
     """
     # 定义条件锁
     cond = threading.Condition()
@@ -288,11 +323,34 @@ def test_condition() -> None:
 def test_semaphore() -> None:
     """
     信号量
+
+    信号量是一个带计数器的条件锁, 即可设置信号量的总数, 每个进入信号量的线程会占用一个数字,
+    离开信号量时归还
+    当信号量总数为 0 时, 新的线程将无法进入信号量, 直到有一个线程释放一个信号量
+
+    使用方法
+
+    ```python
+    try:
+        semp.acquire()  # 占用一个信号量
+        ...
+    finally:
+        semp.release() # 释放占用的信号量
+    ```
+
+    或者通过 `with` 语句简化
+
+    ```python
+    with semp:
+        ...
+    ```
     """
 
     class Resource:
         """
         定义资源类
+
+        资源类的作用是在资源总量的基础上, 记录使用和释放的数量
         """
 
         def __init__(self, count: int) -> None:
@@ -302,21 +360,118 @@ def test_semaphore() -> None:
             Args:
                 count (int): 资源数量
             """
-            self._count = atomics.atomic(width=4, atype=atomics.INT)
-            self._count.store(count)
+            self._count = count
+            self._in_use = atomics.atomic(width=4, atype=atomics.INT)
 
-        def get(self) -> int:
-            self._count.dec()
-            return self._count.load()
+        @property
+        def total(self) -> int:
+            """
+            获取资源总数
 
-        def back(self) -> int:
-            self._count.inc()
-            return self._count.load()
+            Returns:
+                int: 资源总数
+            """
+            return self._count
 
-    res_count = 10
+        @property
+        def left(self) -> int:
+            """
+            获取剩余资源数量
 
-    semp = threading.Semaphore(res_count)
+            Returns:
+                int: 剩余资源数量
+            """
+            return self._count - self._in_use.load()
+
+        def use(self) -> None:
+            """
+            占用一个资源
+            """
+            self._in_use.inc()
+            # 确保资源不会被超用
+            assert self.left >= 0
+
+        def release(self) -> None:
+            """
+            释放一个资源
+            """
+            self._in_use.dec()
+
+    # 定义一个具备 10 个资源的对象
+    res = Resource(10)
+
+    # 按资源总量定义信号量的数量
+    semp = threading.Semaphore(res.total)
+
+    # 记录开始执行时间
+    start = timeit.default_timer()
+
+    # 线程执行记录字典
+    records: Dict[str, int] = {}
 
     def func(id_: str) -> None:
+        """
+        线程入口函数
+
+        Args:
+            id_ (str): 线程 ID
+        """
+        # 进入信号量
         with semp:
-            
+            # 记录当前线程获取信号量的时间
+            records[id_] = int(timeit.default_timer() - start)
+
+            # 使用一个资源
+            res.use()
+
+            # 模拟资源使用 1 秒
+            time.sleep(1)
+
+        # 释放被使用的资源
+        res.release()
+
+    # 产生若干个线程, 线程数量为 资源总数 + 5
+    # 前 资源总数个 线程可以直接获取到信号量
+    # 后 5 个线程无法直接获取到信号量, 必须等前面的某个线程释放了信号量后
+    # 所以后 5 个线程只能在 1 秒后获取到信号量
+    threads = [
+        threading.Thread(
+            target=func, args=(chr(ord("A") + n),),
+        )
+        for n in range(res.total + 5)
+    ]
+    # 启动所有线程
+    for t in threads:
+        t.start()
+
+    # 等待处理完毕
+    for t in threads:
+        t.join()
+
+    # 确保资源总数个线程未因获取信号量被阻塞 (时长为 0 的总数)
+    assert list(records.values()).count(0) == res.total
+    # 确保 5 个线程必须等待 1 秒才能获取到信号量 (时长为 1 的总数)
+    assert list(records.values()).count(1) == len(threads) - res.total
+
+    # 确保所有的资源都被使用并归还
+    assert res.left == res.total
+
+
+class TestThreadPool:
+
+    n_threads = cpu_count() * 2
+
+    @staticmethod
+    def is_prime(n: int) -> bool:
+        if n <= 1:
+            return False
+
+        for i in range(2, n):
+            if n % i == 0:
+                return False
+
+        return True
+
+    def test_starmap(self) -> None:
+        with ThreadPool(self.n_threads) as pool:
+            pool.starmap(self.is_prime, zip(range(10)))
