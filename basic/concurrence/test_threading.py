@@ -458,20 +458,101 @@ def test_semaphore() -> None:
 
 
 class TestThreadPool:
+    """
+    测试线程池, 即一组挂起的线程
+    可以将一组任务及其参数放入任务队列中, 线程池可以根据池的大小, 批量的并发执行若干任务
+    直到将任务队列中的任务消耗完
 
+    建立一个线程池的方法如下:
+
+    ```python
+    with ThreadPool(processes=n_threads) as pool:
+    ```
+    - `processes` 表示线程池中初始化的线程数
+    """
+
+    # 线程池线程总数, 即 CPU 内核总数的 2 倍
     n_threads = cpu_count() * 2
 
     @staticmethod
-    def is_prime(n: int) -> bool:
+    def is_prime(n: int) -> Tuple[int, bool]:
+        """
+        判断一个数是否质数
+
+        Args:
+            n (int): 待判断的数字
+
+        Returns:
+            Tuple[int, bool]: 返回数字是否质数
+        """
         if n <= 1:
-            return False
+            # 1 以下的数不是质数
+            return n, False
 
         for i in range(2, n):
             if n % i == 0:
-                return False
+                # 如果能被之前的某个数整除则不是质数
+                return n, False
 
-        return True
+        return n, True
+
+    def test_map(self) -> None:
+        """
+        通过线程池管理线程
+        `map` 方法通过一个参数列表依次将参数和线程入口函数放入线程池执行
+
+        `pool.map(func, [a1, a2, a3, a4])` 表示: 依次将参数 `a1`, `a2`, `a3`, `a4` 绑定到 `func` 函数上,
+        并从线程池中取一个线程执行. 并返回每次线程执行的结果集合
+        """
+        with ThreadPool(processes=self.n_threads) as pool:
+            r = pool.map(self.is_prime, range(10))
+
+        # 确认线程执行结果
+        assert r == [
+            (0, False),
+            (1, False),
+            (2, True),
+            (3, True),
+            (4, False),
+            (5, True),
+            (6, False),
+            (7, True),
+            (8, False),
+            (9, False),
+        ]
 
     def test_starmap(self) -> None:
+        """
+        通过线程池管理线程
+        `starmap` 方法通过一个入口函数和一组 Tuple 类型的参数列表确认线程执行的次数
+
+        `pool.starmap(func, [(a1, b1, c1), (a2, b2, c2), (a3, b3, c3)])` 表示将参数列表中的每个 `Tuple` 作为入参绑定到 `func` 函数,
+        从线程池中获取一个线程来执行, 并返回每次线程执行的结果集合
+
+        `starmap` 方法更适合调用多参数的线程入口函数
+
+        另一个 `starmap_async` 方法可以异步的调用线程池, 即不必等待所有任务执行完毕即可返回一个句柄对象
+
+        ```python
+        h = starmap_async(func, [(a1, b1, c1), (a2, b2, c2), (a3, b3, c3)])
+        ```
+
+        稍后可以通过 `h.get()` 方法获取线程池执行的结果
+        """
         with ThreadPool(self.n_threads) as pool:
-            pool.starmap(self.is_prime, zip(range(10)))
+            r = pool.starmap(self.is_prime, zip(range(10)))
+            pool.starmap_async()
+
+        # 确认线程执行结果
+        assert r == [
+            (0, False),
+            (1, False),
+            (2, True),
+            (3, True),
+            (4, False),
+            (5, True),
+            (6, False),
+            (7, True),
+            (8, False),
+            (9, False),
+        ]

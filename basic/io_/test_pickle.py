@@ -38,7 +38,7 @@ class Person:
         )
 
 
-def test_dump_function() -> None:
+def test_dump_load_function() -> None:
     """
     测试通过 `pickle` 包的 `dump` 函数可以将一个对象进行序列化并存储到 IO 对象中
     """
@@ -85,7 +85,7 @@ def test_dump_function() -> None:
         assert pickle.load(fp) == obj
 
 
-def test_dumps_function() -> None:
+def test_dumps_loads_function() -> None:
     """
     测试通过 `pickle` 包的 `dumps` 函数可以将一个对象进行序列化
     """
