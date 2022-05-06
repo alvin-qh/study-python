@@ -1,6 +1,7 @@
 import threading
 import time
 import timeit
+from concurrent.futures import ThreadPoolExecutor, wait
 from multiprocessing import cpu_count
 from multiprocessing.pool import ThreadPool
 from typing import Dict, Optional, Tuple
@@ -496,6 +497,47 @@ class TestThreadPool:
 
         return n, True
 
+    def test_apply(self) -> None:
+        """
+        通过线程池管理线程
+
+        `apply` 方法从线程池获取一个线程, 并对传递的线程入口函数和参数执行一次
+
+        `pool.apply(func, (a1, b1, c1))` 表示将 `Tuple` 参数作为入参绑定到 `func` 函数,
+        并返回执行结果
+
+        `apply` 方法是同步执行的, 必须等到线程函数执行完毕后返回, 如果要并行执行
+        则可通过 `apply_async` 方法, 返回一个句柄, 稍后可通过句柄对象的 `get`
+        方法获取线程执行结果
+        """
+        # 保存结果的数组
+        rs = []
+
+        # 实例化线程池对象, 共有 n_threads 个线程
+        with ThreadPool(processes=self.n_threads) as pool:
+            # 循环给线程池传递 10 个任务
+            for i in range(10):
+                # 异步起动任务, 防止循环被阻塞
+                h = pool.apply_async(self.is_prime, args=(i,))
+                rs.append(h)
+
+            rs = [r.get() for r in rs]
+
+        rs.sort(key=lambda x: x[0])
+
+        assert rs == [
+            (0, False),
+            (1, False),
+            (2, True),
+            (3, True),
+            (4, False),
+            (5, True),
+            (6, False),
+            (7, True),
+            (8, False),
+            (9, False),
+        ]
+
     def test_map(self) -> None:
         """
         通过线程池管理线程
@@ -503,9 +545,19 @@ class TestThreadPool:
 
         `pool.map(func, [a1, a2, a3, a4])` 表示: 依次将参数 `a1`, `a2`, `a3`, `a4` 绑定到 `func` 函数上,
         并从线程池中取一个线程执行. 并返回每次线程执行的结果集合
+
+        另一个 `map_sync` 方法可以异步的调用线程池, 即不必等待所有任务执行完毕即可返回一个句柄对象
+
+        ```python
+        h = pool.map_sync(func, [a1, a2, a3, a4])
+        ```
+
+        稍后可以通过 `h.get()` 方法获取线程池执行的结果
         """
         with ThreadPool(processes=self.n_threads) as pool:
             r = pool.map(self.is_prime, range(10))
+
+        r.sort(key=lambda x: x[0])
 
         # 确认线程执行结果
         assert r == [
@@ -534,16 +586,62 @@ class TestThreadPool:
         另一个 `starmap_async` 方法可以异步的调用线程池, 即不必等待所有任务执行完毕即可返回一个句柄对象
 
         ```python
-        h = starmap_async(func, [(a1, b1, c1), (a2, b2, c2), (a3, b3, c3)])
+        h = pool.starmap_async(func, [(a1, b1, c1), (a2, b2, c2), (a3, b3, c3)])
         ```
 
         稍后可以通过 `h.get()` 方法获取线程池执行的结果
         """
         with ThreadPool(self.n_threads) as pool:
             r = pool.starmap(self.is_prime, zip(range(10)))
-            pool.starmap_async()
+
+        r.sort(key=lambda x: x[0])
 
         # 确认线程执行结果
+        assert r == [
+            (0, False),
+            (1, False),
+            (2, True),
+            (3, True),
+            (4, False),
+            (5, True),
+            (6, False),
+            (7, True),
+            (8, False),
+            (9, False),
+        ]
+
+    def test_executor_submit(self) -> None:
+        executor = ThreadPoolExecutor(self.n_threads)
+        futures = [
+            executor.submit(self.is_prime, n)
+            for n in range(10)
+        ]
+        futures = wait(futures, timeout=1)
+
+        r = [f.result() for f in futures.done]
+        r.sort(key=lambda x: x[0])
+
+        assert r == [
+            (0, False),
+            (1, False),
+            (2, True),
+            (3, True),
+            (4, False),
+            (5, True),
+            (6, False),
+            (7, True),
+            (8, False),
+            (9, False),
+        ]
+
+    def test_executor_map(self) -> None:
+        executor = ThreadPoolExecutor(self.n_threads)
+        futures = executor.map(self.is_prime, range(10))
+        futures = wait(futures, timeout=1)
+
+        r = [f.result() for f in futures.done]
+        r.sort(key=lambda x: x[0])
+
         assert r == [
             (0, False),
             (1, False),
