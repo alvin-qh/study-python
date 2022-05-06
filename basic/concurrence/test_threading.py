@@ -9,6 +9,7 @@ from multiprocessing.pool import ThreadPool
 from typing import Dict, Optional, Tuple
 
 import atomics
+from werkzeug.local import Local, release_local
 
 
 def test_start_thread() -> None:
@@ -725,3 +726,79 @@ class TestThreadPool:
                 (8, False),
                 (9, False),
             ]
+
+
+class TestThreadLocal:
+    """
+    测试线程本地对象
+
+    线程本地对象即可为每个线程保存一组值, 且这组值只在当前线程生效
+    """
+
+    def test_python_thread_local(self) -> None:
+        """
+        测试 python 内置的线程本地对象
+        """
+        # 实例化线程本地对象
+        loc = threading.local()
+
+        # 设置主线程本地对象的 n 值
+        loc.n = 100
+
+        def func() -> None:
+            """
+            线程入口函数
+            """
+            try:
+                # 改变子线程本地对象的 n 值
+                loc.n = 200
+                assert loc.n == 200
+            finally:
+                # 清理线程本地存储
+                loc.__dict__.clear()
+
+        # 启动线程
+        t = threading.Thread(target=func)
+        t.start()
+        t.join()
+
+        # 主线程的 n 值不受子线程影响
+        assert loc.n == 100
+
+        # 清理线程本地存储
+        loc.__dict__.clear()
+
+    def test_werkzeug_local(self) -> None:
+        """
+        `werkzeug.local` 包下的 `Local` 类可以保存线程本次存储
+        相比 python 内置的 `local` 类型, `werkzeug` 库支持更多的并发场景, 例如:
+            - 进程
+            - 线程
+            - 协程
+        """
+        loc = Local()
+
+        # 设置主线程本地对象的 n 值
+        loc.n = 100
+
+        def func() -> None:
+            """
+            线程入口函数
+            """
+            try:
+                # 改变子线程本地对象的 n 值
+                loc.n = 200
+                assert loc.n == 200
+            finally:
+                # 清理线程本地存储
+                release_local(loc)
+
+        # 启动线程
+        t = threading.Thread(target=func)
+        t.start()
+        t.join()
+
+        # 主线程的 n 值不受子线程影响
+        assert loc.n == 100
+        # 清理线程本地存储
+        release_local(loc)

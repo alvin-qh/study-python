@@ -6,3 +6,4 @@ sortedcontainers
 python-dateutil
 pytz
 atomics
+werkzeug

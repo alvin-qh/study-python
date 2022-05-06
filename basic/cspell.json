@@ -55,6 +55,7 @@
         "venv",
         "wday",
         "websockt",
+        "werkzeug",
         "wks",
         "wkst",
         "xdist",
