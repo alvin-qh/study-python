@@ -1,6 +1,5 @@
 import fcntl
 import os
-from threading import get_ident
 
 
 class FileLock:
