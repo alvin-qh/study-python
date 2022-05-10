@@ -121,15 +121,15 @@ def test_active_count_function() -> None:
         with cond:
             cond.wait()
 
-    # 此时只有一个线程启动 (主线程)
-    assert threading.active_count() == 1
+    # 记录当前线程数
+    count = threading.active_count()
 
     # 启动线程
     t = threading.Thread(target=func)
     t.start()
 
-    # 此时只有两个线程启动
-    assert threading.active_count() == 2
+    # 有新的线程启动
+    assert threading.active_count() == count + 1
 
     # 通知锁
     with cond:
@@ -772,7 +772,7 @@ class TestThreadLocal:
     def test_werkzeug_local(self) -> None:
         """
         `werkzeug.local` 包下的 `Local` 类可以保存线程本次存储
-        相比 python 内置的 `local` 类型, `werkzeug` 库支持更多的并发场景, 例如:
+        相比 Python 内置的 `local` 类型, `werkzeug` 库支持更多的并发场景, 例如:
             - 进程
             - 线程
             - 协程
