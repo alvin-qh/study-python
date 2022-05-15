@@ -507,8 +507,6 @@ class TestThreadPool:
 
     def test_apply(self) -> None:
         """
-        通过线程池管理线程
-
         `apply` 方法从线程池获取一个线程, 并对传递的线程入口函数和参数执行一次
 
         `pool.apply(func, (a1, b1, c1))` 表示将 `Tuple` 参数作为入参绑定到 `func` 函数,
@@ -553,7 +551,6 @@ class TestThreadPool:
 
     def test_map(self) -> None:
         """
-        通过线程池管理线程
         `map` 方法通过一个参数列表依次将参数和线程入口函数放入线程池执行
 
         `pool.map(func, [a1, a2, a3, a4])` 表示: 依次将参数 `a1`, `a2`, `a3`, `a4`
@@ -596,9 +593,51 @@ class TestThreadPool:
             (9, False),
         ]
 
+    def test_imap(self) -> None:
+        """
+        `imap` 方法和 `map` 方法类似, 但有可能比 `map` 执行慢许多
+
+        `pool.imap(func, [a1, a2, a3, a4])` 表示: 依次将参数 `a1`, `a2`, `a3`, `a4`
+        绑定到 `func` 函数上, 并从线程池中取一个线程执行. 并返回每次线程执行的结果集合
+
+        `imap` 方法返回一个 `IMapIterator` 类型的迭代器对象, 从迭代器中可以获取每个进程执行的结果
+
+        另一个 `imap_unordered` 返回的 `IMapIterator` 迭代器中的执行结果不会严格按照参数顺序,
+        那个进程先执行完毕就在迭代器中排在前面
+        """
+        # 实例化线程池对象, 共有 n_threads 个线程
+        # with 的使用可以简化线程池对象的 close 函数调用
+        with ThreadPool(processes=self.n_threads) as pool:
+            # 向线程池中放置 10 个任务
+            # 第二个参数为一个列表, 列表中的每一项会作为传递给 is_prime 函数的参数
+            # 返回所有执行结果的列表
+            # 由于 imap 不直接支持多参数传递, 所以需要通过 partial 函数预设一个参数,
+            # 将两个参数的函数变为一个参数
+            rs = pool.imap_unordered(
+                partial(self.is_prime, name="test"),
+                range(10),
+            )
+            # 从迭代器中获取每个执行结果
+            rs = [r for r in rs]
+
+        rs.sort(key=lambda x: x[0])
+
+        # 确认结果正确
+        assert rs == [
+            (0, False),
+            (1, False),
+            (2, True),
+            (3, True),
+            (4, False),
+            (5, True),
+            (6, False),
+            (7, True),
+            (8, False),
+            (9, False),
+        ]
+
     def test_starmap(self) -> None:
         """
-        通过线程池管理线程
         `starmap` 方法通过一个入口函数和一组 Tuple 类型的参数列表确认线程执行的次数
 
         `pool.starmap(func, [(a1, b1, c1), (a2, b2, c2), (a3, b3, c3)])` 表示

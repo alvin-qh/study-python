@@ -33,6 +33,7 @@ def test_multiple_processes() -> None:
     def is_prime(n: int) -> None:
         """
         进程入口函数
+
         计算参数 n 是否为质数
 
         Args:
@@ -79,12 +80,14 @@ def test_multiple_processes() -> None:
 class TestSharedInProcesses:
     """
     正常情况下, 进程和进程之间的地址空间是隔离的, 所以无法在进程之间直接共享变量
+
     可以通过内存共享, 管道, 文件和 socket 等方式在进程中共享数据
     """
     @staticmethod
     def is_prime(n: int, ctx: Context) -> None:
         """
         进程入口函数
+
         计算参数 n 是否为质数
 
         Args:
@@ -182,6 +185,7 @@ class TestProcessPool:
     def is_prime(n: int, name: str) -> Tuple[int, bool]:
         """
         测试进程池的进程入口函数
+
         判断一个数是否质数
 
         Args:
@@ -249,6 +253,7 @@ class TestProcessPool:
     def test_map(self) -> None:
         """
         通过进程池管理进程
+
         `map` 方法通过一个参数列表依次将参数和进程入口函数放入进程池执行
 
         `pool.map(func, [a1, a2, a3, a4])` 表示: 依次将参数 `a1`, `a2`, `a3`, `a4`
@@ -279,6 +284,49 @@ class TestProcessPool:
 
         # 确认进程执行结果
         assert r == [
+            (0, False),
+            (1, False),
+            (2, True),
+            (3, True),
+            (4, False),
+            (5, True),
+            (6, False),
+            (7, True),
+            (8, False),
+            (9, False),
+        ]
+
+    def test_imap(self) -> None:
+        """
+        `imap` 方法和 `map` 方法类似, 但有可能比 `map` 执行慢许多
+
+        `pool.imap(func, [a1, a2, a3, a4])` 表示: 依次将参数 `a1`, `a2`, `a3`, `a4`
+        绑定到 `func` 函数上, 并从进程池中取一个进程执行. 并返回每次进程执行的结果集合
+
+        `imap` 方法返回一个 `IMapIterator` 类型的迭代器对象, 从迭代器中可以获取每个进程执行的结果
+
+        另一个 `imap_unordered` 返回的 `IMapIterator` 迭代器中的执行结果不会严格按照参数顺序,
+        那个进程先执行完毕就在迭代器中排在前面
+        """
+        # 实例化进程池对象, 共有 n_processes 个进程
+        # with 的使用可以简化进程池对象的 close 函数调用
+        with Pool(processes=self.n_processes) as pool:
+            # 向进程池中放置 10 个任务
+            # 第二个参数为一个列表, 列表中的每一项会作为传递给 is_prime 函数的参数
+            # 返回所有执行结果的列表
+            # 由于 imap 不直接支持多参数传递, 所以需要通过 partial 函数预设一个参数,
+            # 将两个参数的函数变为一个参数
+            rs = pool.imap_unordered(
+                partial(self.is_prime, name="test"),
+                range(10),
+            )
+            # 从迭代器中获取每个执行结果
+            rs = [r for r in rs]
+
+        rs.sort(key=lambda x: x[0])
+
+        # 确认结果正确
+        assert rs == [
             (0, False),
             (1, False),
             (2, True),
@@ -437,27 +485,82 @@ class TestProcessPool:
                 (9, False),
             ]
 
-    def test_pool_initializer(self) -> None:
-        def is_prime(n: int, ctx: Context) -> None:
-            if n <= 1:
-                # 设置结果值
-                ctx.put(n, False)
-                return
 
-            for i in range(2, n):
-                if n % i == 0:
-                    # 设置结果值
-                    ctx.put(n, False)
-                    return
+# 全局变量, 每个进程的内存空间都会具备
+ctx: List[Context] = None
 
+
+def pooled_initializer(ctx_: List[Context]) -> None:
+    """
+    进程池初始化函数
+
+    Args:
+        ctx_ (List[Context]): 进程池初始化参数, ValueContext 对象列表
+    """
+    global ctx
+
+    # 这个赋值操作相当于为每个进程的 ctx 全局变量进行复制
+    # 此时每个子进程的内存空间中都会存在一个 Context 列表对象的副本
+    ctx = ctx_
+
+
+def pooled_is_prime(n: int) -> None:
+    """
+    进程池入口函数
+
+    在进程池中判断参数 `n` 是否为质数
+
+    通过每个子进程内存空间的全局变量 `ctx`, 将结果进行保存, 由于 `ctx` 对象内部存储的 `Value`
+    类型对象, 对其进行的操作会在各个进程中共享
+
+    Args:
+        n (int): 要判断是否为质数的数
+    """
+    if n <= 1:
+        # 设置结果值
+        ctx[n].put(n, False)
+        return
+
+    for i in range(2, n):
+        if n % i == 0:
             # 设置结果值
-            ctx.put(n, True)
+            ctx[n].put(n, False)
+            return
 
-        ctx: List[Context]
+    # 设置结果值
+    ctx[n].put(n, True)
 
-        def initializer() -> None:
-            nonlocal ctx
-            ctx = [ValueContext() for _ in range(10)]
 
-        with Pool(processes=self.n_processes, initializer=initializer) as pool:
-            pool.starmap(is_prime, zip(range(len(ctx))))
+def test_pool_initializer() -> None:
+    """
+    进程池 (`Pool` 对象) 和子进程 (`Process` 对象) 的一个很大不同之处在于:
+    - 子进程是在代码上下文中产生的, 子进程在产生后, 可以继承之前的内存空间
+    - 进程池则不具备这种特征, 无法通过进程间传参的方式传递同步对象 (例如 `Value` 类型对象)
+
+    所以 `Pool` 构造器提供了一个 `initializer` 方法参数, 在进程池产生时会在各个子进程中执行该方法
+    起到为进程池中每个子进程进行初始化的目的
+    """
+    # 声明 ValueContext 对象列表, 这个变量是在主进程内存地址空间中产生
+    ctx_ = [ValueContext() for _ in range(10)]
+
+    # 实例化进程池, 执行 pooled_initializer 方法为每个子进程进行初始化, 传递初始化参数
+    with Pool(initializer=pooled_initializer, initargs=(ctx_,)) as pool:
+        pool.starmap(pooled_is_prime, zip(range(10)))
+
+    # 结果转换为普通值
+    results = [c.get() for c in ctx_]
+    results.sort(key=lambda x: x[0])
+
+    # 确保结果符合预期
+    assert results == [
+        (0, False),
+        (1, False),
+        (2, True),
+        (3, True),
+        (4, False),
+        (5, True),
+        (6, False),
+        (7, True),
+        (8, False),
+        (9, False),
+    ]
