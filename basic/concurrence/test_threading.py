@@ -4,6 +4,7 @@ import time
 import timeit
 from concurrent.futures import ThreadPoolExecutor, wait
 from functools import partial
+from itertools import repeat
 from multiprocessing import cpu_count
 from multiprocessing.pool import ThreadPool
 from typing import Dict, Optional, Tuple
@@ -482,6 +483,8 @@ class TestThreadPool:
     @staticmethod
     def is_prime(n: int, name: str) -> Tuple[int, bool]:
         """
+        测试线程池的线程入口函数
+
         判断一个数是否质数
 
         Args:
@@ -622,7 +625,10 @@ class TestThreadPool:
             # 第二个参数之所以使用 zip 是因为要产生 10 个元组的列表, 即 [(1,), (2,), ..., (9,)]
             # 每个元组即是一组传递给 is_prime 函数的参数
             # 返回所有执行结果的列表
-            r = pool.starmap(self.is_prime, zip(range(10), ["test"]*10))
+            r = pool.starmap(
+                self.is_prime,
+                zip(range(10), repeat("test", 10)),
+            )
 
         r.sort(key=lambda x: x[0])
 
@@ -700,15 +706,20 @@ class TestThreadPool:
 
         `map` 方法第二个之后的参数表示传递给 `is_prime` 函数的参数列表, 其中:
             - `range(10)` 表示所有传递给 `is_prime` 函数的第一个参数
-            - `["test"]*10` 表示所有传递给 `is_prime` 函数的第二个参数
+            - `repeat("test", 10)` 表示所有传递给 `is_prime` 函数的第二个参数
         `map` 方法内部会通过 `zip(...)` 将所有单个参数的集合转为一组参数 `tuple` 的集合
         """
         # 实例化一个线程池执行器对象
         # 通过 with 可以简化对执行器对象的 shutdown 方法调用
         with ThreadPoolExecutor(self.n_threads) as executor:
             # range(10) 集合的每一项会作为传递给 is_prime 函数的第一个参数
-            # ["test"]*10 集合的每一项会作为传递给 is_prime 函数的第二个参数
-            r = executor.map(self.is_prime, range(10), ["test"]*10, timeout=1)
+            # repeat("test", 10) 集合的每一项会作为传递给 is_prime 函数的第二个参数
+            r = executor.map(
+                self.is_prime,
+                range(10),
+                repeat("test", 10),
+                timeout=1,
+            )
 
             # 返回结果转为 list
             r = list(r)

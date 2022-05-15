@@ -37,6 +37,7 @@
         "mktime",
         "norecursedirs",
         "nozone",
+        "nums",
         "pytest",
         "pytz",
         "qsize",
