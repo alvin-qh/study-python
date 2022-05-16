@@ -3,7 +3,8 @@ import timeit
 from concurrent.futures import ProcessPoolExecutor, wait
 from functools import partial
 from itertools import repeat
-from multiprocessing import Pool, Process, cpu_count
+from multiprocessing import Pipe, Pool, Process, Queue, cpu_count
+from multiprocessing.connection import Connection
 from typing import List, Tuple
 
 from .context import Context, ProcessGroup, QueueContext, ValueContext
@@ -44,14 +45,16 @@ def test_multiple_processes() -> None:
         time.sleep(1)
 
         # 是否为质数的结果
-        r = False
+        r = True
 
         if n > 1:
             for i in range(2, n):
                 if n % i == 0:
                     # 设置结果为真, 表示是质数
-                    r = True
-                    return
+                    r = False
+                    break
+        else:
+            r = False
 
         # 判断结果值是否符合预期
         assert r == results[n]
@@ -172,6 +175,125 @@ class TestSharedInProcesses:
             (8, False),
             (9, False),
         ]
+
+    def test_event_queue(self) -> None:
+        """
+        测试进程队列
+
+        将进程队列用作消息队列. 可以在一个进程中向队列中写入消息, 并在另一个进程中从该队列中
+        读取消息, 整个过程是原子方式的
+
+        当队列为空时, 通过 `get` 方法读取消息可以被阻塞, 直到有消息写入或超时 (抛出 `Empty`
+        异常); 也可以通过 `get_nowait` 方法进行不阻塞读取, 如果队列为空则抛出 `Empty` 异常
+        """
+        def is_prime(arg_queue_: Queue, res_queue_: Queue) -> None:
+            """
+            从一个消息队列中获取整数, 判断其是否为质数, 并将结果写入另一个消息队列
+
+            Args:
+                arg_queue_ (Queue): 传递整数的消息队列
+                res_queue_ (Queue): 传递计算结果的消息队列
+            """
+            # 持续循环, 直到传递 0 或超时
+            while 1:
+                # 从入参消息队列获取一个整数
+                n = arg_queue_.get(timeout=1)
+                if n <= 0:
+                    break
+
+                r = True
+                if n > 1:
+                    for i in range(2, n):
+                        if n % i == 0:
+                            r = False
+                else:
+                    r = False
+
+                # 将结果写入结果消息队列中
+                res_queue_.put((n, r))
+
+            # 在消息队列中写入表示结束的消息
+            res_queue.put((n, None))
+
+        # 入参消息队列
+        arg_queue = Queue()
+        # 结果消息队列
+        res_queue = Queue()
+
+        # 启动进程, 传入两个消息队列作为参数
+        p = Process(target=is_prime, args=(arg_queue, res_queue))
+        p.start()
+
+        # 向消息队列中写入三个数字
+        arg_queue.put(1)
+        arg_queue.put(2)
+        arg_queue.put(3)
+
+        # 从队列中获取三个结果
+        assert res_queue.get() == (1, False)
+        assert res_queue.get() == (2, True)
+        assert res_queue.get() == (3, True)
+
+        # 向消息队列写入 0 表示结束
+        arg_queue.put(0)
+        assert res_queue.get() == (0, None)
+
+    def test_pipe(self) -> None:
+        """
+        测试管道
+
+        管道是借助共享内存在进程间通信的一种方式, 管道有一对, 在其中一个写入, 则可以在另一个
+        进行读取, 读取为阻塞方式; 反之亦然
+        """
+        def is_prime(conn: Connection) -> None:
+            """
+            从一个消息队列中获取整数, 判断其是否为质数, 并将结果写入另一个消息队列
+
+            Args:
+                arg_queue_ (Queue): 传递整数的消息队列
+                res_queue_ (Queue): 传递计算结果的消息队列
+            """
+            # 持续循环, 直到传递 0 或超时
+            while 1:
+                # 从管道中读取一个数, 判断其是否为质数
+                n = conn.recv()
+                if n <= 0:
+                    break
+
+                r = True
+                if n > 1:
+                    for i in range(2, n):
+                        if n % i == 0:
+                            r = False
+                else:
+                    r = False
+
+                # 将结果写入管道
+                conn.send((n, r))
+
+            # 将结束消息写入管道
+            conn.send((n, None))
+
+        # 实例化管道对象, 得到两个对象
+        parent_conn, child_conn = Pipe()
+
+        # 启动进程, 将其中一个管道对象传入子进程
+        p = Process(target=is_prime, args=(child_conn,))
+        p.start()
+
+        # 向管道中写入数字, 并从管道中读取结果
+        parent_conn.send(1)
+        assert parent_conn.recv() == (1, False)
+
+        parent_conn.send(2)
+        assert parent_conn.recv() == (2, True)
+
+        parent_conn.send(3)
+        assert parent_conn.recv() == (3, True)
+
+        # 向管道中写入 0 表示结束
+        parent_conn.send(0)
+        assert parent_conn.recv() == (0, None)
 
 
 class TestProcessPool:

@@ -85,7 +85,7 @@ class TestTime:
         assert tu.tm_wday == 4  # 周五
         assert tu.tm_yday == 91  # 全年第 91 天
         assert tu.tm_isdst == 0  # 非夏令时
-        assert tu.tm_zone == "UTC"  # 格林尼治标准时间
+        assert tu.tm_zone in ("UTC", "GMT")  # 格林尼治标准时间
 
         # 格式化时间
         s = time.strftime("%Y-%m-%dT%H:%M:%S", tu)
