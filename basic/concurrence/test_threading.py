@@ -16,7 +16,7 @@ from werkzeug.local import Local, LocalProxy, release_local
 
 def test_start_thread() -> None:
     """
-    启动线程
+    演示如何指定线程入口函数并启动一个线程
     """
     total = 0
 
@@ -49,7 +49,9 @@ def test_start_thread() -> None:
 
 def test_thread_class() -> None:
     """
-    另一种使用线程的方式是: 从线程类继承, 并重写其 `run` 方法
+    演示通过继承的方式使用线程
+
+    从 `Thread` 类继承, 并重写其 `run` 方法
     """
     class MyThread(threading.Thread):
         """
@@ -107,7 +109,7 @@ def test_thread_class() -> None:
 
 def test_active_count_function() -> None:
     """
-    获取当前启动的线程数
+    演示如何获取当前所有启动的线程数
 
     `threading` 包的 `active_count` 函数用于获取当前总共运行的线程数
     """
