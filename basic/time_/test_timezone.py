@@ -8,13 +8,13 @@ def test_locale_and_utc() -> None:
     """
     本地时间和 UTC 时间
     """
-    # 获取本地时区的当前时间
+    # 获取本地时区的当前时间, 不包含时区信息
     t_loc = datetime.now()
-    # 获取 UTC 时区的当前时间
-    t_utc = datetime.now(tz=pytz.UTC)
+    # 获取 UTC 时区的当前时间, 然后去除时区信息
+    t_utc = datetime.now(tz=pytz.UTC).replace(tzinfo=None)
 
     # 两个时区时间相差 8 小时
-    assert t_loc.hour == t_utc.hour + 8
+    assert (t_loc - t_utc).total_seconds() // 3306 == 8.0
 
 
 # 一个东八区时间
