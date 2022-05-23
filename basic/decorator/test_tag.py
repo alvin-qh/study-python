@@ -19,6 +19,10 @@ def test_tag_decorator() -> None:
 
 
 def test_html_tag_decorator() -> None:
+    """
+    演示通过闭包创建装饰器函数
+    """
+
     @html_tag(tag_name="div", style="display:block", clazz="col-md-2")
     def demo1() -> str:
         return "Hello"
@@ -32,6 +36,13 @@ def test_html_tag_decorator() -> None:
 
 
 def test_html_tag_class_decorator() -> None:
+    """
+    演示通过仿函数类对象创建装饰器函数
+
+    Returns:
+        _type_: _description_
+    """
+
     @HtmlTag(tag_name="div", style="display:block", clazz="col-md-2")
     def demo1():
         return "Hello"

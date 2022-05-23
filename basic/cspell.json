@@ -43,6 +43,7 @@
         "pytz",
         "qsize",
         "RDONLY",
+        "relativedelta",
         "rerunfailures",
         "rlock",
         "rrule",

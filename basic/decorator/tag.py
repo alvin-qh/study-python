@@ -5,7 +5,7 @@ from typing import Callable
 
 def tag(func: Callable) -> Callable:
     """
-    定义一个装饰器函数
+    定义一个函数型装饰器
 
     装饰器函数的参数是被装饰函数, 返回被装饰后的代理函数
 
@@ -37,10 +37,40 @@ def tag(func: Callable) -> Callable:
 
 
 def html_tag(tag_name: str, **kwargs) -> Callable:
+    """
+    通过闭包创建装饰器函数
+
+    通过闭包返回一个装饰器函数, 可以为装饰器函数引入参数
+
+    装饰器函数将被装饰函数返回值包装为指定的 HTML 标签并返回
+
+    Args:
+        tag_name (str): HTML 标签名称, 该参数可以传递到内部的闭包函数
+        kwargs(Dict[str, Any]): HTML 标签属性
+
+    Returns:
+        Callable: 装饰器函数
+    """
     attribute = kwargs
 
     def decorator(func: Callable) -> Callable:
+        """
+        定义装饰器函数, 为一个内部函数, 可以通过闭包方式获取外部定义的参数
+
+        Args:
+            func (Callable): 被装饰的函数
+
+        Returns:
+            Callable: 被装饰函数的代理函数
+        """
+
         def wrapper(*args, **kwargs) -> str:
+            """
+            被装饰函数的代理函数
+
+            Returns:
+                str: 包装后的 HTML 标签
+            """
             sio = io.StringIO()
             sio.write("<")
             sio.write(tag_name)
@@ -71,17 +101,48 @@ def html_tag(tag_name: str, **kwargs) -> Callable:
 
             sio.seek(0)
             return sio.read()
+
         return wrapper
+
     return decorator
 
 
 class HtmlTag:
+    """
+    将 Callable 类型对象作为函数装饰器
+
+    装饰器类将被装饰函数返回值包装为指定的 HTML 标签并返回
+    """
+
     def __init__(self, tag_name: str, **kwargs) -> None:
+        """
+        构造器, 传递装饰器所需的参数
+
+        Args:
+            tag_name (str): HTML 标签名称
+            kwargs(Dict[str, Any]): HTML 标签属性
+        """
         self._kwargs = kwargs
         self._tag_name = tag_name
 
     def __call__(self, func: Callable) -> Callable:
+        """
+        仿函数调用方法, 对被装饰函数进行包装, 返回被装饰函数的代理函数
+
+        Args:
+            func (Callable): 被装饰函数
+
+        Returns:
+            Callable: 被装饰函数的代理函数
+        """
+
         def wrapper(*args, **kwargs) -> str:
+            """
+            被装饰函数的代理函数
+
+            Returns:
+                str: 包装后的 HTML 标签
+            """
             sio = io.StringIO()
             sio.write("<")
             sio.write(self._tag_name)
