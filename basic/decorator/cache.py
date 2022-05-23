@@ -30,9 +30,16 @@ class Cache:
         except AttributeError:
             pass
 
-    def delete_many(self, prefix: Optional[str] = None, suffix: Optional[str] = None) -> None:
+    def delete_many(
+        self,
+        prefix: Optional[str] = None,
+        suffix: Optional[str] = None,
+    ) -> None:
         for key in list(self.keys()):
-            if (prefix and key.startswith(prefix)) or (suffix and key.endswith(suffix)):
+            if (
+                (prefix and key.startswith(prefix)) or
+                (suffix and key.endswith(suffix))
+            ):
                 self.delete(key)
 
     def populate(self, data: Dict[Any, Any]):
@@ -89,10 +96,16 @@ def _get_default_args(func: Callable) -> Dict[str, Any]:
     return defaults
 
 
-def _interpolate_str(fstring: str, func: Func, instance: Any, args: Tuple[Any, ...], kwargs: Dict[str, Any]) -> str:
+def _interpolate_str(
+    fmt: str,
+    func: Func,
+    inst: Any,
+    args: Tuple[Any, ...],
+    kwargs: Dict[str, Any],
+) -> str:
     arg_values = args
-    if instance is not None:
-        arg_values = (instance,) + args  # instance -> self
+    if inst is not None:
+        arg_values = (inst,) + args  # instance -> self
 
     try:
         arg_names = _cached_arg_names[func]
@@ -110,14 +123,19 @@ def _interpolate_str(fstring: str, func: Func, instance: Any, args: Tuple[Any, .
     context.update(dict(zip(arg_names, arg_values)))
     context.update(kwargs)
 
-    return fstring.format(**context)
+    return fmt.format(**context)
 
 
 def memo(key: str) -> Callable[[F], F]:
     _check_duplicated_cache_key(key)
 
     @decorator
-    def wrapper(func: Callable, inst: Optional[Any], args: Tuple[Any, ...], kwargs: Dict[str, Any]) -> Any:
+    def wrapper(
+        func: Callable,
+        inst: Optional[Any],
+        args: Tuple[Any, ...],
+        kwargs: Dict[str, Any],
+    ) -> Any:
         interpolated_key = _interpolate_str(key, func, inst, args, kwargs)
 
         cached_value = _cache.get(interpolated_key, default=_CACHE_MISS)

@@ -38,3 +38,7 @@ class TestCache:
 
         assert self._cache.get("A") == 100
         assert self._cache.get("B") == 200
+
+
+def make_name(prefix: str) -> str:
+    pass
