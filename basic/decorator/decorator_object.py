@@ -1,5 +1,9 @@
+import io
+import timeit
+from functools import wraps
 from typing import Any, Callable, Dict, TypeVar
 
+# 定义一个函数类型的泛型类型
 F = TypeVar("F", bound=Callable)
 
 
@@ -62,3 +66,31 @@ class App:
 
         # 执行该函数并返回结果
         return func()
+
+
+class Logger:
+    def __init__(self) -> None:
+        self._buf = io.StringIO()
+
+    def __call__(self, fn: Callable) -> Callable:
+        @wraps(fn)
+        def wrapper(*args, **kwargs) -> str:
+            start_time = timeit.default_timer()
+            result = fn(*args, **kwargs)
+            time_cost = timeit.default_timer() - start_time
+
+            self._buf.write(f"\tlog function '{fn.__name__}' is call: \n")
+            self._buf.write(f"\t  function={fn.__name__}\n")
+            self._buf.write(f"\t  arguments={args} {kwargs}\n")
+            self._buf.write(f"\t  return={result}\n")
+            self._buf.write(f"\t  time={time_cost:.6f} sec\n")
+
+            return result
+
+        return wrapper
+
+    def reset(self) -> None:
+        self._buf.seek(0)
+
+    def __str__(self) -> str:
+        return self._buf.getvalue()

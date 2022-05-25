@@ -1,6 +1,6 @@
 from pytest import raises
 
-from .app import App
+from .decorator_object import App, Logger
 
 # 产生 App 类型的对象
 app = App()
@@ -39,3 +39,22 @@ def test_find_executor_by_url() -> None:
 
         # 确认返回的异常
         assert str(err.value) == '\'"/unknown" not register\''
+
+
+logger = Logger()
+
+
+@logger
+def multiply(x, y):
+    return x * y
+
+
+def test_logger() -> None:
+    multiply(10, 20)
+    assert str(logger) == """log function 'multiply' is call:
+    function=multiply
+      arguments=(10, 20) {}
+      return=200
+      time=0.000000 sec"""
+
+    multiply(30, 40)
