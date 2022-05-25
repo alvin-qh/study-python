@@ -1,6 +1,5 @@
 import inspect
 import re
-from glob import glob
 from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple
 
 from wrapt import decorator
