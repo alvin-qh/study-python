@@ -1,5 +1,6 @@
 import inspect
 import re
+from glob import glob
 from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple
 
 from wrapt import decorator
@@ -312,3 +313,23 @@ def memo(key: str) -> DelegateFn:
         return value
 
     return wrapper
+
+
+def clear_cache() -> None:
+    """
+    清空所有缓存内容
+    """
+    # 清空 Key 重复检测 Set 集合
+    global _cache_keys
+    _cache_keys = set()
+
+    # 清空缓存的函数参数名列表
+    global _cached_arg_names
+    _cached_arg_names = {}
+
+    # 清空缓存的函数默认参数列表
+    global _cached_default_args
+    _cached_default_args = {}
+
+    # 清空缓存
+    _cache.clear()

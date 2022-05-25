@@ -2,7 +2,7 @@ import timeit
 
 from pytest import raises
 
-from .cache import Cache, memo
+from .cache import Cache, clear_cache, memo
 
 
 class TestCache:
@@ -80,95 +80,130 @@ class TestCache:
 
 
 class TestMemoCache:
-    def setup_method(self) -> None:
-        from .cache import _cache
-        _cache.clear()
+    def teardown_method(self) -> None:
+        """
+        每次测试执行后, 清空缓存内容
+        """
+        clear_cache()
 
     def test_check_duplicated_cache_key(self) -> None:
+        """
+        测试检测重复 Key 函数
+        """
         from .cache import _check_duplicated_cache_key
 
+        # 第一次检测 Key
         _check_duplicated_cache_key("demo1()")
         with raises(KeyError):
+            # 第二次检测 Key, 会抛出 Key 重复异常
             _check_duplicated_cache_key("demo1()")
 
+        # 第一次检测带参数占位符的 Key
         _check_duplicated_cache_key("demo2_{a}_{b}")
         with raises(KeyError):
-            _check_duplicated_cache_key("demo2_{a}_{b}")
+            # 第二次检测 Key, 会抛出 Key 重复异常, 占位符参数可以不同
+            _check_duplicated_cache_key("demo2_{c}_{d}")
 
     def test_get_default_args(self) -> None:
+        """
+        测试获取函数的默认参数列表
+        """
         from .cache import _get_default_args
 
-        def demo1() -> None:
-            pass
+        # 定义无参函数
+        def demo1() -> None: pass
 
+        # 获取无参函数的默认值列表
         d = _get_default_args(demo1)
+        # 无默认参数列表
         assert d == {}
 
-        def demo2(a: int = 1, b: int = 2) -> None:
-            pass
+        # 定义具备默认参数的函数
+        def demo2(a: int = 1, b: int = 2) -> None: pass
 
+        # 获取默认参数列表
         d = _get_default_args(demo2)
+        # 获取到两个默认参数和对应的默认值
         assert d == {"a": 1, "b": 2}
 
     def test_interpolate_str_by_function(self) -> None:
+        """
+        测试根据所给的函数和参数生成缓存 Key 字符串
+        """
         from .cache import _interpolate_str
 
-        def demo(a: int, b: str, c: bool = False) -> None:
-            pass
+        # 用于生成缓存字符串的函数
+        def demo(a: int, b: str, c: bool = False) -> None: pass
 
+        # 通过 args 参数传递
+        # 通过参数 a, b, c 生成缓存 Key 字符串
         s = _interpolate_str(
             "demo_{a}_{b}_{c}",
             demo,
-            None,
-            (1, "A", True),
-            {},
+            inst=None,
+            args=(1, "A", True),
+            kwargs={},
         )
+        # 确认生成的缓存 Key 保护三个参数
         assert s == "demo_1_A_True"
 
+        # 通过 args 和 kwargs 共同传参
+        # 通过参数 a, b, c 生成缓存 Key 字符串
         s = _interpolate_str(
             "demo_{a}_{b}_{c}",
             demo,
-            None,
-            (),
-            {
-                "a": 1,
+            inst=None,
+            args=(1,),
+            kwargs={
                 "b": "A",
                 "c": True,
             }
         )
+        # 确认生成的缓存 Key 保护三个参数
         assert s == "demo_1_A_True"
 
     def test_interpolate_str_by_method(self) -> None:
+        """
+        测试根据所给的方法和参数生成缓存 Key 字符串
+        """
         from .cache import _interpolate_str
 
         class Demo:
+            """
+            测试类
+            """
             name = "Demo"
 
-            def demo(self, a: int, b: str, c: bool = False) -> None:
-                pass
+            # 用于生成缓存字符串的函数
+            def demo(self, a: int, b: str, c: bool = False) -> None: pass
 
         d = Demo()
 
+        # 通过 args 参数传递
+        # 通过参数 a, b, c 生成缓存 Key 字符串
         s = _interpolate_str(
-            "demo_{self.name}_{a}_{b}_{c}",
+            "demo_{self.name}_{a}_{b}_{c}",  # 第一个参数为 self
             d.demo,
             d,
             (1, "A", True),
             {},
         )
+        # 确认生成的缓存 Key 保护三个参数
         assert s == "demo_Demo_1_A_True"
 
+        # 通过 args 和 kwargs 共同传参
+        # 通过参数 a, b, c 生成缓存 Key 字符串
         s = _interpolate_str(
-            "demo_{self.name}_{a}_{b}_{c}",
+            "demo_{self.name}_{a}_{b}_{c}",  # 第一个参数为 self
             d.demo,
             d,
-            (),
+            (1,),
             {
-                "a": 1,
                 "b": "A",
                 "c": True,
             }
         )
+        # 确认生成的缓存 Key 保护三个参数
         assert s == "demo_Demo_1_A_True"
 
     def test_memo(self) -> None:
