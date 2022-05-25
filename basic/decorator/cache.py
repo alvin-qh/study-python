@@ -259,6 +259,18 @@ DelegateFn = Callable[
 
 
 def memo(key: str) -> DelegateFn:
+    """
+    返回一个装饰器, 用于通过指定的 `key` 将被装饰函数的返回值进行缓存操作
+
+    缓存操作适用于幂等性函数 (即参数相同, 则返回值一定相同的函数). 如果函数结果被缓存, 则从缓存中
+
+    Args:
+        key (str): _description_
+
+    Returns:
+        DelegateFn: 用于缓存函数返回值的装饰器对象
+    """
+    # 检查 Key 是否全局唯一
     _check_duplicated_cache_key(key)
 
     @decorator
@@ -268,14 +280,35 @@ def memo(key: str) -> DelegateFn:
         args: Tuple[Any, ...],
         kwargs: Dict[str, Any],
     ) -> Any:
+        """
+        代理函数, 用于从缓存中读取被代理函数的执行结果
+
+        如果被代理函数执行结果未被缓存, 则执行一次被代理函数, 并对结果进行缓存
+
+        Args:
+            func (F): 被代理函数 (或方法)
+            inst (Optional[Any]): 被代理方法所属的对象
+            args (Tuple[Any, ...]): 函数 (或方法) 的列表参数
+            kwargs (Dict[str, Any]): 函数 (或方法) 的命名参数
+
+        Returns:
+            Any: 被代理函数的执行结果
+        """
+        # 生成缓存 Key
         interpolated_key = _interpolate_str(key, func, inst, args, kwargs)
 
+        # 通过 Key 尝试读取缓存的函数结果
         cached_value = _cache.get(interpolated_key, default=_CACHE_MISS)
         if cached_value is not _CACHE_MISS:
+            # 缓存命中, 返回缓存的执行结果
             return cached_value
 
+        # 缓存未命中, 执行被代理函数, 获取执行结果
         value = func(*args, **kwargs)
+
+        # 将执行结果进行缓存
         _cache.set(interpolated_key, value)
+
         return value
 
     return wrapper
