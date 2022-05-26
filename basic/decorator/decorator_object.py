@@ -69,20 +69,54 @@ class App:
 
 
 class Logger:
+    """
+    用于记录日志的类
+
+    该类具备一个 `__call__` 魔法函数, 其对象可以被用作仿函数, 且定义为装饰器函数
+    """
+
     def __init__(self) -> None:
+        """
+        初始化缓冲区存放字符串
+        """
         self._buf = io.StringIO()
 
     def __call__(self, fn: Callable) -> Callable:
+        """
+        仿函数调用, 将当前对象作为一个装饰器
+
+        该装饰器在函数调用后记录一条日志到缓冲区
+
+        Args:
+            fn (Callable): 被代理函数
+
+        Returns:
+            Callable: 代理函数,
+        """
         @wraps(fn)
         def wrapper(*args, **kwargs) -> str:
             start_time = timeit.default_timer()
             result = fn(*args, **kwargs)
+
+            # 记录函数调用时间
             time_cost = timeit.default_timer() - start_time
 
+            # 记录被调用的函数名称
             self._buf.write(f"\tlog function '{fn.__name__}' is call: \n")
             self._buf.write(f"\t  function={fn.__name__}\n")
-            self._buf.write(f"\t  arguments={args} {kwargs}\n")
+
+            # 记录传递的参数
+            self._buf.write("\t  arguments=")
+            if args:
+                self._buf.write(f"{args} ")
+            if kwargs:
+                self._buf.write(f"{kwargs} ")
+            self._buf.write("\n")
+
+            # 记录返回值
             self._buf.write(f"\t  return={result}\n")
+
+            # 记录调用时间
             self._buf.write(f"\t  time={time_cost:.6f} sec\n")
 
             return result
@@ -90,7 +124,16 @@ class Logger:
         return wrapper
 
     def reset(self) -> None:
+        """
+        重置缓存
+        """
         self._buf.seek(0)
 
     def __str__(self) -> str:
+        """
+        缓存内容转为字符串, 输出日志内容
+
+        Returns:
+            str: 日志内容
+        """
         return self._buf.getvalue()
