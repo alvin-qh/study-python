@@ -78,9 +78,9 @@ def test_shared_queue() -> None:
     """
 
     # 定义传入数据的队列 (入参队列)
-    in_que = Queue()
+    in_que: Queue = Queue()
     # 定义传出结果的队列 (出参队列)
-    out_que = Queue()
+    out_que: Queue = Queue()
 
     def is_prime() -> None:
         """
@@ -147,9 +147,9 @@ def test_event_queue() -> None:
     异常); 也可以通过 `get_nowait` 方法进行不阻塞读取, 如果队列为空则抛出 `Empty` 异常
     """
     # 定义传入数据的队列 (入参队列)
-    in_que = Queue()
+    in_que: Queue = Queue()
     # 定义传出结果的队列 (出参队列)
-    out_que = Queue()
+    out_que: Queue = Queue()
 
     def is_prime() -> None:
         """

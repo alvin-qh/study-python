@@ -233,7 +233,7 @@ def test_remove_no_empty_folder() -> None:
     # 产生一系列文件名
     filenames = ["file_" + str(x) for x in range(1, 10)]
     # 在指定路径下创建一系列文件
-    touch(full_path, filenames)
+    touch(full_path, iter(filenames))
 
     # 确保文件创建成果
     assert set(os.listdir(full_path)) == set(filenames)
@@ -272,7 +272,7 @@ def test_rename_file_or_dir() -> None:
             return dir
 
         # 创建一个空文件
-        touch(dir, [filename])
+        touch(dir, iter([filename]))
         return os.path.join(dir, filename)
 
     # 测试对路径进行更名

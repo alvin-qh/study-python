@@ -35,7 +35,7 @@ def test_sorted_list() -> None:
     # 和 sorted 函数类似, SortedList 对象也是通过 cmp_to_key 函数产生的 Key 类型进行比较的
 
     # 定义一个用于比较的 Key 类型
-    K = cmp_to_key(lambda a, b: ord(b) - ord(a))
+    K = cmp_to_key(lambda a, b: ord(b) - ord(a))  # type:ignore
     # 通过 Key 对象的比较规则定义 SortedList 对象
     c = SortedList("abcdefg", key=K)
     # 确认对象内容依据 Key 对象定义的排序规则进行

@@ -1,12 +1,13 @@
 from ctypes import c_bool, c_int
 from multiprocessing import Pool, Value
+from multiprocessing.sharedctypes import Synchronized
 from typing import List, Tuple
 
 # 全局变量, 每个进程的内存空间都会具备
-_values: List[Tuple[Value, Value]] = None
+_values: List[Tuple[Synchronized, Synchronized]] | None = None
 
 
-def _initializer(values: List[Tuple[Value, Value]]) -> None:
+def _initializer(values: List[Tuple[Synchronized, Synchronized]]) -> None:
     """
     进程池初始化函数
 
@@ -32,6 +33,10 @@ def _is_prime(n: int) -> None:
     Args:
         n (int): 要判断是否为质数的数
     """
+
+    if not _values:
+        raise ValueError("No values")
+
     num, val = _values[n]
     # 由于每个进程只会进行一次初始化操作
     # 且因为进程池会复用进程, 所以这里对某个进程的公共变量操作, 可能会在复用该进程时影响到

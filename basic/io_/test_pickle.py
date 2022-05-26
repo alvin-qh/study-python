@@ -34,7 +34,7 @@ class Person:
         return (
             self.id == other.id
             and self.name == other.name
-            and self.message == other.message,
+            and self.message == other.message
         )
 
 
@@ -70,10 +70,10 @@ def test_dump_load_function() -> None:
     # 测试类对象序列化到文件
     with io.BytesIO() as fp:
         # 产生一个类对象
-        obj = Person(1, "Alvin", "Hello World")
+        psn = Person(1, "Alvin", "Hello World")
 
         # 序列化类对象
-        pickle.dump(obj, fp)
+        pickle.dump(psn, fp)
 
         # 获取序列化后的数据
         data = fp.getvalue()
@@ -82,7 +82,7 @@ def test_dump_load_function() -> None:
     # 测试从文件中反序列化类对象
     with io.BytesIO(data) as fp:
         # 反序列类对象对象, 确保和源对象相同
-        assert pickle.load(fp) == obj
+        assert pickle.load(fp) == psn
 
 
 def test_dumps_loads_function() -> None:
@@ -108,11 +108,11 @@ def test_dumps_loads_function() -> None:
     # 类对象序列化
 
     # 产生一个类对象
-    obj = Person(1, "Alvin", "Hello World")
+    psn = Person(1, "Alvin", "Hello World")
 
     # 序列化类对象
     s = pickle.dumps(obj)
     assert len(s) > 0
 
     # 反序列类对象对象, 确保和源对象相同
-    assert pickle.loads(s) == obj
+    assert pickle.loads(s) == psn

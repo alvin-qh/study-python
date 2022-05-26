@@ -29,7 +29,7 @@ class FileLock:
         # 格式化锁文件名
         self._filename = self._lock_file_template.format(name)
         # 文件描述符
-        self._fd = 0
+        self._fd: int | None = None
         # 是否锁定
         self._locked = False
 

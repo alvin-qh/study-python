@@ -163,5 +163,5 @@ def test_map_reduce() -> None:
 
     # 初始值是 1, 用上次结果和集合中的每一项进行运算
     # 相当于 1(初始值) * 1 * 2 * 3 == 6
-    r = reduce(lambda x, y: x * y, c, 1)
+    r = reduce(lambda x, y: x * y, c, 1)  # type: ignore
     assert r == 6

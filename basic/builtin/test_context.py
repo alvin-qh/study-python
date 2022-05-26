@@ -22,5 +22,6 @@ def test_context_with_exception() -> None:
     with Context(deliver_exc=True) as ctx:
         raise ValueError("error")
 
+    assert ctx.exception is not None
     assert ctx.exception[0] is ValueError
     assert str(ctx.exception[1]) == "error"

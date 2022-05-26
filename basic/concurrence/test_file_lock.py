@@ -9,7 +9,7 @@ from .file_lock import FileLock
 
 
 def run_worker_by_pool(
-    worker: Callable[[Iterator[Any]], None],
+    worker: Callable[[Any], None],
     args: Iterator[Any]
 ) -> float:
     """

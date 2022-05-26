@@ -2,7 +2,7 @@ from concurrent.futures import ProcessPoolExecutor, wait
 from functools import partial
 from itertools import repeat
 from multiprocessing import Pool, cpu_count
-from typing import Tuple
+from typing import List, Tuple
 
 # 可以启动的进程总数
 _n_processes = cpu_count()
@@ -47,7 +47,7 @@ def test_pool_apply() -> None:
     """
 
     # 保存结果的数组
-    rs = []
+    rs: List = []
 
     # 实例化进程池对象, 共有 n_threads 个进程
     # with 的使用可以简化进程池对象的 close 函数调用
@@ -137,6 +137,8 @@ def test_pool_imap() -> None:
     另一个 `imap_unordered` 返回的 `IMapIterator` 迭代器中的执行结果不会严格按照参数顺序,
     那个进程先执行完毕就在迭代器中排在前面
     """
+    rs: List
+
     # 实例化进程池对象, 共有 n_processes 个进程
     # with 的使用可以简化进程池对象的 close 函数调用
     with Pool(processes=_n_processes) as pool:
@@ -145,7 +147,7 @@ def test_pool_imap() -> None:
         # 返回所有执行结果的列表
         # 由于 imap 不直接支持多参数传递, 所以需要通过 partial 函数预设一个参数,
         # 将两个参数的函数变为一个参数
-        rs = pool.imap_unordered(
+        rs = pool.imap_unordered(  # type: ignore
             partial(_is_prime, name="test"),
             range(10),
         )
@@ -246,12 +248,12 @@ def test_pool_executor_submit() -> None:
         # 通过 concurrent.futures 包下的 wait 函数, 等待一系列异步任务执行完毕
         # 本次最长等待 1 秒, 一秒后无论是否还有任务为执行完毕, wait 函数都结束阻塞
         # wait 函数返回 DoneAndNotDoneFutures 对象, 包含了已完成和未完成的异步任务
-        futures = wait(futures, timeout=1)
+        dnd_futures = wait(futures, timeout=1)
         # 确保所有任务都已完成
-        assert len(futures.not_done) == 0
+        assert len(dnd_futures.not_done) == 0
 
         # 遍历所有已完成异步任务, 获取结果
-        r = [f.result() for f in futures.done]
+        r = [f.result() for f in dnd_futures.done]
         r.sort(key=lambda x: x[0])
 
         # 确保结果正确
@@ -286,12 +288,14 @@ def test_pool_executor_map() -> None:
         - `repeat("test", 10)` 表示所有传递给 `is_prime` 函数的第二个参数
     `map` 方法内部会通过 `zip(...)` 将所有单个参数的集合转为一组参数 `tuple` 的集合
     """
+    r: List
+
     # 实例化一个进程池执行器对象
     # 通过 with 可以简化对执行器对象的 shutdown 方法调用
     with ProcessPoolExecutor(_n_processes) as executor:
         # range(10) 集合的每一项会作为传递给 is_prime 函数的第一个参数
         # repeat("test", 10) 集合的每一项会作为传递给 is_prime 函数的第二个参数
-        r = executor.map(
+        r = executor.map(  # type: ignore
             _is_prime,
             range(10),
             repeat("test", 10),

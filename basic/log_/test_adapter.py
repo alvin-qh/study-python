@@ -1,5 +1,5 @@
 import logging
-from logging import Logger, LoggerAdapter, config
+from logging import LoggerAdapter, config
 
 _LOG_CONF = {
     "version": 1,
@@ -24,7 +24,7 @@ _LOG_CONF = {
 }
 
 
-def test_log_adapter() -> Logger:
+def test_log_adapter() -> None:
     """
     配置日志 Adapter
     Adapter 可以理解为一个 Logger 对象的代理, 可以为日志设置扩展变量

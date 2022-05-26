@@ -76,4 +76,4 @@ def test_frozenset() -> None:
 
     # frozenset 无法添加元素
     with raises(AttributeError):
-        s.add(4)
+        s.add(4)  # type: ignore

@@ -24,4 +24,4 @@ class Class:
 
 
 # 测试导入的值
-value = value + 1 if "value" in dir() else 0
+value = value + 1 if "value" in dir() else 0  # type: ignore

@@ -53,7 +53,7 @@ def test_dict_of_objects() -> None:
     assert foo.__dict__ == {"a": 10, "b": "A", "c": True}
 
     # 为对象附加字段值
-    foo.d = 0.1
+    foo.d = 0.1  # type: ignore
     assert foo.__dict__ == {"a": 10, "b": "A", "c": True, "d": 0.1}
 
 

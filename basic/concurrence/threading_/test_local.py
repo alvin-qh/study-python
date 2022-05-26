@@ -4,6 +4,8 @@
 线程本地对象即可为每个线程保存一组值, 且这组值只在当前线程生效
 """
 import threading
+from typing import Any
+
 from pytest import raises
 from werkzeug.local import Local, LocalProxy, release_local
 
@@ -84,6 +86,8 @@ def test_werkzeug_local_proxy() -> None:
 
     代理的方式有两种: 对 `Local` 中的内容存储定义代理快捷方式; 提供获取 `Local` 存储内容的代理方法
     """
+    h: Any
+
     class Holder:
         """
         测试 LocalProxy 的类
@@ -109,7 +113,7 @@ def test_werkzeug_local_proxy() -> None:
     # 生成 LocalProxy 对象, 表示对 loc.holder 的快捷访问
     # 即对 h 变量的访问等同于对 loc.holder 的访问
     h = loc("holder")  # 完整写法为 holder = LocalProxy(loc, "holder")
-    assert h.n == 0  # 相当于获取 loc.holder.n 的值
+    assert h.n == 0    # 相当于获取 loc.holder.n 的值
 
     h.n = 100  # 相当于 loc.holder.n = 100
     assert h.n == 100

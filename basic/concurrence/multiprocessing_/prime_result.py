@@ -1,10 +1,12 @@
-from typing import Iterator
+from typing import Iterator, List, Tuple
 
 
 class PrimeResult:
     """
     演示在 `Manager` 对象中注册自定义类型
     """
+
+    _l: List[Tuple[int, bool]]
 
     def __init__(self) -> None:
         """

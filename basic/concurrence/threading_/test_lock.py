@@ -73,6 +73,8 @@ def test_rlock() -> None:
 
     `RLock` 的用法和 `Lock` 类似, 但 `RLock` 会和线程绑定, 即 `RLock` 不会阻塞同一个线程中的占用
     """
+    lock: threading.Lock | threading.RLock
+
     lock = threading.Lock()
     try:
         # 对于 Lock, 在同一线程使用多次, 第二次会被阻塞

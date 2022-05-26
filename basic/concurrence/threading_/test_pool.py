@@ -16,7 +16,7 @@ from functools import partial
 from itertools import repeat
 from multiprocessing import cpu_count
 from multiprocessing.pool import ThreadPool
-from typing import Tuple
+from typing import List, Tuple
 
 # 线程池线程总数, 即 CPU 内核总数的 2 倍
 _n_threads = cpu_count() * 2
@@ -59,7 +59,7 @@ def test_apply() -> None:
     方法获取线程执行结果
     """
     # 保存结果的数组
-    rs = []
+    rs: List = []
 
     # 实例化线程池对象, 共有 n_threads 个线程
     # with 的使用可以简化线程池对象的 close 函数调用
@@ -149,6 +149,8 @@ def test_imap() -> None:
     另一个 `imap_unordered` 返回的 `IMapIterator` 迭代器中的执行结果不会严格按照参数顺序,
     那个进程先执行完毕就在迭代器中排在前面
     """
+    rs: List
+
     # 实例化线程池对象, 共有 n_threads 个线程
     # with 的使用可以简化线程池对象的 close 函数调用
     with ThreadPool(processes=_n_threads) as pool:
@@ -157,7 +159,7 @@ def test_imap() -> None:
         # 返回所有执行结果的列表
         # 由于 imap 不直接支持多参数传递, 所以需要通过 partial 函数预设一个参数,
         # 将两个参数的函数变为一个参数
-        rs = pool.imap_unordered(
+        rs = pool.imap_unordered(  # type: ignore
             partial(is_prime, name="test"),
             range(10),
         )
@@ -300,11 +302,13 @@ def test_executor_map() -> None:
     with ThreadPoolExecutor(_n_threads) as executor:
         # range(10) 集合的每一项会作为传递给 is_prime 函数的第一个参数
         # repeat("test", 10) 集合的每一项会作为传递给 is_prime 函数的第二个参数
-        r = executor.map(
-            is_prime,
-            range(10),
-            repeat("test", 10),
-            timeout=1,
+        r = list(
+            executor.map(
+                is_prime,
+                range(10),
+                repeat("test", 10),
+                timeout=1,
+            )
         )
 
         # 返回结果转为 list

@@ -1,8 +1,8 @@
 from multiprocessing import Process
-from typing import Any, Callable, Iterable, Optional, overload
+from typing import Any, Callable, Iterable
 
 # 参数列表类型
-ArgList = Iterable[Iterable[Any]]
+ArgList = Iterable[Iterable[Any]] | None
 
 
 class ProcessGroup:
@@ -10,29 +10,18 @@ class ProcessGroup:
     进程组类, 表示一组进程
     """
 
-    @overload
-    def __init__(self, target: Callable, arglist: ArgList) -> None:
-        """
-        构造器, 构造一个进程组对象
-
-        Args:
-            target (Callable): 进程入口函数
-            arglist (ArgList): 进程参数组, 每组参数为一个 Tuple, 表示传给进程入口函数的参数
-        """
-
-    @overload
-    def __init__(self, target: Callable, count: int) -> None:
-        """
-        构造器, 构造一个进程组对象
-
-        Args:
-            target (Callable): 进程入口函数
-            count (int): 进程的个数
-        """
-
     def __init__(
-        self, target: Callable, arglist: Optional[ArgList] = None, count=0
+        self, target: Callable, arglist: ArgList = None, count=0
     ) -> None:
+        """
+        构造器, 构造一个进程组对象
+
+        Args:
+            target (Callable): 进程入口函数
+            arglist (ArgList, optional): 进程参数组, 每组参数为一个 Tuple, 表示传给进程入口函数的参数.
+            Defaults to None.
+            count (int, optional): 进程的个数. Defaults to 0.
+        """
         if count:
             # 如果传递了 count 参数, 则按数量产生进程
             self._ps = [Process(target=target) for _ in range(count)]

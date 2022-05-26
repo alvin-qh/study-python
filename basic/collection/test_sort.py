@@ -11,7 +11,7 @@ def test_cmp_to_key() -> None:
     通过返回的类可以构造一个对象, 两个同类型对象可以根据定义的比较函数参数进行比较
     """
     # 传入比较函数, 返回一个可比较的类
-    cmp = cmp_to_key(lambda a, b: a - b)
+    cmp = cmp_to_key(lambda a, b: a - b)  # type:ignore
 
     # 实例化可比较类, 通过之前定义的比较函数进行比较
     # 相当于 lambda 10, 20: 10 - 20 结果为 -10, 表示小于
@@ -47,7 +47,7 @@ def test_sort_simple() -> None:
     # 通过一个 cmp_to_key 返回一个可比较类型
     # 通过实例化可比较类型的对象后, 进行集合元素的比较
     # 参见: test_cmp_to_key 范例
-    cs = sorted(c, key=cmp_to_key(lambda a, b: a - b))
+    cs = sorted(c, key=cmp_to_key(lambda a, b: a - b))  # type:ignore
     assert cs == [1, 2, 3, 4, 5]
 
 
@@ -99,7 +99,7 @@ def test_sort_objects() -> None:
     assert cs == [Foo("d", 100), Foo("c", 200), Foo("b", 300), Foo("a", 400)]
 
     # 通过 cmp_to_key 函数进行排序
-    cs = sorted(c, key=cmp_to_key(
-        lambda a, b: b.name.casefold() > a.name.casefold())
+    cs = sorted(c, key=cmp_to_key(  # type:ignore
+        lambda a, b: b.name.casefold() > a.name.casefold())  # type:ignore
     )
     assert cs == [Foo("a", 400), Foo("b", 300), Foo("c", 200), Foo("d", 100)]

@@ -87,7 +87,7 @@ def test_conf_by_dic() -> None:
     # 配置日志
     conf = _LOG_CONF.copy()
     # 设置 dict 中日志文件名
-    conf["handlers"]["file"]["filename"] = log_file
+    conf["handlers"]["file"]["filename"] = log_file  # type: ignore
     # 配置日志
     config.dictConfig(conf)
 

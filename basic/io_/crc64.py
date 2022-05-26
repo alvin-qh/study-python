@@ -1,5 +1,5 @@
 
-from typing import List, Tuple, Union
+from typing import List, Tuple
 
 
 def init_crc64_tables(
@@ -47,12 +47,12 @@ init_crc64_tables(
 )
 
 
-def crc64(data: Union[bytes, bytearray], crc_h=0, crc_l=0) -> Tuple[int, int]:
+def crc64(data: bytes | bytearray, crc_h=0, crc_l=0) -> Tuple[int, int]:
     """
     计算 crc64
 
     Args:
-        data (Union[bytes, bytearray]): 用来计算 CRC 的数据
+        data (bytes | bytearray): 用来计算 CRC 的数据
         crc_h (int, optional): 高位初始值. Defaults to 0.
         crc_l (int, optional): 低位初始值. Defaults to 0.
 
@@ -74,12 +74,12 @@ def crc64(data: Union[bytes, bytearray], crc_h=0, crc_l=0) -> Tuple[int, int]:
     return crc_h, crc_l
 
 
-def crc64_long(data: Union[bytes, bytearray], crc_val=0) -> int:
+def crc64_long(data: bytes | bytearray, crc_val=0) -> int:
     """
     计算 CRC64 值, 并返回long类型结果
 
     Args:
-        data (Union[bytes, bytearray]): 用来计算 CRC64 的数据
+        data (bytes | bytearray): 用来计算 CRC64 的数据
         crc_val (int, optional): CRC64 初始值. Defaults to 0.
 
     Returns:
