@@ -261,12 +261,12 @@ def test_executor_submit() -> None:
         # 通过 concurrent.futures 包下的 wait 函数, 等待一系列异步任务执行完毕
         # 本次最长等待 1 秒, 一秒后无论是否还有任务为执行完毕, wait 函数都结束阻塞
         # wait 函数返回 DoneAndNotDoneFutures 对象, 包含了已完成和未完成的异步任务
-        futures = wait(futures, timeout=1)
+        dan_futures = wait(futures, timeout=1)
         # 确保所有任务都已完成
-        assert len(futures.not_done) == 0
+        assert len(dan_futures.not_done) == 0
 
         # 遍历所有已完成异步任务, 获取结果
-        r = [f.result() for f in futures.done]
+        r = [f.result() for f in dan_futures.done]
         r.sort(key=lambda x: x[0])
 
         # 确保结果正确

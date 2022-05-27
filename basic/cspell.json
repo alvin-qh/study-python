@@ -24,6 +24,7 @@
         "darcs",
         "dateutil",
         "delayfunc",
+        "excinfo",
         "exitfirst",
         "extera",
         "finalizer",
