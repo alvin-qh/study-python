@@ -2,7 +2,7 @@ import asyncio
 import time
 import timeit
 from threading import Thread
-from typing import Any, Dict, List, Optional, Tuple, Type
+from typing import Any, Coroutine, Dict, List, Optional, Tuple, Type
 
 from pytest import raises
 
@@ -574,10 +574,10 @@ def test_none_async_call_in_event_loop() -> None:
     """
 
     # 记录结束任务和其结束的时间
-    called_tasks: Dict[int, int] = {}
+    called_tasks: Dict[int, float] = {}
 
     # 记录起始时间
-    start: int = 0
+    start: float = 0
 
     def sync_func(id_: int) -> None:
         """
@@ -954,9 +954,9 @@ def test_queue() -> None:
     - 协程队列用于在协程中同步的 put 和 get 资源
     """
     # 定义队列对象, 最多可放置 5 个元素
-    queue = asyncio.Queue(5)
+    queue: asyncio.Queue = asyncio.Queue(5)
 
-    async def queue_job() -> None:
+    async def queue_job() -> List[Coroutine]:
         """
         测试协程队列
         """

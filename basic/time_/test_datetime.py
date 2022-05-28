@@ -5,7 +5,7 @@ from datetime import date, datetime
 from datetime import time as time_
 from datetime import timedelta
 
-from dateutil import parser
+from dateutil import parser  # type:ignore
 from dateutil import relativedelta as rd
 from dateutil import tz
 

@@ -3,6 +3,12 @@ from typing import Any, Dict, Optional, Tuple, Type
 
 
 class Context:
+    """
+    上下文管理类
+
+    Returns:
+        _type_: _description_
+    """
     _kv: Dict[str, Any]
     exception: Optional[Tuple[Type[Exception], Exception]]
 

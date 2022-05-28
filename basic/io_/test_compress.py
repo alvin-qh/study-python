@@ -85,12 +85,12 @@ def test_zip_unzip_data() -> None:
         # 获取数据节点信息
         zi = zf.getinfo(ZIP_ENTRY1)
         assert zi.filename == ZIP_ENTRY1
-        assert zi.CRC == zipfile.crc32(data)  # 判断文件的 crc 验证码
+        assert zi.CRC == zipfile.crc32(data)  # type: ignore # 判断文件的 crc 验证码
 
         # 获取数据节点信息
         zi = zf.getinfo(ZIP_ENTRY2)
         assert zi.filename == ZIP_ENTRY2
-        assert zi.CRC == zipfile.crc32(data)  # 判断文件的 crc 验证码
+        assert zi.CRC == zipfile.crc32(data)  # type: ignore # 判断文件的 crc 验证码
         # 文件时间的秒有可能有一些误差, 所以比较到分钟部分
         assert zi.date_time[:5] == now[:5]
 

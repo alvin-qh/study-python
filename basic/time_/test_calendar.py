@@ -51,7 +51,7 @@ class TestWeekday:
         assert r == (c.THURSDAY, 31)  # 第一天为星期四, 最后一天为 31 号
 
 
-class TestCanlendarFunction:
+class TestCalendarFunction:
     """
     测试日历相关的一组函数
     """
@@ -496,7 +496,7 @@ class TestCalendarClass:
         ca = c.Calendar(c.SUNDAY)
 
         # 获取年历, 按每 3 个月 (即一季度) 进行分隔
-        r = ca.yeardatescalendar(2022, width=3)
+        r: List = ca.yeardatescalendar(2022, width=3)
 
         # 全年四个季度
         assert len(r) == 4
@@ -534,7 +534,7 @@ class TestCalendarClass:
         ca = c.Calendar(c.SUNDAY)
 
         # 获取年历, 按每 3 个月 (即一季度) 进行分隔
-        r = ca.yeardayscalendar(2022, width=3)
+        r: List = ca.yeardayscalendar(2022, width=3)
 
         # 全年四个季度
         assert len(r) == 4
@@ -572,7 +572,7 @@ class TestCalendarClass:
         ca = c.Calendar(c.SUNDAY)
 
         # 获取年历, 按每 3 个月 (即一季度) 进行分隔
-        r = ca.yeardays2calendar(2022, width=3)
+        r: List = ca.yeardays2calendar(2022, width=3)
 
         # 全年四个季度
         assert len(r) == 4

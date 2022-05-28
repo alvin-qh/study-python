@@ -81,7 +81,7 @@ def test_change_timezone() -> None:
     # 确认时间对象的时区名称
     assert t_loc.tzname() == "UTC+08:00"
     # 确认时区名称
-    assert t_loc.tzinfo.tzname(t_loc) == "UTC+08:00"
+    assert t_loc.tzinfo and t_loc.tzinfo.tzname(t_loc) == "UTC+08:00"
     # 时区的时差为 8 小时
     assert t_loc.tzinfo.utcoffset(t_loc) == timedelta(hours=8)
 
@@ -92,9 +92,9 @@ def test_change_timezone() -> None:
     # 确认时间对象的时区名称
     assert t_utc.tzname() == "UTC"
     # 确认时区名称
-    assert t_utc.tzinfo.tzname(t_utc) == "UTC"
+    assert t_utc.tzinfo and t_utc.tzinfo.tzname(t_utc) == "UTC"
     # 时区的时差为 0 小时
-    assert t_utc.tzinfo.utcoffset(t_utc) == timedelta(hours=0)
+    assert t_utc.tzinfo and t_utc.tzinfo.utcoffset(t_utc) == timedelta(hours=0)
 
     # 将 UTC 时间的时区改为东八区
     t_loc = t_utc.astimezone(pytz.timezone(ZONE))
@@ -103,9 +103,9 @@ def test_change_timezone() -> None:
     # 确认时区名称, 因为本次时区是通过 Asia/Shanghai 字符串得到, 所以时区为 CST
     assert t_loc.tzname() == "CST"
     # 确认时区名称
-    assert t_loc.tzinfo.tzname(t_loc) == "CST"
+    assert t_loc.tzinfo and t_loc.tzinfo.tzname(t_loc) == "CST"
     # 时区的时差为 0 小时
-    assert t_loc.tzinfo.utcoffset(t_loc) == timedelta(hours=8)
+    assert t_loc.tzinfo and t_loc.tzinfo.utcoffset(t_loc) == timedelta(hours=8)
 
 
 def test_replace_timezone() -> None:

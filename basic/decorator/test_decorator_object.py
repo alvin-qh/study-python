@@ -1,5 +1,5 @@
 from typing import Callable
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from pytest import raises
 
@@ -64,7 +64,7 @@ def multiply(x: int, y: int) -> int:
 
 
 @patch.object(timeit, "default_timer")  # 对计时器函数进行 mock 操作
-def test_logger(mocked_default_timer: Callable) -> None:
+def test_logger(mocked_default_timer: MagicMock) -> None:
     # 设定计时器函数的返回值
     mocked_default_timer.return_value = 0
 

@@ -37,24 +37,24 @@ def test_create_date_sequence_by_rule() -> None:
     start = date(2022, 4, 1)
 
     # 生成 3 项的日期序列, 以天为间隔, 每天一条数据
-    dates = rr.rrule(freq=rr.DAILY, count=3, dtstart=start)
-    assert list(dates) == [
+    rules = rr.rrule(freq=rr.DAILY, count=3, dtstart=start)
+    assert list(rules) == [
         datetime(2022, 4, 1),
         datetime(2022, 4, 2),
         datetime(2022, 4, 3),
     ]
 
     # 生成 3 项的日期序列, 以天为间隔, 每 3 天一条数据
-    dates = rr.rrule(freq=rr.DAILY, count=3, dtstart=start, interval=3)
-    assert list(dates) == [
+    rules = rr.rrule(freq=rr.DAILY, count=3, dtstart=start, interval=3)
+    assert list(rules) == [
         datetime(2022, 4, 1),
         datetime(2022, 4, 4),
         datetime(2022, 4, 7),
     ]
 
     # 生成 3 项的日期序列, 以年为间隔, 每年一条数据
-    dates = rr.rrule(freq=rr.YEARLY, count=3, dtstart=start)
-    assert list(dates) == [
+    rules = rr.rrule(freq=rr.YEARLY, count=3, dtstart=start)
+    assert list(rules) == [
         datetime(2022, 4, 1),
         datetime(2023, 4, 1),
         datetime(2024, 4, 1),
@@ -62,8 +62,8 @@ def test_create_date_sequence_by_rule() -> None:
 
     # 在指定的到达时间内, 按周为间隔产生数据
     # 结果是指定时间段内的所有周一日期
-    dates = rr.rrule(freq=rr.WEEKLY, dtstart=start, until=date(2022, 5, 1))
-    assert list(dates) == [
+    rules = rr.rrule(freq=rr.WEEKLY, dtstart=start, until=date(2022, 5, 1))
+    assert list(rules) == [
         datetime(2022, 4, 1),
         datetime(2022, 4, 8),
         datetime(2022, 4, 15),
@@ -72,25 +72,25 @@ def test_create_date_sequence_by_rule() -> None:
     ]
 
     # 计算指定时间段内的两个特定天数的日期
-    dates = rr.rrule(
+    rules = rr.rrule(
         freq=rr.YEARLY,
         dtstart=start,
         until=date(2023, 1, 1),
         byyearday=(100, 200),
     )
-    assert list(dates) == [
+    assert list(rules) == [
         datetime(2022, 4, 10),
         datetime(2022, 7, 19),
     ]
 
     # 计算指定时间段内每个月的最后一天
-    dates = rr.rrule(
+    rules = rr.rrule(
         freq=rr.MONTHLY,
         dtstart=start,
         until=date(2022, 10, 1),
         bymonthday=-1,
     )
-    assert list(dates) == [
+    assert list(rules) == [
         datetime(2022, 4, 30),
         datetime(2022, 5, 31),
         datetime(2022, 6, 30),
@@ -100,14 +100,14 @@ def test_create_date_sequence_by_rule() -> None:
     ]
 
     # 计算指定时间段内每月的第一个周二, 周三或周四
-    dates = rr.rrule(
+    rules = rr.rrule(
         freq=rr.MONTHLY,
         dtstart=start,
         until=date(2022, 10, 1),
         byweekday=(rr.TU, rr.WE, rr.TH),    # 取值范围为周二, 周三或周四
         bysetpos=1,  # 取第一个值
     )
-    dates = [(t.date(), rr.weekday(t.weekday())) for t in dates]
+    dates = [(r.date(), rr.weekday(r.weekday())) for r in rules]
     assert dates == [
         (date(2022, 4, 5), rr.TU),
         (date(2022, 5, 3), rr.TU),

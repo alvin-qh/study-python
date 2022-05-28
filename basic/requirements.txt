@@ -4,7 +4,9 @@ pytest-repeat
 pytest-assume
 sortedcontainers
 python-dateutil
+types-python-dateutil
 pytz
+types-pytz
 atomics
 werkzeug
 wrapt

@@ -1,6 +1,6 @@
 import inspect
 import re
-from typing import Any, Callable, Dict, Iterable, Optional, Set, Tuple
+from typing import Any, Callable, Dict, Iterable, List, Optional, Set, Tuple
 
 from wrapt import decorator
 
@@ -118,7 +118,7 @@ _cache_keys: Set[str] = set()
 
 # 缓存函数参数名, 加快获取函数参数过程的效率
 # 以函数对象为 Key, 参数列表为 Value
-_cached_arg_names: Dict[Callable, Tuple[str, ...]] = {}
+_cached_arg_names: Dict[Callable, List[str]] = {}
 
 # 保存函数参数和默认值的字典
 _cached_default_args: Dict[Callable, Dict[str, Any]] = {}
@@ -247,18 +247,7 @@ def _interpolate_str(
     return fmt.format(**context)
 
 
-# 通过 @decorator 装饰器返回的代理函数类型
-DelegateFn = Callable[
-    [
-        F, Optional[Any],
-        Tuple[Any, ...],
-        Dict[str, Any]
-    ],
-    Any,
-]
-
-
-def memo(key: str) -> DelegateFn:
+def memo(key: str) -> Any:
     """
     返回一个装饰器, 用于通过指定的 `key` 将被装饰函数的返回值进行缓存操作
 
