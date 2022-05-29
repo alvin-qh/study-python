@@ -43,6 +43,7 @@
         "isdst",
         "isleap",
         "isoparse",
+        "itemsize",
         "levelname",
         "looponfail",
         "maxfail",
