@@ -93,3 +93,209 @@ def test_find_all_matched_part() -> None:
     r = re.finditer(pattern, "123 456 789")
     # 通过每个 Match 对象获取匹配结果
     assert [m.group() for m in r] == ["123", "456", "789"]
+
+
+def test_split() -> None:
+    """
+    通过正则表达式切分一个字符串, 返回切分结果的列表集合对象
+    """
+    # 用于切分字符串的正则表达式
+    pattern = r"\s+"
+
+    # cspell: disable
+    # 通过正则表达式对字符串进行切分
+    r = re.split(pattern, "abc    def ghi\tjkl")
+    # 验证切分结果
+    assert r == ["abc", "def", "ghi", "jkl"]
+
+    # 对切分结果的数量进行限制, maxsplit=2 表示最大返回 3 个结果
+    r = re.split(pattern, "abc    def ghi\tjkl", maxsplit=2)
+    # 验证切分结果, 最后一部分因为限制未进行切分
+    assert r == ["abc", "def", "ghi\tjkl"]
+
+    # cspell: enable
+
+
+def test_substring() -> None:
+    """
+    通过正则获取子字符串
+    """
+    # 子字符串获取正则表达式
+    pattern = r"\d+"
+
+    # 要处理的原字符串
+    s = "123a456b789c"
+
+    # 通过正则处理子字符串, 并将子字符串替换为 ""
+    r = re.sub(pattern, "", s)
+    # 验证处理结果, 即将匹配的子字符串替换为 "" 后的结果
+    assert r == "abc"
+
+    # 过程中获取的子字符串
+    # 切分为 3 部分, 每部分的内容 (原字符串的数字部分)
+    subs = ["123", "456", "789"]
+    index = 0
+
+    def repl(m: re.Match) -> str:
+        """
+        过程中回调函数, 传入每次计算出的子字符串, 返回将该字符串替换为的新字符串
+
+        Args:
+            m (re.Match): 每次切分的部分
+
+        Returns:
+            str: 要将切分部分替换为的字符串
+        """
+        nonlocal index
+
+        # 验证切分的结果
+        # span 函数获取子字符串的切片
+        # group 函数返回子字符串内容
+        assert s[slice(*m.span())] == m.group() == subs[index]
+        index += 1
+
+        return "X"
+
+    # 通过正则处理子字符串, 并通过一个回调函数返回对子字符串替换的字符串
+    r = re.sub(pattern, repl, "123a456b789c")
+    assert r == "XaXbXc"
+
+
+def test_search_and_grouping() -> None:
+    """
+    对所给的正则表达式进行完整匹配, 并获取分组结果
+    """
+    # 正则表达式会匹配 4 个分组, 均为整数, 用 "," 分隔
+    # "?P<n1>" 是分组的名称
+    pattern = r"(?P<n1>\d+),(\d+),(?P<n2>\d+),(\d+)"
+
+    # 通过正则表达式查找字符串, 获取分组结果
+    rs = re.search(pattern, "10,20,30,50")
+    # 验证分组结果
+    assert rs
+    assert rs.groups() == ("10", "20", "30", "50")
+
+    # 通过分组 ID 获取分组结果
+    assert rs.group(1) == "10"
+    assert rs.group(4) == "50"
+
+    # 通过分组名称获取分组结果
+    assert rs.group("n1") == "10"
+    assert rs.group("n2") == "30"
+
+    # 获取各个分组内容在原字符串中的下标索引
+    assert rs.start(1) == 0
+    assert rs.end(1) == 2
+
+    assert rs.start(2) == 3
+    assert rs.end(2) == 5
+
+    # 获取命名分组组成的字典
+    assert rs.groupdict() == {"n1": "10", "n2": "30"}
+
+
+def test_compile_pattern() -> None:
+    """
+    编译正则表达式
+
+    对于需要重复使用的正则表达式, 可以将其进行编译, 加快使用效率
+    """
+    r: Any
+
+    # 对正则表达式字符串进行编译
+    rx = re.compile(r"\s+")
+
+    # 通过编译后的正则表达式进行字符串匹配
+    # 匹配 "\t" 字符串
+    r = rx.match("\t")
+    # 验证匹配成功的结果
+    assert r
+    assert r.group() == "\t"
+
+    # 对正则表达式字符串进行编译
+    rx = re.compile(r"(\d+)")
+
+    # 通过编译后的正则表达式查找所有符合的子字符串
+    r = rx.findall("1 2\t3  4")
+    # 验证查找结果
+    assert r == ["1", "2", "3", "4"]
+
+    # 对正则表达式字符串进行编译
+    rx = re.compile(r"\s+")
+
+    # 通过编译后的正则表达式进行字符串切分
+    r = rx.split("1 2\t3  4")
+    # 验证切分结果
+    assert r == ["1", "2", "3", "4"]
+
+    # 通过编译后的正则表达式进行子字符串搜索和替换
+    # 将正则表达式匹配出的结果替换为 "-"
+    r = rx.sub("-", "1 2\t3  4")
+    # 验证查找替换结果
+    assert r == "1-2-3-4"
+
+    # 对正则表达式字符串进行编译
+    rx = re.compile(r"(\d+)\s*(\d+)")
+
+    # 通过编译后的正则对字符串进行查询, 返回分组结果
+    r = rx.search("1 2\t3 4")
+    # 验证分组结果
+    assert r.groups() == ("1", "2")
+
+
+def test_escape1() -> None:
+    """
+    将正则表达式里的特殊字符进行转义
+
+    一些特殊字符是正则表达式的保留字符, 如果要表达字符的原义则需要进行转义. 例如:
+    `\` 字符, 如果要表达 "反斜杠" 字符的原义, 则需要写为 `\\`
+    """
+    # 对特殊字符 [, ], -, \ 进行转义
+    esp = re.escape(r"[-\]")
+    # 验证检验后的结果, \[, \], \-, \\
+    assert esp == r"\[\-\\\]"
+
+    # 将转义后的正则表达式字符串进行编译
+    rx = re.compile(f"[{esp}]")
+
+    # 使用转义后的正则字符串
+    r = rx.findall(r"-\]a[")
+    # 验证结果
+    assert r == ['-', '\\', ']', '[']
+
+
+def test_escape2() -> None:
+    """
+    对于用传入的字符串作为正则一部分来进行匹配时, 最优方式是对内容进行一次转义操作, 保证
+    不会受到特殊字符的影响
+    """
+    characters = {
+        "a": "A",
+        "b": "B",
+        "c": "C",
+    }
+
+    # characters 字典对象作为迭代器对象, 是字典 Key 的序列
+    # 对字典 Key 进行转义后, 组成一个正则表达式字符串
+    pattern = "|".join(map(re.escape, characters))
+    assert pattern == "a|b|c"
+
+    # 编译正则表达式
+    rx = re.compile(pattern)
+
+    def replace(mo: re.Match) -> str:
+        """
+        对正则匹配结果进行替换的回调方法
+
+        Args:
+            mo (re.Match): 匹配成功的 Match 对象
+
+        Returns:
+            str: 要替换为的字符串
+        """
+        return characters[mo.group(0)]
+
+    # 通过正则表达式, 对指定的字符串进行查找, 并将查找到的子字符串进行替换
+    r = rx.sub(replace, "abcde")
+    # 确认替换结果
+    assert r == "ABCde"
