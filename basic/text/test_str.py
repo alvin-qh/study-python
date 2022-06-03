@@ -1,3 +1,7 @@
+from itertools import repeat
+from string import Template
+
+
 def test_str_slice() -> None:
     """
     字符串切片操作
@@ -150,3 +154,258 @@ def test_translate() -> None:
     s = "ABCDEF"
     # 确认转换结果
     assert s.translate(tab) == "abcDEF"
+
+
+def test_format_by_c_like_style() -> None:
+    """
+    在 Python 2 中, 定义了一种类似 C 语言的字符串格式化语法
+
+    格式化字符串和格式化参数通过 `%` 运算符分隔
+    """
+    s = "%s, %s, %s" % ("a", "b", "c")
+    assert s == "a, b, c"
+
+
+def test_format_by_method() -> None:
+    """
+    通过字符串对象的 `format` 方法进行字符串格式化
+
+    `format` 方法通过一个模板字符串, 将字符串对象本身进行格式化, 返回格式化后的新字符串
+    模板字符串中, `{}` 表示一个占位符, 格式化时会用实际参数替换占位符
+
+    cspell: disable
+    """
+    # 通过模板字符串进行格式化
+    # 占位符会安装参数顺序依次被替换
+    s = "{}, {}, {}".format("a", "b", "c")
+    assert s == "a, b, c"
+
+    # 在占位符中设置参数的位置
+    # {0} 表示参数列表中的第一个参数  (即 "a"). 其它以此类推
+    s = "{0}, {1}, {2}".format("a", "b", "c")
+    assert s == "a, b, c"
+
+    # 可以按任何参数顺序设定占位符
+    s = "{2}, {1}, {0}".format("a", "b", "c")
+    assert s == "c, b, a"
+
+    # 可以重复使用某个参数位置的占位符
+    s = "{0}{1}{0}".format("abra", "cad")
+    assert s == "abracadabra"
+
+    # cspell: enable
+
+
+def test_format_by_method_with_named_args() -> None:
+    """
+    可以通过命名参数的名称作为占位符的标识
+
+    这种方式比使用位置占位符更加明确一些
+    """
+    # 占位符使用 latitude 和 longitude 两个命名参数
+    # 在 format 方法中传入对应的命名参数即可进行格式化
+    s = "{latitude}, {longitude}".format(
+        latitude="37.24N", longitude="-115.81W"
+    )
+    assert s == "37.24N, -115.81W"
+
+
+def test_format_by_method_for_numbers() -> None:
+    """
+    在占位符中通过 `:<l>` 可以指定数字格式化的参数, 可用的参数包括:
+    - `b` 数字格式化为二进制
+    - `o` 数字格式化为 8 进制
+    - `x` 数字格式化为 16 进制
+    - `f` 数字格式化为 浮点数
+    - `,` 数字按每三位一个部分分隔, 分隔符为 `,`
+    - `%` 显示百分比, 即
+
+    对于数字的符号, 有如下格式定义
+    - `+`: 一定显示符号, 正数为 `+`, 负数为 `-`
+    - `-`: 按需显示符号, 正数不显示, 负数为 `-`, 这个规则是默认规则
+
+    数字长度
+    - `n` `n` 表示数字的长度, 如果 n 大于数字本身的长度, 则用空格补足
+    - `.n` `n` 表示保留的小数位数, 如果小数位小于 `n`, 则用 `0` 补足
+
+    复数
+    - `real` 实部
+    - `imag` 虚部
+
+    """
+    # 格式化为二进制
+    s = "{:b}".format(3)
+    assert s == "11"
+
+    # 格式化为八进制
+    s = "{:o}".format(10)
+    assert s == "12"
+
+    # 格式化为 16 进制
+    s = "{:x}".format(10)
+    assert s == "a"
+
+    # 格式化为每三位分段
+    s = "{:,}".format(1234567890)
+    assert s == "1,234,567,890"
+
+    # 强制使用正负号
+    s = "{:+f}, {:+f}".format(3.14, -3.14)
+    assert s == "+3.140000, -3.140000"
+
+    # 按需使用正负号
+    s = "{:-f}, {:-f}".format(3.14, -3.14)
+    assert s == "3.140000, -3.140000"
+
+    # 按需在数字前增加空格 (如果之前没有空格, 则增加空格)
+    s = "{: f}, {: f}".format(3.14, -3.14)
+    assert s == " 3.140000, -3.140000"
+
+    # 设置数字长度, 用空格补足
+    s = "{:3}, {:3}".format(12, 123)
+    assert s == " 12, 123"
+
+    # 设置数字长度, 用 0 补足
+    s = "{:03}, {:03}".format(12, 123)
+    assert s == "012, 123"
+
+    # 保留小数位, 如果不足则用 0 补足
+    s = "{:.3f}, {:.1f}".format(3.14, -3.14)
+    assert s == "3.140, -3.1"
+
+    # 格式化为百分数
+    s = "{:.2%}".format(19.5 / 22)
+    assert s == "88.64%"
+
+    # 在模板中指定复数的实部和虚部
+    c = 3 - 5j
+    s = "{0.real}, {0.imag}".format(c)
+    assert s == "3.0, -5.0"
+    s = "{c.real}, {c.imag}".format(c=c)
+    assert s == "3.0, -5.0"
+
+
+def test_format_by_method_for_list_index() -> None:
+    """
+    在模板字符串中, 可以在占位符中使用下标, 来输出一个列表集合 (List, Tuple) 的指定元素
+    """
+    coord = [(3, 5), (6, 8)]
+
+    # 参数 *coord 表示将 coord 变量拆为 2 个参数, 0 = (3, 5) 和 1 = (6, 8)
+    # 所以 0[0] 表示 3, 0[1] 表示 5, 以此类推
+    s = "({0[0]}, {0[1]}), ({1[0]}, {1[1]})".format(*coord)
+    assert s == "(3, 5), (6, 8)"
+
+    # 参数 coord 表示 0 = [(3, 5), (6, 8)]
+    # 所以 0[0] 表示 (3, 5), 0[1] 表示 (6, 8)
+    # 所以 0[0][0] 表示 3, 0[0][1] 表示 5, 以此类推
+    s = "({0[0][0]}, {0[0][1]}), ({0[1][0]}, {0[1][1]})".format(coord)
+    assert s == "(3, 5), (6, 8)"
+
+    # 使用命名参数, c 表示列表集合参数
+    s = "({c[0][0]}, {c[0][1]}), ({c[1][0]}, {c[1][1]})".format(c=coord)
+    assert s == "(3, 5), (6, 8)"
+
+
+class Value:
+    """
+    用于测试模板字符串中访问对象属性的类
+    """
+
+    def __init__(self, id_: str, name: str) -> None:
+        """
+        初始化对象
+
+        Args:
+            id_ (str): 对象属性
+            name (str): 对象属性
+        """
+        self.id = id_
+        self.name = name
+
+
+def test_format_by_method_for_object_attributes() -> None:
+    """
+    可以在占位符中通过 `.<attribute name>` 访问对象的属性
+    """
+    # 产生一个对象
+    v = Value("001", "Alvin")
+
+    # 在占位符中通过位置访问对象的属性
+    s = "id={0.id}, name={0.name}".format(v)
+    assert s == "id=001, name=Alvin"
+
+    # 在占位符中通过命名参数访问对象的属性
+    s = "id={v.id}, name={v.name}".format(v=v)
+    assert s == "id=001, name=Alvin"
+
+
+def test_format_by_method_for_dict_keys() -> None:
+    """
+    可以在占位符中通过 `[key]` 通过键访问字典的值
+    """
+    data = {
+        "id": "001",
+        "name": "Alvin"
+    }
+
+    # 在占位符中通过位置访问字典的值
+    s = "id={0[id]}, name={0[name]}".format(data)
+    assert s == "id=001, name=Alvin"
+
+    # 在占位符中通过命名参数访问字典的值
+    s = "id={d[id]}, name={d[name]}".format(d=data)
+    assert s == "id=001, name=Alvin"
+
+
+def test_padding_align_and_fill() -> None:
+    """
+    在占位符中指定对齐方式和填充方式
+
+    对齐方式可以指定为
+    - `<n` 居左对齐, 内容居左, 右侧由填充符补齐
+    - `>n` 居右对齐, 内容居右, 左侧由填充符补齐
+    - `^n` 中央对齐, 左右两边由填充符补齐
+
+    也可以在 `format` 方法中指定这些格式化参数
+    """
+    s = "{:<10}".format("A")
+    assert s == "A         "
+
+    s = "{:>10}".format("A")
+    assert s == "         A"
+
+    s = "{:^10}".format("A")
+    assert s == "    A     "
+
+    s = "{:*^10}".format("A")
+    assert s == "****A*****"
+
+    rs = []
+    for align, text, n in zip("<^>", ["L", "C", "R"], repeat(5)):
+        # 指定对齐方式和填充字符的参数
+        rs.append("{:{f}{a}{n}}".format(text, f="*", a=align, n=n))
+    # 确定格式化结果
+    assert rs == [
+        "L****",
+        "**C**",
+        "****R",
+    ]
+
+
+def test_use_str_templates() -> None:
+    """
+    `string` 包的 `Template` 类用于产生一个字符串模板对象
+
+    通过字符串模板可以将一组参数格式化为字符串
+    """
+    # 实例化一个字符串模板, 模板中包含 arg 参数
+    t = Template("This is $arg")
+
+    # 通过设置一个包含 arg 键的字典对象, 将模板格式化为字符串
+    s = t.substitute({"arg": "Alvin"})
+    assert s == "This is Alvin"
+
+    # 通过设置一个包含 arg 键的字典对象, 将模板格式化为字符串
+    s = t.substitute({"arg": 123})
+    assert s == "This is 123"
