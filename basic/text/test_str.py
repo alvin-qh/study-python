@@ -64,3 +64,89 @@ def test_character_filter() -> None:
     assert "abc".isalnum() is True
     assert "a1b2c3".isalnum() is True
     assert "_1c".isalnum() is False
+
+
+def test_counter() -> None:
+    """
+    `count` 方法用于计算字符串中子字符串出现的次数
+
+    cspell: disable
+    """
+    s = "abcdabcdabc"
+
+    # 计算字符串中字符个数
+    assert s.count("") == 12
+    # 计算指定字符的个数
+    assert s.count("b") == 3
+    # 计算指定子字符串的个数
+    assert s.count("bc") == 3
+    # 查找 "bcd" 子字符串出现的次数, 并指定查找的起始位置和结束位置
+    assert s.count("bcd", 2, -1) == 1
+
+    # cspell: enable
+
+
+def test_split() -> None:
+    """
+    字符串分割
+
+    `split` 方法和 `splitlines` 方法可以对字符串进行不同方式的分割
+    """
+    s = """a b
+c
+d
+e"""
+
+    # 默认情况下 split 方法根据空白字符串 (" ", "\t", "\n" 等) 分割字符串
+    assert s.split() == ["a", "b", "c", "d", "e"]
+
+    # 指定以换行符分割字符串
+    assert s.split("\n") == ["a b", "c", "d", "e"]
+
+    # 指定以换行符分割字符串
+    assert s.splitlines() == ["a b", "c", "d", "e"]
+
+
+def test_reversed() -> None:
+    """
+    反转字符串
+
+    字符串本质上是一个字符的列表集合, 所以可以通过 "切片运算" 和 "`reversed` 函数" 两种方式进行反转
+
+    cspell: disable
+    """
+    s = "abc def"
+
+    # 通过切片反转字符串
+    assert s[::-1] == "fed cba"
+    # 通过 reversed 函数反转字符串
+    assert "".join(reversed(s)) == "fed cba"
+
+    # 将字符串切分后诸部份反转
+    r = " ".join([e[::-1] for e in s.split(" ")])
+    assert r == "cba fed"
+
+    # cspell: enable
+
+
+def test_translate() -> None:
+    """
+    可以通过一个字符编码的字典对象, 对字符串中的指定字符进行转换
+
+    `maketrans` 方法用于通过简单方法形成转换字典
+    `translate` 方法用于执行转换
+    """
+    # 形成转换表
+    # 将两个参数进行逐字符对应, 形成一个字典对象
+    tab = str.maketrans("ABC", "abc")
+    # 确认形成的转换表是正确的字典对象
+    assert tab == {
+        ord("A"): ord("a"),
+        ord("B"): ord("b"),
+        ord("C"): ord("c"),
+    }
+
+    # 对字符串进行转换
+    s = "ABCDEF"
+    # 确认转换结果
+    assert s.translate(tab) == "abcDEF"
