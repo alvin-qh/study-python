@@ -111,7 +111,7 @@ def test_dumps_loads_function() -> None:
     psn = Person(1, "Alvin", "Hello World")
 
     # 序列化类对象
-    s = pickle.dumps(obj)
+    s = pickle.dumps(psn)
     assert len(s) > 0
 
     # 反序列类对象对象, 确保和源对象相同
