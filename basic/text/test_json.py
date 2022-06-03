@@ -223,46 +223,128 @@ def test_json_with_file_describer() -> None:
 
 # 非字典对象和 json 字符串相互转换
 
+
+class A:
+    """
+    用于测试自定义 json 序列化和反序列化的类型
+    """
+
+    def __init__(self, name: str, age: int) -> None:
+        """
+        初始化, 为对象设置属性值
+
+        Args:
+            name (str): 属性值
+            age (int): 属性值
+        """
+        self.name = name
+        self.age = age
+
+    def __eq__(self, other: Any) -> bool:
+        """
+        判断两个对象类型是否相同
+
+        Args:
+            other (Any): 待比较对象
+
+        Returns:
+            bool: 待比较对象和当前对象是否相同
+        """
+        if not isinstance(other, A):
+            return False
+
+        return (
+            other.name == self.name
+            and other.age == self.age
+        )
+
+
 class ObjectEncoder(json.JSONEncoder):
+    """
+    编码器类型
+
+    用于将指定类型的对象编码为 json 字符串
+    """
+
     def default(self, obj: Any) -> Optional[Dict[str, Any]]:
+        """
+        将 `obj` 对象转为字典对象
+
+        Args:
+            obj (Any): 任意对象
+
+        Returns:
+            Optional[Dict[str, Any]]: 用于将对象转为 json 字符串的字典对象
+        """
+        if isinstance(obj, dict):
+            # 字典类型对象, 返回对象本身
+            return obj
+
         if isinstance(obj, A):
+            # 指定类型对象, 返回该对象对应的字典对象
             return {
                 "__custom__": True,
                 "name": obj.name,
                 "age": obj.age,
             }
 
-        return None
-
-
-def _object_hook(data: Dict[str, Any]) -> Any:
-    if "__custom__" in data:
-        return A(data["name"], data["age"])
-
-    return data
-
-
-class A:
-    def __init__(self, name: str, age: int) -> None:
-        self.name = name
-        self.age = age
-
-    def __eq__(self, other: Any) -> bool:
-        if not isinstance(other, A):
-            return False
-
-        return other.name == self.name and other.age == self.age
+        # 未指定类型对象, 返回对象对应的字典对象
+        return obj.__dict__
 
 
 def test_custom_json_encode() -> None:
+    """
+    测试 json 反序列化为自定义类型
+
+    通过 `cls` 参数可以指定一个对象编码器类型, 用于将指定类型的对象转为 json
+    """
+    # 自定义类型对象
     src = A("Alvin", 40)
+    # 指定序列化 encoder 类型
     s = json.dumps(src, cls=ObjectEncoder, indent=4)
 
+    # 确保返回的 json 字符串正确
     assert s == """{
     "__custom__": true,
     "name": "Alvin",
     "age": 40
 }"""
 
+
+def _object_hook(data: Dict[str, Any]) -> Any:
+    """
+    将符合条件的字典对象转为对应类型的对象
+
+    Args:
+        data (Dict[str, Any]): 字典类型对象
+
+    Returns:
+        Any: 相关的自定义类型对象
+    """
+    # 判断字典对象中是否包含 __custom__ 字段
+    if "__custom__" in data:
+        # 返回转换结果为 A 类型对象
+        return A(data["name"], data["age"])
+
+    # 其它情况, 返回转换结果为字典类型对象
+    return data
+
+
+def test_custom_json_decoder() -> None:
+    """
+    测试将 json 字符串反序列化为自定义类型对象
+
+    通过 `object_hook` 参数, 可以在转换时进行拦截处理, 将字典对象转为指定类型对象
+    """
+    # 待反序列化的 json 字符串
+    s = """
+    {
+        "__custom__": true,
+        "name": "Alvin",
+        "age": 40
+    }
+    """
+
+    # 指定 object_hook 参数
     dst = json.loads(s, object_hook=_object_hook)
-    assert dst == src
+    assert dst == A("Alvin", 40)

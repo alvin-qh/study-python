@@ -18,7 +18,8 @@ class Context:
         构造上下文对象
 
         Args:
-            suppress_exception (bool, optional): 是否制约上下文范围内的异常. Defaults to False.
+            suppress_exception (bool, optional): 是否制约上下文范围内的异常.
+            Defaults to False.
         """
         self._kv = {}  # 存放键值对的字典
         self._suppress_exception = suppress_exception
