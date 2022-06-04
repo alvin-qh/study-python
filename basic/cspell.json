@@ -32,6 +32,7 @@
         "excinfo",
         "exitfirst",
         "extera",
+        "fdel",
         "finalizer",
         "firstweekday",
         "followlinks",
