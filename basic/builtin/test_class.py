@@ -1,4 +1,6 @@
-from typing import Any, List
+from abc import ABC, abstractmethod
+from re import A
+from typing import Any, Dict, List
 
 from pytest import raises
 
@@ -185,3 +187,139 @@ def test_property_decorator() -> None:
     del c.value
     with raises(AttributeError):
         c.value
+
+
+def test_multi_inheritance() -> None:
+    """
+    测试 Python 的多重继承
+
+    Python 支持多重继承, 子类会继承所有父类中定义的属性和方法
+    一般情况下, 继承的顺序为: 最左亲近原则, 即父类在继承列表中越靠左, 越和子类亲近
+    """
+
+    class I_(ABC):
+        @abstractmethod
+        def f1(self) -> str:
+            pass
+
+    class B1:
+        def __init__(self) -> None:
+            self.value = 10
+
+        def f1(self) -> str:
+            return "B1"
+
+    class B2:
+        def __init__(self) -> None:
+            self.value = 20
+
+        def f1(self) -> str:
+            return "B2"
+
+    class C(B1, B2, I_):
+        """
+        在继承列表中, `B1` 在最左边, 所以父类中如果包含相同的属性和方法, 以 `B1` 为最优先, 其次时 `B2`
+
+        因为 `I_` 是一个纯接口, 不包含实现, 所以放在最后
+        """
+        pass
+
+    # 确认 C 是 I_, B1, B2 的子类
+    assert issubclass(C, I_)
+    assert issubclass(C, B1)
+    assert issubclass(C, B2)
+
+    # 实例化 C 类对象
+    c = C()
+
+    # 确认 c 对象同时是 I_, B1, B2 类型的对象
+    assert isinstance(c, I_)
+    assert isinstance(c, B1)
+    assert isinstance(c, B2)
+
+    # 确认 c 对象继承的方法以 B1 类型优先
+    assert c.value == 10
+    assert c.f1() == "B1"
+
+
+def test_dynamic_class() -> None:
+    """
+    通过 `__setattr__`, `__getattr__` 和 `__delattr__` 三个魔法方法用于获取, 设置和删除那些"未定义"的
+    属性
+    """
+
+    class C:
+        """
+        动态类型, 可以设置和获取任意名称的属性
+        """
+        # 存储属性名和属性值的字典对象
+        _props: Dict[str, Any]
+
+        def __init__(self) -> None:
+            """
+            初始化对象, 为当前对象设置存储键值对的 `_props` 字段
+            """
+            # 注意, _props 字段需要设置在父类上
+            # 否则会调用当前对象的 __setattr__ 方法, 而 __setattr__ 方法中又调用了 _props 字段,
+            # 会造成循环调用
+            super().__setattr__("_props", {})
+
+        def __getattr__(self, name: str) -> Any:
+            """
+            根据属性名称获取属性值
+
+            Args:
+                name (str): 属性名
+
+            Returns:
+                Any: 属性值
+            """
+            try:
+                return self._props[name]
+            except KeyError:
+                raise AttributeError(name)
+
+        def __setattr__(self, name: str, value: Any) -> None:
+            """
+            设置属性名和属性值
+
+            Args:
+                name (str): 属性名
+                value (Any): 属性值
+            """
+            try:
+                self._props[name] = value
+            except KeyError:
+                raise AttributeError(name)
+
+        def __delattr__(self, name: str) -> None:
+            """
+            根据属性名删除属性
+
+            Args:
+                name (str): 属性名
+            """
+            try:
+                del self._props[name]
+            except KeyError:
+                # 确保幂等性
+                pass
+
+    # 实例化对象
+    c = C()
+
+    # 设置 x 属性
+    c.x = 100
+    # 确认 x 属性的属性值
+    assert c.x == 100
+
+    # 设置 y 属性
+    c.y = "Hello"
+    # 确认 y 属性的属性值
+    assert c.y == "Hello"
+
+    # 删除指定的属性
+    del c.y
+    with raises(AttributeError):
+        # 确保属性已被删除
+        c.y
