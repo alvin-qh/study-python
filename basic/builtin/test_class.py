@@ -401,7 +401,7 @@ def test_delegate_class() -> None:
     assert d.run(1, 2) == "Result is: 2"
 
 
-def test_reflect_create_dynamic_class() -> None:
+def test_create_dynamic_class() -> None:
     """
     `type` 函数可以用于动态创建一个类型
     - 参数 1 为类型名称
@@ -437,3 +437,27 @@ def test_reflect_create_dynamic_class() -> None:
     a.value = 10  # type: ignore
     assert a.value == 10  # type: ignore
     assert a.work(1) == 11  # type: ignore
+
+
+def test_class_slot() -> None:
+    class C1:
+        pass
+
+    c1 = C1()
+
+    c1.name = "Alvin"  # type: ignore
+    assert c1.name == "Alvin"  # type: ignore
+
+    c1.age = 41  # type: ignore
+    assert c1.age == 41  # type: ignore
+
+    class C2:
+        __slots__ = ("name", "age")
+
+    c2 = C2()
+
+    c2.name = "Alvin"
+    assert c2.name == "Alvin"
+
+    c2.age = 41
+    assert c2.age == 41
