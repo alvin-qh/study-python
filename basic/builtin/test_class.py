@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
-from re import A
-from typing import Any, Dict, List
+from typing import Any, Dict, List, TypeVar
 
 from pytest import raises
+
+from .delegate import Delegate
 
 _dir = dir()
 
@@ -222,7 +223,6 @@ def test_multi_inheritance() -> None:
 
         因为 `I_` 是一个纯接口, 不包含实现, 所以放在最后
         """
-        pass
 
     # 确认 C 是 I_, B1, B2 的子类
     assert issubclass(C, I_)
@@ -323,3 +323,117 @@ def test_dynamic_class() -> None:
     with raises(AttributeError):
         # 确保属性已被删除
         c.y
+
+
+# 泛型参数
+T = TypeVar("T", int, float)
+
+
+def test_delegate_class() -> None:
+    """
+    测试代理类型
+    """
+    class B(ABC):
+        """
+        接口类型
+        """
+        @abstractmethod
+        def run(self, a: T, b: T) -> T:
+            """
+            接口方法
+
+            Args:
+                a (T): 参数 1
+                b (T): 参数 2
+
+            Returns:
+                T: 返回值
+            """
+
+    class C1(B):
+        """
+        接口实现类
+        """
+
+        def run(self, a: T, b: T) -> T:
+            """
+            实现接口方法
+
+            Args:
+                a (T): 参数 1
+                b (T): 参数 2
+
+            Returns:
+                T: 两个参数相加的结果
+            """
+            return a + b
+
+    class C2(B):
+        """
+        接口实现类
+        """
+
+        def run(self, a: T, b: T) -> T:
+            """
+            实现接口方法
+
+            Args:
+                a (T): 参数 1
+                b (T): 参数 2
+
+            Returns:
+                T: 两个参数相乘的结果
+            """
+            return a * b
+
+    # 实例化对象
+    c: B = C1()
+    # 对实例进行代理
+    d = Delegate(c)
+    # 验证代理对象执行被代理方法的返回值
+    assert d.run(1, 2) == "Result is: 3"
+
+    # 实例化对象
+    c = C2()
+    # 对实例进行代理
+    d = Delegate(c)
+    # 验证代理对象执行被代理方法的返回值
+    assert d.run(1, 2) == "Result is: 2"
+
+
+def test_reflect_create_dynamic_class() -> None:
+    """
+    `type` 函数可以用于动态创建一个类型
+    - 参数 1 为类型名称
+    - 参数 2 为类型的父类集合
+    - 参数 3 为类型的属性和方法
+    """
+
+    def A__init__(self, value: int) -> None:
+        """
+        类型 `A` 的构造方法
+
+        Args:
+            value (int): 属性值
+        """
+        self.value = value
+
+    # 定义类型
+    A = type(
+        "A",  # 类型名称
+        (object,),  # 类型的父类
+        {
+            "__init__":  A__init__,  # 类型的构造方法
+            "value": 0,  # 类型的属性
+            "work": lambda self, x: self.value + x,  # 类型的方法
+        }
+    )
+
+    # 通过类型
+    a = A(100)
+    assert type(a) == A
+    assert a.value == 100  # type: ignore
+
+    a.value = 10  # type: ignore
+    assert a.value == 10  # type: ignore
+    assert a.work(1) == 11  # type: ignore
