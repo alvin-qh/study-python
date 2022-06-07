@@ -440,24 +440,52 @@ def test_create_dynamic_class() -> None:
 
 
 def test_class_slot() -> None:
+    """
+    `__slots__` 魔法字段用于定义对象具备的属性集合
+
+    Python 作为解释型语音, 可以为对象添加任意属性而无需类型定义, 添加的属性以字典形式在对象内
+    部以 `__dict__` 魔法字段存储
+
+    `__slots__` 字段用于声明一个类型规定的字段集合, 设置了 `__slots__` 字段后, 对象能使用的
+    属性就会约束在其定义范围内, 且不再通过 `__dict__` 字段存储对象属性
+    """
     class C1:
         pass
 
     c1 = C1()
 
+    # 操作对象的未定义属性, 类型检查失败 (可正常运行)
     c1.name = "Alvin"  # type: ignore
     assert c1.name == "Alvin"  # type: ignore
 
     c1.age = 41  # type: ignore
     assert c1.age == 41  # type: ignore
 
+    assert c1.__dict__ == {
+        "name": "Alvin",
+        "age": 41,
+    }
+
     class C2:
+        """
+        定义 `__slots__` 魔法字段, 设定可访问的对象属性列表
+
+        定义了 `__slots__` 字段后, 相当于为类型提供了属性约束, 类型能用的属性必须在 `__slots__` 定义的列表中
+        """
+        # 定义可访问属性列表
         __slots__ = ("name", "age")
 
     c2 = C2()
 
-    c2.name = "Alvin"
-    assert c2.name == "Alvin"
+    c2.name = "Alvin"  # type: ignore
+    assert c2.name == "Alvin"  # type: ignore
 
-    c2.age = 41
-    assert c2.age == 41
+    c2.age = 41  # type: ignore
+    assert c2.age == 41  # type: ignore
+
+    # 定义了 __slots__ 字段后, 对象不在具备 __dict__ 字段, 可访问的属性均有 __slots__ 字段定义
+    assert not hasattr(c2, "__dict__")
+
+    # 如果访问了未定义在 __slots__ 列表中的属性, 则会抛出异常
+    with raises(AttributeError):
+        c2.gender = "M"  # type: ignore
