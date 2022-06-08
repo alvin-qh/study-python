@@ -1,8 +1,11 @@
+import json
 from abc import ABC, abstractmethod
+from re import A
 from typing import Any, Dict, List, TypeVar
 
 from pytest import raises
 
+from .automate import Automate
 from .delegate import Delegate
 
 _dir = dir()
@@ -489,3 +492,75 @@ def test_class_slot() -> None:
     # 如果访问了未定义在 __slots__ 列表中的属性, 则会抛出异常
     with raises(AttributeError):
         c2.gender = "M"  # type: ignore
+
+
+def test_automate_class() -> None:
+    class Member(Automate):
+        __slots__ = ("id", "name", "price")
+
+    class Group(Automate):
+        __slots__ = ("id", "name", "members")
+        members: List[Member]
+
+    group = Group(1, "G-1", [
+        Member(1, "S-1", 12.5),
+        Member(2, "S-2", 22)
+    ])
+
+    assert group.id == 1
+    assert group.name == "G-1"
+    assert len(group.members) == 2
+
+    member = group.members[0]
+    assert member.id == 1
+    assert member.name == "S-1"
+    assert member.price == 12.5
+
+    member = group.members[1]
+    assert member.id == 2
+    assert member.name == "S-2"
+    assert member.price == 22
+
+    assert json.dumps(group, indent=2) == """{
+  "id": 1,
+  "name": "G-1",
+  "members": [
+    {
+      "id": 1,
+      "name": "S-1",
+      "price": 12.5
+    },
+    {
+      "id": 2,
+      "name": "S-2",
+      "price": 22
+    }
+  ]
+}"""
+
+    group = Group(**{
+        "id": 1,
+        "name": "G-1",
+        "members": [{
+            "id": 1,
+            "name": "S-1",
+            "price": 12.5
+        }, {
+            "id": 2,
+            "name": "S-2",
+            "price": 22}]
+    })
+
+    assert group.id == 1
+    assert group.name == "G-1"
+    assert len(group.members) == 2
+
+    member = group.members[0]
+    assert member.id == 1
+    assert member.name == "S-1"
+    assert member.price == 12.5
+
+    member = group.members[1]
+    assert member.id == 2
+    assert member.name == "S-2"
+    assert member.price == 22
