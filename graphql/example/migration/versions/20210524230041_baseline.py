@@ -5,15 +5,17 @@ Revises:
 Create Date: 2021-05-24 23:00:41.255353
 
 """
+from typing import Optional
+
 from alembic import op
 from sqlalchemy.sql import text
 
 # revision identifiers, used by Alembic.
 
-revision = '8185439e9008'
-down_revision = None
-branch_labels = None
-depends_on = None
+revision = "8185439e9008"
+down_revision: Optional[str] = None
+branch_labels: Optional[str] = None
+depends_on: Optional[str] = None
 
 
 def upgrade():

@@ -70,16 +70,16 @@ def test_operation_name() -> None:
     """
     # 查询字符串
     query = """
-        query getUser($id: ID!) {   # 定义操作名称, 定义查询参数
-            user(id: $id) {
+        query getUser($id: ID!) {   # 定义操作名称, 定义查询参数的参数名称
+            user(id: $id) {  # 对应 Query 对象的 user 字段, 传递名为 id 的参数
                 id           # 对应 User 类型的 id 字段
                 firstName    # 对应 User 类型的 first_name 字段
                 lastName     # 对应 User 类型的 last_name 字段
             }
         }
 
-        query getUserWithFullName($id: ID!) {   # 定义操作名称, 定义查询参数
-            user(id: $id) {
+        query getUserWithFullName($id: ID!) {   # 定义操作名称, 定义查询参数名称
+            user(id: $id) { # 对应 Query 对象的 user 字段, 传递名为 id 的参数
                 id          # 对应 User 类型的 id 字段
                 fullName    # 对应 User 类型的 full_name 字段
             }

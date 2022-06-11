@@ -62,17 +62,19 @@ def test_without_parent() -> None:
     """
     # 查询字符串
     query = """
-        query($id: ID!) {       # 定义查询参数
-            user(id: $id) {
-                id
-                name
+        query($id: ID!) {   # 定义查询参数的名称为 id
+            user(id: $id) { # 对应 Query 类型的 user 字段
+                id          # 对应 User 类型的 id 字段
+                name        # 对应 User 类型的 name 字段
             }
         }
     """
 
     root = None
     # 查询参数
-    var = {"id": 2}
+    var = {
+        "id": 2,  # 定义名为 id 的参数, 对应查询字符串中的参数名
+    }
 
     # 执行查询, 传递查询参数, root 参数为 None
     r = schema.execute(query, variables=var, root=root)
