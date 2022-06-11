@@ -1,7 +1,5 @@
-import abc
 import json
 from abc import ABC, abstractmethod
-from re import A
 from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 from pytest import raises
@@ -611,7 +609,11 @@ def test_metaclass_by_function() -> None:
     类型的 `metaclass` 参数用于指定一个函数, 该返回一个 `Type` 类型, 作为类的元类型
     """
 
-    def metaclass(class_name: str, parents: Tuple[Type], attrs: Dict[str, Any]) -> Type:
+    def metaclass(
+        class_name: str,
+        parents: Tuple[Type],
+        attrs: Dict[str, Any],
+    ) -> Type:
         """
         元类型函数, 返回一个 `Type` 对象, 用于设置目标类型的名称, 父类以及属性值
 

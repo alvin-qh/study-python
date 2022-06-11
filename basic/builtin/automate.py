@@ -43,7 +43,10 @@ class Automate(dict):
 
         if isinstance(args, (list, set, tuple)):
             # 将参数解析为 Automate 列表类型对象
-            return [Automate(**arg) if isinstance(arg, dict) else arg for arg in args]
+            return [
+                Automate(**arg)
+                if isinstance(arg, dict) else arg for arg in args
+            ]
 
         return args
 
