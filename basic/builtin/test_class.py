@@ -627,25 +627,43 @@ def test_metaclass_by_function() -> None:
         """
         # 动态产生一个类型, 作为目标类型的元类型对象
         return type(
-            class_name + "_New",
+            class_name + "_New",  # 修改目标类型的类名称
             parents,
-            upper_attrs(attrs),
+            upper_attrs(attrs),  # 处理目标类型的属性集合, 将属性名修改为大写
         )
 
     class C(metaclass=metaclass):  # type: ignore
+        """
+        定义类型, 并指定元类型为 `metaclass` 函数
+
+        此时, `C` 类的类型定义由 `metaclass` 函数的返回值来定义
+        """
+
         @property
         def value(self) -> int:
+            """
+            定义一个属性, 用于测试元类型将属性名修改为大写
+            """
             return 100
 
     c = C()
+    # 验证类名是否被修改
     assert type(c).__name__ == "C_New"
+    # 验证属性名是否为大写
     assert c.VALUE == 100  # type: ignore
 
+    # 验证原本的小写属性名是否已经失效
     with raises(AttributeError):
         assert c.value
 
 
 def test_metaclass_by_class() -> None:
+    """
+    测试通过类型来定义目标类的元类型
+
+    目标类的 `metaclass` 既可以为函数, 也可以为一个类, 如果是一个类的话, 必须通过 `__new__` 方法
+    给目标类型返回类型定义
+    """
     class MetaClass(type):
         def __new__(
             mcs,
@@ -653,16 +671,31 @@ def test_metaclass_by_class() -> None:
             parents: Tuple[Type],
             attrs: Dict[str, Any],
         ) -> Any:
-            return type(class_name + "_New", parents, upper_attrs(attrs))
+            return type(
+                class_name + "_New",  # 修改目标类型的类名称
+                parents,
+                upper_attrs(attrs),  # 处理目标类型的属性集合, 将属性名修改为大写
+            )
 
     class C(metaclass=MetaClass):
+        """
+        定义类型, 并指定元类型为 `MetaClass` 类型
+
+        此时, `C` 类的类型定义由 `MetaClass` 类型产生的对象来定义
+        """
         @property
         def value(self) -> int:
+            """
+            定义一个属性, 用于测试元类型将属性名修改为大写
+            """
             return 100
 
     c = C()
+    # 验证类名是否被修改
     assert type(c).__name__ == "C_New"
+    # 验证属性名是否为大写
     assert c.VALUE == 100  # type: ignore
 
+    # 验证原本的小写属性名是否已经失效
     with raises(AttributeError):
         assert c.value
