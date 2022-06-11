@@ -5,6 +5,7 @@
         "autopep",
         "configurator",
         "disturl",
+        "graphene",
         "jupyterlab",
         "labextension",
         "lckr",
