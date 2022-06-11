@@ -165,3 +165,32 @@ def test_map_reduce() -> None:
     # 相当于 1(初始值) * 1 * 2 * 3 == 6
     r = reduce(lambda x, y: x * y, c, 1)  # type: ignore
     assert r == 6
+
+    # 测试 map 和 reduce 函数联合使用
+
+    nums = {
+        "0": 0,
+        "1": 1,
+        "2": 2,
+        "3": 3,
+        "4": 4,
+        "5": 5,
+        "6": 6,
+        "7": 7,
+        "8": 8,
+        "9": 9,
+    }
+
+    # 将数字内容的字符串转为数字
+    # map 操作将字符串逐字符转化为对应的数字集合
+    # reduce 将 map 的结果集合进行累加
+    #   n, i: n 为上次计算的结果, i 为本次要计算的值
+    r = reduce(
+        lambda n, i: n * 10 + i,  # type: ignore
+        map(
+            lambda c: nums[c],  # type: ignore
+            "12345",
+        ),
+        0,  # type: ignore
+    )
+    assert r == 12345

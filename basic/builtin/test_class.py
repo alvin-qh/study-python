@@ -1,5 +1,6 @@
 import json
 from abc import ABC, abstractmethod
+from functools import partialmethod
 from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 
 from pytest import raises
@@ -200,7 +201,7 @@ def test_multi_inheritance() -> None:
     一般情况下, 继承的顺序为: 最左亲近原则, 即父类在继承列表中越靠左, 越和子类亲近
     """
 
-    class I_(ABC):
+    class I(ABC):  # noqa
         @abstractmethod
         def f1(self) -> str:
             pass
@@ -219,23 +220,23 @@ def test_multi_inheritance() -> None:
         def f1(self) -> str:
             return "B2"
 
-    class C(B1, B2, I_):
+    class C(B1, B2, I):
         """
         在继承列表中, `B1` 在最左边, 所以父类中如果包含相同的属性和方法, 以 `B1` 为最优先, 其次时 `B2`
 
-        因为 `I_` 是一个纯接口, 不包含实现, 所以放在最后
+        因为 `I` 是一个纯接口, 不包含实现, 所以放在最后
         """
 
-    # 确认 C 是 I_, B1, B2 的子类
-    assert issubclass(C, I_)
+    # 确认 C 是 I, B1, B2 的子类
+    assert issubclass(C, I)
     assert issubclass(C, B1)
     assert issubclass(C, B2)
 
     # 实例化 C 类对象
     c = C()
 
-    # 确认 c 对象同时是 I_, B1, B2 类型的对象
-    assert isinstance(c, I_)
+    # 确认 c 对象同时是 I, B1, B2 类型的对象
+    assert isinstance(c, I)
     assert isinstance(c, B1)
     assert isinstance(c, B2)
 
@@ -770,3 +771,50 @@ def test_singleton_class() -> None:
     assert id(c1) == id(c2)
     # 确认第二次创建对象设置的属性值覆盖了第一次创建对象的属性值
     assert c2.value == c1.value == 200
+
+
+def test_currying_method() -> None:
+    """
+    测试类方法的 "柯里化"
+
+    `partialmethod` 可以为类型增加一个方法, 该方法是将类中的另一个方法进行转换得到
+    """
+    class C:
+        """
+        测试类方法的 "柯里化" 操作
+        """
+
+        def __init__(self, value: int) -> None:
+            """
+            初始化对象, 设置对象属性
+
+            Args:
+                value (int): 属性值
+            """
+            self.value = value
+
+        def set_value(self, value: int) -> None:
+            """
+            设置属性值
+
+            Args:
+                value (int): 属性值
+            """
+            self.value = value
+
+        # 柯里化 set_value 方法, 方法的参数为 0 (命名传参方式)
+        zero = partialmethod(set_value, value=0)
+
+        # 柯里化 set_value 方法, 方法的参数为 1e10 (位置传参方式)
+        max = partialmethod(set_value, 1e10)
+
+    c = C(10)
+    assert c.value == 10
+
+    # 调用柯里化的方法, 将属性值设置为 0
+    c.zero()
+    assert c.value == 0
+
+    # 调用柯里化的方法, 将属性值设置为 1e10
+    c.max()
+    assert c.value == 1e10
