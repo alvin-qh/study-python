@@ -1,6 +1,6 @@
 import json
 from abc import ABC, abstractmethod
-from typing import Any, Dict, List, Tuple, Type, TypeVar
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
 
 from pytest import raises
 
@@ -665,12 +665,29 @@ def test_metaclass_by_class() -> None:
     给目标类型返回类型定义
     """
     class MetaClass(type):
+        """
+        元类型, 用于创建一个描述类型的对象
+        """
         def __new__(
-            mcs,
+            cls,
             class_name: str,
             parents: Tuple[Type],
             attrs: Dict[str, Any],
         ) -> Any:
+            """
+            创建实例, 根据传入的类型元数据, 返回用元数据创建的类型对象
+
+            注意, 这个方法不能标识 `@classmethod` 装饰器, 因为 `cls` 参数是外部显式传递的.
+            如果标识了 `@classmethod`, 则会重复传递 `cls` 参数
+
+            Args:
+                class_name (str): _description_
+                parents (Tuple[Type]): _description_
+                attrs (Dict[str, Any]): _description_
+
+            Returns:
+                Any: _description_
+            """
             return type(
                 class_name + "_New",  # 修改目标类型的类名称
                 parents,
@@ -699,3 +716,57 @@ def test_metaclass_by_class() -> None:
     # 验证原本的小写属性名是否已经失效
     with raises(AttributeError):
         assert c.value
+
+
+def test_singleton_class() -> None:
+    """
+    测试单例类型
+
+    Python 可以通过 `__new__` 魔法方法完成单例, 即让一个类型只能实例化一个对象
+    """
+    class C:
+        """
+        单例类型
+        """
+        # 保持单例的类字段
+        _inst: Optional["C"] = None  # noqa
+
+        @classmethod
+        def __new__(cls: type["C"], *args, **kwargs) -> "C":  # noqa
+            """
+            创建实例
+
+            为了保证创建实例时单例, 无论执行多少次创建实例方法, 均返回 `_inst` 字段引用的对象
+
+            Args:
+                cls (type[&quot;C&quot;]): 当前类型
+
+            Returns:
+                C: 当前类型的单例实例
+            """
+            if not cls._inst:
+                # 如果单例未被创建, 则创建单例实例, 并引用到 _inst 字段上
+                cls._inst = super().__new__(cls)
+
+            # 返回单例实例
+            return cls._inst
+
+        def __init__(self, value: Any) -> None:
+            """
+            初始化对象, 设置对象的属性
+
+            Args:
+                value (Any): 属性值
+            """
+            self.value = value
+
+    # 第一次创建单例实例
+    c1 = C(100)
+    assert c1.value == 100
+
+    # 再次创建单例实例
+    c2 = C(200)
+    # 确认两次创建的单例实例是同一个对象
+    assert id(c1) == id(c2)
+    # 确认第二次创建对象设置的属性值覆盖了第一次创建对象的属性值
+    assert c2.value == c1.value == 200

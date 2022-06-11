@@ -1,4 +1,3 @@
-from re import ASCII
 from typing import Generator, Iterator
 
 
