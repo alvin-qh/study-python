@@ -1,5 +1,6 @@
 from itertools import repeat
 from string import Template
+from typing import Any
 
 
 def test_ascii_convert() -> None:
@@ -426,3 +427,56 @@ def test_use_str_templates() -> None:
     # 通过设置一个包含 arg 键的字典对象, 将模板格式化为字符串
     s = t.substitute({"arg": 123})
     assert s == "This is 123"
+
+
+def test_format_magic_method() -> None:
+    """
+    一个类型的 `__format__` 魔法方法用于对该类的对象进行格式化
+
+    当进行字符串格式化操作时 (`format`, `f""` 等), 如果参数对象具备 `__format__` 魔法方法,
+    则会调用该方法将对象格式化为字符串
+    """
+    class C:
+        """
+        测试对象格式化的类型
+        """
+        # 格式化规则和格式化函数的对应关系
+        _format = {
+            "m": lambda v: "m" + str(v),
+            "n": lambda v: "n" + str(v),
+        }
+
+        def __init__(self, value: Any) -> None:
+            """
+            初始化当前对象
+
+            Args:
+                value (Any): 任意值
+            """
+            self._value = value
+
+        def __format__(self, format_spec: str) -> str:
+            """
+            根据一个格式化规则格式化字符串
+
+            Args:
+                format_spec (str): 格式化规则
+
+            Returns:
+                str: 格式化结果
+            """
+            # 根据格式化规则获取格式化函数
+            formatter = self._format.get(format_spec)
+            # 对于无效的格式化规则, 返回当前值
+            if not formatter:
+                return str(self._value)
+
+            # 返回格式化后的值
+            return formatter(self._value)
+
+    c = C(123)
+
+    # 验证格式化结果
+    assert f"{c:m}" == "m123"
+    assert f"{c:n}" == "n123"
+    assert f"{c:x}" == "123"

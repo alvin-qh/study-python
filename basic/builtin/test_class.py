@@ -1,7 +1,8 @@
+import abc
 import json
 from abc import ABC, abstractmethod
 from re import A
-from typing import Any, Dict, List, TypeVar
+from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 from pytest import raises
 
@@ -495,18 +496,28 @@ def test_class_slot() -> None:
 
 
 def test_automate_class() -> None:
+    """
+    测试自动装配类
+    """
+
     class Member(Automate):
+        # 定义可用的属性名
         __slots__ = ("id", "name", "price")
 
     class Group(Automate):
+        # 定义可用的属性名
         __slots__ = ("id", "name", "members")
+
+        # 定义特殊属性的类型
         members: List[Member]
 
+    # 实例化自动装配类型的对象
     group = Group(1, "G-1", [
         Member(1, "S-1", 12.5),
         Member(2, "S-2", 22)
     ])
 
+    # 验证对象属性值
     assert group.id == 1
     assert group.name == "G-1"
     assert len(group.members) == 2
@@ -521,6 +532,7 @@ def test_automate_class() -> None:
     assert member.name == "S-2"
     assert member.price == 22
 
+    # 验证对象转为 json
     assert json.dumps(group, indent=2) == """{
   "id": 1,
   "name": "G-1",
@@ -538,6 +550,7 @@ def test_automate_class() -> None:
   ]
 }"""
 
+    # 测试通过 Dict 对象作为入参
     group = Group(**{
         "id": 1,
         "name": "G-1",
@@ -551,6 +564,7 @@ def test_automate_class() -> None:
             "price": 22}]
     })
 
+    # 验证对象属性值
     assert group.id == 1
     assert group.name == "G-1"
     assert len(group.members) == 2
@@ -564,3 +578,89 @@ def test_automate_class() -> None:
     assert member.id == 2
     assert member.name == "S-2"
     assert member.price == 22
+
+
+def upper_attrs(attrs: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    将属性名转为大写字母
+
+    Args:
+        attrs (Dict[str, Any]): 属性字典
+
+    Returns:
+        Dict[str, Any]: 属性名转为大写字母后的属性字典
+    """
+    new_attrs = {}
+
+    # 遍历所有属性
+    for name, value in attrs.items():
+        if not name.startswith("__"):
+            # 对于非私有属性, 将属性名转为大写字母
+            name = name.upper()
+
+        # 存储新的属性 Key/Value
+        new_attrs[name] = value
+
+    # 返回新的属性字典对象
+    return new_attrs
+
+
+def test_metaclass_by_function() -> None:
+    """
+    测试 `metaclass` 参数
+    类型的 `metaclass` 参数用于指定一个函数, 该返回一个 `Type` 类型, 作为类的元类型
+    """
+
+    def metaclass(class_name: str, parents: Tuple[Type], attrs: Dict[str, Any]) -> Type:
+        """
+        元类型函数, 返回一个 `Type` 对象, 用于设置目标类型的名称, 父类以及属性值
+
+        Args:
+            class_name (str): 目标类型的类名称
+            parents (Tuple[Type]): 目标类型的父类集合
+            attrs (Dict[str, Any]): 目标类型的属性集合
+
+        Returns:
+            Type: 目标类型的元类型对象
+        """
+        # 动态产生一个类型, 作为目标类型的元类型对象
+        return type(
+            class_name + "_New",
+            parents,
+            upper_attrs(attrs),
+        )
+
+    class C(metaclass=metaclass):  # type: ignore
+        @property
+        def value(self) -> int:
+            return 100
+
+    c = C()
+    assert type(c).__name__ == "C_New"
+    assert c.VALUE == 100  # type: ignore
+
+    with raises(AttributeError):
+        assert c.value
+
+
+def test_metaclass_by_class() -> None:
+    class MetaClass(type):
+        def __new__(
+            mcs,
+            class_name: str,
+            parents: Tuple[Type],
+            attrs: Dict[str, Any],
+        ) -> Any:
+            return type(class_name + "_New", parents, upper_attrs(attrs))
+
+    class C(metaclass=MetaClass):
+        @property
+        def value(self) -> int:
+            return 100
+
+    c = C()
+    assert type(c).__name__ == "C_New"
+    assert c.VALUE == 100  # type: ignore
+
+    with raises(AttributeError):
+        assert c.value
