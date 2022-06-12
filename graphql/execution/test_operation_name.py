@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Literal
 
 from graphene import ID, Field, ObjectType, ResolveInfo, Schema, String
 
@@ -46,7 +46,7 @@ class Query(ObjectType):
     user = Field(User, id=ID(required=True))
 
     @staticmethod
-    def resolve_user(parent: Any, info: ResolveInfo, id: str) -> User:
+    def resolve_user(parent: Literal[None], info: ResolveInfo, id: str) -> User:
         """
         解析 `user` 字段, 这是整个查询的顶级实体.
         `User` 类型还包括 `full_name` 字段, 相当于是下一级关联实体

@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Literal
 
 from graphene import ID, Field, ObjectType, ResolveInfo, Schema, String
 
@@ -27,7 +27,7 @@ class Query(ObjectType):
     user = Field(User, id=ID(required=True))
 
     @staticmethod
-    def resolve_user(parent: Any, info: ResolveInfo, id: int) -> User:
+    def resolve_user(parent: Literal[None], info: ResolveInfo, id: int) -> User:
         """
         解析 `user` 字段
 

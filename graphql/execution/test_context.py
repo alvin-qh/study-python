@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Literal
 
 from graphene import ObjectType, ResolveInfo, Schema, String
 
@@ -11,7 +11,7 @@ class Query(ObjectType):
     name = String()
 
     @staticmethod
-    def resolve_name(parent: Any, info: ResolveInfo) -> str:
+    def resolve_name(parent: Literal[None], info: ResolveInfo) -> str:
         """
         解析 `name` 字段
 

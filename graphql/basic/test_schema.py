@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Literal
 
 from graphene import ObjectType, ResolveInfo, Schema, String
 
@@ -12,7 +12,7 @@ class Query(ObjectType):
     goodbye = String()  # 定义查询字段
 
     @staticmethod
-    def resolve_hello(parent: Any, info: ResolveInfo, name: str) -> str:
+    def resolve_hello(parent: Literal[None], info: ResolveInfo, name: str) -> str:
         """
         解析 `hello` 字段
 
@@ -25,7 +25,7 @@ class Query(ObjectType):
         return f"Hello {name}"
 
     @staticmethod
-    def resolve_goodbye(parent: Any, info: ResolveInfo) -> str:
+    def resolve_goodbye(parent: Literal[None], info: ResolveInfo) -> str:
         return "See you again"
 
 
