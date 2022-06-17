@@ -1,22 +1,7 @@
 graphene
 aiodataloader
-
-bson
-blinker
-pymongo
-mongoengine
-graphene-mongo
-
-alembic
-psycopg2-binary
-sqlalchemy
-peewee
-
-werkzeug
-flask
-flask-graphql
-
-factory-boy
+promise
 
 pytest
+pytest-asyncio
 mypy
