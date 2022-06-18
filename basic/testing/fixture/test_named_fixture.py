@@ -5,7 +5,7 @@ from pytest import fixture, mark
 
 class FixtureName:
     """
-    记录 fixture 名称的类
+    记录 `fixture` 名称的类
     """
 
     def __init__(self) -> None:
@@ -16,7 +16,7 @@ class FixtureName:
 
     def set(self, fixture: Callable) -> None:
         """
-        保存 fixture 的名称
+        保存 `fixture` 的名称
 
         Args:
             fixture (Callable): fixture 函数
@@ -26,7 +26,7 @@ class FixtureName:
     @property
     def value(self) -> str:
         """
-        获取保存的 fixture 名称
+        获取保存的 `fixture` 名称
 
         Returns:
             str: 保存的 fixture 名称
@@ -35,7 +35,7 @@ class FixtureName:
 
     def clear(self) -> None:
         """
-        清除保存的 fixture 名称
+        清除保存的 `fixture` 名称
         """
         self._fixture_name = ""
 
@@ -46,7 +46,7 @@ fixture_name = FixtureName()
 @fixture
 def default_name_fixture() -> Generator[str, None, None]:
     """
-    @fixture 装饰器在默认情况下, 以其修饰的函数名为 fixture 名称
+    `@fixture` 装饰器在默认情况下, 以其修饰的函数名为 `fixture` 名称
 
     Yields:
         Generator[None, None, None]: 返回传入测试函数的参数值
@@ -84,19 +84,19 @@ def specify_named_fixture() -> Generator[str, None, None]:
 @mark.usefixtures("default_name_fixture")
 def test_default_name_fixture() -> None:
     """
-    测试名称为 default_name_fixture 的 fixture
+    测试名称为 `default_name_fixture` 的 `fixture`
 
-    usefixtures 装饰器表示该测试要使用的 fixture 名称
+    `usefixtures` 装饰器表示该测试要使用的 `fixture` 名称
     """
     assert fixture_name.value == "default_name_fixture"
 
 
 def test_specify_named_fixture(specify_named_fixture: str) -> None:
     """
-    测试名称为 specify_named_fixture 的 fixture
+    测试名称为 `specify_named_fixture` 的 `fixture`
 
     Args:
-        specify_named_fixture (str): specify_named_fixture 函数的返回值
+        specify_named_fixture (str): `specify_named_fixture` 函数的返回值
     """
     assert specify_named_fixture == "specify_named_fixture"
     assert fixture_name.value == "specify_named_fixture"

@@ -26,9 +26,9 @@ _LOG_CONF = {
 
 def test_log_extra() -> None:
     """
-    配置 root 日志以演示 extra 参数
-    在输出日志时 (例如调用日志对象的 debug 函数), 可以通过 extra 参数设置扩展变量
-    扩展变量可以在日志格式模板中通过 %(<变量名>)s 输出
+    配置 `root` 日志以演示 `extra` 参数
+    在输出日志时 (例如调用日志对象的 `debug` 函数), 可以通过 `extra` 参数设置扩展变量
+    扩展变量可以在日志格式模板中通过 `%(<变量名>)s` 输出
     """
     # 配置日志
     config.dictConfig(_LOG_CONF)

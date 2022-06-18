@@ -39,7 +39,7 @@ def test_assume_assertion1() -> None:
 
 def test_assume_assertion2() -> None:
     """
-    通过 with 语句使用多重断言
+    通过 `with` 语句使用多重断言
     """
     with pytest.assume:  # type: ignore
         assert 1 + 2 == 3

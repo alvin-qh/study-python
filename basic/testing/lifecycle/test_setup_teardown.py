@@ -194,10 +194,18 @@ class TestCase:
         cls.class_step.finish()
 
         # 验证 teardown_class 方法比 setup_class 此时少调用一次
-        assert cls.teardown_class_counter.value == cls.setup_class_counter.value - 1 == 0
+        assert (
+            cls.teardown_class_counter.value
+            ==
+            cls.setup_class_counter.value - 1 == 0
+        )
 
         # 验证 setup_method 和 teardown_method 此时均调用两次
-        assert cls.setup_method_counter.value == cls.teardown_method_counter.value == 2
+        assert (
+            cls.setup_method_counter.value
+            ==
+            cls.teardown_method_counter.value == 2
+        )
 
         # 记录 teardown_class 调用次数加 1
         cls.teardown_class_counter.increase()
@@ -236,7 +244,11 @@ class TestCase:
         self.method_step.finish()
 
         # 验证 teardown_method 方法比 setup_method 此时少调用一次
-        assert self.teardown_method_counter.value == self.setup_method_counter.value - 1
+        assert (
+            self.teardown_method_counter.value
+            ==
+            self.setup_method_counter.value - 1
+        )
 
         # 标记 teardown_method 方法执行次数加 1
         self.teardown_method_counter.increase()

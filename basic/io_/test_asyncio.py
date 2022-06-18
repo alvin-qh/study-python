@@ -6,7 +6,7 @@ from typing import Any, Coroutine, Dict, List, Optional, Tuple, Type
 
 from pytest import mark, raises
 
-from .aio_generator import AIOTicker
+from .aio_generator import AIOTicker, async_echo, ticker
 
 
 async def worker(
@@ -1005,7 +1005,7 @@ def test_queue() -> None:
 
 
 @mark.asyncio
-async def test_aio_generator() -> None:
+async def test_aio_iterator() -> None:
     """
     测试 `AIOTicker` 类型, 该类型是一个协程异步迭代器对象, 可以进行异步迭代操作
     """
@@ -1030,3 +1030,52 @@ async def test_aio_generator() -> None:
     assert vals == [2, 3, 4]
     # 确认所有迭代执行的总时间
     assert 5 <= timeit.default_timer() - start <= 5.1
+
+
+@mark.asyncio
+async def test_aio_generator() -> None:
+    """
+    测试 `ticker` 函数, 该函数返回一个生成器 (`AsyncGenerator`) 对象, 可以作为迭代器对象使用
+    """
+    # 返回生成器对象
+    gen = ticker(1, 5)
+
+    # 记录整个迭代的时间
+    start = timeit.default_timer()
+
+    # 确认生成器对象第一次迭代对象
+    assert await gen.__anext__() == 0
+    # 确认生成器对象第二次迭代对象
+    assert await gen.__anext__() == 1
+
+    vals = []
+    # 通过 async for 进行异步迭代
+    async for t in gen:
+        vals.append(t)
+
+    # 判断迭代结果
+    assert vals == [2, 3, 4]
+    # 确认所有迭代执行的总时间
+    assert 5 <= timeit.default_timer() - start <= 5.1
+
+
+@mark.asyncio
+async def test_async_echo() -> None:
+    # 调用函数, 返回生成器对象
+    g = async_echo(1, 5)
+
+    # 第一个值为 0, 对应 yield 0 语句
+    assert await g.__anext__() == 0
+
+    # 设置一个值, 对应 v = yield 0, 接收一个输入, 此时 v 的值为 10
+    await g.asend(10)
+    # 获取下一个值为 100, 对应 v *= 10; yield v 两条语句
+    assert await g.__anext__() == 100
+
+    # 处理下一个循环
+    await g.asend(20)
+    assert await g.__anext__() == 200
+
+    # 发送 0 值, 导致迭代结束
+    with raises(StopAsyncIteration):
+        await g.asend(0)

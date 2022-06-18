@@ -5,7 +5,7 @@ from io_.crc64 import crc64_long
 
 def test_bytes_and_bytearray() -> None:
     """
-    `bytes` 对象表示一个无法修改的字节串. 
+    `bytes` 对象表示一个无法修改的字节串.
     `bytearray` 表示一个可以修改的字节串
     """
     # 定义一个 bytes 类型的串

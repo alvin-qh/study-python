@@ -27,8 +27,9 @@ _LOG_CONF = {
 
 def test_root_log() -> None:
     """
-    测试 root log
-    root 是日志的默认名称, 通过 logging.getLogger() 无参调用返回的即为 root 日志对象
+    测试 `root` 日志
+
+    `root` 是日志的默认名称, 通过 `logging.getLogger()` 无参调用返回的即为 `root` 日志对象
     """
     # 配置 root log
     config.dictConfig(_LOG_CONF)

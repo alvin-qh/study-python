@@ -86,5 +86,4 @@ def test_log_filter() -> None:
 
     # 为日志对象增加过滤器
     log.addFilter(ContextFilter(extra=extra_dict))
-
     log.info("Hello")

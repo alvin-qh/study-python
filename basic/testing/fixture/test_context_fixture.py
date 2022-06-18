@@ -11,7 +11,8 @@ class Context:
     def __init__(self, **kwargs) -> None:
         """
         初始化上下文
-        通过参数传递的 dict 参数值存储到上下文中
+
+        通过参数传递的 `Dict` 对象参数值存储到上下文中
         """
         self.__dict__.update(kwargs)
 
@@ -50,7 +51,7 @@ ORG_CODE = "alvin.edu"
 @fixture
 def context() -> Generator[Context, None, None]:
     """
-    通过 fixture, 在对应的测试中执行指定的代码, 并将返回值作为测试函数的参数
+    通过 `fixture`, 在对应的测试中执行指定的代码, 并将返回值作为测试函数的参数
 
     Yields:
         Generator[Context, None, None]: 上下文对象
@@ -61,8 +62,9 @@ def context() -> Generator[Context, None, None]:
 
 def test_context(context: Context) -> None:
     """
-    在测试中使用和某个 fixture 函数同名的参数
-    此时 pytest 框架会自动调用对应的 fixture 函数, 并用函数返回值作为参数值
+    在测试中使用和某个 `fixture` 函数同名的参数
+
+    此时 `pytest` 框架会自动调用对应的 `fixture` 函数, 并用函数返回值作为参数值
 
     Args:
         context (Context): context 函数的返回值
@@ -74,24 +76,29 @@ def test_context(context: Context) -> None:
 @fixture
 def org_code(context: Context) -> str:
     """
-    定义 fixture, 该 fixture 的参数是名为 context 的 fixture
-    可以通过在一个 fixture 中传入另一个 fixture 作为参数的方式进行连锁调用
+    定义 `fixture`, 该 `fixture` 的参数是名为 `context` 的 `fixture`
+
+    可以通过在一个 `fixture` 中传入另一个 `fixture` 作为参数的方式进行连锁调用
 
     Args:
-        context(Context): context 函数的返回值
+        context(Context): `context` 函数的返回值
 
     Returns:
-        str: context 对象中 org_code 的值
+        str: `context` 对象中 `org_code` 的值
     """
     return context.org_code
 
 
 class TestContext:
-    def test_org_code(self, org_code: str):
+    """
+    测试 `Context` 类型对象作为测试参数
+    """
+
+    def test_org_code(self, org_code: str) -> None:
         """
         调用名为 org_code 的 fixture
 
         Args:
-            org_code (str): org_code 函数的返回值
+            org_code (str): `org_code` 函数的返回值
         """
         assert org_code == ORG_CODE

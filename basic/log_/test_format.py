@@ -5,7 +5,7 @@ from typing import Dict, Optional
 
 class RequestFormatter(Formatter):
     """
-    自定义 log 内容格式化器
+    自定义 `log` 内容格式化器
     """
 
     def __init__(
@@ -28,7 +28,7 @@ class RequestFormatter(Formatter):
 
     def format(self, record: LogRecord) -> str:
         """
-        格式化 log 内容
+        格式化 `log` 内容
 
         Args:
             record (LogRecord): log 内容对象, 表示一条日志

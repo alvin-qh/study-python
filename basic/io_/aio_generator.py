@@ -1,4 +1,5 @@
 import asyncio
+from typing import AsyncGenerator
 
 
 class AIOTicker:
@@ -60,3 +61,56 @@ class AIOTicker:
             await asyncio.sleep(self._delay)
 
         return num
+
+
+async def ticker(delay: int, to: int) -> AsyncGenerator[int, None]:
+    """
+    异步生成器函数, 返回一个 `AsyncGenerator` 类型的对象, 表示异步生成器对象
+
+    Args:
+        delay (int): 每次迭代的间隔时间
+        to (int): 最大的迭代上限值
+
+    Returns:
+        AsyncGenerator[int, None]: 异步生成器对象, 通过该生成器可以按设定产生期望的值
+
+    Yields:
+        int: 每次迭代产生的值
+    """
+    for i in range(to):
+        yield i
+        await asyncio.sleep(delay)
+
+
+async def async_echo(delay: int, to: int) -> AsyncGenerator[int, int]:
+    """
+    返回一个可交互的 `Generator` 对象
+
+    Args:
+        delay (int): 每次迭代间隔时间
+        to (int): 最大迭代值
+
+    Returns:
+        AsyncGenerator[int, int]: 异步生成器对象, 生成整数值, 可以发送整数值
+
+    Yields:
+        int: 产生一个整数值
+    """
+    # 生成 0 值, 读取一个值
+    v = yield 0
+
+    # 循环直到最大值
+    for _ in range(to):
+        # 将上次读取的值进行运算
+        v *= 10
+        # 生成 v 值到客户端
+        yield v
+
+        # 休眠指定的间隔时间
+        await asyncio.sleep(delay)
+
+        # 接收新值
+        v = yield v
+        # 如果接收到 0 值, 结束
+        if v == 0:
+            break

@@ -75,7 +75,7 @@ CUR_DIR = os.path.dirname(__file__)
 
 def test_conf_by_dic() -> None:
     """
-    测试通过 dict 配置日志
+    测试通过 `Dict` 对象配置日志
 
     本例中会写入一条日志, 并读取验证其正确性
     """
@@ -116,6 +116,9 @@ def test_conf_by_dic() -> None:
 
 
 def test_conf_by_ini() -> None:
+    """
+    测试通过 `ini` 配置文件配置日志
+    """
     # 生成 ini 配置文件路径
     ini_file = os.path.abspath(
         os.path.join(CUR_DIR, "conf.ini")

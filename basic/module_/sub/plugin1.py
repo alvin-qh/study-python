@@ -1,5 +1,8 @@
 class Plugin:
+    """
+    测试动态加载的插件类型
+    """
     id = 0
 
-    def display(self):
-        return 'Hello'
+    def display(self) -> str:
+        return "Hello"

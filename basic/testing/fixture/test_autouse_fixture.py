@@ -44,8 +44,8 @@ step = Step()
 @fixture(autouse=True)
 def autouse_fixture() -> Generator[None, None, None]:
     """
-    使用 autouse = True
-    表示该 fixture 会被自动调用, 无需通过参数引用该 fixture
+    使用 `autouse = True` 表示该 `fixture` 会被自动调用,
+    无需通过参数引用
     """
     assert step.state == "not start"
 
@@ -61,7 +61,7 @@ def autouse_fixture() -> Generator[None, None, None]:
 
 def test_autouse_fixture() -> None:
     """
-    autouse_fixture 函数会被在每个测试中自动调用
+    `autouse_fixture` 函数会被在每个测试中自动调用
     """
 
     # 确认此时的状态
