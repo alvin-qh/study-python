@@ -4,7 +4,9 @@ import timeit
 from threading import Thread
 from typing import Any, Coroutine, Dict, List, Optional, Tuple, Type
 
-from pytest import raises
+from pytest import mark, raises
+
+from .aio_generator import AIOTicker
 
 
 async def worker(
@@ -1000,3 +1002,31 @@ def test_queue() -> None:
         assert await future == [100, 200, 300]
 
     asyncio.run(main())
+
+
+@mark.asyncio
+async def test_aio_generator() -> None:
+    """
+    测试 `AIOTicker` 类型, 该类型是一个协程异步迭代器对象, 可以进行异步迭代操作
+    """
+    # 实例化异步迭代器对象
+    # 每次迭代间隔 1 秒, 最大迭代值为 5
+    ticker = AIOTicker(1, 5)
+
+    # 记录整个迭代的时间
+    start = timeit.default_timer()
+
+    # 确认第一次迭代值
+    assert await ticker.__anext__() == 0
+    # 确认第二次迭代值
+    assert await ticker.__anext__() == 1
+
+    vals = []
+    # 通过 async for 进行异步迭代
+    async for t in ticker:
+        vals.append(t)
+
+    # 判断迭代结果
+    assert vals == [2, 3, 4]
+    # 确认所有迭代执行的总时间
+    assert 5 <= timeit.default_timer() - start <= 5.1

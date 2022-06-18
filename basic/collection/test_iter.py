@@ -32,7 +32,7 @@ def test_max_min_function() -> None:
 
 def test_zip_function() -> None:
     """
-    测试 zip 函数, 将两个集合通过笛卡尔积运算合并为一个集合
+    测试 `zip` 函数, 将两个集合通过笛卡尔积运算合并为一个集合
     返回集合的迭代器对象
     """
     c1 = [1, 2, 3]
@@ -45,7 +45,7 @@ def test_zip_function() -> None:
 
 def test_all_function() -> None:
     """
-    测试 all 函数, 如果一个集合中所有值都表示 True, 则返回 True
+    测试 `all` 函数, 如果一个集合中所有值都表示 `True`, 则返回 `True`
     """
     r = all([1, 0, 1, 2, 3])
     assert r is False
@@ -59,7 +59,7 @@ def test_all_function() -> None:
 
 def test_any_function() -> None:
     """
-    测试 any 函数, 如果一个集合中所有值都表示 False, 则返回 False
+    测试 `any` 函数, 如果一个集合中所有值都表示 `False`, 则返回 `False`
     """
     r = any([1, 0, 1, 2, 3])
     assert r is True
@@ -70,7 +70,7 @@ def test_any_function() -> None:
 
 def test_enumerate_function() -> None:
     """
-    enumerate 返回一个迭代器, 每一项为集合一个元素 (下标, 值)
+    `enumerate` 返回一个迭代器, 每一项为集合一个元素 (下标, 值)
     """
     c = ["A", "B", "C", "D"]
     r = []
@@ -83,14 +83,14 @@ def test_enumerate_function() -> None:
 class Iter:
     """
     定义一个迭代器类
-    具备 __next__ 方法的类对象可被迭代访问, 即通过 next 函数获取序列值
-    具备 __iter__ 方法的类对象被认为是一个迭代器对象, 可以在 for ... in ... 循环中使用
+    具备 `__next__` 方法的类对象可被迭代访问, 即通过 next 函数获取序列值
+    具备 `__iter__` 方法的类对象被认为是一个迭代器对象, 可以在 for ... in ... 循环中使用
     """
 
     def __init__(self, min_: int, max_: int) -> None:
         """
         初始化迭代器
-        该迭代器表示一个 [min, max) 区间的递增数列
+        该迭代器表示一个 `[min, max)` 区间的递增数列
 
         Args:
             min_ (int): 起始值
@@ -103,7 +103,7 @@ class Iter:
     def __iter__(self) -> Iterator[int]:
         """
         获取迭代器
-        由于 Iter 类本身就是可迭代的, 所以该方法只是返回当前对象
+        由于 `Iter` 类本身就是可迭代的, 所以该方法只是返回当前对象
 
         Returns:
             Iterator[int]: 返回一个迭代器对象
@@ -112,7 +112,7 @@ class Iter:
 
     def __next__(self) -> int:
         """
-        具备 __next__ 方法的类可被迭代, 即可通过 next(...) 函数返回迭代对象的下一项
+        具备 `__next__` 方法的类可被迭代, 即可通过 `next(...)` 函数返回迭代对象的下一项
 
         Raises:
             StopIteration: 迭代器终止
@@ -150,10 +150,10 @@ def test_iterator_object() -> None:
 
 def test_map_reduce() -> None:
     """
-    测试 map 和 reduce 函数
+    测试 `map` 和 `reduce` 函数
 
-    map 用于将集合中的每一项进行运算, 形成新的集合
-    reduce 用于对集合中的每一项和上一次计算结果进行计算, 得到最终结果
+    - `map` 用于将集合中的每一项进行运算, 形成新的集合
+    - `reduce` 用于对集合中的每一项和上一次计算结果进行计算, 得到最终结果
     """
     c = [1, 2, 3]
 

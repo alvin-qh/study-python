@@ -14,7 +14,7 @@ def init_crc64_tables(
     Args:
         crc_table_h (List[int]): 保存计算表高位数据
         crc_table_l (List[int]): 保存计算表低位数据
-        poly64_rev_h (int): 生成多项式 (假设低 32 位为 0)
+        poly64_rev_h (int): 生成多项式 (假设低 `32` 位为 `0`)
         bit_toggle (int): 掩码
     """
     for i in range(256):
@@ -53,8 +53,8 @@ def crc64(data: bytes | bytearray, crc_h=0, crc_l=0) -> Tuple[int, int]:
 
     Args:
         data (bytes | bytearray): 用来计算 CRC 的数据
-        crc_h (int, optional): 高位初始值. Defaults to 0.
-        crc_l (int, optional): 低位初始值. Defaults to 0.
+        crc_h (int, optional): 高位初始值. Defaults to `0`.
+        crc_l (int, optional): 低位初始值. Defaults to `0`.
 
     Returns:
         Tuple[int, int]: 返回 crc64 结果的高低位
@@ -76,11 +76,11 @@ def crc64(data: bytes | bytearray, crc_h=0, crc_l=0) -> Tuple[int, int]:
 
 def crc64_long(data: bytes | bytearray, crc_val=0) -> int:
     """
-    计算 CRC64 值, 并返回long类型结果
+    计算 CRC64 值, 并返回 `long` 类型结果
 
     Args:
         data (bytes | bytearray): 用来计算 CRC64 的数据
-        crc_val (int, optional): CRC64 初始值. Defaults to 0.
+        crc_val (int, optional): CRC64 初始值. Defaults to `0`.
 
     Returns:
         int: crc64 值
