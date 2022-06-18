@@ -1,7 +1,7 @@
 import os
 import shutil
 from fnmatch import fnmatch
-from typing import Iterator
+from typing import Iterator, List, Union
 
 from pytest import raises
 
@@ -189,17 +189,20 @@ def test_find_all_files() -> None:
     测试 find_all_files 函数
     """
     # 获取 io_ 路径下匹配 *.py 的文件
-    files = find_all_files("io_", "*.py")
-    assert set(files) == {
+    files: Union[List[str], Iterator[str]] = find_all_files("io_", "*.py")
+    files = sorted(files)
+
+    assert files == [
         "io_/__init__.py",
+        "io_/aio_generator.py",
         "io_/crc64.py",
+        "io_/test_asyncio.py",
+        "io_/test_byte.py",
+        "io_/test_compress.py",
         "io_/test_file.py",
         "io_/test_path.py",
-        'io_/test_byte.py',
-        'io_/test_compress.py',
-        'io_/test_asyncio.py',
-        'io_/test_pickle.py',
-    }
+        "io_/test_pickle.py",
+    ]
 
 
 def touch(path_: str, filenames: Iterator[str]) -> None:

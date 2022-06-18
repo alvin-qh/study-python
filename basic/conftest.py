@@ -20,7 +20,12 @@ def event_loop(
         `AbstractEventLoop` 对象
     """
     # 获取当前协程的时间循环对象
-    loop = asyncio.get_event_loop()
+    try:
+        loop = asyncio.get_event_loop()
+    except RuntimeError:
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+
     # 透出
     yield loop
 
