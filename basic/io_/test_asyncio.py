@@ -1008,6 +1008,10 @@ def test_queue() -> None:
 async def test_aio_iterator() -> None:
     """
     测试 `AIOTicker` 类型, 该类型是一个协程异步迭代器对象, 可以进行异步迭代操作
+
+    `@mark.asyncio` 使用了 `pytest-asyncio` 插件, 可以以协程异步方式执行测试而无需编码
+
+    参考 `conftest.py` 的 `event_loop` 函数, 提供了一个 `fixture` 用于管理协程事件队列的生命周期
     """
     # 实例化异步迭代器对象
     # 每次迭代间隔 1 秒, 最大迭代值为 5
