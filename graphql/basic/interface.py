@@ -7,6 +7,16 @@ from graphene import (ID, Field, Interface, List, ObjectType, ResolveInfo,
 class Person(Interface):
     """
     定义一个接口类型, 该类型可作为所有实体类型 (`ObjectType`) 的接口类型
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    interface Person {
+        id: ID!
+        name: String!
+        friends: [Person]!
+    }
+    ```
     """
     id = ID(required=True)
     name = String(required=True)
@@ -14,6 +24,18 @@ class Person(Interface):
 
 
 class Student(ObjectType):
+    """
+    定义实体类型, 实现了 `Person` 接口 (通过在 `Meta` 类型中指定接口类型)
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type Student implements Person {
+        classRoom: String!
+    }
+    ```
+    """
+
     class Meta:
         """
         定义实体类型元类型
@@ -31,6 +53,14 @@ class Student(ObjectType):
 class Query(ObjectType):
     """
     定义根查询类型
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type Query {
+        classLeader: Student!
+    }
+    ```
     """
     # 定义要查询的字段, 为 Student 类型
     class_leader = Field(Student, required=True)
@@ -49,5 +79,15 @@ class Query(ObjectType):
         return Student(id=1, name="Alvin", friends=[friend], class_room="1-1")
 
 
-# 定义 schema 结构, 包括查询对象和定义的类型
+"""
+定义 schema 结构, 包括查询对象和定义的类型
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+}
+```
+"""
 schema = Schema(query=Query, types=[Student])

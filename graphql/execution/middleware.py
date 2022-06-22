@@ -9,6 +9,17 @@ from graphql import OperationType
 class User(ObjectType):
     """
     定义实体类型
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type User {
+        id: ID!
+        name: String!
+        age: Int
+        nickname: String
+    }
+    ```
     """
     id = ID(required=True)  # id 字段
     name = String(required=True)  # 用户名字段
@@ -16,9 +27,53 @@ class User(ObjectType):
     nickname = String()  # 昵称字段
 
 
+class Query(ObjectType):
+    """
+    定义查询类型, 用于查询 `User` 类型的实体对象
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type Query {
+        user(id: ID!): User
+    }
+    ```
+    """
+    # User 实体类型
+    user = Field(User, id=Argument(ID, required=True))
+
+    @staticmethod
+    def resolve_user(parent: Literal[None], info: ResolveInfo, id: str) -> User:
+        """
+        解析 `user` 字段
+
+        Args:
+            id (str): 查询参数, 要查询 `User` 对象 `id` 值
+
+        Returns:
+            User: `User` 实体对象
+        """
+        id_ = int(id)
+
+        # 根据 id 值返回对应的实体对象
+        if id_ == 1:
+            return User(id=1, name="Alvin", age=40)
+
+        return User(id=10, name="Emma", age=36)
+
+
 class UserInput(InputObjectType):
     """
     定义创建 `User` 对象的输入对象
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    input UserInput {
+        name: String!
+        age: Int
+    }
+    ```
     """
     name = String(required=True)  # 姓名字段
     age = Int()  # 年龄字段
@@ -56,36 +111,17 @@ class UserCreate(Mutation):
         )
 
 
-class Query(ObjectType):
-    """
-    定义查询类型, 用于查询 `User` 类型的实体对象
-    """
-    # User 实体类型
-    user = Field(User, id=Argument(ID, required=True))
-
-    @staticmethod
-    def resolve_user(parent: Literal[None], info: ResolveInfo, id: str) -> User:
-        """
-        解析 `user` 字段
-
-        Args:
-            id (str): 查询参数, 要查询 `User` 对象 `id` 值
-
-        Returns:
-            User: `User` 实体对象
-        """
-        id_ = int(id)
-
-        # 根据 id 值返回对应的实体对象
-        if id_ == 1:
-            return User(id=1, name="Alvin", age=40)
-
-        return User(id=10, name="Emma", age=36)
-
-
 class UserMutation(ObjectType):
     """
     定义变更类型, 用于创建, 更新, 删除实体对象
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type UserMutation {
+        userCreate(userInput: UserInput!): User!
+    }
+    ```
     """
     # 创建用户的字段
     user_create = UserCreate.Field()
@@ -151,5 +187,16 @@ class ModificationMiddleware:
         )
 
 
-# 定义 schema 对象
+"""
+定义 schema 结构, 指定根查询对象
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+    mutation: UserMutation
+}
+```
+"""
 schema = Schema(query=Query, mutation=UserMutation)

@@ -11,6 +11,17 @@ from graphene import (ID, Argument, Field, List, ObjectType, ResolveInfo,
 class User(ObjectType):
     """
     定义实体类型
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type User {
+        id: ID!
+        name: String!
+        friends: [User]
+        bestFriend: User
+    }
+    ```
     """
     id = ID(required=True)  # id 字段
     name = String(required=True)  # 姓名字段
@@ -176,6 +187,14 @@ user_loader = UserLoader()
 class Query(ObjectType):
     """
     查询类型
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type Query {
+        user(id: ID!): User
+    }
+    ```
     """
     # 定义 `user` 字段, 对应 `User` 实体
     user = Field(User, id=Argument(ID, required=True))
@@ -194,5 +213,15 @@ class Query(ObjectType):
         return user_loader.load(int(id))
 
 
-# 构建 schema 对象, 指定根查询对象
+"""
+定义 schema 结构, 指定根查询对象
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+}
+```
+"""
 schema = Schema(query=Query)

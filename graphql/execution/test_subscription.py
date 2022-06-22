@@ -17,7 +17,11 @@ async def test_subscription() -> None:
 
     # 使用 graphql 语法, 产生一个订阅字符串
     # timeOfDay 表示订阅 time_of_day 字段的值
-    subscription = "subscription { timeOfDay }"
+    subscription = """
+        subscription {
+            timeOfDay
+        }
+    """
 
     # 进行一次订阅
     rs = await schema.subscribe(subscription)

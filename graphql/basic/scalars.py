@@ -19,6 +19,18 @@ class Stuff(ObjectType):
     - `Int`
     - `Float`
     - `Boolean`
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type Stuff {
+        id: ID!
+        name: String
+        serialNo: Int!
+        price: Float!
+        lts: Boolean!
+    }
+    ```
     """
     # ID 类型表示一个唯一标识, 是一个整数或者字符串
     id = ID(required=True)
@@ -43,6 +55,16 @@ class Calendar(ObjectType):
     - `Date` 对应 Python 的 `datetime.date` 类型, 表示一个日期
     - `DateTime` 对应 Python 的 `datetime.datetime` 类型, 表示一个日期时间, 格式采用 ISO-8601
     - `Time` 对应 Python 的 `datetime.time` 类型, 表示一个时间
+
+    对应的 GraphQL 定义如下:
+
+    ```
+    type Calendar {
+        oneWeekFrom(date: Date!): Date!
+        oneHourFrom(datetime: DateTime!): DateTime!
+        oneMinuteFrom(time: Time!): Time!
+    }
+    ```
     """
     # 表示日期类型的字段
     one_week_from = Date(required=True, date=Date(required=True))
@@ -179,4 +201,13 @@ class Query(ObjectType):
         return Calendar()
 
 
+"""
+定义 schema 对象, 对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+}
+```
+"""
 schema = Schema(query=Query)

@@ -16,6 +16,15 @@ class Person(ObjectType):
 
     另外, 对于特殊字段, 如需特殊命名, 则字段的 `Scalars` 类型构造器包含了 `name` 参数, 可以对字段
     进行特殊命名
+
+    对应的 GraphQL 定义为:
+
+    ```
+    type Person {
+        lastName: String
+        _other_name_: String
+    }
+    ```
     """
     # 定义字段, 在查询时, 该字段名称会被自动转化为 lastName, 驼峰命名法
     last_name = String()
@@ -27,6 +36,14 @@ class Person(ObjectType):
 class Query(ObjectType):
     """
     定义根查询类型
+
+    对应的 GraphQL 定义为:
+
+    ```
+    type Query {
+        person: Person!
+    }
+    ```
     """
     # 定义要查询的字段, 为 Person 类型
     person = Field(Person, required=True)
@@ -43,5 +60,15 @@ class Query(ObjectType):
         return Person(last_name="Qu", other_name="Alvin")
 
 
-# 定义 schema 对象, auto_camelcase 为 True (默认值) 表示遵循自动转驼峰的命名规则
+"""
+定义 schema 对象, auto_camelcase 为 True (默认值) 表示遵循自动转驼峰的命名规则
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+}
+```
+"""
 schema = Schema(query=Query, auto_camelcase=True)

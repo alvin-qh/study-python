@@ -191,7 +191,7 @@ def test_middleware_function_mutation_operation() -> None:
     """
     # 设定更新操作字符串
     mutate = """
-        mutation createUser($user: UserInput!) {   # # 定义操作名称, 定义输入参数名称
+        mutation createUser($user: UserInput!) {   # 定义操作名称, 定义输入参数名称
             userCreate(userInput: $user) {  # 对应 UserMutation 类型的 user_create 字段, 输入名为 user 的参数
                 id      # 对应 UserCreate 类型的 id 字段
                 name    # 对应 UserCreate 类型的 name 字段

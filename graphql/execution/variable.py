@@ -6,6 +6,15 @@ from graphene import ID, Field, ObjectType, ResolveInfo, Schema, String
 class User(ObjectType):
     """
     定义实体对象
+
+    对应的 GraphQL 定义为
+
+    ```
+    type User {
+        id: ID!
+        name: String!
+    }
+    ```
     """
     id = ID(required=True)  # id 字段, required 表示非空字段
     name = String(required=True)  # 姓名字段
@@ -22,9 +31,17 @@ dataset = {
 class Query(ObjectType):
     """
     定义查询类型
+
+    对应的 GraphQL 定义为
+
+    ```
+    type Query {
+        user(id: ID!): User!
+    }
+    ```
     """
     # 定义一个实体类型字段
-    user = Field(User, id=ID(required=True))
+    user = Field(User, id=ID(required=True), required=True)
 
     @staticmethod
     def resolve_user(parent: Literal[None], info: ResolveInfo, id: int) -> User:
@@ -40,5 +57,15 @@ class Query(ObjectType):
         return dataset[int(id)]
 
 
-# 定义查询 schema
+"""
+定义 schema 结构, 指定根查询对象
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+}
+```
+"""
 schema = Schema(query=Query)

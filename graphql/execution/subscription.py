@@ -9,6 +9,14 @@ from graphene import ObjectType, ResolveInfo, Schema, String
 class Query(ObjectType):
     """
     查询类型, 在本例中, 该类型仅是为了满足 `graphene` 框架的参数要求
+
+    对应的 GraphQL 定义为
+
+    ```
+    type Query {
+        hello: String
+    }
+    ```
     """
     hello = String()
 
@@ -17,14 +25,16 @@ class Subscription(ObjectType):
     """
     订阅类型, 可以向调用方
 
-    Args:
-        ObjectType (_type_): _description_
+    对应的 GraphQL 定义为
 
-    Yields:
-        _type_: _description_
+    ```
+    type Subscription {
+        timeOfDay: String!
+    }
+    ```
     """
     # 定义要被订阅的字段值, 字符串类型
-    time_of_day = String()
+    time_of_day = String(required=True)
 
     @staticmethod
     async def subscribe_time_of_day(
@@ -45,6 +55,18 @@ class Subscription(ObjectType):
             await asyncio.sleep(1)
 
 
-# 设定 schema 的订阅类型
-# 注意, schema 中必须包含一个 Query 类型
+"""
+设定 schema 的订阅类型
+
+注意, schema 中必须包含一个 Query 类型
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+    subscription: Subscription
+}
+```
+"""
 schema = Schema(query=Query, subscription=Subscription)
