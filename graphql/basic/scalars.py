@@ -1,9 +1,10 @@
 import base64
-from calendar import calendar
 from datetime import date, datetime, timedelta
 from decimal import Decimal as DecimalType
 from typing import Any, Dict, Literal
 
+import humps
+from bson import ObjectId
 from graphene import (ID, Boolean, Date, DateTime, Decimal, Field, Float, Int,
                       JSONString, ObjectType, ResolveInfo, Scalar, Schema,
                       String, Time)
@@ -117,11 +118,53 @@ class Calendar(ObjectType):
 
 
 class Calculator(ObjectType):
-    add_one_to = Decimal(required=True, decimal=Decimal(required=True))
+    """
+    演示 `Decimal` 大数类型
+    """
+    # Decimal 类型的字段
+    add_one_to = Decimal(required=True, number=Decimal(required=True))
 
     @staticmethod
-    def resolve_add_one_to(parent: "Calculator", info: ResolveInfo, decimal: Decimal) -> Decimal:
-        return decimal + DecimalType("1")
+    def resolve_add_one_to(parent: "Calculator", info: ResolveInfo, number: Decimal) -> Decimal:
+        """
+        解析 `add_one_to` 类型, 对传入的 `Decimal` 类型数值加 `1` 后返回
+
+        Args:
+            number (Decimal): 传入的任意 `Decimal` 类型参数
+
+        Returns:
+            Decimal: 对传入的参数加 `1` 后返回结果
+        """
+        return number + DecimalType(1)
+
+
+class GenericType(Scalar):
+    @staticmethod
+    def serialize(obj: Any) -> Any:
+        if isinstance(obj, (str, int, float, bool, tuple, list)):
+            return obj
+
+        if isinstance(obj, dict):
+            return humps.camelize(obj)
+
+        elif isinstance(obj, date):
+            return obj.isoformat()
+
+        elif isinstance(obj, ObjectId):
+            return str(obj)
+
+        raise ValueError(f"Unable to serialize type: {type(obj)}")
+
+    @staticmethod
+    def parse_literal(_cls, node) -> None:
+        pass
+
+    @staticmethod
+    def parse_value(value: Any) -> Any:
+        if isinstance(value, (str, int, float, bool, tuple, list)):
+            return value
+
+        return humps.decamelize(value)
 
 
 class JSONObject(ObjectType):
@@ -132,16 +175,15 @@ class JSONObject(ObjectType):
 
     update_json_key = JSONString(
         key=String(required=True),
-        value=String(required=True),
+        value=GenericType(required=True),
         required=True,
     )
 
     @staticmethod
     def resolve_update_json_key(
-        parent: "JSONObject", info: ResolveInfo, key: str, value: Any,
+        parent: "JSONObject", info: ResolveInfo, key: str, value: str,
     ) -> Dict[str, Any]:
         json = JSONObject._json
-
         json[key] = value
         return json
 
@@ -185,6 +227,8 @@ class EncodedId(ObjectType):
 class Query(ObjectType):
     stuff = Field(Stuff, required=True)
     calendar = Field(Calendar, required=True)
+    calculator = Field(Calculator, required=True)
+    json_object = Field(JSONObject, required=True)
 
     @staticmethod
     def resolve_stuff(parent: Literal[None], info: ResolveInfo) -> Stuff:
@@ -197,8 +241,16 @@ class Query(ObjectType):
         )
 
     @staticmethod
-    def resolve_calendar(parent: Literal[None], info: ResolveInfo) -> Calculator:
+    def resolve_calendar(parent: Literal[None], info: ResolveInfo) -> Calendar:
         return Calendar()
+
+    @staticmethod
+    def resolve_calculator(parent: Literal[None], info: ResolveInfo) -> Calculator:
+        return Calculator()
+
+    @staticmethod
+    def resolve_json_object(parent: Literal[None], info: ResolveInfo) -> JSONObject:
+        return JSONObject()
 
 
 """

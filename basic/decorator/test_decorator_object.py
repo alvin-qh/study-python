@@ -1,4 +1,3 @@
-from typing import Callable
 from unittest.mock import MagicMock, patch
 
 from pytest import raises
