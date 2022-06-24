@@ -90,7 +90,11 @@ class Calendar(ObjectType):
         return date + timedelta(weeks=1)
 
     @staticmethod
-    def resolve_one_hour_from(parent: "Calendar", info: ResolveInfo, datetime: DateTime) -> DateTime:
+    def resolve_one_hour_from(
+        parent: "Calendar",
+        info: ResolveInfo,
+        datetime: DateTime,
+    ) -> DateTime:
         """
         解析 `one_hour_from` 字段, 根据传入的 `datetime` 参数, 返回其加上一小时后的日期时间
 
@@ -103,7 +107,11 @@ class Calendar(ObjectType):
         return datetime + timedelta(hours=1)
 
     @staticmethod
-    def resolve_one_minute_from(parent: "Calendar", info: ResolveInfo, time: Time) -> Time:
+    def resolve_one_minute_from(
+        parent: "Calendar",
+        info: ResolveInfo,
+        time: Time,
+    ) -> Time:
         """
         解析 `one_minute_from` 字段, 根据传入的 `time` 参数, 返回其加上一分钟后的时间
 
@@ -133,7 +141,11 @@ class Calculator(ObjectType):
     add_one_to = Decimal(required=True, number=Decimal(required=True))
 
     @staticmethod
-    def resolve_add_one_to(parent: "Calculator", info: ResolveInfo, number: Decimal) -> Decimal:
+    def resolve_add_one_to(
+        parent: "Calculator",
+        info: ResolveInfo,
+        number: Decimal,
+    ) -> Decimal:
         """
         解析 `add_one_to` 类型, 对传入的 `Decimal` 类型数值加 `1` 后返回
 
@@ -354,7 +366,11 @@ class EncodedId(ObjectType):
     increment_encoded_id = Base64(required=True, value=Base64(required=True))
 
     @staticmethod
-    def resolve_increment_encoded_id(parent: "EncodedId", info: ResolveInfo, value: str) -> int:
+    def resolve_increment_encoded_id(
+        parent: "EncodedId",
+        info: ResolveInfo,
+        value: str,
+    ) -> int:
         """
         解析 `increment_encoded_id` 字段, 将传上来的 Base64 值解析为整数, 加 `1` 后返回
 
