@@ -124,17 +124,16 @@ def test_json_string_scalar_type() -> None:
     # 查询字符串
     query = """
         query ($key: String!, $value: GenericType!) {
-            jsonObject {
-                updateJsonKey(key: $key, value: $value)
+            jsonObject {                                    # 对应 Query 类型的 json_object 字段
+                updateJsonKey(key: $key, value: $value)     # 对应 JSONObject 类型的 update_json_key 字段
             }
         }
     """
 
     # 传入参数
     vars = {
-        # 注意, 这里的 Decimal 类型是 Python 内置类型, 不是 Scalar 类型
-        "key": "name",
-        "value": "Emma",
+        "key": "name",   # 要修改的 json key 值
+        "value": "Emma",  # 要修改的 json value 值
     }
 
     # 执行查询
@@ -142,9 +141,37 @@ def test_json_string_scalar_type() -> None:
     # 确保查询正确
     assert r.errors is None
 
-    # 确保结果正确
+    # 确保结果正确, 服务端返回的 Dict 类型在这里表示为一个 json 字符串
     assert r.data == {
         "jsonObject": {
             "updateJsonKey": "{\"name\": \"Emma\", \"age\": 42}"
+        }
+    }
+
+
+def test_custom_scalar_type() -> None:
+    """
+    测试 `Base64` 自定义 Scalar 类型
+    """
+    # 查询字符串
+    query = """
+        query ($value: Base64!) {                   # 参数为 Base64 自定义类型
+            encodedId {                             # 对应 Query 类型的 encoded_id 字段
+                incrementEncodedId(value: $value)   # 对应 EncodedId 类型的 increment_encoded_id 字段
+            }
+        }
+    """
+
+    # 传入参数
+    vars = {
+        "value": "NA==",  # 参数为 "4" 的 base64 编码
+    }
+
+    r = schema.execute(query, variables=vars)
+    assert r.errors is None
+
+    assert r.data == {
+        "encodedId": {
+            "incrementEncodedId": "NQ==",  # 返回结果为 "5" 的 base64 编码
         }
     }

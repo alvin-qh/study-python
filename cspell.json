@@ -5,6 +5,7 @@
         "aiodataloader",
         "autopep",
         "bigserial",
+        "bson",
         "camelcase",
         "camelize",
         "configurator",
