@@ -65,7 +65,7 @@ class Character(ObjectType):
     ```
     type Movie {
         name: String!
-        episode: Episode!
+        faction: Faction!
     }
     ```
     """
@@ -74,7 +74,7 @@ class Character(ObjectType):
 
     # 角色派别字段, 通过枚举类型定义字段
     # 枚举类型和其它实体类型一样, 在定义字段时可以通过 Field 类型定义, 也可以通过枚举类型直接定义
-    episode = Field(Episode, required=True)
+    faction = Field(Faction, required=True)
 
 
 class Query(ObjectType):
