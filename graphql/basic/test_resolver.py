@@ -7,11 +7,11 @@ def test_object_type_resolve() -> None:
     """
     # 查询结构
     query = """
-        query($type: String) {
-            person(type: $type) {
-                firstName
-                lastName
-                fullName
+        query($type: String) {      # 定义 type 参数
+            person(type: $type) {   # 获取 Query 类型的 person 字段
+                firstName           # 获取 Person 类型的 first_name 字段
+                lastName            # 获取 Person 类型的 last_name 字段
+                fullName            # 获取 Person 类型的 full_name 字段
             }
         }
     """
