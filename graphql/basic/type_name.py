@@ -12,11 +12,7 @@ class TypeSong(ObjectType):
 
     ```
     type Song {
-        songName!
-        name: String
-        serialNo: Int!
-        price: Float!
-        lts: Boolean!
+        songName: String!
     }
     ```
     """
@@ -27,7 +23,21 @@ class TypeSong(ObjectType):
 
 
 class Query(ObjectType):
-    song = Field(TypeSong, default_value=TypeSong())
+    """
+    定义查询类型, `TypeSong` 类型字段使用 `Song` 作为类型名
+    """
+    song = Field(TypeSong, default_value=TypeSong())  # TypeSong 类型字段, 但查询时使用 `Song` 类型名
 
 
+"""
+定义 schema 结构, 包括查询对象和定义的类型
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+}
+```
+"""
 schema = Schema(query=Query)
