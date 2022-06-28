@@ -10,6 +10,7 @@
         "camelcase",
         "camelize",
         "configurator",
+        "Corellia",
         "DBAPI",
         "decamelize",
         "disturl",
@@ -29,6 +30,8 @@
         "serverextension",
         "Skywalker",
         "sqlalchemy",
+        "Stewjon",
+        "Tatooine",
         "variableinspector",
         "venv",
         "virtualenv"

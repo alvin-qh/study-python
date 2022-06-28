@@ -2,7 +2,7 @@ from typing import Dict
 from typing import List as ListType
 from typing import Union
 
-from graphene import (ID, Enum, Field, Int, Interface, List, NonNull, ObjectType,
+from graphene import (ID, Field, Int, Interface, List, NonNull, ObjectType,
                       ResolveInfo, Schema, String)
 
 
@@ -25,25 +25,6 @@ class Character(Interface):
     friends = List(lambda: Character)
 
 
-class ShipType(Enum):
-    """
-    定义一个枚举实体类型, 表示飞船类型
-
-    对应的 GraphQL 定义如下:
-
-    ```
-    enum ShipType {
-        CARGO_SHIP
-        BATTLE_SHIP
-        PASSENGER_SHIP
-    }
-    ```
-    """
-    CARGO_SHIP = 1  # 表示货运船
-    BATTLE_SHIP = 2  # 表示战舰
-    PASSENGER_SHIP = 3  # 表示客运船
-
-
 class StarShip(ObjectType):
     """
     定义星舰实体类型
@@ -58,7 +39,7 @@ class StarShip(ObjectType):
     ```
     """
     name = String(required=True)
-    ship_type = Field(ShipType, required=True)
+    ship_type = String(required=True)
 
 
 class Human(ObjectType):
@@ -98,13 +79,14 @@ class Droid(ObjectType):
 
     primary_function = String(required=True)
 
+
 # 初始化数据集, 包含定义的实体类型对象
 dataset: Dict[str, ListType[Union[StarShip, Human, Droid]]] = {
     # 飞船实体对象集合
     "ships": [
         StarShip(
             name="Millennium Falcon",
-            ship_type=ShipType.CARGO_SHIP,
+            ship_type="CARGO_SHIP",
         ),
     ],
 
@@ -289,7 +271,6 @@ class Query(HeroQuery, HumanQuery, DroidQuery):
     }
     ```
     """
-    pass
 
 
 """
