@@ -1,7 +1,7 @@
 from typing import List as ListType
 from typing import Literal
 
-from graphene import List, ObjectType, ResolveInfo, Schema, String
+from graphene import List, NonNull, ObjectType, ResolveInfo, Schema, String
 
 
 class Query(ObjectType):
@@ -12,15 +12,15 @@ class Query(ObjectType):
 
     ```
     type Query {
-        items(start: String!, end: String!): [String]!
+        items(start: String!, end: String!): [String!]!
     }
     ```
     """
     items = List(
-        String,
+        NonNull(String),  # 相当于 String!
         start=String(required=True),
         end=String(required=True),
-        required=True,
+        required=True,  # 相当于 [String!]!
     )
 
     @staticmethod
