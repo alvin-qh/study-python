@@ -4,7 +4,11 @@
     "words": [
         "aiodataloader",
         "Anakin",
+        "arange",
         "autopep",
+        "axhline",
+        "axisbelow",
+        "axvline",
         "bigserial",
         "bson",
         "camelcase",
@@ -19,14 +23,18 @@
         "Kenobi",
         "labextension",
         "lckr",
+        "linewidth",
+        "matplotlib",
         "Miuiu",
         "nbextensions",
         "NEWHOPE",
         "poolclass",
         "pyenv",
         "pyparsing",
+        "pyplot",
         "repr",
         "ryantam",
+        "savefig",
         "serverextension",
         "Skywalker",
         "sqlalchemy",
@@ -34,7 +42,11 @@
         "Tatooine",
         "variableinspector",
         "venv",
-        "virtualenv"
+        "virtualenv",
+        "xlim",
+        "xticks",
+        "ylim",
+        "yticks"
     ],
     "flagWords": []
 }
