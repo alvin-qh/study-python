@@ -1,6 +1,6 @@
-from typing import Literal
+from typing import Dict, Literal, Union, cast
 
-from graphene import ObjectType, ResolveInfo, Schema, String
+from graphene import Context, ObjectType, ResolveInfo, Schema, String
 
 
 class Query(ObjectType):
@@ -26,7 +26,15 @@ class Query(ObjectType):
         Returns:
             str: 字段值
         """
-        return info.context.get("name")
+        ctx: Union[Dict, Context] = info.context
+
+        if isinstance(ctx, Dict):
+            return cast(str, ctx.get("name"))
+
+        if isinstance(ctx, Context):
+            return ctx.name  # type: ignore
+
+        raise ValueError("")
 
 
 """

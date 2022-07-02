@@ -6,6 +6,15 @@ from graphene import Argument, Field, ObjectType, ResolveInfo, Schema, String
 class Human(ObjectType):
     """
     实体类型, 表示一个人类类型
+
+    对应的 GraphQL 定义为:
+
+    ```
+    type Human {
+        firstName: String
+        lastName: String
+    }
+    ```
     """
     # 首名称
     first_name = String(default_value="")
@@ -31,6 +40,16 @@ class Human(ObjectType):
 class Query(ObjectType):
     """
     查询对象, 演示查询时的参数传递
+
+    对应的 GraphQL 定义为:
+
+    ```
+    type Query {
+        human1(name: String!): Human!
+        human2(name: String!): Human!
+        human3(name: String!): Human!
+    }
+    ```
     """
     # 第一种声明参数的方式, 通过 **extra_args 参数, 将 Scalar 对象作为查询参数
     human1 = Field(Human, required=True, name=String(required=True))
@@ -90,4 +109,15 @@ class Query(ObjectType):
         return Human.get_human(name=name)
 
 
+"""
+定义 schema 对象
+
+对应的 GraphQL 定义为
+
+```
+schema {
+    query: Query
+}
+```
+"""
 schema = Schema(query=Query)
