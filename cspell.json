@@ -46,7 +46,8 @@
         "xlim",
         "xticks",
         "ylim",
-        "yticks"
+        "yticks",
+	"vecs"
     ],
     "flagWords": []
 }
