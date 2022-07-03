@@ -85,7 +85,21 @@ class Points(Drawable):
 
 
 class Arrow(Drawable):
-    def __init__(self, tip, tail=(0, 0), color=Color.red):
+    """
+    箭头绘图类, 绘制一个箭头图形
+
+    给定两个向量, 绘制一个从一个向量指向另一个的箭头
+    """
+
+    def __init__(self, tip: Vector2D, tail: Vector2D = (0, 0), color=Color.red):
+        """
+        初始化对象, 设置箭头指向的二维向量和箭头发出的二维向量
+
+        Args:
+            tip (Vector2D): 箭头指向的向量
+            tail (Vector2D, optional): 箭头发出的向量, 默认为原点. Defaults to `(0, 0)`.
+            color (_type_, optional): 绘图颜色. Defaults to `Color.red`.
+        """
         super().__init__(color)
 
         self.tip = tip
