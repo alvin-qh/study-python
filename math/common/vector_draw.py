@@ -1,15 +1,11 @@
 from enum import Enum
 from math import ceil, floor, sqrt
-from typing import Any, Generator, Iterable, Optional, Tuple, Union
+from typing import Any, Generator, Iterable, Optional
 
 import matplotlib.pyplot as plt
 import numpy as np
 
-# 表示一个数值, 可以为整数或浮点数
-Number = Union[int, float]
-
-# 表示一个点, 是数值的二元组
-Vector2D = Tuple[Number, Number]
+from . import Vector2D
 
 
 class Color(Enum):
