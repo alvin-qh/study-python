@@ -1,4 +1,5 @@
 from math import atan2, cos, pi, sin, sqrt
+from typing import Iterable, List
 
 from . import Number, PolarVector, Vector2D
 
@@ -14,6 +15,43 @@ def length(v: Vector2D) -> Number:
         Number: 向量长度
     """
     return sqrt(v[0]**2 + v[1]**2)
+
+
+def add(*vectors: Vector2D) -> Vector2D:
+    """
+    将一个二维向量集合中的所有向量进行相加后返回结果
+
+    Args:
+        vectors (Iterable[Vector2D]): 向量集合
+
+    Returns:
+        Vector2D: 所有向量相加后的结果
+    """
+    x: Number
+    y: Number
+
+    x, y = 0, 0
+    for v in vectors:
+        x += v[0]
+        y += v[1]
+
+    return (x, y)
+
+
+def translate(offset: Vector2D, vectors: Iterable[Vector2D]) -> List[Vector2D]:
+    """
+    移动一个向量集合中的每个向量
+
+    最终, 向量组成的形态不变, 但向量的位置会发生变化
+
+    Args:
+        offset (Vector2D): 向量偏移量
+        vectors (Iterable[Vector2D]): 向量集合
+
+    Returns:
+        List[Vector2D]: 移动位置后的向量集合
+    """
+    return [add(v, offset) for v in vectors]
 
 
 # 定义 1° 角度对应的弧度
