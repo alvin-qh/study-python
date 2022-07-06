@@ -1,11 +1,14 @@
 from enum import Enum
 from math import ceil, floor, sqrt
-from typing import Any, Generator, Iterable, Optional
+from tkinter.messagebox import NO
+from typing import Any, Generator, Iterable, Optional, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib.patches import FancyArrowPatch  # type: ignore
+from mpl_toolkits.mplot3d import proj3d  # type:ignore
 
-from . import Vector2D
+from . import Number, Vector2D, Vector3D
 
 
 class Color(Enum):
@@ -68,7 +71,7 @@ class Points(Drawable):
     表示一个向量集合, 即二维坐标上一组点的集合
     """
 
-    def __init__(self, *vectors: Vector2D, color=Color.black):
+    def __init__(self, *vectors: Vector2D, color=Color.black) -> None:
         """
         初始化对象
 
@@ -87,7 +90,7 @@ class Arrow(Drawable):
     给定两个向量, 绘制一个从一个向量指向另一个的箭头
     """
 
-    def __init__(self, tip: Vector2D, tail: Vector2D = (0, 0), color=Color.red):
+    def __init__(self, tip: Vector2D, tail: Vector2D = (0, 0), color=Color.red) -> None:
         """
         初始化对象, 设置箭头指向的二维向量和箭头发出的二维向量
 
@@ -109,7 +112,7 @@ class Segment(Drawable):
     线段是由两个点组成
     """
 
-    def __init__(self, start_point: Vector2D, end_point: Vector2D, color=Color.blue):
+    def __init__(self, start_point: Vector2D, end_point: Vector2D, color=Color.blue) -> None:
         """
         初始化对象
 
@@ -126,9 +129,9 @@ class Segment(Drawable):
 
 def extract_vectors(objects: Iterable[Drawable]) -> Generator[Vector2D, None, None]:
     """
-    展开向量
+    将绘图对象展开成向量
 
-    将向量展开为一组 `Point` 对象的序列 (生成器), 用于绘图时获取每个点
+    将向量展开为一组 `Vector2D` 对象的序列 (生成器), 用于绘图时获取每个点
 
     Args:
         objects (Iterable[Drawable]): 绘图对象集合
@@ -137,7 +140,7 @@ def extract_vectors(objects: Iterable[Drawable]) -> Generator[Vector2D, None, No
         TypeError: 无效的绘图类型
 
     Yields:
-        Generator[Point, None, None]: 图像中的每个点组成的序列
+        Generator[Vector2D, None, None]: 图像中的每个点组成的序列
     """
     # 遍历集合中的绘图对象
     for o in objects:
@@ -175,22 +178,22 @@ def draw(
     grid=(1, 1),
     nice_aspect_ratio=True,
     width=6,
-    save_as=None,
+    save_as="",
 ) -> None:
     """
     绘制图像
 
     Args:
         objects (Tuple[Drawable]): 要绘制的图像对象集合
-        origin (bool, optional): _description_. Defaults to `True`.
-        axes (bool, optional): _description_. Defaults to `True`.
-        grid (tuple, optional): _description_. Defaults to (1, 1).
+        origin (bool, optional): 是否绘制原点. Defaults to `True`.
+        axes (bool, optional): 是否绘制坐标轴. Defaults to `True`.
+        grid (tuple, optional): 网格的单位长度. Defaults to (1, 1).
         nice_aspect_ratio (bool, optional): 坐标系是否匹配最佳长宽比. Defaults to `True`.
-        width (int, optional): _description_. Defaults to 6.
-        save_as (_type_, optional): _description_. Defaults to None.
+        width (int, optional): 当 `nice_aspect_ratio` 参数为 `True` 时, 定义绘图宽度. Defaults to `6`.
+        save_as (str, optional): 存储生成图片的文件路径. Defaults to `""`.
 
     Raises:
-        TypeError: _description_
+        TypeError: 错误的图形类型
     """
     xs: Iterable[Any]
     ys: Iterable[Any]
@@ -221,6 +224,7 @@ def draw(
     gca = plt.gca()  # type: ignore
 
     if grid:
+        # 绘制网格
         gca.set_xticks(np.arange(x[0], x[1], grid[0]))
         gca.set_yticks(np.arange(y[0], y[1], grid[1]))
         plt.grid(True)
@@ -228,6 +232,7 @@ def draw(
         gca.set_axisbelow(True)
 
     if axes:
+        # 绘制坐标轴
         gca.axhline(linewidth=2, color="k")
         gca.axvline(linewidth=2, color="k")
 
@@ -252,6 +257,7 @@ def draw(
             plt.scatter(xs, ys, color=o.color)  # type: ignore
 
         elif isinstance(o, Arrow):
+            # 绘制箭头
             tip, tail = o.tip, o.tail
             tip_length = (x[1] - x[0]) / 20.
 
@@ -291,6 +297,310 @@ def draw(
         plt.gcf().set_size_inches(  # type: ignore
             width, width * coords_height / coords_width,
         )
+
+    if save_as:
+        plt.savefig(save_as)
+
+    plt.show()
+
+
+class LineStyle(Enum):
+    solid = "solid"
+    dashed = "dashed"
+
+
+class Drawable3D(Drawable):
+    """
+    所有 3D 绘图的超类
+    """
+    pass
+
+
+class Points3D(Drawable3D):
+    """
+    在 3D 坐标系中绘制一组点
+    """
+
+    def __init__(self, *vectors: Vector3D, color=Color.black) -> None:
+        """
+        初始化对象, 设置三维点的坐标
+
+        Args:
+            vectors (Tuple[Vector3D]): 三维点坐标集合
+            color (Color, optional): 绘图颜色. Defaults to `Color.black`.
+        """
+        super().__init__(color)
+        self.vectors = list(vectors)
+
+
+class Polygon3D(Drawable3D):
+    """
+    在 3D 坐标系中绘制一个多边形
+    """
+
+    def __init__(self, *vertices: Vector3D, color=Color.blue) -> None:
+        """
+        初始化对象, 设置三维多边形的顶点坐标
+
+        Args:
+            vertices (Tuple[Vector3D]): 三维多边形的顶点坐标
+            color (Color, optional): 绘图颜色. Defaults to `Color.blue`.
+        """
+        super().__init__(color)
+        self.vertices = vertices
+
+
+class Arrow3D(Drawable3D):
+    """
+    在 3D 坐标系中绘制一个箭头
+    """
+
+    def __init__(self, tip: Vector3D, tail: Vector3D = (0, 0, 0), color=Color.red) -> None:
+        """
+        初始化对象, 设置箭头的起始和终止坐标
+
+        Args:
+            tip (Vector3D): 箭头起始坐标
+            tail (Vector3D): 箭头终止坐标
+            color (Color, optional): 绘图颜色. Defaults to `Color.red`.
+        """
+        super().__init__(color)
+        self.tip = tip
+        self.tail = tail
+
+
+class Segment3D(Drawable3D):
+    """
+    在 3D 坐标系中绘制一条线段
+    """
+
+    def __init__(
+        self,
+        start_point: Vector3D,
+        end_point: Vector3D,
+        color=Color.blue,
+        linestyle=LineStyle.solid,
+    ) -> None:
+        """
+        初始化对象, 设置箭头的起始和终止坐标
+
+        Args:
+            start_point (Vector3D): 箭头起始坐标
+            end_point (Vector3D): 箭头终止坐标
+            color (Color, optional): 绘图颜色. Defaults to `Color.blue`.
+            linestyle (LineStyle, optional): 线的样式. Defaults to `LineStyle.solid`.
+        """
+        super().__init__(color)
+        self.start_point = start_point
+        self.end_point = end_point
+        self.linestyle = linestyle.value
+
+
+class Box3D(Drawable3D):
+    """
+    在 3D 坐标系中绘制顶点和坐标轴组成的立方体
+
+    三维空间的任意点都可以和三个坐标轴组成一个立方体
+    """
+
+    def __init__(self, *vector: Number, color=Color.green) -> None:
+        """
+        初始化对象, 设置立方体在空间的点
+
+        Args:
+            vector (Tuple[Number]): 三维坐标分量, 依次为 `x`, `y` 和 `z`
+            color (Color, optional): 绘图颜色. Defaults to `Color.green`.
+        """
+        super().__init__(color)
+        self.vector = cast(Vector3D, vector)
+
+
+def extract_vectors_3D(objects: Iterable[Drawable3D]) -> Generator[Vector3D, None, None]:
+    """
+    将三维绘图对象展开三维向量
+
+    将向量展开为一组 `Vector3D` 对象的序列 (生成器), 用于绘图时获取每个点
+
+    Args:
+        objects (Iterable[Drawable]): 三维绘图对象集合
+
+    Raises:
+        TypeError: 无效的绘图类型
+
+    Yields:
+        Generator[Vector3D, None, None]: 三维坐标点生成器
+    """
+    for o in objects:  # 遍历所有绘图对象, 逐一展开向量
+        if isinstance(o, Polygon3D):
+            # 针对三维多边形, 将每个顶点向量展开
+            for v in o.vertices:
+                yield v
+
+        elif isinstance(o, Points3D):
+            # 针对三维点集合, 将每个点向量展开
+            for v in o.vectors:
+                yield v
+
+        elif isinstance(o, Arrow3D):
+            # 针对三维箭头, 展开起始点坐标和终结点坐标
+            yield o.tip
+            yield o.tail
+
+        elif isinstance(o, Segment3D):
+            # 针对三维线段, 展开起始点坐标和终结点坐标
+            yield o.start_point
+            yield o.end_point
+
+        elif isinstance(o, Box3D):
+            # 针对三维立方体, 展开立方体顶点坐标
+            yield o.vector
+
+        else:
+            raise TypeError(f"Unrecognized object: {o}")
+
+
+class FancyArrow3D(FancyArrowPatch):
+    def __init__(self, xs, ys, zs, *args, **kwargs):
+        super().__init__((0, 0), (0, 0), *args, **kwargs)
+        self._verts3d = xs, ys, zs
+
+    def do_3d_projection(self, renderer=None):
+        xs3d, ys3d, zs3d = self._verts3d
+        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
+
+        self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
+
+        return np.min(zs)
+
+
+def draw3d(
+    *objects: Drawable3D,
+    origin=True,
+    axes=True,
+    save_as=None,
+    azim=None,
+    elev=None,
+    xlim=None,
+    ylim=None,
+    zlim=None,
+    xticks=None,
+    yticks=None,
+    zticks=None,
+    depth_shade=False,
+) -> None:
+    fig = plt.gcf()  # type: ignore
+
+    ax = fig.add_subplot(111, projection="3d")
+    ax.view_init(elev=elev, azim=azim)
+
+    all_vectors = list(extract_vectors_3D(objects))
+    if origin:
+        all_vectors.append((0, 0, 0))
+
+    xs, ys, zs = zip(*all_vectors)
+
+    max_x, min_x = max(0, *xs), min(0, *xs)
+    max_y, min_y = max(0, *ys), min(0, *ys)
+    max_z, min_z = max(0, *zs), min(0, *zs)
+
+    x_size = max_x-min_x
+    y_size = max_y-min_y
+    z_size = max_z-min_z
+
+    padding_x = 0.05 * x_size if x_size else 1
+    padding_y = 0.05 * y_size if y_size else 1
+    padding_z = 0.05 * z_size if z_size else 1
+
+    plot_x_range = (min(min_x - padding_x, -2), max(max_x + padding_x, 2))
+    plot_y_range = (min(min_y - padding_y, -2), max(max_y + padding_y, 2))
+    plot_z_range = (min(min_z - padding_z, -2), max(max_z + padding_z, 2))
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_zlabel("z")
+
+    def draw_segment(
+        start: Vector3D,
+        end: Vector3D,
+        color=Color.black.value,
+        linestyle=LineStyle.solid.value,
+    ) -> None:
+        xs, ys, zs = [[start[i], end[i]] for i in range(0, 3)]
+        ax.plot(xs, ys, zs, color=color, linestyle=linestyle)
+
+    if axes:
+        draw_segment(
+            (plot_x_range[0], 0, 0),
+            (plot_x_range[1], 0, 0),
+        )
+        draw_segment(
+            (0, plot_y_range[0], 0),
+            (0, plot_y_range[1], 0),
+        )
+        draw_segment(
+            (0, 0, plot_z_range[0]),
+            (0, 0, plot_z_range[1]),
+        )
+
+    if origin:
+        ax.scatter([0], [0], [0], color="k", marker="x")
+
+    for o in objects:
+        if isinstance(o, Points3D):
+            xs, ys, zs = zip(*o.vectors)
+            ax.scatter(xs, ys, zs, color=o.color, depthshade=depth_shade)
+
+        elif isinstance(o, Polygon3D):
+            for i in range(0, len(o.vertices)):
+                draw_segment(
+                    o.vertices[i],
+                    o.vertices[(i+1) % len(o.vertices)],
+                    color=o.color,
+                )
+
+        elif isinstance(o, Arrow3D):
+            xs, ys, zs = zip(o.tail, o.tip)
+            a = FancyArrow3D(
+                xs, ys, zs, mutation_scale=20,
+                arrowstyle="-|>", color=o.color
+            )
+            ax.add_artist(a)
+
+        elif isinstance(o, Segment3D):
+            draw_segment(
+                o.start_point,
+                o.end_point,
+                color=o.color,
+                linestyle=o.linestyle,
+            )
+
+        elif isinstance(o, Box3D):
+            x, y, z = o.vector
+            kwargs = {
+                "linestyle": "dashed",
+                "color": Color.gray.value,
+            }
+            draw_segment((0, y, 0), (x, y, 0), **kwargs)
+            draw_segment((0, 0, z), (0, y, z), **kwargs)
+            draw_segment((0, 0, z), (x, 0, z), **kwargs)
+            draw_segment((0, y, 0), (0, y, z), **kwargs)
+            draw_segment((x, 0, 0), (x, y, 0), **kwargs)
+            draw_segment((x, 0, 0), (x, 0, z), **kwargs)
+            draw_segment((0, y, z), (x, y, z), **kwargs)
+            draw_segment((x, 0, z), (x, y, z), **kwargs)
+            draw_segment((x, y, 0), (x, y, z), **kwargs)
+
+        else:
+            raise TypeError(f"Unrecognized object: {o}")
+
+    if xlim and ylim and zlim:
+        plt.xlim(*xlim)
+        plt.ylim(*ylim)
+        ax.set_zlim(*zlim)
+
+    if xticks and yticks and zticks:
+        plt.xticks(xticks)
+        plt.yticks(yticks)
+        ax.set_zticks(zticks)
 
     if save_as:
         plt.savefig(save_as)

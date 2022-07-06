@@ -9,3 +9,6 @@ Vector2D = Tuple[Number, Number]
 
 # 表示一个极坐标向量
 PolarVector = Tuple[Number, Number]
+
+# 表示一个 3D 笛卡尔向量
+Vector3D = Tuple[Number, Number, Number]

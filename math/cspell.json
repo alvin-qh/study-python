@@ -3,19 +3,32 @@
     "language": "en",
     "words": [
         "arange",
+        "arrowstyle",
         "axhline",
         "axisbelow",
         "axvline",
+        "azim",
+        "depthshade",
         "dinos",
+        "linestyle",
         "linewidth",
         "matplotlib",
+        "mplot",
         "pyplot",
         "savefig",
+        "toolkits",
         "vecs",
+        "verts",
+        "xlabel",
         "xlim",
         "xticks",
+        "ylabel",
         "ylim",
-        "yticks"
+        "yticks",
+        "zlabel",
+        "zlim",
+        "zticks",
+        "pyenv"
     ],
     "flagWords": []
 }
