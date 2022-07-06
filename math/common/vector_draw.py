@@ -403,13 +403,13 @@ class Box3D(Drawable3D):
     三维空间的任意点都可以和三个坐标轴组成一个立方体
     """
 
-    def __init__(self, *vector: Number, color=Color.green) -> None:
+    def __init__(self, *vector: Number, color=Color.gray) -> None:
         """
         初始化对象, 设置立方体在空间的点
 
         Args:
             vector (Tuple[Number]): 三维坐标分量, 依次为 `x`, `y` 和 `z`
-            color (Color, optional): 绘图颜色. Defaults to `Color.green`.
+            color (Color, optional): 绘图颜色. Defaults to `Color.gray`.
         """
         super().__init__(color)
         self.vector = cast(Vector3D, vector)
@@ -486,7 +486,7 @@ def draw3d(
     xticks=None,
     yticks=None,
     zticks=None,
-    depth_shade=False,
+    depthshade=False,
 ) -> None:
     fig = plt.gcf()  # type: ignore
 
@@ -547,7 +547,7 @@ def draw3d(
     for o in objects:
         if isinstance(o, Points3D):
             xs, ys, zs = zip(*o.vectors)
-            ax.scatter(xs, ys, zs, color=o.color, depthshade=depth_shade)
+            ax.scatter(xs, ys, zs, color=o.color, depthshade=depthshade)
 
         elif isinstance(o, Polygon3D):
             for i in range(0, len(o.vertices)):
@@ -577,7 +577,7 @@ def draw3d(
             x, y, z = o.vector
             kwargs = {
                 "linestyle": "dashed",
-                "color": Color.gray.value,
+                "color": o.color,
             }
             draw_segment((0, y, 0), (x, y, 0), **kwargs)
             draw_segment((0, 0, z), (0, y, z), **kwargs)
