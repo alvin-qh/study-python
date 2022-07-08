@@ -1,6 +1,7 @@
 from enum import Enum
 from math import ceil, floor, sqrt
 from tkinter.messagebox import NO
+from turtle import color
 from typing import Any, Generator, Iterable, Optional, cast
 
 import matplotlib.pyplot as plt
@@ -227,7 +228,12 @@ def draw(
         # 绘制网格
         gca.set_xticks(np.arange(x[0], x[1], grid[0]))
         gca.set_yticks(np.arange(y[0], y[1], grid[1]))
-        plt.grid(True)
+        plt.grid(  # type:ignore
+            True,
+            color="#aaa",
+            linestyle=":",
+            linewidth=0.5,
+        )
 
         gca.set_axisbelow(True)
 
@@ -503,9 +509,9 @@ def draw3d(
     max_y, min_y = max(0, *ys), min(0, *ys)
     max_z, min_z = max(0, *zs), min(0, *zs)
 
-    x_size = max_x-min_x
-    y_size = max_y-min_y
-    z_size = max_z-min_z
+    x_size = max_x - min_x
+    y_size = max_y - min_y
+    z_size = max_z - min_z
 
     padding_x = 0.05 * x_size if x_size else 1
     padding_y = 0.05 * y_size if y_size else 1

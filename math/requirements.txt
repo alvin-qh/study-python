@@ -4,3 +4,4 @@ data-science-types
 numpy
 
 mypy
+pytest

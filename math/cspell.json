@@ -14,21 +14,24 @@
         "linewidth",
         "matplotlib",
         "mplot",
+        "pyenv",
         "pyplot",
+        "rrggbb",
         "savefig",
         "toolkits",
         "vecs",
         "verts",
+        "xaxis",
         "xlabel",
         "xlim",
         "xticks",
+        "yaxis",
         "ylabel",
         "ylim",
         "yticks",
         "zlabel",
         "zlim",
-        "zticks",
-        "pyenv"
+        "zticks"
     ],
     "flagWords": []
 }
