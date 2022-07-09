@@ -206,8 +206,8 @@ def draw(
     )
 
     if grid:
-        x_padding = max(ceil(0.05*(max_x-min_x)), grid[0])
-        y_padding = max(ceil(0.05*(max_y-min_y)), grid[1])
+        x_padding = max(ceil(0.05 * (max_x - min_x)), grid[0])
+        y_padding = max(ceil(0.05 * (max_y - min_y)), grid[1])
 
         plt.xlim(
             floor((min_x - x_padding) / grid[0]) * grid[0],

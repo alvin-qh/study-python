@@ -6,7 +6,7 @@ import numpy as np
 Point = Tuple[float, float]
 
 
-def render_axis(xlim: Optional[Point] = None, ylim: Optional[Point] = None, grid=(1, 1), title="") -> None:
+def render_axis(xlim: Optional[Point] = None, ylim: Optional[Point] = None, grid=(1, 1), axis=True, title="") -> None:
     plt.title(title)
 
     if xlim:
@@ -38,10 +38,11 @@ def render_axis(xlim: Optional[Point] = None, ylim: Optional[Point] = None, grid
     # 显示刻度
     ax.set_axisbelow(True)
 
-    # 绘制原点坐标轴
-    # 本例中使用自行绘制的坐标轴
-    ax.axhline(linewidth=2, color="k")
-    ax.axvline(linewidth=2, color="k")
+    if axis:
+        # 绘制原点坐标轴
+        # 本例中使用自行绘制的坐标轴
+        ax.axhline(linewidth=2, color="k")
+        ax.axvline(linewidth=2, color="k")
 
     # 设置坐标轴的名称
     plt.xlabel("X")
