@@ -247,7 +247,7 @@ def draw(
             # 绘制多边形
             for i in range(0, len(o.vertices)):
                 x1, y1 = o.vertices[i]
-                x2, y2 = o.vertices[(i+1) % len(o.vertices)]
+                x2, y2 = o.vertices[(i + 1) % len(o.vertices)]
 
                 plt.plot([x1, x2], [y1, y2], color=o.color)
 
@@ -566,8 +566,10 @@ def draw3d(
         elif isinstance(o, Arrow3D):
             xs, ys, zs = zip(o.tail, o.tip)
             a = FancyArrow3D(
-                xs, ys, zs, mutation_scale=20,
-                arrowstyle="-|>", color=o.color
+                xs, ys, zs,
+                mutation_scale=20,
+                arrowstyle="-|>",
+                color=o.color,
             )
             ax.add_artist(a)
 
