@@ -2,6 +2,7 @@
 
 参考 [API 文档](https://matplotlib.org/stable/api/)
 
+教学 [在线电子书](https://wizardforcel.gitbooks.io/matplotlib-intro-tut/content/matplotlib/0.html)
 ## 颜色
 
 ### RGB 颜色
