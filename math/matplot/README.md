@@ -1,5 +1,7 @@
 # 绘图参数
 
+参考 [API 文档](https://matplotlib.org/stable/api/)
+
 ## 颜色
 
 ### RGB 颜色
