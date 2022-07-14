@@ -1,13 +1,11 @@
 from enum import Enum
 from math import ceil, floor, sqrt
-from tkinter.messagebox import NO
-from turtle import color
-from typing import Any, Generator, Iterable, Optional, cast
+from typing import Any, Generator, Iterable, List, Optional, Tuple, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import FancyArrowPatch  # type: ignore
-from mpl_toolkits.mplot3d import proj3d  # type:ignore
+from mpl_toolkits.mplot3d import Axes3D, proj3d  # type:ignore
 
 from . import Number, Vector2D, Vector3D
 
@@ -48,9 +46,17 @@ class Polygon(Drawable):
     多边形是一组线段组成的图像, 即将一组点进行两两连接
     """
 
-    def __init__(self, *vertices: Vector2D, color=Color.blue, fill: Optional[Color] = None, alpha=0.4) -> None:
+    def __init__(
+        self,
+        *vertices: Vector2D,
+        color=Color.blue,
+        fill: Optional[Color] = None,
+        alpha=0.4,
+    ) -> None:
         """
+        初始化对象
 
+        设置多边形的各个顶点向量
 
         Args:
             vertices (Tuple[Vector2D]): 顶点向量集合
@@ -267,7 +273,7 @@ def draw(
             tip, tail = o.tip, o.tail
             tip_length = (x[1] - x[0]) / 20.
 
-            length = sqrt((tip[1]-tail[1])**2 + (tip[0]-tail[0])**2)
+            length = sqrt((tip[1] - tail[1]) ** 2 + (tip[0] - tail[0]) ** 2)
             new_length = length - tip_length
 
             new_y = (tip[1] - tail[1]) * (new_length / length)
@@ -311,15 +317,17 @@ def draw(
 
 
 class LineStyle(Enum):
-    solid = "solid"
-    dashed = "dashed"
+    """
+    绘制线条的样式
+    """
+    solid = "solid"  # 实线
+    dashed = "dashed"  # 点划线
 
 
 class Drawable3D(Drawable):
     """
     所有 3D 绘图的超类
     """
-    pass
 
 
 class Points3D(Drawable3D):
@@ -466,16 +474,41 @@ def extract_vectors_3D(objects: Iterable[Drawable3D]) -> Generator[Vector3D, Non
 
 
 class FancyArrow3D(FancyArrowPatch):
-    def __init__(self, xs, ys, zs, *args, **kwargs):
-        super().__init__((0, 0), (0, 0), *args, **kwargs)
-        self._verts3d = xs, ys, zs
+    """
+    三维箭头类
+    """
 
-    def do_3d_projection(self, renderer=None):
+    def __init__(
+        self,
+        xs: Tuple[Number, Number],
+        ys: Tuple[Number, Number],
+        zs: Tuple[Number, Number],
+        *args, **kwargs,
+    ) -> None:
+        """
+        初始化对象
+
+        Args:
+            xs (Tuple[Number, Number]): 箭头在 `x` 轴的起止坐标
+            ys (Tuple[Number, Number]): 箭头在 `y` 轴的起止坐标
+            zs (Tuple[Number, Number]): 箭头在 `z` 轴的起止坐标
+
+            其它附加参数, 如:
+            - `mutation_scale`: 箭头的大小
+            - `arrowstyle`: 箭头样式, 默认为 `-|>`
+            - `color`: 箭头颜色
+        """
+        super().__init__((0, 0), (0, 0), *args, **kwargs)
+        self._verts3d = (xs, ys, zs)
+
+    def do_3d_projection(self, renderer=None) -> Number:
+        """
+        绘制 3D 图形
+        """
         xs3d, ys3d, zs3d = self._verts3d
         xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)
 
         self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
-
         return np.min(zs)
 
 
@@ -483,21 +516,50 @@ def draw3d(
     *objects: Drawable3D,
     origin=True,
     axes=True,
-    save_as=None,
-    azim=None,
-    elev=None,
-    xlim=None,
-    ylim=None,
-    zlim=None,
-    xticks=None,
-    yticks=None,
-    zticks=None,
+    elev: Optional[float] = None,
+    azim: Optional[float] = None,
+    xlim: Optional[Tuple[Number, Number]] = None,
+    ylim: Optional[Tuple[Number, Number]] = None,
+    zlim: Optional[Tuple[Number, Number]] = None,
+    xticks: Optional[List[Number]] = None,
+    yticks: Optional[List[Number]] = None,
+    zticks: Optional[List[Number]] = None,
     depthshade=False,
+    save_as="",
 ) -> None:
-    fig = plt.gcf()  # type: ignore
+    """
+    绘制三维图形
 
-    ax = fig.add_subplot(111, projection="3d")
-    ax.view_init(elev=elev, azim=azim)
+    Args:
+        objects (Tuple[Drawable3D]): 要绘制的三维图形.
+        origin (bool, optional): 是否绘制原点. Defaults to `True`.
+        axes (bool, optional): 是否绘制坐标轴. Defaults to `True`.
+        elev (Optional[float], optional): 垂直方向的仰角. Defaults to `None`.
+        azim (Optional[float], optional): 水平方向的方位角. Defaults to `None`.
+        xlim (Optional[Tuple[Number, Number]], optional): `x` 轴的范围. Defaults to `None`.
+        ylim (Optional[Tuple[Number, Number]], optional): `y` 轴的范围. Defaults to `None`.
+        zlim (Optional[Tuple[Number, Number]], optional): `z` 轴的范围. Defaults to `None`.
+        xticks (Optional[List[Number]], optional): `x` 轴的刻度值. Defaults to `None`.
+        yticks (Optional[List[Number]], optional): `y` 轴的刻度值. Defaults to `None`.
+        zticks (Optional[List[Number]], optional): `z` 轴的刻度值. Defaults to `None`.
+        depthshade (bool, optional): 是否绘制深度. Defaults to `False`.
+        save_as (str, optional): 存储图片的路径. Defaults to `""`.
+
+    Raises:
+        TypeError: 要绘制的三维图形不被支持
+    """
+    # 创建 Figure 对象
+    fig = plt.figure(figsize=(6, 6))  # type: ignore
+
+    # 创建三维坐标系
+    ax: Axes3D = fig.add_subplot(111, projection="3d")
+
+    # 初始化视图, 设置视图的仰角, 水平的方位角以及旋转轴
+    ax.view_init(
+        elev=elev,  # 设置垂直仰角
+        azim=azim,  # 设置水平方位角
+        vertical_axis="z",  # 要垂直对齐的轴, 默认为 'z' 轴
+    )
 
     all_vectors = list(extract_vectors_3D(objects))
     if origin:
@@ -520,6 +582,8 @@ def draw3d(
     plot_x_range = (min(min_x - padding_x, -2), max(max_x + padding_x, 2))
     plot_y_range = (min(min_y - padding_y, -2), max(max_y + padding_y, 2))
     plot_z_range = (min(min_z - padding_z, -2), max(max_z + padding_z, 2))
+
+    # 绘制坐标轴的标签
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.set_zlabel("z")
@@ -530,32 +594,54 @@ def draw3d(
         color=Color.black.value,
         linestyle=LineStyle.solid.value,
     ) -> None:
+        """
+        绘制线段
+
+        Args:
+            start (Vector3D): 线段的起始三维坐标
+            end (Vector3D): 线段的终止三维坐标
+            color (str, optional): 线段的颜色. Defaults to `Color.black.value`.
+            linestyle (str, optional): 线段样式. Defaults to `LineStyle.solid.value`.
+        """
+        # 将线段的起始终止坐标转为三个坐标轴的坐标值
         xs, ys, zs = [[start[i], end[i]] for i in range(0, 3)]
+        # 绘制线段
         ax.plot(xs, ys, zs, color=color, linestyle=linestyle)
 
+    # 判断是否需要绘制坐标轴
     if axes:
+        # 绘制 x 坐标轴
         draw_segment(
             (plot_x_range[0], 0, 0),
             (plot_x_range[1], 0, 0),
         )
+
+        # 绘制 y 坐标轴
         draw_segment(
             (0, plot_y_range[0], 0),
             (0, plot_y_range[1], 0),
         )
+
+        # 绘制 z 坐标轴
         draw_segment(
             (0, 0, plot_z_range[0]),
             (0, 0, plot_z_range[1]),
         )
 
+    # 判断是否绘制原点
     if origin:
+        # 绘制原点
         ax.scatter([0], [0], [0], color="k", marker="x")
 
+    # 绘制各个三维图形
     for o in objects:
         if isinstance(o, Points3D):
+            # 绘制三维点
             xs, ys, zs = zip(*o.vectors)
             ax.scatter(xs, ys, zs, color=o.color, depthshade=depthshade)
 
         elif isinstance(o, Polygon3D):
+            # 绘制三维多边形
             for i in range(0, len(o.vertices)):
                 draw_segment(
                     o.vertices[i],
@@ -564,6 +650,7 @@ def draw3d(
                 )
 
         elif isinstance(o, Arrow3D):
+            # 绘制三维箭头
             xs, ys, zs = zip(o.tail, o.tip)
             a = FancyArrow3D(
                 xs, ys, zs,
@@ -574,6 +661,7 @@ def draw3d(
             ax.add_artist(a)
 
         elif isinstance(o, Segment3D):
+            # 绘制三维线段
             draw_segment(
                 o.start_point,
                 o.end_point,
@@ -582,6 +670,7 @@ def draw3d(
             )
 
         elif isinstance(o, Box3D):
+            # 绘制三维盒子
             x, y, z = o.vector
             kwargs = {
                 "linestyle": "dashed",
@@ -600,17 +689,21 @@ def draw3d(
         else:
             raise TypeError(f"Unrecognized object: {o}")
 
+    # 设置坐标轴范围
     if xlim and ylim and zlim:
-        plt.xlim(*xlim)
-        plt.ylim(*ylim)
-        ax.set_zlim(*zlim)
+        plt.xlim(*xlim)  # 设置 x 轴的范围
+        plt.ylim(*ylim)  # 设置 y 轴的范围
+        ax.set_zlim(*zlim)  # 设置 z 轴的范围
 
+    # 设置坐标轴的刻度
     if xticks and yticks and zticks:
-        plt.xticks(xticks)
-        plt.yticks(yticks)
-        ax.set_zticks(zticks)
+        plt.xticks(xticks)  # 设置 x 轴刻度
+        plt.yticks(yticks)  # 设置 y 轴刻度
+        ax.set_zticks(zticks)  # 设置 z 轴刻度
 
+    # 是否保存图形
     if save_as:
         plt.savefig(save_as)
 
+    # 显示图形
     plt.show()
