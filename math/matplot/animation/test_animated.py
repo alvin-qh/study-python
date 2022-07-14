@@ -6,7 +6,7 @@ from matplotlib.animation import FuncAnimation
 from numpy import ndarray
 
 
-def test_animated_plot() -> None:
+def test_animated_with_fixed_axis() -> None:
     # 初始化画布
     fig = plt.figure()
 
@@ -95,9 +95,9 @@ def test_animated_plot() -> None:
         tangent_line.set_data(xs, ys)
 
         # 更新坐标标识
-        x_text.set_text("x=%.3f" % x[n])
-        y_text.set_text("y=%.3f" % y[n])
-        k_text.set_text("k=%.3f" % k)
+        x_text.set_text(f"x={x[n]:.3f}")
+        y_text.set_text(f"y={y[n]:.3f}")
+        k_text.set_text(f"k={k:.3f}")
 
     # 设置动画
     ani = FuncAnimation(
