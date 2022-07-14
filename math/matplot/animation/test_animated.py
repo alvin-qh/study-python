@@ -2,7 +2,6 @@ from typing import Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
-from matplotlib import style
 from matplotlib.animation import FuncAnimation
 from numpy import ndarray
 
