@@ -8,6 +8,11 @@ from graphene import (InputObjectType, Int, Mutation, ObjectType, ResolveInfo,
 class Person(ObjectType):
     """
     实体类
+
+    type Person {
+        name: String!
+        age: Int!
+    }
     """
     # 姓名字段, 字符串类型
     name = String(required=True)
@@ -47,6 +52,15 @@ class CreatePerson1(Mutation):
 class PersonInput(InputObjectType):
     """
     输入类, 用于输入要创建的对象
+
+    对应的 Graphql 定义为
+
+    ```graphql
+    input PersonInput {
+        name: String!
+        age: Int!
+    }
+    ```
     """
     # 姓名字段
     name = String(required=True)
@@ -98,6 +112,15 @@ class CreatePerson2(Mutation):
 class Mutations(ObjectType):
     """
     进行更新处理的实体类型
+
+    对应的 Graphql 定义为:
+
+    ```graphql
+    type Mutations {
+        createPerson1(name: String!, age: Int!): Person!
+        createPerson2(personData: PersonInput!): Person!
+    }
+    ```
     """
     # 通过 scalar 类型参数执行更新的 Mutation 字段
     create_person1 = CreatePerson1.Field()
