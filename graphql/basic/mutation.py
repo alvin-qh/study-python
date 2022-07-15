@@ -9,10 +9,12 @@ class Person(ObjectType):
     """
     实体类
 
+    ```graphql
     type Person {
         name: String!
         age: Int!
     }
+    ```
     """
     # 姓名字段, 字符串类型
     name = String(required=True)
@@ -137,7 +139,16 @@ class Query(ObjectType):
     answer = String(default_value="")
 
 
-"""_summary_
+"""
+定义 schema 结构
 
+对应的 GraphQL 定义为
+
+```graphql
+schema {
+    query: Query
+    mutation: Mutations
+}
+```
 """
 schema = Schema(query=Query, mutation=Mutations)
