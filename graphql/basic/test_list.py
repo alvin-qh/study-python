@@ -5,10 +5,10 @@ def test_list() -> None:
     """
     测试 `List` 类型
     """
-    # 查询结构
+    # 定义查询结构
     query = """
-        query($start: String!, $end: String!) {
-            items(start: $start, end: $end)
+        query($start: String!, $end: String!) { # 设置查询参数
+            items(start: $start, end: $end)     # 查询 Query 类型的 items 字段, 传递查询参数, 结果为列表集合
         }
     """
 

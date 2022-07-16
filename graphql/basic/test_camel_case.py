@@ -5,12 +5,12 @@ def test_auto_camel_case() -> None:
     """
     测试自动转驼峰命名规则
     """
-    # 定义查询字符串
+    # 定义查询结构
     query = """
         query {
-            person {           # 对应 Query 中的 person 字段
-                lastName       # 对应 Person 中的 last_name 字段, 自动转为驼峰命名
-                _other_name_   # 对应 Person 中的 other_name 字段, 通过 name 参数指定了名称
+            person {           # 查询 Query 中的 person 字段
+                lastName       # 查询 Person 中的 last_name 字段, 自动转为驼峰命名
+                _other_name_   # 查询 Person 中的 other_name 字段, 通过 name 参数指定了名称
             }
         }
     """

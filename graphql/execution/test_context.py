@@ -8,10 +8,10 @@ def test_context_as_dict() -> None:
     测试查询的上下文
     """
 
-    # 查询字符串
+    # 定义查询结构
     query = """
         query {
-            name  # 对应 Query 类的 name 字段
+            name  # 查询 Query 类型的 name 字段
         }
     """
 
@@ -35,10 +35,10 @@ def test_context_type() -> None:
     测试查询的上下文
     """
 
-    # 查询字符串
+    # 定义查询结构
     query = """
         query {
-            name  # 对应 Query 类的 name 字段
+            name  # 查询 Query 类的 name 字段
         }
     """
 

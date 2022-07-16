@@ -5,10 +5,11 @@ def test_define_type_name() -> None:
     """
     测试通过 `Meta` 类型定义实体类型的类型名称
     """
+    # 定义查询结构
     query = """
         query {
-            song {          # Query 类型的 song 字段
-                songName    # TypeSong 类型的 songName 字段
+            song {          # 查询 Query 类型的 song 字段
+                songName    # 查询 TypeSong 类型的 songName 字段
             }
         }
     """

@@ -10,28 +10,25 @@ def test_middleware_class_query_operation() -> None:
     """
     测试查询操作时, 类型中间件的作用
     """
-
+    # 定义查询结构
     query = """
-        query getUser($id: ID!) {  # 定义操作名称, 定义查询参数名称
-            user(id: $id) { # 对应 Query 类型的 user 字段
-                id          # 对应 User 类型的 id 字段
-                name        # 对应 User 类型的 name 字段
-                age         # 对应 User 类型的 age 字段
-                nickname    # 对应 User 类型的 nickname 字段
+        query getUser($id: ID!) {   # 定义查询参数, 定义操作名称
+            user(id: $id) {         # 查询 Query 类型的 user 字段
+                id                  # 查询 User 类型的 id 字段
+                name                # 查询 User 类型的 name 字段
+                age                 # 查询 User 类型的 age 字段
+                nickname            # 查询 User 类型的 nickname 字段
             }
         }
     """
 
-    # 指定要进行的操作名称
-    opt_name = "getUser"
     # 指定查询参数
-    var = {"id": 1}
+    vars = {"id": 1}
 
     # 执行查询, 并设置此次操作的中间件链
     r = schema.execute(
         query,
-        operation_name=opt_name,
-        variables=var,
+        variables=vars,
         middleware=[ModificationMiddleware()],   # 设置中间件操作链
     )
     assert r.errors is None
@@ -52,21 +49,19 @@ def test_middleware_class_mutation_operation() -> None:
     """
     测试更新操作时, 类型中间件的作用
     """
-    # 设定更新操作字符串
+    # 定义更新结构
     mutate = """
-        mutation createUser($user: UserInput!) {   # # 定义操作名称, 定义输入参数名称
-            userCreate(userInput: $user) {  # 对应 UserMutation 类型的 user_create 字段, 输入名为 user 的参数
-                id      # 对应 UserCreate 类型的 id 字段
-                name    # 对应 UserCreate 类型的 name 字段
-                age     # 对应 UserCreate 类型的 age 字段
+        mutation createUser($user: UserInput!) {    # 定义输入参数, 定义操作名称
+            userCreate(userInput: $user) {          # 执行 UserMutation 类型的 user_create 操作, 输入参数
+                id                                  # 返回 UserCreate 类型的 id 字段
+                name                                # 返回 UserCreate 类型的 name 字段
+                age                                 # 返回 UserCreate 类型的 age 字段
             }
         }
     """
 
-    # 指定要进行的操作名称
-    opt_name = "createUser"
     # 指定更新参数
-    var = {
+    vars = {
         "user": {   # 对应更新字符串中的 createUser 操作中的 user 参数
             "name": "Arthur",
             "age": 42,
@@ -76,10 +71,10 @@ def test_middleware_class_mutation_operation() -> None:
     # 执行更新操作
     r = schema.execute(
         mutate,
-        operation_name=opt_name,
-        variables=var,
+        variables=vars,
         middleware=[ModificationMiddleware()],  # 设定更新操作的中间件链
     )
+    # 确保更新执行正确
     assert r.errors is None
 
     # 因为操作类型, 操作名称和输入参数 name 字段符合预期, 所以 age 字段被中间件修改
@@ -141,28 +136,25 @@ def test_middleware_function_query_operation() -> None:
     """
     测试查询操作时, 函数中间件的作用
     """
-
+    # 定义查询结构
     query = """
-        query getUser($id: ID!) {  # 定义操作名称, 定义查询参数名称
-            user(id: $id) { # 对应 Query 类型的 user 字段
-                id          # 对应 User 类型的 id 字段
-                name        # 对应 User 类型的 name 字段
-                age         # 对应 User 类型的 age 字段
-                nickname    # 对应 User 类型的 nickname 字段
+        query getUser($id: ID!) {   # 定义查询参数, 定义操作名称
+            user(id: $id) {         # 查询 Query 类型的 user 字段
+                id                  # 查询 User 类型的 id 字段
+                name                # 查询 User 类型的 name 字段
+                age                 # 查询 User 类型的 age 字段
+                nickname            # 查询 User 类型的 nickname 字段
             }
         }
     """
 
-    # 指定要进行的操作名称
-    opt_name = "getUser"
-    # 指定查询参数
-    var = {"id": 1}
+    # 定义查询参数
+    vars = {"id": 1}
 
     # 执行查询, 并设置此次操作的中间件链
     r = schema.execute(
         query,
-        operation_name=opt_name,
-        variables=var,
+        variables=vars,
         middleware=[timeit_middleware],   # 设置中间件操作链
     )
     assert r.errors is None
@@ -189,21 +181,19 @@ def test_middleware_function_mutation_operation() -> None:
     """
     测试更新操作时, 函数中间件的作用
     """
-    # 设定更新操作字符串
+    # 设定更新结构
     mutate = """
-        mutation createUser($user: UserInput!) {   # 定义操作名称, 定义输入参数名称
-            userCreate(userInput: $user) {  # 对应 UserMutation 类型的 user_create 字段, 输入名为 user 的参数
-                id      # 对应 UserCreate 类型的 id 字段
-                name    # 对应 UserCreate 类型的 name 字段
-                age     # 对应 UserCreate 类型的 age 字段
+        mutation createUser($user: UserInput!) {    # 定义参数名称, 定义操作名称
+            userCreate(userInput: $user) {          # 执行 UserMutation 类型的 user_create 操作, 传递参数
+                id                                  # 返回 UserCreate 类型的 id 字段
+                name                                # 返回 UserCreate 类型的 name 字段
+                age                                 # 返回 UserCreate 类型的 age 字段
             }
         }
     """
 
-    # 指定要进行的操作名称
-    opt_name = "createUser"
-    # 指定更新参数
-    var = {
+    # 定义更新参数
+    vars = {
         "user": {   # 对应更新字符串中的 createUser 操作中的 user 参数
             "name": "Arthur",
             "age": 42,
@@ -213,8 +203,7 @@ def test_middleware_function_mutation_operation() -> None:
     # 执行更新操作
     r = schema.execute(
         mutate,
-        operation_name=opt_name,
-        variables=var,
+        variables=vars,
         middleware=[timeit_middleware],  # 设定更新操作的中间件链
     )
     assert r.errors is None

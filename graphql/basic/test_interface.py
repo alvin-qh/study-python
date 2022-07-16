@@ -7,15 +7,15 @@ def test_query_character_type() -> None:
 
     对 `Query` 类型的 `hero` 字段进行查询, 该字段为 `Character` 类型, 即接口类型
     """
-    # 查询字符串
+    # 定义查询结构
     query = """
-        query($episode: Int!) {
-            hero(episode: $episode) {     # 对应 Query 类型的 hero 字段
-                id            # 对应 Character 类型的 id 字段
-                name          # 对应 Character 类型的 name 字段
-                friends {     # 对应 Character 类型的 friends 字段
-                    id        # 对应 Character 类型的 id 字段
-                    name      # 对应 Character 类型的 name 字段
+        query($episode: Int!) {         # 设定查询参数
+            hero(episode: $episode) {   # 查询 Query 类型的 hero 字段
+                id                      # 查询 Character 类型的 id 字段
+                name                    # 查询 Character 类型的 name 字段
+                friends {               # 查询 Character 类型的 friends 字段
+                    id                  # 查询 Character 类型的 id 字段
+                    name                # 查询 Character 类型的 name 字段
                 }
             }
         }
@@ -92,19 +92,19 @@ def test_query_human_type() -> None:
 
     对 `Query` 类型的 `humanHero` 字段进行查询, 该字段为 `Human` 类型, 即接口的实现类型
     """
-    # 查询字符串
+    # 定义查询结构
     query = """
-        query($episode: Int!) {
-            humanHero(episode: $episode) {     # 对应 Query 类型的 human_hero 字段
-                id            # 对应 Human 类型的 id 字段
-                name          # 对应 Human 类型的 name 字段
-                friends {     # 对应 Human 类型的 friends 字段
-                    id        # 对应 Character 类型的 id 字段
-                    name      # 对应 Character 类型的 name 字段
+        query($episode: Int!) {             # 设定查询参数
+            humanHero(episode: $episode) {  # 查询 Query 类型的 human_hero 字段
+                id                          # 查询 Human 类型的 id 字段
+                name                        # 查询 Human 类型的 name 字段
+                friends {                   # 查询 Human 类型的 friends 字段
+                    id                      # 查询 Character 类型的 id 字段
+                    name                    # 查询 Character 类型的 name 字段
                 }
-                starShips {   # 对应 Human 类型的 star_ships 字段
-                    name      # 对应 StarShip 类型的 name
-                    shipType  # 对应 StarShip 类型的 ship_type
+                starShips {                 # 查询 Human 类型的 star_ships 字段
+                    name                    # 查询 StarShip 类型的 name
+                    shipType                # 查询 StarShip 类型的 ship_type
                 }
             }
         }
@@ -158,15 +158,15 @@ def test_query_droid_type() -> None:
     对 `Query` 类型的 `droidHero` 字段进行查询, 该字段为 `Droid` 类型, 即接口的实现类型
     """
     query = """
-        query($episode: Int!) {
-            droidHero(episode: $episode) {  # 对应 Query 类型的 droid_hero 字段
-                id                  # 对应 Droid 类型的 id 字段
-                name                # 对应 Droid 类型的 name 字段
-                friends {           # 对应 Droid 类型的 friends 字段
-                    id              # 对应 Character 类型的 id 字段
-                    name            # 对应 Character 类型的 name 字段
+        query($episode: Int!) {             # 设置查询参数
+            droidHero(episode: $episode) {  # 查询 Query 类型的 droid_hero 字段
+                id                          # 查询 Droid 类型的 id 字段
+                name                        # 查询 Droid 类型的 name 字段
+                friends {                   # 查询 Droid 类型的 friends 字段
+                    id                      # 查询 Character 类型的 id 字段
+                    name                    # 查询 Character 类型的 name 字段
                 }
-                primaryFunction     # 对应 Droid 类型的 primary_function 字段
+                primaryFunction             # 查询 Droid 类型的 primary_function 字段
             }
         }
     """
@@ -204,16 +204,19 @@ def test_query_droid_type() -> None:
 
 
 def test_query_multiple_type() -> None:
+    """
+    测试根据不同查询结果的类型呈现不同结果内容
+    """
     query = """
         query($episode: Int!) {
-            hero(episode: $episode) {   # 对应 Query 类型的 hero 字段
-                __typename              # 获取查询结果的实体类型
-                name                    # 对应 Character 类型的 name 字段
-                ... on Droid {          # 对于查询结果为 Droid 实体类型时
-                    primaryFunction     # 对应 Droid 类型的 primary_function 字段
+            hero(episode: $episode) {   # 查询 Query 类型的 hero 字段
+                __typename              # 查询结果实体类型
+                name                    # 查询 Character 类型的 name 字段
+                ... on Droid {          # 当实际查询结果为 Droid 类型时
+                    primaryFunction     # 查询 Droid 类型的 primary_function 字段
                 }
-                ... on Human {          # 对于查询结果为 Human 实体类型时
-                    homePlanet          # 对应 Human 类型的 home_planet 字段
+                ... on Human {          # 当实际查询结果为 Human 类型时
+                    homePlanet          # 查询 Human 类型的 home_planet 字段
                 }
             }
         }

@@ -5,10 +5,10 @@ def test_create_person1() -> None:
     """
     测试通过 scalar 类型参数进行实体更新的 `Mutation` 查询
     """
-    # 查询结构
+    # 定义查询结构
     query = """
         mutation($name: String!, $age: Int!) {         # 定义 scalar 类型参数
-            createPerson1(name: $name, age: $age) {    # 调用 Mutations 类型的 `create_person1` 字段, 传入参数
+            createPerson1(name: $name, age: $age) {    # 调用 Mutations 类型的 create_person1 字段, 传入参数
                 __typename      # 类型为 Person 类型
                 name            # Person 类型的 name 字段
                 age             # Person 类型的 age 字段
@@ -38,10 +38,10 @@ def test_create_person2() -> None:
     """
     测试通过 `InputObjectType` 作为输入参数更新对象
     """
-    # 查询结构
+    # 定义查询结构
     query = """
         mutation($input: PersonInput!) {         # 定义输入参数
-            createPerson2(personData: $input) {  # 调用 Mutations 类型的 `create_person2` 字段, 传入参数
+            createPerson1(personData: $input) {  # 调用 Mutations 类型的 create_person1 字段, 传入参数
                 __typename      # 类型为 Person
                 name            # Person 类型的 name 字段
                 age             # Person 类型的 age 字段

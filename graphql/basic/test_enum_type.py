@@ -7,18 +7,16 @@ def test_standard_enum() -> None:
     """
     # 定义查询结构
     query = """
-        query($episode: Episode!) {
-            movie(episode: $episode) {
-                name
-                episode
+        query($episode: Episode!) {     # 设置查询参数
+            movie(episode: $episode) {  # 查询 Query 对象的 movie 字段, 传递参数
+                name                    # 查询 Movie 类型的 name 字段
+                episode                 # 查询 Movie 类型的 episode 字段, 为 Episode 枚举类型
             }
         }
     """
 
     # 定义查询参数
-    vars = {
-        "episode": "EMPIRE",
-    }
+    vars = {"episode": "EMPIRE"}
 
     # 执行查询
     r = schema.execute(query, variables=vars)
@@ -40,18 +38,16 @@ def test_enum_instance() -> None:
     """
     # 定义查询结构
     query = """
-        query($faction: Faction!) {
-            characters(faction: $faction) {
-                name
-                faction
+        query($faction: Faction!) {         # 设定查询参数
+            characters(faction: $faction) { # 查询 Query 类型的 characters 字段, 传递参数
+                name                        # 查询 Character 类型的 name 字段
+                faction                     # 查询 Character 类型的 faction 字段, 为 Faction 枚举类型
             }
         }
     """
 
     # 定义查询参数
-    vars = {
-        "faction": "DARK_SIDE",
-    }
+    vars = {"faction": "DARK_SIDE"}
 
     # 执行查询
     r = schema.execute(query, variables=vars)

@@ -16,12 +16,12 @@ def test_simple_scalar_types() -> None:
     # 查询字符串
     query = """
         query {
-            stuff {         #  对应 Query 类型的 stuff 字段
-                id          #  对应 Stuff 类型的 id 字段
-                name        #  对应 Stuff 类型的 name 字段
-                serialNo    #  对应 Stuff 类型的 serial_no 字段
-                price       #  对应 Stuff 类型的 price 字段
-                lts         #  对应 Stuff 类型的 lts 字段
+            stuff {         #  查询 Query 类型的 stuff 字段
+                id          #  查询 Stuff 类型的 id 字段
+                name        #  查询 Stuff 类型的 name 字段
+                serialNo    #  查询 Stuff 类型的 serial_no 字段
+                price       #  查询 Stuff 类型的 price 字段
+                lts         #  查询 Stuff 类型的 lts 字段
             }
         }
     """
@@ -52,11 +52,11 @@ def test_datetime_scalar_types() -> None:
     """
     # 查询需 date, datetime, time 三个参数, 定义 $date, $datetime, $time 三个入参与之对应
     query = """
-        query ($date: Date!, $datetime: DateTime!, $time: Time!) {
-            calendar {                              # 对应 Query 类型的 calendar 字段
-                oneWeekFrom(date: $date)            # 对应 Calendar 类型的 one_week_from 字段
-                oneHourFrom(datetime: $datetime)    # 对应 Calendar 类型的 one_hour_from 字段
-                oneMinuteFrom(time: $time)          # 对应 Calendar 类型的 one_minute_from 字段
+        query ($date: Date!, $datetime: DateTime!, $time: Time!) {  # 设定查询参数
+            calendar {                              # 查询 Query 类型的 calendar 字段
+                oneWeekFrom(date: $date)            # 查询 Calendar 类型的 one_week_from 字段
+                oneHourFrom(datetime: $datetime)    # 查询 Calendar 类型的 one_hour_from 字段
+                oneMinuteFrom(time: $time)          # 查询 Calendar 类型的 one_minute_from 字段
             }
         }
     """
@@ -123,9 +123,9 @@ def test_json_string_scalar_type() -> None:
     """
     # 查询字符串
     query = """
-        query ($key: String!, $value: GenericType!) {
-            jsonObject {                                    # 对应 Query 类型的 json_object 字段
-                updateJsonKey(key: $key, value: $value)     # 对应 JSONObject 类型的 update_json_key 字段
+        query ($key: String!, $value: GenericType!) {   # 设定查询参数
+        jsonObject {                                    # 查询 Query 类型的 json_object 字段
+                updateJsonKey(key: $key, value: $value) # 查询 JSONObject 类型的 update_json_key 字段
             }
         }
     """
@@ -153,11 +153,11 @@ def test_custom_scalar_type() -> None:
     """
     测试 `Base64` 自定义 Scalar 类型
     """
-    # 查询字符串
+    # 定义查询结构
     query = """
-        query ($value: Base64!) {                   # 参数为 Base64 自定义类型
-            encodedId {                             # 对应 Query 类型的 encoded_id 字段
-                incrementEncodedId(value: $value)   # 对应 EncodedId 类型的 increment_encoded_id 字段
+        query ($value: Base64!) {                   # 定义查询参数, 为自定义 Base64 类型
+            encodedId {                             # 查询 Query 类型的 encoded_id 字段
+                incrementEncodedId(value: $value)   # 查询 EncodedId 类型的 increment_encoded_id 字段
             }
         }
     """
@@ -167,9 +167,12 @@ def test_custom_scalar_type() -> None:
         "value": "NA==",  # 参数为 "4" 的 base64 编码
     }
 
+    # 执行查询
     r = schema.execute(query, variables=vars)
+    # 确保查询执行正确
     assert r.errors is None
 
+    # 确认查询结果正确
     assert r.data == {
         "encodedId": {
             "incrementEncodedId": "NQ==",  # 返回结果为 "5" 的 base64 编码

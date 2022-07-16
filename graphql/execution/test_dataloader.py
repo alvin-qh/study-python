@@ -10,21 +10,21 @@ async def test_data_loader() -> None:
 
     另外需要参考 `conftest.py` 文件中关于 `event_loop` 变量的 `fixture` 函数
     """
-    # 要执行的查询字符串
+    # 定义查询结构
     query = """
-        query getUser($id: ID!) {
-            user(id: $id) {
-                id
-                name
-                friends {
-                    __typename
-                    id
-                    name
+        query($id: ID!) {       # 定义查询参数
+            user(id: $id) {     # 查询 Query 类型的 user 字段, 传递参数
+                id              # 查询 User 类型的 id 字段
+                name            # 查询 User 类型的 name 字段
+                friends {       # 查询 User 类型的 friends 字段, 为集合类型
+                    __typename  # 查询实体类型
+                    id          # 查询 User 类型的 id 字段
+                    name        # 查询 User 类型的 name 字段
                 }
-                bestFriend {
-                    __typename
-                    id
-                    name
+                bestFriend {    # 查询 User 类型的 best_friend 字段
+                    __typename  # 查询实体类型
+                    id          # 查询 User 类型的 id 字段
+                    name        # 查询 User 类型的 name 字段
                 }
             }
         }

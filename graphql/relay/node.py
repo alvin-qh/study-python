@@ -10,7 +10,8 @@ class Ship(ObjectType):
     """
     定义实体类型, 该实体类型从 `Node` 接口继承
 
-    `Node` 接口包含 `id` 字段, `id` 字段为 `String` 类型, 保存一个 base64 编码的 ID'
+    `Node` 接口包含 `id` 字段, `id` 字段为 `String` 类型, 保存一个 base64 编码的 ID',
+    也称为 Global ID, 即统一 ID
 
     默认情况下, `Node` 类型的 `id` 属性值为 `类型名:原始ID值`,
     例如一个 `Ship` 类型对象的原始ID值为 `10`, 则 `Node` 类型的 `id` 值应该为 `Ship:10`
