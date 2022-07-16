@@ -1,4 +1,3 @@
-import random
 import time
 from datetime import datetime
 from typing import Dict
@@ -100,7 +99,7 @@ class User(ObjectType):
             User: 返回实体对象
         """
         loader = cast(UserLoader, info.context.user_loader)
-        return await loader.load(id)
+        return await loader.load(int(id))
 
 
 class Photo(ObjectType):
@@ -142,7 +141,7 @@ class Photo(ObjectType):
             User: 返回 `User` 实体对象
         """
         loader: UserLoader = info.context.user_loader
-        return await loader.load(parent.for_user)
+        return await loader.load(int(parent.for_user))
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: ID) -> "Photo":
@@ -157,7 +156,7 @@ class Photo(ObjectType):
             Photo: 返回当前类型实体对象
         """
         loader = cast(PhotoLoader, info.context.photo_loader)
-        return await loader.load(id)
+        return await loader.load(int(id))
 
 
 class UserLoader(DataLoader):
@@ -202,7 +201,6 @@ class Dataset:
     """
     数据集类型
     """
-
     users: Dict[int, User]
     photos: Dict[int, Photo]
 

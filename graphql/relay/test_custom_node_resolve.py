@@ -1,7 +1,9 @@
+import base64
+
 from graphene import Context
 from pytest import mark
 
-from .custom_node import PhotoLoader, UserLoader, schema
+from .custom_node_resolve import PhotoModelLoader, UserModelLoader, schema
 
 
 @mark.asyncio
@@ -22,23 +24,23 @@ async def test_query_users() -> None:
     """
 
     # 定义查询参数
-    vars = {"id": "User:12"}
+    vars = {"id": base64.b64encode("User:12".encode()).decode()}
 
     # 异步执行查询
     r = await schema.execute_async(
         query,
         variables=vars,
         context=Context(
-            user_loader=UserLoader(),  # 将 UserLoader 对象存入 Context 对象
+            user_model_loader=UserModelLoader(),  # 将 UserModelLoader 对象存入 Context 对象
         ),
     )
     # 确保查询执行正确
     assert r.errors is None
 
-    # 确认查询结果正确
+    # 确认查询结果正确, cspell: disable
     assert r.data == {
         "user": {
-            "id": "User:12",
+            "id": "VXNlcjoxMg==",
             "name": "User-12",
         }
     }
@@ -66,15 +68,15 @@ async def test_query_photo() -> None:
     """
 
     # 定义查询参数
-    vars = {"id": "Photo:12"}
+    vars = {"id": base64.b64encode("Photo:12".encode()).decode()}
 
     # 异步执行查询
     r = await schema.execute_async(
         query,
         variables=vars,
         context=Context(
-            user_loader=UserLoader(),  # 将 UserLoader 对象存入 Context 对象
-            photo_loader=PhotoLoader(),  # 将 PhotoLoader 对象存入 Context 对象
+            user_model_loader=UserModelLoader(),  # 将 UserLoader 对象存入 Context 对象
+            photo_model_loader=PhotoModelLoader(),  # 将 PhotoLoader 对象存入 Context 对象
         ),
     )
     # 确保查询执行正确
@@ -83,9 +85,9 @@ async def test_query_photo() -> None:
     # 确认查询结果正确
     assert r.data == {
         "photo": {
-            "id": "Photo:12",
+            "id": "UGhvdG86MTI=",
             "forUser": {
-                "id": "User:7",
+                "id": "VXNlcjo3",
                 "name": "User-7"
             },
             "datetime": "2020-01-01T00:00:11",
@@ -119,16 +121,16 @@ async def test_query_node() -> None:
     """
 
     # 定义查询参数
-    # 由于自定义 Global ID 的转换规则, 这里无需通过 base64 编码
-    vars = {"id": "Photo:12"}
+    # 此时 ID 需要进行 base64 编码
+    vars = {"id": base64.b64encode("Photo:12".encode()).decode()}
 
-    # 执行查询
+    # 异步执行查询
     r = await schema.execute_async(
         query,
         variables=vars,
         context=Context(  # 定义查询上下文对象
-            user_loader=UserLoader(),
-            photo_loader=PhotoLoader(),
+            user_model_loader=UserModelLoader(),
+            photo_model_loader=PhotoModelLoader(),
         ),
     )
     # 确保查询正确
@@ -138,9 +140,9 @@ async def test_query_node() -> None:
     assert r.data == {
         "node": {
             "__typename": "Photo",
-            "id": "Photo:12",
+            "id": "UGhvdG86MTI=",
             "forUser": {
-                "id": "User:7",
+                "id": "VXNlcjo3",
                 "name": "User-7",
             },
             "datetime": "2020-01-01T00:00:11",
@@ -148,16 +150,14 @@ async def test_query_node() -> None:
     }
 
     # 定义查询参数
-    # 由于自定义 Global ID 的转换规则, 这里无需通过 base64 编码
-    vars = {"id": "User:12"}
+    vars = {"id": base64.b64encode("User:12".encode()).decode()}
 
-    # 执行查询
+    # 异步执行查询
     r = await schema.execute_async(
         query,
         variables=vars,
-        context=Context(
-            user_loader=UserLoader(),
-            photo_loader=PhotoLoader(),
+        context=Context(  # 定义查询上下文对象
+            user_model_loader=UserModelLoader(),
         ),
     )
     # 确保查询正确
@@ -167,7 +167,7 @@ async def test_query_node() -> None:
     assert r.data == {
         "node": {
             "__typename": "User",
-            "id": "User:12",
+            "id": "VXNlcjoxMg==",
             "name": "User-12",
         },
     }
