@@ -1,6 +1,70 @@
+"""
+为 `Node` 类型增加 "可能的类型"
+
+如果一个类型 `Foo` 从 `Node` 类型继承, 且在使用 `Foo` 类型定义字段时未明确指定字段的类型,
+则需要为 `Foo` 类型指定其可能转化为的类型列表, 可以通过 `Meta.possible_types` 字段或者
+`is_type_of` 方法来指定, 例如:
+
+```graphql
+class Foo(ObjectType):
+    class Meta:
+        interfaces = (Node,)    # 从 Node 接口类型继承
+
+    ...
+```
+
+此时定义 `Foo` 类型的查询字段
+
+```graphql
+type Query(ObjectType):
+    foo1 = Node.Field(Foo)   # 此时类型明确
+    foo2 = Node.Field()      # 此时类型不明
+```
+
+对于查询 `foo1`, 则直接指定查询字段即可
+
+```graphql
+query {
+    foo1 {
+        ...
+    }
+}
+```
+
+对于查询 `foo2`, 因为实际类型未知, 则需要在查询时指定类型
+
+```graphql
+query {
+    foo2 {
+        ... on Foo {
+            ...
+        }
+    }
+}
+```
+
+但此时查询会出错, 因为 `Foo` 在定义时, 并未明确指定查询何种类型可以返回该类型对象, 所以需要明确:
+
+```python
+class Foo(ObjectType):
+    class Meta:
+        interfaces = (Node,)
+        possible_types = (Foo,)  # 由于 Python 的限制, 在类型内无法使用当前类型声明, 所以这里只能填写非当前类型
+
+    ...
+
+    # 如果使用 is_type_of 方法, 则可避免上述问题
+    @staticmethod
+    def is_type_of(info: ResolveInfo) -> Tuple[ObjectType]:
+        return (Foo,)
+```
+
+此时, 查询 `foo2` 字段并使用 `... on Foo {}` 即可以得到正确结果
+"""
+
 import datetime
 import time
-from typing import Dict
+from typing import Dict, Tuple, Type
 
 from graphene import (ID, DateTime, Field, Node, ObjectType, ResolveInfo,
                       Schema, String)
@@ -145,7 +209,9 @@ class User(ObjectType):
         # 继承 Node 接口
         interfaces = (Node,)
         # 定义当前 Node 接口可能表示的类型
-        # possible_types = (UserModel,)
+        # 由于 Python 语言的限制, 这里无法填写 User 类型, 所以填写了具有相同结构的 UserModel 类型
+        # 这种情况下, 更推荐使用 is_type_of 方法返回可能的类型
+        possible_types = (UserModel,)
 
     name = String(required=True)
 
@@ -172,10 +238,21 @@ class Photo(ObjectType):
         # 继承 CustomNode 接口
         interfaces = (Node,)
         # 定义当前 Node 接口可能表示的类型
-        possible_types = (PhotoModel,)
+        # possible_types = (PhotoModel,)
 
     for_user = Field(User, required=True)
     datetime = DateTime(required=True)
+
+    @staticmethod
+    def is_type_of(info: ResolveInfo) -> Tuple[ObjectType]:
+        """
+        如果当前类型从 `Node` 接口继承, 且未提供 `Meta.possible_types` 字段,
+        则可以通过 `is_type_of` 方法返回可能的类型
+
+        Returns:
+            Tuple[ObjectType]: 可能的类型集合
+        """
+        return (Photo,)
 
     @staticmethod
     def resolve_for_user(parent: PhotoModel, info: ResolveInfo) -> UserModel:
