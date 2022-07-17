@@ -64,7 +64,7 @@ class Foo(ObjectType):
 
 import datetime
 import time
-from typing import Dict, Tuple, Type
+from typing import Dict, Tuple
 
 from graphene import (ID, DateTime, Field, Node, ObjectType, ResolveInfo,
                       Schema, String)
@@ -244,7 +244,7 @@ class Photo(ObjectType):
     datetime = DateTime(required=True)
 
     @staticmethod
-    def is_type_of(info: ResolveInfo) -> Tuple[ObjectType]:
+    def is_type_of(parent: PhotoModel, info: ResolveInfo) -> Tuple[ObjectType]:
         """
         如果当前类型从 `Node` 接口继承, 且未提供 `Meta.possible_types` 字段,
         则可以通过 `is_type_of` 方法返回可能的类型
