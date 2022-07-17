@@ -1,5 +1,4 @@
-from typing import Any, Literal
-from unicodedata import name
+from typing import Literal
 
 from graphene import (InputObjectType, Int, Mutation, ObjectType, ResolveInfo,
                       Schema, String)
