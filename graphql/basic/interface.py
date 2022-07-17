@@ -1,3 +1,48 @@
+"""
+接口类型
+
+Graphql 中, 如果希望将实体类型的一部分进行公用, 则可以定义 `interface` 类型, 例如:
+
+```graphql
+interface Foo {
+    ...
+}
+```
+
+可以定义实体类型继承此接口
+
+```graphql
+type Bar implements Foo {
+    ...
+}
+```
+
+此时接口中定义的所有字段都会被实体类型继承
+
+通过 Graphene 完成接口继承, 需要通过实体类型的 `Meta` 元类型来指定, 例如:
+
+定义接口
+
+```python
+class Foo(Interface):
+    ...
+```
+
+继承接口
+
+```python
+class Bar(ObjectType):
+    class Meta:
+        interfaces = (Foo,)
+
+    ...
+```
+
+因为 graphql 允许实体类型继承多个接口, 所以 `Meta.interfaces` 字段是一个集合类型, 包括所有需要继承的接口类型
+
+在 graphql 的扩展定义 relay 中, `Node` 类型就是一个接口, 该接口定义了 Global ID, 分页方法等以供查询大集合结果
+"""
+
 from typing import Dict
 from typing import List as ListType
 from typing import Union
@@ -179,7 +224,11 @@ class HeroQuery(ObjectType):
     hero = Field(Character, episode=Int(required=True), required=True)
 
     @staticmethod
-    def resolve_hero(parent: Character, info: ResolveInfo, episode: int) -> Character:
+    def resolve_hero(
+        parent: Character,
+        info: ResolveInfo,
+        episode: int,
+    ) -> Character:
         """
         解析 `hero` 字段
 
@@ -210,7 +259,11 @@ class HumanQuery(ObjectType):
     human_hero = Field(Human, episode=Int(required=True), required=True)
 
     @staticmethod
-    def resolve_human_hero(parent: Human, info: ResolveInfo, episode: int) -> Human:
+    def resolve_human_hero(
+        parent: Human,
+        info: ResolveInfo,
+        episode: int,
+    ) -> Human:
         """
         解析 `human_hero` 字段
 
@@ -241,7 +294,11 @@ class DroidQuery(ObjectType):
     droid_hero = Field(Droid, episode=Int(required=True), required=True)
 
     @staticmethod
-    def resolve_droid_hero(parent: Droid, info: ResolveInfo, episode: int) -> Droid:
+    def resolve_droid_hero(
+        parent: Droid,
+        info: ResolveInfo,
+        episode: int,
+    ) -> Droid:
         """
         解析 `droid_hero` 字段
 
