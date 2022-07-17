@@ -1,3 +1,32 @@
+"""
+Graphql 中的命名规范
+
+Graphql 默认使用 Camel Case (驼峰) 规范命名字段, 而 Python 采用下划线规范进行命名
+
+Graphene 内置了一套规则, 可以自动将下划线命名转换为驼峰命名, 例如:
+
+```
+user_name => userName
+```
+
+这个过程默认是自动的, 除非对其进行显式的关闭
+
+是否使用名称转换是有 `Schema` 类型的 `auto_camelcase` 参数控制
+
+```python
+schema = Schema(query=Query, auto_camelcase=True) # 默认开启名称转换
+```
+
+一般情况下, 这个转换规则工作的很好, 无需干预, 但一些特殊情况 (例如名称中确实存在下划线) 下, 需要指定名称避免转换
+
+```python
+class Foo(ObjectType):
+    b_name = String(name="b_name", required=True)
+```
+
+此时, 字段名称不会被转换为 `bName`, 而会保持 `b_name`
+"""
+
 from typing import Literal
 
 from graphene import Field, ObjectType, ResolveInfo, Schema, String
