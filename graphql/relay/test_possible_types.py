@@ -1,8 +1,5 @@
 import base64
 
-from graphene import Context
-from pytest import mark
-
 from .possible_types import schema
 
 
