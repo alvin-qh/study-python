@@ -1,5 +1,69 @@
-from typing import Literal, List as ListType
-from graphene import Argument, Enum, Field, List, ObjectType, ResolveInfo, Schema, String
+"""
+枚举类型
+
+Graphql 支持定义枚举, 用于定义一组有意义的标识符, 例如:
+
+```graphql
+enum Foo {
+    A
+    B
+    C
+}
+```
+
+枚举可以用于 graphql 字段类型或参数类型, 例如:
+
+```graphql
+type Bar {
+    foo: Foo!                   # 枚举作为字段类型
+    foobar(foo: Foo!): Bar!     # 枚举作为参数类型
+}
+```
+
+在 Graphene 中, 支持两种枚举定义方式:
+
+1. 通过继承 `graphene.Enum` 类型定义
+
+```python
+class Foo(Enum):
+    A = 0
+    B = 1
+    C = 2
+```
+
+或者通过 `graphene.Enum` 构造器进行
+
+```python
+Foo = Enum("Foo", [("A", 0), ("B", 1), ("C", 2)])
+```
+
+2. 通过 Python Enum 类型转换
+
+```python
+Foo = Enum.from_enum(PyFoo)     # 将 Python 定义的枚举 PyFoo 转为 Graphene 枚举
+```
+
+定义了枚举类型, 则可以在类型定义中使用
+
+```python
+class Bar(ObjectType):
+    foo = Field(Foo, required=True)     # 枚举用于字段类型
+```
+
+或者
+
+```python
+class Bar(ObjectType):
+    foobar = Field(Foobar, foo=Argument(Foo, required=True)) # 枚举用于参数
+```
+
+"""
+
+from typing import List as ListType
+from typing import Literal
+
+from graphene import (Argument, Enum, Field, List, ObjectType, ResolveInfo,
+                      Schema, String)
 
 
 class Episode(Enum):
@@ -105,7 +169,11 @@ class Query(ObjectType):
     )
 
     @staticmethod
-    def resolve_movie(parent: Literal[None], info: ResolveInfo, episode: Episode) -> Movie:
+    def resolve_movie(
+        parent: Literal[None],
+        info: ResolveInfo,
+        episode: Episode,
+    ) -> Movie:
         """
         解析影片字段
 
