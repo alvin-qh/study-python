@@ -1,3 +1,90 @@
+"""
+更新操作
+
+若要对实体对象进行更新操作 (添加/修改/删除), 需要用到 `Mutation` 类型.
+
+```graphql
+type Mutation {
+    createFoo(name: String!): FooCreatedPayload!
+    updateFoo(fooData: FooInput): FooUpdatedPayload!
+    deleteFoo(id: ID!): FooDeletedPayload!
+}
+```
+
+其中的 `FooInput` 是一个输入类型, 用作输入参数, 定义如下:
+
+```graphql
+input FooInput {
+    id: ID!
+    name: String!
+}
+```
+
+其中的 `FooCreatedPayload`, `FooUpdatedPayload` 和 `FooDeletedPayload` 是实体类型, 表示返回值, 例如:
+
+```graphql
+type FooCreatedPayload {
+    createdFoo: Foo!
+}
+```
+
+通过 Graphene 定义 Mutation 操作如下:
+
+```python
+class CreateFoo(Mutation):
+    class Argument:
+        name = String(required=True)
+
+    Output = FooCreatedPayload
+
+    @staticmethod
+    def mutate(parent: Literal[None], info: ResolveInfo, name: str) -> FooCreatedPayload:
+        foo = Foo(name=name)
+        # persistent foo object
+        return FooCreatedPayload(createdFoo=foo)
+```
+
+字段 `Output` 表示操作完成后返回的类型
+
+使用 Graphene 定义 Input 类型如下:
+
+```python
+class FooInput(InputObjectType):
+    id = ID(required=True)
+    name = String(required=True)
+```
+
+该 Input 类型可以作为 Mutation 类型的参数, 例如:
+
+```python
+class UpdateFoo(Mutation):
+    class Argument:
+        foo_data = FooInput(required=True)
+
+    Output = FooUpdatedPayload
+
+    @staticmethod
+    def mutate(parent: Literal[None], info: ResolveInfo, foo_data: FooInput) -> FooUpdatedPayload:
+        foo = Foo.find(int(foo_data.id))
+        if not foo:
+            return FooCreatedPayload(updatedFoo=None)
+
+        foo.name = foo_data.name
+        return FooUpdatedPayload(createdFoo=foo)
+```
+
+最后, 定义 `Mutations` 类型为:
+
+```python
+class Mutations(ObjectType):   # Mutation 名称已被 Graphene 内置类型占用
+    createFoo = CreateFoo.Field()
+    updateFoo = UpdateFoo.Field()
+    deleteFoo = DeleteFoo.Field()
+```
+
+在创建 `Schema` 对象时, 将 `Mutations` 对象作为参数传入即可
+"""
+
 from typing import Literal
 
 from graphene import (InputObjectType, Int, Mutation, ObjectType, ResolveInfo,

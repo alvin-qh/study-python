@@ -161,7 +161,11 @@ class Query(ObjectType):
     node = Node.Field(required=True)
 
     @staticmethod
-    async def resolve_ship(parent: Literal[None], info: ResolveInfo, id: ID) -> Ship:
+    async def resolve_ship(
+        parent: Literal[None],
+        info: ResolveInfo,
+        id: ID,
+    ) -> Ship:
         """
         解析 `ship` 字段
 
