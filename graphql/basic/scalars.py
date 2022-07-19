@@ -1,3 +1,16 @@
+"""
+Scalar 类型
+
+Scalar (标量) 类型是 Graphene 中定义的一系列对应 Graphql 内置类型的类型, 包含:
+
+- `ID`: 表示一个标识
+- `String`: 表示一个字符串
+- `Int`: 表示一个整数
+- `Float`: 表示一个整数
+- `Boolean`: 表示布尔类型
+- `Decimal`: 表示一个科学计数法的大数
+"""
+
 import base64
 from datetime import date, datetime, timedelta
 from decimal import Decimal as DecimalType
