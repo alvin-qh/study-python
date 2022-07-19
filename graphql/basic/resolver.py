@@ -1,3 +1,44 @@
+"""
+解析器
+
+对于 Graphene 框架来说, 一个字段的值有两种获取方式:
+
+- 上一级解析器解析的对象中包含该字段;
+- 当前字段所在的实体类型中提供了对应的 resolve 方法;
+
+例如, 对于如下查询:
+
+```graphql
+query {
+    foo {
+        name
+        value
+    }
+}
+```
+
+可以通过如下的 Python 代码来支持:
+
+```python
+class Query(ObjectType):
+    foo = Field(Foo, required=True)
+
+    def resolve_foo(parent: Literal[None], info: ResolveInfo) -> Foo:
+        return Foo(name="foo")
+
+
+class Foo(ObjectType):
+    name = String(required=True)
+    value = Int(required=True)
+
+    def resolve_value(parent: "Foo", info: ResolveInfo) -> int:
+        return len(parent.name)
+```
+
+在 `Query` 类型中, `foo` 字段 `resolve_foo` 方法返回了包含 `name` 字段的 `Foo` 类型对象, 所以
+查询中的 `name` 字段得到满足, `value` 字段则是通过 `Foo` 类型的 `resolve_foo` 方法进行对应
+"""
+
 from collections import namedtuple
 from typing import Literal, Union
 
@@ -9,7 +50,7 @@ ChinesePerson = namedtuple("ChinesePerson", ["xing", "ming"])
 
 def get_chinese_person() -> ChinesePerson:
     """
-    获取一个中文名的人
+    获取一个中文名的 `ChinesePerson` 对象
 
     Returns:
         ChinesePerson: `ChinesePerson` 对象, 具备 `xing`, `ming` 两个属性
