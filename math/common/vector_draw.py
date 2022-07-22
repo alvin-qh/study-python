@@ -78,16 +78,18 @@ class Points(Drawable):
     表示一个向量集合, 即二维坐标上一组点的集合
     """
 
-    def __init__(self, *vectors: Vector2D, color=Color.black) -> None:
+    def __init__(self, *vectors: Vector2D, show_coord=True, color=Color.black) -> None:
         """
         初始化对象
 
         Args:
             vectors (Tuple[Vector2D]): 向量集合
+            show_coord (bool): 是否显示坐标值
             color (Color, optional): 绘图颜色. Defaults to `Color.black`.
         """
         super().__init__(color)
         self.vectors = list(vectors)
+        self.show_coord = show_coord
 
 
 class Arrow(Drawable):
@@ -266,7 +268,19 @@ def draw(
             # 绘制点集
             xs = [v[0] for v in o.vectors]
             ys = [v[1] for v in o.vectors]
+
             plt.scatter(xs, ys, color=o.color)  # type: ignore
+
+            if o.show_coord:
+                for x, y in zip(xs, ys):
+                    plt.text(  # type: ignore
+                        x,
+                        y,
+                        f"({x}, {y})",
+                        fontsize=15,
+                        verticalalignment="top",
+                        horizontalalignment="right",
+                    )
 
         elif isinstance(o, Arrow):
             # 绘制箭头
