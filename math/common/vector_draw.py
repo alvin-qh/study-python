@@ -229,13 +229,13 @@ def draw(
     if origin:
         plt.scatter([0], [0], color="k", marker="x")  # type: ignore
 
-    x, y = plt.xlim(), plt.ylim()
+    xlim, ylim = plt.xlim(), plt.ylim()
     gca = plt.gca()  # type: ignore
 
     if grid:
         # 绘制网格
-        gca.set_xticks(np.arange(x[0], x[1], grid[0]))
-        gca.set_yticks(np.arange(y[0], y[1], grid[1]))
+        gca.set_xticks(np.arange(xlim[0], xlim[1], grid[0]))
+        gca.set_yticks(np.arange(ylim[0], ylim[1], grid[1]))
         plt.grid(  # type:ignore
             True,
             color="#aaa",
@@ -271,21 +271,25 @@ def draw(
 
             plt.scatter(xs, ys, color=o.color)  # type: ignore
 
+            offset = max(xlim[1] - xlim[0], ylim[1] - ylim[0]) / 60.
+
+            # 绘制文本
             if o.show_coord:
-                for x, y in zip(xs, ys):
+                for x, y in o.vectors:
                     plt.text(  # type: ignore
-                        x,
-                        y,
-                        f"({x}, {y})",
-                        fontsize=15,
-                        verticalalignment="top",
-                        horizontalalignment="right",
+                        x=x + offset,
+                        y=y,
+                        s=f"({round(x, 3)}, {round(y, 3)})",
+                        fontsize=10,
+                        verticalalignment="center",
+                        horizontalalignment="left",
+                        color=o.color,
                     )
 
         elif isinstance(o, Arrow):
             # 绘制箭头
             tip, tail = o.tip, o.tail
-            tip_length = (x[1] - x[0]) / 20.
+            tip_length = (xlim[1] - xlim[0]) / 20.
 
             length = sqrt((tip[1] - tail[1]) ** 2 + (tip[0] - tail[0]) ** 2)
             new_length = length - tip_length
@@ -316,9 +320,9 @@ def draw(
     # 如果设置了坐标系最佳长宽比, 则根据点集进行计算
     if nice_aspect_ratio:
         # 计算坐标高度
-        coords_height = y[1] - y[0]
+        coords_height = ylim[1] - ylim[0]
         # 计算坐标宽度
-        coords_width = x[1] - x[0]
+        coords_width = xlim[1] - xlim[0]
 
         plt.gcf().set_size_inches(  # type: ignore
             width, width * coords_height / coords_width,
@@ -349,16 +353,18 @@ class Points3D(Drawable3D):
     在 3D 坐标系中绘制一组点
     """
 
-    def __init__(self, *vectors: Vector3D, color=Color.black) -> None:
+    def __init__(self, *vectors: Vector3D, show_coord=True, color=Color.black) -> None:
         """
         初始化对象, 设置三维点的坐标
 
         Args:
             vectors (Tuple[Vector3D]): 三维点坐标集合
+            show_coord (bool): 显示坐标值
             color (Color, optional): 绘图颜色. Defaults to `Color.black`.
         """
         super().__init__(color)
         self.vectors = list(vectors)
+        self.show_coord = show_coord
 
 
 class Polygon3D(Drawable3D):
@@ -653,6 +659,22 @@ def draw3d(
             # 绘制三维点
             xs, ys, zs = zip(*o.vectors)
             ax.scatter(xs, ys, zs, color=o.color, depthshade=depthshade)
+
+            if o.show_coord:
+                lx, ly = ax.get_xlim(), ax.get_ylim()
+                offset = max(lx[1] - lx[0], ly[1] - ly[0]) / 60.0
+
+                for x, y, z in o.vectors:
+                    ax.text(
+                        x=x+offset,
+                        y=y+offset,
+                        z=z,
+                        s=f"({round(x, 3)}, {round(y, 3)}, {round(z, 3)})",
+                        fontsize=10,
+                        zorder=1,
+                        verticalalignment="center",
+                        color=o.color,
+                    )
 
         elif isinstance(o, Polygon3D):
             # 绘制三维多边形

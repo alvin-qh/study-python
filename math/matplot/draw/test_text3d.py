@@ -35,10 +35,10 @@ def test_draw_text() -> None:
     for x, y, z in zip(x1, y1, z1):
         # 绘制文本
         ax.text(
-            x + offset,  # 文本 x, y, z 坐标
-            y + offset,
-            z,
-            f"({x}, {y}, {z})",  # 文本字符串
+            x=x + offset,  # 文本 x, y, z 坐标
+            y=y + offset,
+            z=z,
+            s=f"({x}, {y}, {z})",  # 文本字符串
             fontsize=8,  # 文本字符大小
             zorder=1,  # z 轴的顺序
             verticalalignment="center",  # 文本和坐标的垂直对齐方式
