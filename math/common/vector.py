@@ -77,7 +77,7 @@ def to_radian(angle: Number) -> Number:
 ONE_RAD = 180 / pi
 
 
-def to_angle(radian: Number) -> Number:
+def to_degree(radian: Number) -> Number:
     """
     将弧度转换为角度
 
