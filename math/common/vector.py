@@ -33,9 +33,35 @@ def add(*vs: Vector) -> Vector:
     # 初始化记录结果的向量
     r = [0.] * n
 
+    # 累加所有的向量
     for v in vs:
         for i in range(n):
             r[i] += v[i]
+
+    return tuple(r)
+
+
+def subtract(*vs: Vector) -> Vector:
+    """
+    将一个 N 维向量集合中所有的向量进行相减后返回结果
+
+    Args:
+        vs (Iterable[Vector]): 向量集合
+
+    Returns:
+        Vector: 所有向量相减后的结果 
+    """
+    # 获取向量的维数
+    n = len(vs[0])
+
+    # 初始化记录结果的向量
+    # 将集合中第一个向量进行复制, 作为结果值
+    r = list(vs[0][:])
+
+    # 对向量进行累计减操作
+    for v in vs[1:]:
+        for i in range(n):
+            r[i] -= v[i]
 
     return tuple(r)
 
@@ -135,3 +161,35 @@ def scale(v: Vector, scalar: Number) -> Vector:
         Vector: 缩放后的向量
     """
     return tuple(coord * scalar for coord in v)
+
+
+def dot(u: Vector, v: Vector) -> float:
+    """
+    计算两个 N 维向量的点积
+
+    Args:
+        u (Vector): 向量 1
+        v (Vector): 向量 2
+
+    Returns:
+        float: 向量点积
+    """
+    return sum([coord1 * coord2 for coord1, coord2 in zip(u, v)])
+
+
+def cross(u: Vector3D, v: Vector3D) -> Vector3D:
+    """
+    计算三维向量的向量积
+
+    这个公式不能很好地推广到其他维度. 它要求输入向量必须有三个分量
+
+    Args:
+        u (Vector3D): 三维向量 1
+        v (Vector3D): 三维向量 2
+
+    Returns:
+        Vector3D: 两个三维向量的向量积
+    """
+    ux, uy, uz = u
+    vx, vy, vz = v
+    return (uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx)
