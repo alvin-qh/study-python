@@ -599,9 +599,9 @@ def draw3d(
     padding_y = 0.05 * y_size if y_size else 1
     padding_z = 0.05 * z_size if z_size else 1
 
-    plot_x_range = (min(min_x - padding_x, -2), max(max_x + padding_x, 2))
-    plot_y_range = (min(min_y - padding_y, -2), max(max_y + padding_y, 2))
-    plot_z_range = (min(min_z - padding_z, -2), max(max_z + padding_z, 2))
+    plot_x_range = (min(min_x - padding_x, -1), max(max_x + padding_x, 1))
+    plot_y_range = (min(min_y - padding_y, -1), max(max_y + padding_y, 1))
+    plot_z_range = (min(min_z - padding_z, -1), max(max_z + padding_z, 1))
 
     # 绘制坐标轴的标签
     ax.set_xlabel("x")
