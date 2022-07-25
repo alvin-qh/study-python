@@ -247,8 +247,8 @@ def draw(
 
     if axes:
         # 绘制坐标轴
-        gca.axhline(linewidth=2, color="k")
-        gca.axvline(linewidth=2, color="k")
+        gca.axhline(linewidth=1, color="gray", linestyle="-.")
+        gca.axvline(linewidth=1, color="gray", linestyle="-.")
 
     for o in objects:
         if isinstance(o, Polygon):
@@ -338,8 +338,9 @@ class LineStyle(Enum):
     """
     绘制线条的样式
     """
-    solid = "solid"  # 实线
-    dashed = "dashed"  # 点划线
+    solid = "-"  # 实线
+    dashed = "-."  # 点划线
+    dotted = ":"  # 点线
 
 
 class Drawable3D(Drawable):
@@ -634,18 +635,24 @@ def draw3d(
         draw_segment(
             (plot_x_range[0], 0, 0),
             (plot_x_range[1], 0, 0),
+            color=Color.gray.value,
+            linestyle=LineStyle.dashed.value,
         )
 
         # 绘制 y 坐标轴
         draw_segment(
             (0, plot_y_range[0], 0),
             (0, plot_y_range[1], 0),
+            color=Color.gray.value,
+            linestyle=LineStyle.dashed.value,
         )
 
         # 绘制 z 坐标轴
         draw_segment(
             (0, 0, plot_z_range[0]),
             (0, 0, plot_z_range[1]),
+            color=Color.gray.value,
+            linestyle=LineStyle.dashed.value,
         )
 
     # 判断是否绘制原点
