@@ -1,7 +1,7 @@
 from math import atan2, cos, pi, sin, sqrt
 from typing import Iterable, List
 
-from . import Number, PolarVector, Vector, Vector2D, Vector3D
+from . import Number, Polar, Vector, Vector2D, Vector3D
 
 
 def length(v: Vector) -> float:
@@ -116,23 +116,24 @@ def to_degree(radian: Number) -> Number:
     return radian * ONE_RAD
 
 
-def to_cartesian(polar_vector: PolarVector) -> Vector2D:
+def to_cartesian(polar: Polar) -> Vector2D:
     """
     将极坐标向量转换为笛卡尔坐标
 
     Args:
-        polar_vector (PolarVector): 极坐标向量, 两个分量为 `(向量长度, 弧度)`
+        polar (Polar): 极坐标, 两个分量为 `(向量长度, 弧度)`
 
     Returns:
-        Vector2D: 极坐标向量
+        Vector2D: 二维向量向量
     """
     # 获取极坐标向量分量
-    length, angle = polar_vector[0], polar_vector[1]
+    length_, angle = polar[0], polar[1]
+    
     # 通过余弦函数和正弦函数求笛卡尔 x, y 坐标
-    return (length * cos(angle), length * sin(angle))
+    return (length_ * cos(angle), length_ * sin(angle))
 
 
-def to_polar(v: Vector2D) -> PolarVector:
+def to_polar(v: Vector2D) -> Polar:
     """
     将笛卡尔坐标向量转换为极坐标向量
 

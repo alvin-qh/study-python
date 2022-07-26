@@ -4,14 +4,14 @@ from typing import Tuple, Union
 # 定义一个数类型
 Number = Union[int, float]
 
-# 表示一个笛卡尔向量
+# 表示一个二维向量
 Vector2D = Tuple[Number, Number]
 
-# 表示一个极坐标向量
-PolarVector = Tuple[Number, Number]
+# 表示一个极坐标
+Polar = Tuple[Number, Number]
 
-# 表示一个 3 维笛卡尔向量
+# 表示一个三维向量
 Vector3D = Tuple[Number, Number, Number]
 
-# 表示一个 N 维笛卡尔向量
+# 表示一个 N 维向量
 Vector = Tuple[Number, ...]
