@@ -23,7 +23,7 @@ class Color(Enum):
     gray = "gray"
 
 
-class Drawable:
+class Drawable2D:
     """
     所有绘图的超类
     """
@@ -39,7 +39,7 @@ class Drawable:
         self.color = color.value
 
 
-class Polygon(Drawable):
+class Polygon2D(Drawable2D):
     """
     多边形绘图类
 
@@ -71,7 +71,7 @@ class Polygon(Drawable):
         self.alpha = alpha
 
 
-class Points(Drawable):
+class Points2D(Drawable2D):
     """
     二维向量集合绘图类
 
@@ -92,7 +92,7 @@ class Points(Drawable):
         self.show_coord = show_coord
 
 
-class Arrow(Drawable):
+class Arrow2D(Drawable2D):
     """
     箭头绘图类, 绘制一个箭头图形
 
@@ -114,7 +114,7 @@ class Arrow(Drawable):
         self.tail = tail
 
 
-class Segment(Drawable):
+class Segment2D(Drawable2D):
     """
     表示一个线段
 
@@ -136,7 +136,7 @@ class Segment(Drawable):
         self.end_point = end_point
 
 
-def extract_vectors(objects: Iterable[Drawable]) -> Generator[Vector2D, None, None]:
+def extract_vectors(objects: Iterable[Drawable2D]) -> Generator[Vector2D, None, None]:
     """
     将绘图对象展开成向量
 
@@ -154,23 +154,23 @@ def extract_vectors(objects: Iterable[Drawable]) -> Generator[Vector2D, None, No
     # 遍历集合中的绘图对象
     for o in objects:
         # 绘制多边形
-        if isinstance(o, Polygon):
+        if isinstance(o, Polygon2D):
             # 产生多边形每个顶点
             for v in o.vertices:
                 yield v
 
         # 绘制点集合
-        elif isinstance(o, Points):
+        elif isinstance(o, Points2D):
             # 产生点集合中的每个点
             for v in o.vectors:
                 yield v
 
-        elif isinstance(o, Arrow):
+        elif isinstance(o, Arrow2D):
             yield o.tip
             yield o.tail
 
         # 绘制线段
-        elif isinstance(o, Segment):
+        elif isinstance(o, Segment2D):
             # 产生线段的第一个点
             yield o.start_point
             # 产生线段的第二个点
@@ -180,8 +180,8 @@ def extract_vectors(objects: Iterable[Drawable]) -> Generator[Vector2D, None, No
             raise TypeError(f"Unrecognized object: {o}")
 
 
-def draw(
-    *objects: Drawable,
+def draw2d(
+    *objects: Drawable2D,
     origin=True,
     axes=True,
     grid=(1, 1),
@@ -251,7 +251,7 @@ def draw(
         gca.axvline(linewidth=1, color="gray", linestyle="-.")
 
     for o in objects:
-        if isinstance(o, Polygon):
+        if isinstance(o, Polygon2D):
             # 绘制多边形
             for i in range(0, len(o.vertices)):
                 x1, y1 = o.vertices[i]
@@ -264,7 +264,7 @@ def draw(
                 ys = [v[1] for v in o.vertices]
                 gca.fill(xs, ys, o.fill, alpha=o.alpha)
 
-        elif isinstance(o, Points):
+        elif isinstance(o, Points2D):
             # 绘制点集
             xs = [v[0] for v in o.vectors]
             ys = [v[1] for v in o.vectors]
@@ -286,7 +286,7 @@ def draw(
                         color=o.color,
                     )
 
-        elif isinstance(o, Arrow):
+        elif isinstance(o, Arrow2D):
             # 绘制箭头
             tip, tail = o.tip, o.tail
             tip_length = (xlim[1] - xlim[0]) / 20.
@@ -308,7 +308,7 @@ def draw(
                 ec=o.color,
             )
 
-        elif isinstance(o, Segment):
+        elif isinstance(o, Segment2D):
             # 绘制线段
             x1, y1 = o.start_point
             x2, y2 = o.end_point
@@ -343,7 +343,7 @@ class LineStyle(Enum):
     dotted = ":"  # 点线
 
 
-class Drawable3D(Drawable):
+class Drawable3D(Drawable2D):
     """
     所有 3D 绘图的超类
     """

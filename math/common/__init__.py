@@ -15,3 +15,6 @@ Vector3D = Tuple[Number, Number, Number]
 
 # 表示一个 N 维向量
 Vector = Tuple[Number, ...]
+
+# 表示一个面
+Face = Tuple[Vector3D, Vector3D, Vector3D]
