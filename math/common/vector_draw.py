@@ -1,6 +1,6 @@
 from enum import Enum
 from math import ceil, floor, sqrt
-from typing import Any, Generator, Iterable, List, Optional, Tuple, cast
+from typing import Any, Generator, Iterable, List, Optional, Tuple, Union, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -46,11 +46,13 @@ class Polygon2D(Drawable2D):
     多边形是一组线段组成的图像, 即将一组点进行两两连接
     """
 
+    fill: Optional[Union[str, Tuple]]
+
     def __init__(
         self,
         *vertices: Vector2D,
         color=Color.blue,
-        fill: Optional[Color] = None,
+        fill: Optional[Union[Color, Tuple]] = None,
         alpha=0.4,
     ) -> None:
         """
@@ -67,7 +69,12 @@ class Polygon2D(Drawable2D):
         super().__init__(color)
 
         self.vertices = vertices
-        self.fill = fill.value if fill else None
+
+        if isinstance(fill, Color):
+            self.fill = fill.value
+        else:
+            self.fill = fill
+
         self.alpha = alpha
 
 
