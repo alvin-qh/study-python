@@ -1,5 +1,5 @@
-from math import atan2, cos, pi, sin, sqrt
-from typing import Iterable, List
+from math import acos, atan2, cos, pi, sin, sqrt
+from typing import Iterable, Iterator, List
 
 from . import Number, Polar, Vector, Vector2D, Vector3D
 
@@ -27,18 +27,10 @@ def add(*vs: Vector) -> Vector:
     Returns:
         Vector: 所有向量相加后的结果
     """
-    # 获取向量的维数
-    n = len(vs[0])
-
-    # 初始化记录结果的向量
-    r = [0.] * n
-
-    # 累加所有的向量
-    for v in vs:
-        for i in range(n):
-            r[i] += v[i]
-
-    return tuple(r)
+    # 假设 vs = [(1, 2, 3), (4, 5, 6), (7, 8, 9)]
+    # 则 zip(*vs) 为 [(1, 4, 7), (2, 5, 8), (3, 6, 9)], 相当于将 vs 按列排列
+    # map(sum, zip(*vs)) 相当于将每个 tuple 相加
+    return tuple(map(sum, zip(*vs)))
 
 
 def subtract(*vs: Vector) -> Vector:
@@ -51,19 +43,17 @@ def subtract(*vs: Vector) -> Vector:
     Returns:
         Vector: 所有向量相减后的结果 
     """
-    # 获取向量的维数
-    n = len(vs[0])
+    def sub(nums: Iterable[Number]) -> Number:
+        it = iter(nums)
 
-    # 初始化记录结果的向量
-    # 将集合中第一个向量进行复制, 作为结果值
-    r = list(vs[0][:])
+        r = next(it)
+        while 1:
+            try:
+                r -= next(it)
+            except StopIteration:
+                return r
 
-    # 对向量进行累计减操作
-    for v in vs[1:]:
-        for i in range(n):
-            r[i] -= v[i]
-
-    return tuple(r)
+    return tuple(map(sub, zip(*vs)))
 
 
 def translate(v_off: Vector, vs: Iterable[Vector]) -> List[Vector]:
@@ -128,7 +118,7 @@ def to_cartesian(polar: Polar) -> Vector2D:
     """
     # 获取极坐标向量分量
     length_, angle = polar[0], polar[1]
-    
+
     # 通过余弦函数和正弦函数求笛卡尔 x, y 坐标
     return (length_ * cos(angle), length_ * sin(angle))
 
@@ -178,6 +168,37 @@ def dot(u: Vector, v: Vector) -> float:
     return sum([coord1 * coord2 for coord1, coord2 in zip(u, v)])
 
 
+def distance(v1: Vector, v2: Vector) -> float:
+    """
+    计算两个向量坐标的距离
+
+    Args:
+        v1 (Vector): 向量 1
+        v2 (Vector): 向量 2
+
+    Returns:
+        float: 向量的距离
+    """
+    return length(subtract(v1, v2))
+
+
+def perimeter(vs: List[Vector]) -> float:
+    """
+    计算由向量围成的周长
+
+    Args:
+        vs (List[Vector]): 向量集合
+
+    Returns:
+        float: 周长
+    """
+    distances = [
+        distance(vs[i], vs[(i + 1) % len(vs)])
+        for i in range(len(vs))
+    ]
+    return sum(distances)
+
+
 def cross(u: Vector3D, v: Vector3D) -> Vector3D:
     """
     计算三维向量的向量积
@@ -194,3 +215,25 @@ def cross(u: Vector3D, v: Vector3D) -> Vector3D:
     ux, uy, uz = u
     vx, vy, vz = v
     return (uy * vz - uz * vy, uz * vx - ux * vz, ux * vy - uy * vx)
+
+
+def rotate2d(angle: float, v: Vector2D) -> Vector2D:
+    l, a = to_polar(v)
+    return to_cartesian((l, a + angle))
+
+
+def angle_between(v1: Vector, v2: Vector) -> float:
+    return acos(dot(v1, v2) / (length(v1) * length(v2)))
+
+
+def component(v: Vector, direction: Vector) -> float:
+    return dot(v, direction) / length(direction)
+
+
+def unit(v: Vector) -> Vector:
+    return scale(v, 1.0 / length(v))
+
+
+def linear_combination(scalars, *vectors):
+    scaled = [scale(s, v) for s, v in zip(scalars, vectors)]
+    return add(*scaled)
