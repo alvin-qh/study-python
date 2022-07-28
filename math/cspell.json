@@ -24,6 +24,7 @@
         "facecolor",
         "figsize",
         "fontsize",
+        "freeglut",
         "headlength",
         "headwidth",
         "horizontalalignment",

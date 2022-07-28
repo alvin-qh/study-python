@@ -1,31 +1,52 @@
-# 从模型文件中加载数据
+"""
+绘制一个茶壶 3D 图形
+"""
+
 from math import pi
 from os import path
+from typing import List
 
 from transforms import rotate_x_by, scale_by, translate_by
+from vectors import Vector, Vector3D
 
+# 打开模型文件
 with open(path.join(path.dirname(__file__), "teapot.off")) as f:
     lines = f.readlines()
 
+# 读取模型文件的第一行, 包含了向量, 面和边的数量
 vertex_count, face_count, edge_count = map(int, lines[1].split())
 
 
-def triple(xs):
-    xs = list(xs)
-    return (xs[0], xs[1], xs[2])
+def triple(xs: map) -> Vector:
+    """
+    将一个 `map` 对象转为三维向量
+
+    Args:
+        xs (map): `map` 对象
+
+    Returns:
+        Vector3D: 三维向量
+    """
+    xss = list(xs)
+    return (xss[0], xss[1], xss[2])
 
 
-def load_vertices():
+def load_vertices() -> List[Vector]:
+    f_scale = scale_by(2)
+    f_rotate = rotate_x_by(-pi / 2)
+    f_translate = translate_by((-0.5, 0, -0.6))
+
+    # 保存向量返回值
     vertices = []
 
+    # 从第三行开始, 逐行读取模型文件内容
     for i in range(2, 2 + vertex_count):
+        # 从读取的行中
         v = triple(map(float, lines[i].split()))
 
-        f_scale = scale_by(2)
-        f_rotate = rotate_x_by(-pi / 2)
-        f_translate = translate_by((-0.5, 0, -0.6))
-
-        vertices.append(f_scale(f_rotate(f_translate(v))))
+        vertices.append(
+            f_scale(f_rotate(f_translate(v)))
+        )
 
     return vertices
 

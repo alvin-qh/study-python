@@ -234,7 +234,19 @@ def cross(u: Vector3D, v: Vector3D) -> Vector3D:
 
 
 def rotate2d(angle: float, v: Vector2D) -> Vector2D:
+    """
+    将一个二维向量旋转指定弧度
+
+    Args:
+        angle (float): 要旋转的弧度
+        v (Vector2D): 要旋转的向量
+
+    Returns:
+        Vector2D: 旋转角度后的新向量
+    """
+    # 将向量转为极坐标
     l, a = to_polar(v)
+    # 将极坐标的角度分量增加指定弧度后转为笛卡尔坐标向量
     return to_cartesian((l, a + angle))
 
 
