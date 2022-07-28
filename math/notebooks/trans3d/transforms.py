@@ -1,4 +1,4 @@
-from common.vector import add, rotate2d, scale
+from vectors import add, rotate2d, scale
 
 
 def compose(*args):
@@ -31,7 +31,8 @@ def polygon_map(transformation, polygons):
 
 def scale_by(scalar):
     def new_function(v):
-        return scale(scalar, v)
+        return scale(v, scalar)
+
     return new_function
 
 
@@ -51,6 +52,7 @@ def rotate_z(angle, vector):
 def rotate_z_by(angle):
     def new_function(v):
         return rotate_z(angle, v)
+
     return new_function
 
 
@@ -63,6 +65,7 @@ def rotate_x(angle, vector):
 def rotate_x_by(angle):
     def new_function(v):
         return rotate_x(angle, v)
+
     return new_function
 
 
@@ -75,6 +78,7 @@ def rotate_y(angle, vector):
 def rotate_y_by(angle):
     def new_function(v):
         return rotate_y(angle, v)
+
     return new_function
 
 

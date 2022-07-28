@@ -4,8 +4,8 @@ from typing import List
 
 from common import Vector
 
-from .vector import (add, cross, distance, dot, length, scale, subtract,
-                     to_cartesian, to_degree, to_polar, to_radian, translate)
+from .vectors import (add, cross, distance, dot, length, scale, subtract,
+                      to_cartesian, to_degree, to_polar, to_radian, translate)
 
 
 def test_length() -> None:
@@ -177,12 +177,12 @@ def test_distance() -> None:
     """
     v1: Vector
     v2: Vector
-    
+
     # 计算定义在 x 和 y 轴的向量的距离
     v1, v2 = (3, 0), (0, 4)
     r = distance(v1, v2)
     assert r == 5.0
-    
+
     v1, v2 = (3, 0, 0), (0, 4, 0)
     r = distance(v1, v2)
     assert r == 5.0

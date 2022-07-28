@@ -1,5 +1,5 @@
 from math import acos, atan2, cos, pi, sin, sqrt
-from typing import Iterable, Iterator, List
+from typing import Iterable, List
 
 from . import Number, Polar, Vector, Vector2D, Vector3D
 

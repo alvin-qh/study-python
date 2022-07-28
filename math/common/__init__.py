@@ -1,4 +1,3 @@
-# 表示一个数值, 可以为整数或浮点数
 from typing import Tuple, Union
 
 # 定义一个数类型
