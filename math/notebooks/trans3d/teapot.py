@@ -4,7 +4,7 @@
 
 from math import pi
 from os import path
-from typing import List
+from typing import List, cast
 
 from transforms import rotate_x_by, scale_by, translate_by
 from vectors import Vector, Vector3D
@@ -44,9 +44,7 @@ def load_vertices() -> List[Vector]:
         # 从读取的行中
         v = triple(map(float, lines[i].split()))
 
-        vertices.append(
-            f_scale(f_rotate(f_translate(v)))
-        )
+        vertices.append(f_scale(f_rotate(cast(Vector3D, f_translate(v)))))
 
     return vertices
 

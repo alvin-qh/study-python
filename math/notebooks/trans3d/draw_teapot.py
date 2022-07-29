@@ -11,5 +11,5 @@ from teapot import load_triangles
 if '--snapshot' in sys.argv:
     camera.default_camera = camera.Camera('fig_4.4_draw_teapot', [0])
 
-
+# 绘制茶壶模型
 draw_model(load_triangles())

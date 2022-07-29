@@ -19,6 +19,9 @@ Vector = Tuple[Number, ...]
 # 表示一个面
 Face = Tuple[Vector3D, Vector3D, Vector3D]
 
+# 表示一个矩阵
+Matrix = Union[List[Vector3D], Tuple[Vector3D]]
+
 
 def length(v: Vector) -> float:
     """
@@ -259,6 +262,10 @@ def component(v: Vector, direction: Vector) -> float:
 
 
 def unit(v: Vector) -> Vector:
+    """
+    获取和所给向量方向一致, 但长度为 `1` 的向量
+    """
+    # 将向量的长度计算为 1
     return scale(v, 1.0 / length(v))
 
 
