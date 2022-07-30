@@ -1,7 +1,7 @@
 from math import acos, atan2, cos, pi, sin, sqrt
-from typing import Iterable, List
+from typing import Iterable, List, cast
 
-from . import Number, Polar, Vector, Vector2D, Vector3D
+from . import Number, Polar, Triangle, Vector, Vector2D, Vector3D
 
 
 def length(v: Vector) -> float:
@@ -41,7 +41,7 @@ def subtract(*vs: Vector) -> Vector:
         vs (Iterable[Vector]): 向量集合
 
     Returns:
-        Vector: 所有向量相减后的结果 
+        Vector: 所有向量相减后的结果
     """
     def sub(nums: Iterable[Number]) -> Number:
         it = iter(nums)
@@ -223,15 +223,60 @@ def rotate2d(angle: float, v: Vector2D) -> Vector2D:
 
 
 def angle_between(v1: Vector, v2: Vector) -> float:
-    return acos(dot(v1, v2) / (length(v1) * length(v2)))
+    """
+    计算两个向量的夹角
+
+    Args:
+        v1 (Vector): 向量 1
+        v2 (Vector): 向量 2
+
+    Returns:
+        float: 向量的夹角弧度
+    """
+    return acos(min(1.0, dot(v1, v2) / (length(v1) * length(v2))))
 
 
 def component(v: Vector, direction: Vector) -> float:
+    """
+    利用点积提取三维向量在给定方向上坐标轴的分量
+
+    Args:
+        v (Vector3D): 三维向量
+        direction (Vector3D): 三维向量的方向, 为仅有一个维度为 `1` 的三维向量
+
+    Returns:
+        float: 三维向量在二维坐标指定方向的分量
+    """
     return dot(v, direction) / length(direction)
 
 
 def unit(v: Vector) -> Vector:
+    """
+    返回和输入向量方向相同, 但长度为 `1` 的向量
+
+    Args:
+        v (Vector): 输入向量
+
+    Returns:
+        Vector: 和输入向量方向一致, 但长度为 `1` 的向量
+    """
     return scale(v, 1.0 / length(v))
+
+
+def normal(face: Triangle) -> Vector3D:
+    """
+    计算一个三维面的法线 (垂直面的向量)
+
+    Args:
+        face (Triangle): 一个表示面的三角形
+
+    Returns:
+        Vector3D: 垂直三维平面的法向量
+    """
+    return cross(
+        cast(Vector3D, subtract(face[1], face[0])),
+        cast(Vector3D, subtract(face[2], face[0])),
+    )
 
 
 def linear_combination(scalars, *vectors):

@@ -28,11 +28,11 @@ class Camera():
         self.window = window
 
     def is_shooting(self):
-        # print(self.shots, self.remaining_shots, self.made_comic_strip, self.comic_strip)
-        if self.shots and not self.remaining_shots and (self.made_comic_strip or not self.comic_strip):
-            return False
-        else:
-            return True
+        return not(
+            self.shots and
+            not self.remaining_shots and
+            (self.made_comic_strip or not self.comic_strip)
+        )
 
     def indexes(self):
         if type(self.shots) == int:

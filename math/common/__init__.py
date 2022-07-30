@@ -1,4 +1,4 @@
-from typing import Tuple, Union
+from typing import List, Tuple, TypeVar, Union
 
 # 定义一个数类型
 Number = Union[int, float]
@@ -15,5 +15,8 @@ Vector3D = Tuple[Number, Number, Number]
 # 表示一个 N 维向量
 Vector = Tuple[Number, ...]
 
-# 表示一个面
-Face = Tuple[Vector3D, Vector3D, Vector3D]
+# 表示一个三角形组成的平面 (三个三维向量组成)
+Triangle = Tuple[Vector3D, Vector3D, Vector3D]
+
+# 表示一个多面体 (由数个三角形组成)
+Polygons = Union[Tuple[Triangle, ...], List[Triangle]]

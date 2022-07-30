@@ -4,8 +4,9 @@ from typing import List
 
 from common import Vector
 
-from .vectors import (add, cross, distance, dot, length, scale, subtract,
-                      to_cartesian, to_degree, to_polar, to_radian, translate)
+from .vectors import (add, angle_between, component, cross, distance, dot,
+                      length, scale, subtract, to_cartesian, to_degree,
+                      to_polar, to_radian, translate, unit)
 
 
 def test_length() -> None:
@@ -195,3 +196,65 @@ def test_cross() -> None:
     u, v = (1, 2, 3), (4, 5, 6)
     r = cross(u, v)
     assert r == (-3, 6, -3)
+
+
+def test_angle_between() -> None:
+    """
+    测试计算向量夹角
+    """
+    v1: Vector
+    v2: Vector
+
+    # 定义两个互相垂直的二维向量
+    v1, v2 = (1, 0), (0, 1)
+    # 计算两个向量的夹角
+    r = angle_between(v1, v2)
+    # 确认向量夹角为 90°
+    assert r == pi / 2
+
+    # 定义两个互相垂直的三维向量
+    v1, v2 = (1, 0, 0), (0, 1, 0)
+    # 计算两个向量的夹角
+    r = angle_between(v1, v2)
+    # 确认向量夹角为 90°
+    assert r == pi / 2
+
+    # 定义两个互相垂直的三维向量
+    v1, v2 = (1, 0, 0), (0, 0, 1)
+    # 计算两个向量的夹角
+    r = angle_between(v1, v2)
+    # 确认向量夹角为 90°
+    assert r == pi / 2
+
+
+def test_component() -> None:
+    """
+    测试计算指定向量在指定坐标轴的分量
+    """
+    # 定义一个向量
+    v = (1, 2, 3)
+
+    # 计算向量在 x 轴的分量
+    r = component(v, (1, 0, 0))
+    assert r == 1
+
+    # 计算向量在 y 轴的分量
+    r = component(v, (0, 1, 0))
+    assert r == 2
+
+    # 计算向量在 z 轴的分量
+    r = component(v, (0, 0, 1))
+    assert r == 3
+
+
+def test_unit() -> None:
+    """
+    测试获取指定向量的另一个向量, 后者和前者方向一致, 且长度为 `1`
+    """
+    v = (12, 13, 14)
+
+    # 获取和向量 v 相关的单位向量 (方向一致, 且长度为 1)
+    v_new = unit(v)
+
+    assert length(v_new) == 1.0
+    assert angle_between(v, v_new) == 0.0

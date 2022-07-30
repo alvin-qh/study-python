@@ -1,6 +1,6 @@
-from typing import Callable, Tuple
+from typing import Callable
 
-from vectors import Face, Number, Vector, Vector3D, add, rotate2d, scale
+from vectors import Number, Polygons, Vector, Vector3D, add, rotate2d, scale
 
 
 def compose(*args):
@@ -24,7 +24,7 @@ def curry2(f):
     return g
 
 
-def polygon_map(transformation, polygons: Tuple[Face]):
+def polygon_map(transformation, polygons: Polygons):
     return [
         [transformation(vertex) for vertex in triangle]
         for triangle in polygons
@@ -114,7 +114,7 @@ def rotate_x_by(angle: float) -> Callable[[Vector3D], Vector3D]:
     将 `rotate_x` 函数的 `angle` 参数进行固化
 
     Args:
-        angle (float): 要固化的 `angle` 参数 
+        angle (float): 要固化的 `angle` 参数
 
     Returns:
         Callable[[Vector], Vector]: 固化 `angle` 参数的 `rotate_x` 函数

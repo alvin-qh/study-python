@@ -1,5 +1,5 @@
 from math import acos, atan2, cos, pi, sin, sqrt
-from typing import Iterable, List, Tuple, Union
+from typing import Iterable, List, Tuple, TypeVar, Union
 
 # 定义一个数类型
 Number = Union[int, float]
@@ -16,11 +16,17 @@ Vector3D = Tuple[Number, Number, Number]
 # 表示一个 N 维向量
 Vector = Tuple[Number, ...]
 
-# 表示一个面
-Face = Tuple[Vector3D, Vector3D, Vector3D]
+# 表示一个三角形组成的平面 (三个三维向量组成)
+Triangle = Tuple[Vector3D, Vector3D, Vector3D]
+
+# 表示一个多面体 (由数个三角形组成)
+Polygons = Union[Tuple[Triangle, ...], List[Triangle]]
+
+# 表示一个三维矩阵
+Matrix3D = Union[List[Vector3D], Tuple[Vector3D, ...]]
 
 # 表示一个矩阵
-Matrix = Union[List[Vector3D], Tuple[Vector3D]]
+Matrix = Union[List[Vector], Tuple[Vector, ...]]
 
 
 def length(v: Vector) -> float:
@@ -254,18 +260,43 @@ def rotate2d(angle: float, v: Vector2D) -> Vector2D:
 
 
 def angle_between(v1: Vector, v2: Vector) -> float:
+    """
+    计算两个向量的夹角
+
+    Args:
+        v1 (Vector): 向量 1
+        v2 (Vector): 向量 2
+
+    Returns:
+        float: 向量的夹角弧度
+    """
     return acos(dot(v1, v2) / (length(v1) * length(v2)))
 
 
 def component(v: Vector, direction: Vector) -> float:
+    """
+    利用点积提取三维向量在给定方向上坐标轴的分量
+
+    Args:
+        v (Vector3D): 三维向量
+        direction (Vector3D): 三维向量的方向, 为仅有一个维度为 `1` 的三维向量
+
+    Returns:
+        float: 三维向量在二维坐标指定方向的分量
+    """
     return dot(v, direction) / length(direction)
 
 
 def unit(v: Vector) -> Vector:
     """
-    获取和所给向量方向一致, 但长度为 `1` 的向量
+    返回和输入向量方向相同, 但长度为 `1` 的向量
+
+    Args:
+        v (Vector): 输入向量
+
+    Returns:
+        Vector: 和输入向量方向一致, 但长度为 `1` 的向量
     """
-    # 将向量的长度计算为 1
     return scale(v, 1.0 / length(v))
 
 

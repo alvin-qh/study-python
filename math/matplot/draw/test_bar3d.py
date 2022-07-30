@@ -1,5 +1,4 @@
-from turtle import color
-from typing import Any, List, TypeVar
+from typing import List, TypeVar
 
 import matplotlib.pyplot as plt
 import numpy as np

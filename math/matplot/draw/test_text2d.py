@@ -1,5 +1,3 @@
-from turtle import color
-
 import numpy as np
 from matplotlib import pyplot as plt
 
@@ -9,7 +7,7 @@ from ..common import render_axis
 def test_draw_text() -> None:
     """
     测试绘制文本
-    
+
     具体的参数为:
     - `x`: 文本的 x 坐标
     - `y`: 文本的 y 坐标
