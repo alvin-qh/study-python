@@ -154,6 +154,23 @@ def rotate_y_by(angle: float) -> Callable[[Vector3D], Vector3D]:
     return lambda v: rotate_y(angle, v)
 
 
+def stretch(v: Vector3D, sx: float = 1.0, sy: float = 1.0, sz: float = 1.0) -> Vector3D:
+    """
+    拉伸一个向量
+
+    Args:
+        v (Vector3D): 要拉伸的三维向量
+        sx (float, optional): `x` 轴拉伸倍数. Defaults to `1.0`.
+        sy (float, optional): `y` 轴拉伸倍数. Defaults to `1.0`.
+        sz (float, optional): `z` 轴拉伸倍数. Defaults to `1.0`.
+
+    Returns:
+        Vector3D: 拉伸后的向量
+    """
+    x, y, z = v
+    return (x * sx, y * sy, z * sz)
+
+
 B = (
     (0, 2, 1),
     (0, 1, 0),

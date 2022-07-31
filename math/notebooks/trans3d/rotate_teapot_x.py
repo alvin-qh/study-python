@@ -13,16 +13,16 @@ from transforms import rotate_x
 from vectors import Polygons
 
 if "--snapshot" in sys.argv:
-    camera.default_camera = camera.Camera("fig_4.11_rotate_teapot", [0])
+    camera.default_camera = camera.Camera("fig_4.11_rotate_teapot_x", [0])
 
 # 读取茶壶模型
 original_triangles = load_triangles()
 
 # 将模型的每个向量围绕 z 轴旋转 45°
-scaled_triangles = [
+rotated_triangles = [
     [rotate_x(pi / 2, vertex) for vertex in triangle]
     for triangle in original_triangles
 ]
 
 # 绘制茶壶模型
-draw_model(cast(Polygons, scaled_triangles))
+draw_model(cast(Polygons, rotated_triangles))
