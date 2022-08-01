@@ -4,13 +4,13 @@
 
 from math import pi
 from os import path
-from typing import Generator, List, cast
+from typing import Generator, List, Sequence, Tuple, cast
 
 from transforms import rotate_x_by, scale_by, translate_by
 from vectors import Polygons, Triangle, Vector3D
 
 # 打开模型文件
-with open(path.join(path.dirname(__file__), "teapot.off")) as f:
+with open(path.join(path.dirname(__file__), "models/teapot.off")) as f:
     lines = f.readlines()
 
 # 读取模型文件的第一行, 包含了向量, 面和边的数量
@@ -69,12 +69,12 @@ def load_vertices() -> List[Vector3D]:
     return vs
 
 
-def load_polygons() -> Polygons:
+def load_polygons() -> Sequence[Sequence[Vector3D]]:
     """
-    读取多面体数据
+    读取组成多面体的向量集合
 
     Returns:
-        Polygons: 多面体集合
+        Sequence[Sequence[Vector3D]]: 向量集合, 每组向量由 `4` 个三维向量组成
     """
     # 读取模型向量
     vertices = load_vertices()
@@ -86,7 +86,8 @@ def load_polygons() -> Polygons:
     for i in range(2 + vertex_count, 2 + vertex_count + face_count):
         cols = lines[i].split()
 
-        # 将平面对应的三行定义数据取出, 转为向量后组成三角形
+        # 每行数据格式为 4 324 306 304 317, 表示对应 324, 306, 304, 317 这几行数据表示的向量
+        # 即读取由四个向量组成的集合
         poly = cast(
             Triangle,
             tuple(map(vertices.__getitem__, map(int, cols[1:]))),
@@ -96,32 +97,36 @@ def load_polygons() -> Polygons:
     return polys
 
 
-def triangulate(poly: Triangle) -> Generator[Triangle, None, None]:
-    """_summary_
+def triangulate(poly: Sequence[Vector3D]) -> Generator[Triangle, None, None]:
+    """
+    将传入的四个三维向量组合成两个三角形
 
     Args:
-        poly (_type_): _description_
-
-    Raises:
-        ValueError: _description_
+        poly (Sequence[Vector3D]): 一组由四个三维向量组成的集合
 
     Yields:
-        _type_: _description_
+        Generator[Triangle, None, None]: 返回一个生成器, 产生相关的两个三角形向量集合 
     """
+    # 确认每个多面体都有三个向量组成
     if len(poly) < 3:
         raise ValueError("polygons must have at least 3 vertices")
 
+    # 将四个向量坐标拆分成两个三角形
+    #          * (0)
+    #       * (1)
+    #                   * (2)
+    #               * (3)
+    # 连接 0-2-1 和 0-3-2
     for i in range(1, len(poly) - 1):
         yield (poly[0], poly[i + 1], poly[i])
 
 
 def load_triangles() -> Polygons:
-    polys = load_polygons()
+    """
+    读取所有的多面体的组成向量集合
 
-    tris = []
-
-    for poly in polys:
-        for tri in triangulate(poly):
-            tris.append(tri)
-
-    return tris
+    Returns:
+        Polygons: 多面体的组成向量集合
+    """
+    # 读取所有的多面体向量
+    return [tri for poly in load_polygons() for tri in triangulate(poly)]

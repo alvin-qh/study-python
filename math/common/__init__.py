@@ -1,4 +1,4 @@
-from typing import List, Tuple, TypeVar, Union
+from typing import Sequence, Tuple, Union
 
 # 定义一个数类型
 Number = Union[int, float]
@@ -19,4 +19,4 @@ Vector = Tuple[Number, ...]
 Triangle = Tuple[Vector3D, Vector3D, Vector3D]
 
 # 表示一个多面体 (由数个三角形组成)
-Polygons = Union[Tuple[Triangle, ...], List[Triangle]]
+Polygons = Sequence[Triangle]

@@ -171,6 +171,25 @@ def stretch(v: Vector3D, sx: float = 1.0, sy: float = 1.0, sz: float = 1.0) -> V
     return (x * sx, y * sy, z * sz)
 
 
+def cube_stretch(v: Vector3D, dim=(1, 1, 1)) -> Vector3D:
+    """
+    三次方拉伸一个向量, 即拉伸向量指定维度的三次方
+
+    Args:
+        v (Vector3D): 要拉伸的三维向量
+        dim (tuple, optional): 要拉伸的纬度. Defaults to `(1, 1, 1)`.
+
+    Returns:
+        Vector3D: _description_
+    """
+    return stretch(
+        v,
+        sx=v[0] ** 2 if dim[0] else 1.0,
+        sy=v[1] ** 2 if dim[1] else 1.0,
+        sz=v[2] ** 2 if dim[2] else 1.0,
+    )
+
+
 B = (
     (0, 2, 1),
     (0, 1, 0),

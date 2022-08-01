@@ -1,5 +1,5 @@
 from math import acos, atan2, cos, pi, sin, sqrt
-from typing import Iterable, List, Tuple, TypeVar, Union
+from typing import Iterable, List, Sequence, Tuple, Union
 
 # 定义一个数类型
 Number = Union[int, float]
@@ -20,13 +20,13 @@ Vector = Tuple[Number, ...]
 Triangle = Tuple[Vector3D, Vector3D, Vector3D]
 
 # 表示一个多面体 (由数个三角形组成)
-Polygons = Union[Tuple[Triangle, ...], List[Triangle]]
+Polygons = Sequence[Triangle]
 
 # 表示一个三维矩阵
-Matrix3D = Union[List[Vector3D], Tuple[Vector3D, ...]]
+Matrix3D = Sequence[Vector3D]
 
 # 表示一个矩阵
-Matrix = Union[List[Vector], Tuple[Vector, ...]]
+Matrix = Sequence[Vector]
 
 
 def length(v: Vector) -> float:
