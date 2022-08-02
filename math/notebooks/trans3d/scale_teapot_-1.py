@@ -8,7 +8,7 @@ from typing import cast
 import camera
 from draw_model import draw_model
 from teapot import load_triangles
-from vectors import Polygons, add, scale
+from vectors import Polygons, scale
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("MINIPROJ_4.3b", [0])
