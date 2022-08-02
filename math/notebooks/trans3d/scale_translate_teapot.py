@@ -19,7 +19,7 @@ original_triangles = load_triangles()
 # 要移动的偏移向量
 offset = (-1, 0, 0)
 
-# 将模型中的每个三角形放大 2 倍后沿 x 轴移动 1 个单位
+# 将模型中的每个向量放大 2 倍后沿 x 轴负方向移动 1 个单位
 scaled_triangles = [
     [add(offset, scale(vertex, 2.0)) for vertex in triangle]
     for triangle in original_triangles

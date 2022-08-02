@@ -8,19 +8,22 @@ from typing import cast
 import camera
 from draw_model import draw_model
 from teapot import load_triangles
-from vectors import Polygons, add
+from vectors import Polygons, add, scale
 
 if "--snapshot" in sys.argv:
-    camera.default_camera = camera.Camera("fig_4.16_slant_teapot", [0])
+    camera.default_camera = camera.Camera("ex_translate_scale", [0])
 
 # 读取茶壶模型
 original_triangles = load_triangles()
 
-# 将每个向量的 x 轴分量拉伸 4 倍
-slanted_triangles = [
-    [add(vertex, (vertex[1], 0, 0)) for vertex in triangle]
+# 要移动的偏移向量
+offset = (-1, 0, 0)
+
+# 将模型中的每个向量沿 x 轴负方向移动 1 个单位后放大 2 倍
+scaled_triangles = [
+    [scale(add(offset, vertex), 2.0) for vertex in triangle]
     for triangle in original_triangles
 ]
 
 # 绘制茶壶模型
-draw_model(cast(Polygons, slanted_triangles))
+draw_model(cast(Polygons, scaled_triangles))
