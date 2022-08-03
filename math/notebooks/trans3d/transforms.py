@@ -3,15 +3,23 @@ from typing import Callable
 from vectors import Number, Polygons, Vector, Vector3D, add, rotate2d, scale
 
 
-def compose(*args):
-    def new_function(input):
+def compose(*fns: Callable[[Vector3D], Vector3D]) -> Callable[[Vector3D], Vector3D]:
+    """
+    将一系列向量处理组合在一起
+
+    Returns:
+        Callable[[Vector3D], Vector3D]: 返回组合处理函数
+    """
+    def fn(input: Vector3D) -> Vector3D:
         result = input
-        for f in reversed(args):
-            result = f(result)
+
+        # 依次执行处理函数
+        for fn in reversed(fns):
+            result = fn(result)
 
         return result
 
-    return new_function
+    return fn
 
 
 def curry2(f):
