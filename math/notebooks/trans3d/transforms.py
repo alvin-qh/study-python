@@ -1,16 +1,18 @@
-from typing import Callable
+from typing import Callable, TypeVar
 
 from vectors import Number, Polygons, Vector, Vector3D, add, rotate2d, scale
 
+T = TypeVar("T")
 
-def compose(*fns: Callable[[Vector3D], Vector3D]) -> Callable[[Vector3D], Vector3D]:
+
+def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
     """
     将一系列向量处理组合在一起
 
     Returns:
-        Callable[[Vector3D], Vector3D]: 返回组合处理函数
+        Callable[[T], T]: 返回组合处理函数
     """
-    def fn(input: Vector3D) -> Vector3D:
+    def fn(input: T) -> T:
         result = input
 
         # 依次执行处理函数

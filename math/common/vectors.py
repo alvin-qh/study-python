@@ -1,7 +1,9 @@
 from math import acos, atan2, cos, pi, sin, sqrt
-from typing import Iterable, List, cast
+from typing import Callable, Iterable, List, TypeVar, cast
 
 from . import Number, Polar, Triangle, Vector, Vector2D, Vector3D
+
+T = TypeVar("T")
 
 
 def length(v: Vector) -> float:
@@ -277,6 +279,25 @@ def normal(face: Triangle) -> Vector3D:
         cast(Vector3D, subtract(face[1], face[0])),
         cast(Vector3D, subtract(face[2], face[0])),
     )
+
+
+def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
+    """
+    将一系列向量处理组合在一起
+
+    Returns:
+        Callable[[T], T]: 返回组合处理函数
+    """
+    def fn(input: T) -> T:
+        result = input
+
+        # 依次执行处理函数
+        for fn in reversed(fns):
+            result = fn(result)
+
+        return result
+
+    return fn
 
 
 def linear_combination(scalars, *vectors):

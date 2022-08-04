@@ -1,11 +1,12 @@
 from cmath import pi
 from math import atan2, sqrt, tan
-from typing import List
+from typing import Any, Callable, List
+from xml.etree.ElementPath import prepare_self
 
 from common import Vector
 
-from .vectors import (add, angle_between, component, cross, distance, dot,
-                      length, scale, subtract, to_cartesian, to_degree,
+from .vectors import (add, angle_between, component, compose, cross, distance,
+                      dot, length, scale, subtract, to_cartesian, to_degree,
                       to_polar, to_radian, translate, unit)
 
 
@@ -258,3 +259,30 @@ def test_unit() -> None:
 
     assert length(v_new) == 1.0
     assert angle_between(v, v_new) == 0.0
+
+
+def test_compose() -> None:
+    """
+    测试 compose 函数, 组合多个函数一起执行
+    """
+    def prepend(s: str) -> Callable[[str], str]:
+        """
+        指定一个字符串并返回一个函数, 该函数可以在指定字符串之前增加一个字符
+
+        Args:
+            s (str): 指定的字符串
+
+        Returns:
+            Callable[[str], str]: 返回在指定字符串增加字符的函数
+        """
+        return lambda input: s + input
+
+    # 逆向执行三个 prepend 函数, 为指定的字符串添加三个字符
+    fn = compose(
+        prepend("P"),  # 在原字符串前添加 P 字符
+        prepend("y"),  # 在原字符串前添加 y 字符
+        prepend("t"),  # 在原字符串前添加 t 字符
+    )
+
+    # 确认结果正确
+    assert fn("hon") == "Python"
