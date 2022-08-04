@@ -1,9 +1,11 @@
 from math import acos, atan2, cos, pi, sin, sqrt
-from typing import Callable, Iterable, List, TypeVar, cast
+from typing import Any, Callable, Iterable, List, TypeVar, cast
 
 from . import Number, Polar, Triangle, Vector, Vector2D, Vector3D
 
+# 定义泛型参数
 T = TypeVar("T")
+C = TypeVar("C")
 
 
 def length(v: Vector) -> float:
@@ -298,6 +300,27 @@ def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
         return result
 
     return fn
+
+
+def curry2(func: Callable[[T, C], Any]):
+    """
+    对一个具备两个参数的函数执行柯里化, 结果类似:
+
+    ```
+    g(x) = curry2(f(x, y))
+    g(x)(y) == f(x, y)
+    ```
+
+    Args:
+        func (Callable[[T, C], Any]): 返回包装第一个参数的函数
+    """
+    def fn_first(x: T) -> Callable[[C], Any]:
+        def fn_second(y: C) -> Any:
+            return func(x, y)
+
+        return fn_second
+
+    return fn_first
 
 
 def linear_combination(scalars, *vectors):

@@ -1,8 +1,10 @@
-from typing import Callable, TypeVar
+from typing import Any, Callable, TypeVar
 
 from vectors import Number, Polygons, Vector, Vector3D, add, rotate2d, scale
 
+# 定义泛型参数
 T = TypeVar("T")
+C = TypeVar("C")
 
 
 def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
@@ -24,14 +26,44 @@ def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
     return fn
 
 
-def curry2(f):
-    def g(x):
-        def new_function(y):
-            return f(x, y)
+def curry2(func: Callable[[T, C], Any]):
+    """
+    对一个具备两个参数的函数执行柯里化, 结果类似:
+    
+    ```
+    g(x) = curry2(f(x, y))
+    g(x)(y) == f(x, y)
+    ```
+    
+    Args:
+        func (Callable[[T, C], Any]): 返回包装第一个参数的函数
+    """
+    def fn_first(x: T) -> Callable[[C], Any]:
+        """
+        第一层函数, 接受第一个参数, 返回第二个函数
 
-        return new_function
+        Args:
+            x (T): 第一个参数
 
-    return g
+        Returns:
+            Callable[[C], Any]: 返回第二个函数
+        """
+        def fn_second(y: C) -> Any:
+            """
+            第二个函数, 接收第二个参数
+            执行原始的 `f(x, y)` 函数
+
+            Args:
+                y (C): 第二个参数
+
+            Returns:
+                Any: 返回结果
+            """
+            return func(x, y)
+
+        return fn_second
+
+    return fn_first
 
 
 def polygon_map(transformation, polygons: Polygons):

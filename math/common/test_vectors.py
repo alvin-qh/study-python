@@ -5,9 +5,9 @@ from xml.etree.ElementPath import prepare_self
 
 from common import Vector
 
-from .vectors import (add, angle_between, component, compose, cross, distance,
-                      dot, length, scale, subtract, to_cartesian, to_degree,
-                      to_polar, to_radian, translate, unit)
+from .vectors import (add, angle_between, component, compose, cross, curry2,
+                      distance, dot, length, scale, subtract, to_cartesian,
+                      to_degree, to_polar, to_radian, translate, unit)
 
 
 def test_length() -> None:
@@ -286,3 +286,17 @@ def test_compose() -> None:
 
     # 确认结果正确
     assert fn("hon") == "Python"
+
+
+def test_curry2() -> None:
+    """
+    测试函数柯里化, 将一个两个参数的函数包装为一个函数,
+    该函数接受第一个参数, 并返回另一个函数, 后者接收第二个参数, 返回原函数的执行结果
+    """
+    def add(x: int, y: int) -> int:
+        return x + y
+
+    # 返回第一个函数
+    fn = curry2(add)
+    # 执行第一个函数和第一个函数返回的函数
+    assert fn(100)(200) == 300
