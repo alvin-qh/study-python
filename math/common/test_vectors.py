@@ -1,7 +1,6 @@
 from cmath import pi
 from math import atan2, sqrt, tan
-from typing import Any, Callable, List
-from xml.etree.ElementPath import prepare_self
+from typing import Callable, List
 
 from common import Vector
 
