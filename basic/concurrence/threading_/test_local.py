@@ -126,7 +126,12 @@ def test_werkzeug_local_proxy() -> None:
         assert h.n
 
     # 确认失败的原因
-    assert str(e.value) == "no object bound to holder"
+    assert (
+        str(e.value) == "no object bound to holder"
+        or
+        str(e.value) == "object is not bound"
+    )
+    
 
     # 测试 LocalProxy 作为 Local 内容访问的代理方法
 
