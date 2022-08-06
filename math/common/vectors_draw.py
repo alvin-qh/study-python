@@ -23,6 +23,15 @@ class Color(Enum):
     gray = "gray"
 
 
+class LineStyle(Enum):
+    """
+    绘制线条的样式
+    """
+    solid = "-"  # 实线
+    dashed = "--"  # 点划线
+    dotted = ":"  # 点线
+
+
 class Drawable2D:
     """
     所有绘图的超类
@@ -106,7 +115,13 @@ class Arrow2D(Drawable2D):
     给定两个向量, 绘制一个从一个向量指向另一个的箭头
     """
 
-    def __init__(self, tip: Vector2D, tail: Vector2D = (0, 0), color=Color.red) -> None:
+    def __init__(
+        self,
+        tip: Vector2D,
+        tail: Vector2D = (0, 0),
+        color=Color.red,
+        linestyle=LineStyle.solid,
+    ) -> None:
         """
         初始化对象, 设置箭头指向的二维向量和箭头发出的二维向量
 
@@ -119,6 +134,7 @@ class Arrow2D(Drawable2D):
 
         self.tip = tip
         self.tail = tail
+        self.linestyle = linestyle.value
 
 
 class Segment2D(Drawable2D):
@@ -313,6 +329,7 @@ def draw2d(
                 head_length=tip_length,
                 fc=o.color,
                 ec=o.color,
+                linestyle=o.linestyle,
             )
 
         elif isinstance(o, Segment2D):
@@ -339,15 +356,6 @@ def draw2d(
         plt.savefig(save_as)
 
     plt.show()
-
-
-class LineStyle(Enum):
-    """
-    绘制线条的样式
-    """
-    solid = "-"  # 实线
-    dashed = "-."  # 点划线
-    dotted = ":"  # 点线
 
 
 class Drawable3D(Drawable2D):

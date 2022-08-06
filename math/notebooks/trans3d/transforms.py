@@ -1,6 +1,6 @@
 from typing import Any, Callable, TypeVar
 
-from vectors import Number, Polygons, Vector, Vector3D, add, rotate2d, scale
+from vectors import Polygons, Vector3D, add, rotate2d, scale
 
 # 定义泛型参数
 T = TypeVar("T")
@@ -29,12 +29,12 @@ def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
 def curry2(func: Callable[[T, C], Any]):
     """
     对一个具备两个参数的函数执行柯里化, 结果类似:
-    
+
     ```
     g(x) = curry2(f(x, y))
     g(x)(y) == f(x, y)
     ```
-    
+
     Args:
         func (Callable[[T, C], Any]): 返回包装第一个参数的函数
     """
@@ -73,33 +73,6 @@ def polygon_map(transformation, polygons: Polygons):
     ]
 
 
-def scale_by(scalar: Number) -> Callable[[Vector], Vector]:
-    """
-    将 `scale` 函数的 `scalar` 参数固化
-
-    Args:
-        scalar (Number): `scale` 函数的 `scalar` 参数
-
-    Returns:
-        Callable[[Vector], Vector]: 向量和指定标量相乘的结果
-    """
-    return lambda v: scale(v, scalar)
-
-
-def translate_by(translation: Vector) -> Callable[[Vector], Vector]:
-    """
-    获取向量参数固化后的 `add` 函数
-
-    Args:
-        translation (Vector): 要固化的 `add` 函数向量参数
-
-    Returns:
-        Callable[[Vector], Vector]: 向量参数固化后的 `add` 函数
-    """
-    # 向量参数固化后的 `add` 函数
-    return lambda v: add(translation, v)
-
-
 def rotate_z(angle: float, vector: Vector3D) -> Vector3D:
     """
     将三维向量围绕 `z` 轴进行旋转
@@ -119,20 +92,7 @@ def rotate_z(angle: float, vector: Vector3D) -> Vector3D:
     return new_x, new_y, z
 
 
-def rotate_z_by(angle: float) -> Callable[[Vector3D], Vector3D]:
-    """
-    将 `rotate_z` 函数的 `angle` 参数进行固化
-
-    Args:
-        angle (float): 要固化的 `angle` 参数
-
-    Returns:
-        Callable[[Vector3D], Vector3D]: 固化 `angle` 参数的 `rotate_z` 函数
-    """
-    return lambda v: rotate_z(angle, v)
-
-
-def rotate_x(angle: float, vector: Vector3D) -> Vector3D:
+def rotate_x(angle: float, v: Vector3D) -> Vector3D:
     """
     将三维向量围绕 `x` 轴进行旋转
 
@@ -144,27 +104,14 @@ def rotate_x(angle: float, vector: Vector3D) -> Vector3D:
         Vector3D: 旋转角度后的三维向量
     """
     # 获取三维分量
-    x, y, z = vector
+    x, y, z = v
     # 将三维向量在 y 和 z 两个坐标分量旋转指定角度
     new_y, new_z = rotate2d(angle, (y, z))
     # 返回旋转后的坐标
     return (x, new_y, new_z)
 
 
-def rotate_x_by(angle: float) -> Callable[[Vector3D], Vector3D]:
-    """
-    将 `rotate_x` 函数的 `angle` 参数进行固化
-
-    Args:
-        angle (float): 要固化的 `angle` 参数
-
-    Returns:
-        Callable[[Vector], Vector]: 固化 `angle` 参数的 `rotate_x` 函数
-    """
-    return lambda v: rotate_x(angle, v)
-
-
-def rotate_y(angle: float, vector: Vector3D) -> Vector3D:
+def rotate_y(angle: float, v: Vector3D) -> Vector3D:
     """
     将三维向量围绕 `y` 轴进行旋转
 
@@ -176,24 +123,11 @@ def rotate_y(angle: float, vector: Vector3D) -> Vector3D:
         Vector3D: 旋转角度后的三维向量
     """
     # 获取三维分量
-    x, y, z = vector
+    x, y, z = v
     # 将三维向量在 x 和 z 两个坐标分量旋转指定角度
     new_x, new_z = rotate2d(angle, (x, z))
     # 返回旋转后的坐标
     return new_x, y, new_z
-
-
-def rotate_y_by(angle: float) -> Callable[[Vector3D], Vector3D]:
-    """
-    将 `rotate_y` 函数的 `angle` 参数进行固化
-
-    Args:
-        angle (float): 要固化的 `angle` 参数
-
-    Returns:
-        Vector3D: 固化 `angle` 参数的 `rotate_y` 函数
-    """
-    return lambda v: rotate_y(angle, v)
 
 
 def stretch(v: Vector3D, sx: float = 1.0, sy: float = 1.0, sz: float = 1.0) -> Vector3D:

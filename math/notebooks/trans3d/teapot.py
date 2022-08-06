@@ -2,12 +2,13 @@
 绘制一个茶壶 3D 图形
 """
 
+from functools import partial
 from math import pi
 from os import path
-from typing import Generator, List, Sequence, Tuple, cast
+from typing import Generator, List, Sequence, cast
 
-from transforms import rotate_x_by, scale_by, translate_by
-from vectors import Polygons, Triangle, Vector3D
+from transforms import rotate_x
+from vectors import Polygons, Triangle, Vector3D, add, scale
 
 # 打开模型文件
 with open(path.join(path.dirname(__file__), "models/teapot.off")) as f:
@@ -43,11 +44,11 @@ def load_vertices() -> List[Vector3D]:
         List[Vector]: 读取的结果
     """
     # 获取将向量放大两倍的函数
-    f_scale = scale_by(2)
+    scale_by = partial(scale, scalar=2)
     # 获取将向量沿 y 轴顺时针转动 90° 的函数
-    f_rotate = rotate_x_by(-pi / 2)
+    rotate_x_by = partial(rotate_x, angle=-pi / 2)
     # 将向量的 x 轴和 z 轴移动一段距离的函数
-    f_translate = translate_by((-0.5, 0, -0.6))
+    translate_by = partial(add, (-0.5, 0, -0.6))
 
     # 保存向量返回值
     vs = []
@@ -58,11 +59,11 @@ def load_vertices() -> List[Vector3D]:
         v: Vector3D = triple(map(float, lines[i].split()))
 
         # 对向量进行移动
-        v = cast(Vector3D, f_translate(v))
+        v = cast(Vector3D, translate_by(v))
         # 对向量转动 90°
-        v = f_rotate(v)
+        v = rotate_x_by(v=v)
         # 将向量长度放大 2 被
-        v = cast(Vector3D, f_scale(v))
+        v = cast(Vector3D, scale_by(v=v))
 
         vs.append(v)
 
@@ -112,11 +113,11 @@ def triangulate(poly: Sequence[Vector3D]) -> Generator[Triangle, None, None]:
         raise ValueError("polygons must have at least 3 vertices")
 
     # 将四个向量坐标拆分成两个三角形
-    #          * (0)
+    #             * (0)
     #       * (1)
     #                   * (2)
     #               * (3)
-    # 连接 0-2-1 和 0-3-2
+    # 连接 0-2-1 和 0-3-2, 将一个四边形分为两个三角形
     for i in range(1, len(poly) - 1):
         yield (poly[0], poly[i + 1], poly[i])
 
