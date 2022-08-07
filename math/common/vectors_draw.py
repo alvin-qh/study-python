@@ -144,7 +144,13 @@ class Segment2D(Drawable2D):
     线段是由两个点组成
     """
 
-    def __init__(self, start_point: Vector2D, end_point: Vector2D, color=Color.blue) -> None:
+    def __init__(
+        self,
+        start_point: Vector2D,
+        end_point: Vector2D,
+        color=Color.blue,
+        linestyle=LineStyle.solid,
+    ) -> None:
         """
         初始化对象
 
@@ -157,6 +163,7 @@ class Segment2D(Drawable2D):
 
         self.start_point = start_point
         self.end_point = end_point
+        self.linestyle = linestyle.value
 
 
 def extract_vectors(objects: Iterable[Drawable2D]) -> Generator[Vector2D, None, None]:
@@ -336,7 +343,7 @@ def draw2d(
             # 绘制线段
             x1, y1 = o.start_point
             x2, y2 = o.end_point
-            plt.plot([x1, x2], [y1, y2], color=o.color)
+            plt.plot([x1, x2], [y1, y2], color=o.color, linestyle=o.linestyle)
 
         else:
             raise TypeError(f"Unrecognized object: {o}")
