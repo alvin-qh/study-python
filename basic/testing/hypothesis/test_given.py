@@ -1,8 +1,7 @@
 import re
-from turtle import exitonclick
-from typing import Union
+from typing import Callable, Union, cast
 
-from hypothesis import example, given
+from hypothesis import example, given, note
 from hypothesis import strategies as st
 
 # 基于属性的自动化测试 (Property-based testing)
@@ -29,17 +28,18 @@ def add(x: int, y: int) -> int:
 @given(x=st.integers(), y=st.integers())
 def test_given(x: int, y: int) -> None:
     """
-    `given` 装饰器用于提供一组 "假设", 该组假设中包含了指定类型的随机数据 (包括边界数据), 
+    `given` 装饰器用于提供一组 "假设", 该组假设中包含了指定类型的随机数据 (包括边界数据),
     以这组数据为驱动, 驱动测试执行
 
-    `@given(x=st.integers(), y=st.integers())` 表示会给测试函数 `x`, `y` 两个参数, 
+    `@given(x=st.integers(), y=st.integers())` 表示会给测试函数 `x`, `y` 两个参数,
     整数类型
 
     Args:
         x (int): _description_
         y (int): _description_
     """
-    print(f"given x={x}, y={y}")
+    # 当测试失败时, 在标准输出打印指定内容
+    note(f"given x={x}, y={y}")
     # 确认加法函数正常
     assert add(x, y) == x + y
 
@@ -73,16 +73,18 @@ def test_example(s: str) -> None:
     Args:
         s (str): 产生的字符串
     """
-    print(f"given s={s}")
+    # 当测试失败时, 在标准输出打印指定内容
+    note(f"given s={s}")
 
     # 过滤字符串
     r = ascii_filter(s)
 
-    if r != False:
-        print(f"filtered s={s}")
+    if r is not False:
+        # 当测试失败时, 在标准输出打印指定内容
+        note(f"filtered s={s}")
 
         # 确认字符串的所有字符都有 ASCII 字符组成
-        for c in r:
+        for c in cast(str, r):
             assert 0 < ord(c) < 128
 
     if s in {"alvin", "emma"}:
@@ -90,9 +92,10 @@ def test_example(s: str) -> None:
         expected_str.add(s)
 
 
-def teardown_function() -> None:
+def teardown_function(fn: Callable) -> None:
     """
     测试结束后验证整体结果
     """
-    # 确认 test_example 中指定的测试用例被执行
-    assert expected_str == {"alvin", "emma"}
+    if fn == test_example:
+        # 确认 test_example 中指定的测试用例被执行
+        assert expected_str == {"alvin", "emma"}
