@@ -11,4 +11,5 @@ types-pytz
 atomics
 werkzeug
 wrapt
+hypothesis
 mypy
