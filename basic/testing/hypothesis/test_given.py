@@ -28,15 +28,29 @@ def add(x: int, y: int) -> int:
 @given(x=st.integers(), y=st.integers())
 def test_given(x: int, y: int) -> None:
     """
-    `given` 装饰器用于提供一组 "假设", 该组假设中包含了指定类型的随机数据 (包括边界数据),
+    本例演示了如何使用 `@given` 装饰器, 该装饰器定义如下:
+
+    ```
+    hypothesis.given(
+        *_given_arguments,  # 要假设的参数, 按测试函数的参数位置设置
+        **_given_kwargs     # 要假设的参数, 按测试函数的参数名称设置
+    )
+    ```
+
+    `@given` 装饰器用于提供一组 "假设", 该组假设中包含了指定类型的随机数据 (包括边界数据),
     以这组数据为驱动, 驱动测试执行
 
     `@given(x=st.integers(), y=st.integers())` 表示会给测试函数 `x`, `y` 两个参数,
     整数类型
-
-    Args:
-        x (int): _description_
-        y (int): _description_
+    
+    本例中还是用到了 `note` 函数, 定义如下:
+    
+    ```
+    hypothesis.note(value)
+    ```
+    
+    该函数类似 `print` 函数, 用于输出参数值, 但 `note` 函数仅在测试失败时显示输出
+    
     """
     # 当测试失败时, 在标准输出打印指定内容
     note(f"given x={x}, y={y}")
@@ -68,10 +82,17 @@ expected_str = set()
 @example(s="emma")
 def test_example(s: str) -> None:
     """
-    `@example` 装饰器用于指定必须产生的测试属性值
-
-    Args:
-        s (str): 产生的字符串
+    本例演示了 `@example` 装饰器, 定义如下:
+    
+    ```
+    hypothesis.example(
+        *args,      # 要确定的参数, 按测试函数的参数位置设置
+        **kwargs    # 要确定的参数, 按测试函数的参数名称设置
+    )
+    ```
+    
+    `@example` 装饰器用于指定必须产生的测试参数值, 无论设置的
+    参数值是否已被假设, 其都必然通过参数传递给测试
     """
     # 当测试失败时, 在标准输出打印指定内容
     note(f"given s={s}")
