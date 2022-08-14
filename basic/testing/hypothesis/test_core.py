@@ -1,7 +1,7 @@
 import re
 from typing import Callable, Union, cast
 
-from hypothesis import example, given, note
+from hypothesis import assume, example, given, note
 from hypothesis import strategies as st
 
 # 基于属性的自动化测试 (Property-based testing)
@@ -42,15 +42,15 @@ def test_given(x: int, y: int) -> None:
 
     `@given(x=st.integers(), y=st.integers())` 表示会给测试函数 `x`, `y` 两个参数,
     整数类型
-    
+
     本例中还是用到了 `note` 函数, 定义如下:
-    
+
     ```
     hypothesis.note(value)
     ```
-    
+
     该函数类似 `print` 函数, 用于输出参数值, 但 `note` 函数仅在测试失败时显示输出
-    
+
     """
     # 当测试失败时, 在标准输出打印指定内容
     note(f"given x={x}, y={y}")
@@ -83,14 +83,14 @@ expected_str = set()
 def test_example(s: str) -> None:
     """
     本例演示了 `@example` 装饰器, 定义如下:
-    
+
     ```
     hypothesis.example(
         *args,      # 要确定的参数, 按测试函数的参数位置设置
         **kwargs    # 要确定的参数, 按测试函数的参数名称设置
     )
     ```
-    
+
     `@example` 装饰器用于指定必须产生的测试参数值, 无论设置的
     参数值是否已被假设, 其都必然通过参数传递给测试
     """
@@ -111,6 +111,27 @@ def test_example(s: str) -> None:
     if s in {"alvin", "emma"}:
         # 将指定测试用例值加到确认列表中
         expected_str.add(s)
+
+
+@given(s=st.text(
+    alphabet="".join(  # 字符串由 A-Za-z 字符组成
+        [chr(c) for c in range(ord("a"), ord("z"))] +
+        [chr(c) for c in range(ord("A"), ord("Z"))]
+    )
+))
+def test_assume(s: str) -> None:
+    """
+    排除无效的参数
+
+    `assume(condition)` 函数会在当条件为 `False` 时, 跳过当前测试, 这样可以忽略
+    一些不满足要求的假设, 让测试可以按最初的设计正常执行
+    """
+    # 跳过 s 为 None 或 空字符串 的情况
+    assume(s)
+
+    # 因为 assume(s) 的作用, s 为 None 及空字符串的测试已被停止, 所以不会触发断言
+    # 若去掉 assume(s) 函数调用, 则会引发断言
+    assert len(s) > 0
 
 
 def teardown_function(fn: Callable) -> None:

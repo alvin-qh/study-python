@@ -1,8 +1,10 @@
 import re
-from typing import Any
+from datetime import date, datetime
+from decimal import Decimal
+from typing import Any, Tuple, TypeVar
 from xmlrpc.client import Boolean
 
-from hypothesis import given
+from hypothesis import assume, given, note
 from hypothesis import strategies as st
 
 
@@ -20,7 +22,7 @@ def test_strategies_binary(bs: bytes) -> None:
     ```
     """
     # 判断生成的结果是一个 byte 串
-    assert any(0x0 <= n <= 0x7F for n in bs)
+    assert any(0x0 <= n <= 0xFF for n in bs)
     # 判断生成结果的长度符合预期
     assert 10 <= len(bs) <= 20
 
@@ -105,6 +107,7 @@ def test_strategies_characters(c: str) -> None:
     ```
 
     备注: 所谓 Unicode 类别, 即对 Unicode 字符的一个分类, 具体参考 https://unicodeplus.com/category
+    和 https://wikipedia.org/wiki/Unicode_character_property
     """
     assert len(c) == 1
 
@@ -112,3 +115,192 @@ def test_strategies_characters(c: str) -> None:
         assert c not in {"X", "Y"}
     else:
         assert c in {"a", "b", "c"}
+
+
+@given(c=st.complex_numbers(
+    min_magnitude=1.0,
+    max_magnitude=100.0,
+    allow_infinity=None,
+    allow_nan=None,
+    allow_subnormal=True
+))
+def test_strategies_complex_numbers(c: complex) -> None:
+    """
+    假设一组复数并依次传递给测试参数
+
+    ```
+    hypothesis.strategies.complex_numbers(
+        *,
+        min_magnitude=0,
+        max_magnitude=None,
+        allow_infinity=None,
+        allow_nan=None,
+        allow_subnormal=True
+    )
+    ```
+    """
+    # 复数不为 0, 即 0
+    assert c
+
+    # 确认复数 c 在指定的范围
+    assert 0 <= abs(c) <= 100
+
+
+E = TypeVar("E")
+
+
+@st.composite
+def element_and_index(draw: st.DrawFn, element: st.SearchStrategy[E]) -> Tuple[int, E]:
+    """
+    利用 `@composite` 装饰器产生一个假设组合, 其定义如下:
+
+    ```
+    hypothesis.strategies.composite(
+        f   # 装饰器修饰的函数, 类型为 Callable[[DrawFn, SearchStrategy], Any]
+    )
+    ```
+
+    Args:
+        draw (st.DrawFn): 产生指定假设的函数
+        element (st.SearchStrategy[E]): 产生假设的 Strategy 类
+
+    Returns:
+        Tuple[int, E]: 输出的假设值
+    """
+    # 根据传入的假设类型产生假设值
+    elem = draw(element)
+
+    # 产生一个整数假设值
+    index = draw(st.integers(min_value=1, max_value=1000))
+
+    # 返回假设值组合
+    return (index, elem)
+
+
+@given(r=element_and_index(  # 产生一组假设, 一部分为通过 text 函数产生的假设值
+    st.text(
+        min_size=1,
+        alphabet=st.characters(
+            min_codepoint=ord("A"),
+            max_codepoint=ord("z"),
+        ),
+    ),  # 产生假设值的参数
+))
+def test_composite(r: Tuple[int, str]) -> None:
+    """
+    组合多种假设方法, 统一产生一个结果
+
+    参考 `element_and_index` 函数实现
+    """
+    note(f"argument r={r}")
+    assert len(r) == 2
+
+    assert isinstance(r[0], int)
+    assert isinstance(r[1], str)
+
+    assert 1 <= r[0] <= 1000
+
+
+@given(d=st.data())
+def test_strategies_data(d: st.DataObject) -> None:
+    """
+    提供 `draw` 方法, 通过一组 `SearchStrategy` 类型对象产生所需假设值, 其定义如下:
+
+    ```
+    hypothesis.strategies.data()
+    ```
+    """
+    # 通过 draw 方法产生两个假设值
+    n1 = d.draw(st.integers())
+    n2 = d.draw(st.integers(min_value=n1))
+
+    # 排除掉 n1 == n2 的情况
+    assume(n1 != n2)
+
+    # 执行断言
+    assert n1 < n2
+
+
+start_datetime = datetime(2000, 1, 1, 0, 0, 0)
+end_datetime = datetime(2030, 12, 31, 23, 59, 59)
+
+
+@given(d=st.dates(
+    min_value=start_datetime.date(),  # 假设日期的最小值
+    max_value=end_datetime.date(),  # 假设日期的最大值
+))
+def test_strategies_dates(d: date) -> None:
+    """
+    假设一组日期, 并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.dates(
+        min_value=datetime.date.min,  # 假设日期所允许的最小值
+        max_value=datetime.date.max   # 假设日期所允许的最大值
+    )
+    ```
+    """
+    assert isinstance(d, date)
+    assert start_datetime.date() <= d <= end_datetime.date()
+
+
+@given(d=st.datetimes(
+    min_value=start_datetime,
+    max_value=end_datetime,
+    timezones=st.timezones(),
+))
+def test_strategies_datetimes(d: datetime) -> None:
+    """
+    假设一组时间日期对象, 并传递给测试参数
+
+    ```
+    hypothesis.strategies.datetimes(
+        min_value=datetime.datetime.min, # 假设日期时间所允许的最小值
+        max_value=datetime.datetime.max, # 假设日期时间所允许的最大值
+        *,
+        timezones=none(),       # 假设日期时间所属的时区
+        allow_imaginary=True    # 是否过滤掉 "假象" 时间 (夏令时, 闰秒, 时区等)
+    )
+    ```
+    """
+    assert isinstance(d, datetime)
+
+    # 确保假设的时间日期带有时区信息
+    assert d.tzinfo
+
+    # 去除假设日期时间中的时区信息
+    d = d.replace(tzinfo=None)
+
+    # 确认假设的日期时间在指定的范围内
+    assert start_datetime <= d <= end_datetime
+
+
+@given(n=st.decimals(
+    min_value=Decimal(0.0),  # 假设所允许的最小值
+    max_value=Decimal("1e100"),  # 假设所允许的最大值
+    places=3,  # 假设数值的小数位
+))
+def test_strategies_decimals(n: Decimal) -> None:
+    """
+    假设一组 `Decimal` 类型数值, 并传入测试参数
+
+    ```
+    hypothesis.strategies.decimals(
+        min_value=None, # 假设值允许的最小值
+        max_value=None, # 假设值允许的最大值
+        *,
+        allow_nan=None, # 是否允许产生 NaN 值 (非数字)
+        allow_infinity=None, # 是否允许产生 INF 值 (无穷)
+        places=None # 是否指定固定的小数位数
+    )
+    ```
+    """
+    # 确认假设值的类型
+    assert isinstance(n, Decimal)
+
+    # 确认假设值的范围
+    assert Decimal(0.0) <= n <= Decimal("1e100")
+
+    # 确认假设值的小数位数
+    sn = str(n)
+    assert len(sn) - 1 - sn.rindex(".") == 3
