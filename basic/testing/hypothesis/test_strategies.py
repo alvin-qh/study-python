@@ -1,7 +1,7 @@
 import re
 from datetime import date, datetime
 from decimal import Decimal
-from typing import Any, Tuple, TypeVar
+from typing import Any, Dict, Tuple, TypeVar
 from xmlrpc.client import Boolean
 
 from hypothesis import assume, given, note
@@ -321,3 +321,23 @@ def test_strategies_deferred() -> None:
 
     # 确定假设 a 通过假设 b 产生值
     assert isinstance(a.example(), int)
+
+
+@given(d=st.dictionaries(
+    keys=st.from_regex(r"[a-z]{3}", fullmatch=True),  # 假设任意三个字母作为 key
+    values=st.integers(min_value=1, max_value=100),  # 假设任意 1~100 整数作为 value
+))
+def test_strategies_dictionaries(d: Dict) -> None:
+    # 过滤掉空字典对象
+    assume(d)
+
+    # 遍历所有的 key
+    for k in d.keys():
+        assert isinstance(k, str)  # 确认 key 为字符串类型
+        assert len(k) == 3  # 确认 key 的长度为 3
+        assert k.isalpha()  # 确认 key 全部为英文字母
+
+    # 遍历所有的 value
+    for v in d.values():
+        assert isinstance(v, int)  # 确认 value 为整型
+        assert 1 <= v <= 100  # 确认 value 值的假设范围
