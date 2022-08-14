@@ -304,3 +304,20 @@ def test_strategies_decimals(n: Decimal) -> None:
     # 确认假设值的小数位数
     sn = str(n)
     assert len(sn) - 1 - sn.rindex(".") == 3
+
+
+def test_strategies_deferred() -> None:
+    """
+    允许一个假设引用另一个尚未定义的假设, 通过之后定义的假设产生值
+
+    注意: 这并不是意味着要把后一个假设的值用于前一个假设, 而是通过后一个假设定义为前一个假设产生值,
+    所以两个假设的值并不相同
+    """
+    # 假设 a 引用假设 b, 此时假设 b 尚未定义
+    a = st.deferred(lambda: b)
+
+    # 再假设 a 后定义假设 b
+    b = st.integers()
+
+    # 确定假设 a 通过假设 b 产生值
+    assert isinstance(a.example(), int)
