@@ -251,7 +251,7 @@ def test_strategies_dates(d: date) -> None:
 ))
 def test_strategies_datetimes(d: datetime) -> None:
     """
-    假设一组时间日期对象, 并传递给测试参数
+    假设一组时间日期对象, 并传递给测试参数, 其定义如下:
 
     ```
     hypothesis.strategies.datetimes(
@@ -282,7 +282,7 @@ def test_strategies_datetimes(d: datetime) -> None:
 ))
 def test_strategies_decimals(n: Decimal) -> None:
     """
-    假设一组 `Decimal` 类型数值, 并传入测试参数
+    假设一组 `Decimal` 类型数值, 并传入测试参数, 其定义如下:
 
     ```
     hypothesis.strategies.decimals(
@@ -328,7 +328,23 @@ def test_strategies_deferred() -> None:
     values=st.integers(min_value=1, max_value=100),  # 假设任意 1~100 整数作为 value
 ))
 def test_strategies_dictionaries(d: Dict) -> None:
-    # 过滤掉空字典对象
+    """
+    假设一组字典对象, 并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.dictionaries(
+        keys,       # 字典 key 的假设方法
+        values,     # 字典 value 的假设方法
+        *,
+        dict_class=<class 'dict'>, # 字典类型
+        min_size=0,     # 字典内最小键值对数量
+        max_size=None   # 字典内最大键值对梳理
+    )
+    ```
+
+    注意: 每次假设的字典对象, 其包含的键值对数量并不确定, 介于空字典到若干键值对之间
+    """
+    # 过滤掉空字典对象, 也可以通过 min_size 设置非空字典
     assume(d)
 
     # 遍历所有的 key
@@ -341,3 +357,16 @@ def test_strategies_dictionaries(d: Dict) -> None:
     for v in d.values():
         assert isinstance(v, int)  # 确认 value 为整型
         assert 1 <= v <= 100  # 确认 value 值的假设范围
+
+
+@given(e=st.emails())
+def test_strategies_emails(e: str) -> None:
+    """
+    假设一组 email 地址, 并传入测试参数, 定义如下:
+
+    ```
+    hypothesis.strategies.emails()
+    ```
+    """
+    # 判断假设的值是否匹配 email 格式
+    assert re.match(r"^.*?@(.*?\.)*.+?$", e)
