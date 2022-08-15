@@ -1,6 +1,7 @@
 import re
 from datetime import date, datetime
 from decimal import Decimal
+from fractions import Fraction
 from typing import Any, Dict, Tuple, TypeVar
 from xmlrpc.client import Boolean
 
@@ -20,6 +21,8 @@ def test_strategies_binary(bs: bytes) -> None:
         max_size=None   # 字节串最大允许长度
     )
     ```
+
+    本例中假设一组 10~20 之间的整数
     """
     # 判断生成的结果是一个 byte 串
     assert any(0x0 <= n <= 0xFF for n in bs)
@@ -30,11 +33,11 @@ def test_strategies_binary(bs: bytes) -> None:
 @given(b=st.booleans())
 def test_strategies_booleans(b: Boolean) -> None:
     """
+    假设一个 `Boolean` 类型值
+
     ```
     hypothesis.strategies.booleans()
     ```
-
-    假设一个 `Boolean` 类型值
     """
     assert isinstance(b, bool)
 
@@ -70,6 +73,8 @@ def test_strategies_builds(r: Any) -> None:
         **kwargs    # 要传递给 target 函数的参数, 按参数名传递
     )
     ```
+
+    本例中假设一组对 `format_num` 函数调用的结果
     """
     # 确认参数为字符串类型
     assert isinstance(r, str)
@@ -108,6 +113,8 @@ def test_strategies_characters(c: str) -> None:
 
     备注: 所谓 Unicode 类别, 即对 Unicode 字符的一个分类, 具体参考 https://unicodeplus.com/category
     和 https://wikipedia.org/wiki/Unicode_character_property
+
+    本例中假设一组 A~Z 的字符
     """
     assert len(c) == 1
 
@@ -118,11 +125,8 @@ def test_strategies_characters(c: str) -> None:
 
 
 @given(c=st.complex_numbers(
-    min_magnitude=1.0,
-    max_magnitude=100.0,
-    allow_infinity=None,
-    allow_nan=None,
-    allow_subnormal=True
+    min_magnitude=1.0,  # 假设值所允许的最小值
+    max_magnitude=100.0,  # 假设值所允许的最大值
 ))
 def test_strategies_complex_numbers(c: complex) -> None:
     """
@@ -131,13 +135,15 @@ def test_strategies_complex_numbers(c: complex) -> None:
     ```
     hypothesis.strategies.complex_numbers(
         *,
-        min_magnitude=0,
-        max_magnitude=None,
-        allow_infinity=None,
-        allow_nan=None,
-        allow_subnormal=True
+        min_magnitude=0,     # 假设值所允许的最小值
+        max_magnitude=None,  # 假设值所允许的最大值
+        allow_nan=None,      # 是否允许假设 NaN 数值
+        allow_infinity=None, # 是否允许假设 INF 数值
+        allow_subnormal=True # 是否允许非规格化浮点数, 参考: https://en.wikipedia.org/wiki/Subnormal_number
     )
     ```
+
+    本例中假设了一组 1.0~100.0 的复数
     """
     # 复数不为 0, 即 0
     assert c
@@ -155,14 +161,13 @@ def element_and_index(draw: st.DrawFn, element: st.SearchStrategy[E]) -> Tuple[i
     利用 `@composite` 装饰器产生一个假设组合, 其定义如下:
 
     ```
-    hypothesis.strategies.composite(
-        f   # 装饰器修饰的函数, 类型为 Callable[[DrawFn, SearchStrategy], Any]
-    )
+    # 装饰器修饰的函数, f 参数类型为 Callable[[DrawFn, SearchStrategy], Any]
+    hypothesis.strategies.composite(f)
     ```
 
     Args:
         draw (st.DrawFn): 产生指定假设的函数
-        element (st.SearchStrategy[E]): 产生假设的 Strategy 类
+        element (st.SearchStrategy[E]): 产生假设的 `Strategy` 类
 
     Returns:
         Tuple[int, E]: 输出的假设值
@@ -178,13 +183,13 @@ def element_and_index(draw: st.DrawFn, element: st.SearchStrategy[E]) -> Tuple[i
 
 
 @given(r=element_and_index(  # 产生一组假设, 一部分为通过 text 函数产生的假设值
-    st.text(
+    st.text(  # 假设一组字符串类型的参数
         min_size=1,
         alphabet=st.characters(
             min_codepoint=ord("A"),
             max_codepoint=ord("z"),
         ),
-    ),  # 产生假设值的参数
+    ),
 ))
 def test_composite(r: Tuple[int, str]) -> None:
     """
@@ -193,11 +198,15 @@ def test_composite(r: Tuple[int, str]) -> None:
     参考 `element_and_index` 函数实现
     """
     note(f"argument r={r}")
+
+    # 确保 r 参数类型为二元组
     assert len(r) == 2
 
+    # 确保二元组的每个元素类型
     assert isinstance(r[0], int)
     assert isinstance(r[1], str)
 
+    # 确保二元组的取值范围
     assert 1 <= r[0] <= 1000
 
 
@@ -239,6 +248,8 @@ def test_strategies_dates(d: date) -> None:
         max_value=datetime.date.max   # 假设日期所允许的最大值
     )
     ```
+
+    假设一组 `start_datetime.date()` 和 `end_datetime.date()` 之间的日期
     """
     assert isinstance(d, date)
     assert start_datetime.date() <= d <= end_datetime.date()
@@ -262,6 +273,8 @@ def test_strategies_datetimes(d: datetime) -> None:
         allow_imaginary=True    # 是否过滤掉 "假象" 时间 (夏令时, 闰秒, 时区等)
     )
     ```
+
+    假设一组 `start_datetime` 和 `end_datetime` 之间的日期时间
     """
     assert isinstance(d, datetime)
 
@@ -294,6 +307,8 @@ def test_strategies_decimals(n: Decimal) -> None:
         places=None # 是否指定固定的小数位数
     )
     ```
+
+    假设一组 0.0~1e100 之间的 `Decimal` 类型数值
     """
     # 确认假设值的类型
     assert isinstance(n, Decimal)
@@ -343,6 +358,8 @@ def test_strategies_dictionaries(d: Dict) -> None:
     ```
 
     注意: 每次假设的字典对象, 其包含的键值对数量并不确定, 介于空字典到若干键值对之间
+
+    本例中假设一组动态字典对象
     """
     # 过滤掉空字典对象, 也可以通过 min_size 设置非空字典
     assume(d)
@@ -392,6 +409,8 @@ def test_strategies_fixed_dictionaries(d: Dict) -> None:
         optional=None   # 可选模板
     )
     ```
+
+    本例中假设了一组固定 key 的字典对象
     """
     # 确保假设的字典对象包含两项
     assert len(d) in (2, 3)
@@ -432,6 +451,8 @@ def test_strategies_floats(n: float) -> None:
         exclude_max=False   # 如果为 True, 则不包含 max_value 值
     )
     ```
+
+    本例中假设了一组 0.0~0.1 之间的浮点数
     """
     # 确认参数的类型
     assert isinstance(n, float)
@@ -441,21 +462,30 @@ def test_strategies_floats(n: float) -> None:
 
 
 @given(f=st.fractions(
-    min_value=1/2,  # 假设值的最小
-    max_value=1,
-    max_denominator=10,
+    min_value=1/2,  # 假设值所允许的最小值
+    max_value=1,  # 假设值所允许的最大值
+    max_denominator=10,  # 假设值允许的最大分母值
 ))
-def test_strategies_fractions(f: float) -> None:
+def test_strategies_fractions(f: Fraction) -> None:
     """
-
+    假设一组分数值, 并传递给测试参数, 定义如下:
 
     ```
     hypothesis.strategies.fractions(
-        min_value=None,
-        max_value=None,
+        min_value=None,  # 假设值最小允许值
+        max_value=None,  # 假设值最大允许值
         *,
-        max_denominator=None
+        max_denominator=None  # 分母允许的最大值
     )
     ```
+
+    本例中假设了一组 1/2~1 之间的分数, 分母最大值为 10
     """
-    print(f)
+    # 确认参数类型
+    assert isinstance(f, Fraction)
+
+    # 确认假设值的范围
+    assert 1/2 <= float(f) <= 1
+
+    # 确认假设值的最大分母值范围
+    assert f.denominator <= 10
