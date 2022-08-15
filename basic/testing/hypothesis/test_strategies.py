@@ -390,7 +390,7 @@ def test_strategies_emails(e: str) -> None:
     assert re.match(r"^.*?@(.*?\.)*.+?$", e)
 
 
-@given(d=st.fixed_dictionaries(
+@given(d=st.fixed_dictionaries(  # type: ignore
     mapping={  # 设置必要的字典模板
         "name": st.from_regex(r"[a-z]{3,5}", fullmatch=True),
         "gender": st.from_regex(r"M|F", fullmatch=True),

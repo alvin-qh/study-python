@@ -1,4 +1,4 @@
-from typing import Any
+from typing import List
 
 from hypothesis import strategies as st
 
@@ -8,7 +8,7 @@ def test_strategies_mapping_single_value() -> None:
     `SearchStrategy` 类型的 `map` 方法可以将假设的值进行转换
     """
     # 假设一个整数值, 通过 map 方法转为字符串类型
-    r: Any = (
+    r = (
         st.integers(min_value=1, max_value=100)  # 假设一个整数值
         .map(lambda n: str(n))  # 将假设的整数值转为字符串类型
         .example()  # 产生假设值结果
@@ -26,12 +26,12 @@ def test_strategies_mapping_list() -> None:
     测试 `SearchStrategy` 类型的 `map` 方法对列表假设的转换
     """
     # 假设一个列表对象, 并对其假设结果进行排序
-    r = (
-        st.lists(st.integers(  # 假设一个列表, 列表元素为整数类型
+    r: List[int] = (
+        st.lists(st.integers(  # type: ignore # 假设一个列表, 列表元素为整数类型
             min_value=1,
             max_value=100,
         ))
-        .map(sorted)  # 列表转换为排序后的列表
+        .map(sorted)  # type: ignore # 列表转换为排序后的列表
         .example()  # 产生假设结果
     )
 
@@ -46,5 +46,13 @@ def test_strategies_mapping_list() -> None:
 
 
 def test_strategies_filter() -> None:
+    """
+    过滤符合条件的假设值
+    """
     r = st.integers().filter(lambda n: n > 100).example()
+
+    # 确保假设值为 int 类型
     assert isinstance(r, int)
+
+    # 确认假设值符合条件
+    assert r > 100
