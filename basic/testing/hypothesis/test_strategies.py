@@ -370,3 +370,92 @@ def test_strategies_emails(e: str) -> None:
     """
     # 判断假设的值是否匹配 email 格式
     assert re.match(r"^.*?@(.*?\.)*.+?$", e)
+
+
+@given(d=st.fixed_dictionaries(
+    mapping={  # 设置必要的字典模板
+        "name": st.from_regex(r"[a-z]{3,5}", fullmatch=True),
+        "gender": st.from_regex(r"M|F", fullmatch=True),
+    },
+    optional={  # 设置可选的字典模板
+        "age": st.integers(min_value=20, max_value=50),
+    }
+))
+def test_strategies_fixed_dictionaries(d: Dict) -> None:
+    """
+    假设一个固定 key 的字典对象
+
+    ```
+    hypothesis.strategies.fixed_dictionaries(
+        mapping,        # 字典模板, 即字典 key 对应 value 产生的规则
+        *, 
+        optional=None   # 可选模板
+    )
+    ```
+    """
+    # 确保假设的字典对象包含两项
+    assert len(d) in (2, 3)
+
+    # 确保 name 字段包含 3~5 个字符
+    assert 3 <= len(d["name"]) <= 5
+
+    # 确保 name 字段全部由小写字符组成
+    for c in d["name"]:
+        assert ord("a") <= ord(c) <= ord("z")
+
+    # 确保 gender 字段由 M 和 F 字符构成
+    assert d["gender"] in ("M", "F")
+
+    # 确保 age 字段的数值范围
+    if len(d) == 3:
+        assert 20 <= d["age"] <= 50
+
+
+@given(n=st.floats(
+    min_value=0.0,  # 假设值的最小允许值
+    max_value=0.1,  # 假设值的最大允许值
+))
+def test_strategies_floats(n: float) -> None:
+    """
+    假设一个 `float` 类型的值, 并传递给测试参数, 定义如下：
+
+    ```
+    hypothesis.strategies.floats(
+        min_value=None,  # 假设值的最小允许值
+        max_value=None,  # 假设值得最大允许值
+        *,
+        allow_nan=None,  # 是否允许假设 NaN 值
+        allow_infinity=None,  # 是否允许假设 INF 值
+        allow_subnormal=None, # 是否允许非规格化浮点数, 参考: https://en.wikipedia.org/wiki/Subnormal_number
+        width=64,   # 浮点数的宽度, 默认为 64bit
+        exclude_min=False,  # 如果为 True, 则不包含 min_value 值
+        exclude_max=False   # 如果为 True, 则不包含 max_value 值
+    )
+    ```
+    """
+    # 确认参数的类型
+    assert isinstance(n, float)
+
+    # 确认参数的范围
+    assert 0.0 <= n <= 0.1
+
+
+@given(f=st.fractions(
+    min_value=1/2,  # 假设值的最小
+    max_value=1,
+    max_denominator=10,
+))
+def test_strategies_fractions(f: float) -> None:
+    """
+
+
+    ```
+    hypothesis.strategies.fractions(
+        min_value=None,
+        max_value=None,
+        *,
+        max_denominator=None
+    )
+    ```
+    """
+    print(f)
