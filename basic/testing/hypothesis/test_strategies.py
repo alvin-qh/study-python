@@ -406,7 +406,7 @@ def test_strategies_fixed_dictionaries(d: Dict) -> None:
     ```
     hypothesis.strategies.fixed_dictionaries(
         mapping,        # 字典模板, 即字典 key 对应 value 产生的规则
-        *, 
+        *,
         optional=None   # 可选模板
     )
     ```
@@ -509,7 +509,7 @@ def test_strategies_from_regex(s: str) -> None:
     ```
 
     本例中假设了一组符合正则表达式的手机号码进行测试
-    注意: `\d` 会产生各类 Unicode 字符的数字 (例如罗马数字), 所以不能简单的用 `\d`, 
+    注意: `\d` 会产生各类 Unicode 字符的数字 (例如罗马数字), 所以不能简单的用 `\d`,
     而是 `[0-9]`, 限定为阿拉伯数字
     """
     assert len(s) == 11
@@ -519,5 +519,6 @@ def test_strategies_from_regex(s: str) -> None:
 @given(t=st.from_type(thing=int))
 def test_strategies_from_type(t: Any) -> None:
     """
+    从给定的类型中假设一组值, 并传递给测试参数
     """
     assert isinstance(t, int)
