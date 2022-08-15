@@ -30,11 +30,11 @@ def test_strategies_binary(bs: bytes) -> None:
 @given(b=st.booleans())
 def test_strategies_booleans(b: Boolean) -> None:
     """
-    假设一组 `Boolean` 值并依次传递给测试参数, 函数定义如下:
-
     ```
     hypothesis.strategies.booleans()
     ```
+
+    假设一个 `Boolean` 类型值
     """
     assert isinstance(b, bool)
 
