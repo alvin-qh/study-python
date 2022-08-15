@@ -149,7 +149,8 @@ def test_strategies_complex_numbers(c: complex) -> None:
     assert c
 
     # 确认复数 c 在指定的范围
-    assert 0 <= abs(c) <= 100
+    # abs(c) 有可能会存在浮点数精度问题, 所以比较的时候范围需要略微放宽
+    assert 0 <= abs(c) < 101
 
 
 E = TypeVar("E")
@@ -489,3 +490,34 @@ def test_strategies_fractions(f: Fraction) -> None:
 
     # 确认假设值的最大分母值范围
     assert f.denominator <= 10
+
+
+@given(s=st.from_regex(
+    regex=r"(13[0-9]|14[579]|15[0-35-9]|16[6]|17[0135678]|18[0-9]|19[89])[0-9]{8}",
+    fullmatch=True,  # 是否全量匹配
+))
+def test_strategies_from_regex(s: str) -> None:
+    """
+    通过指定的正则表达式定义假设一组值, 传递给测试参数
+
+    ```
+    hypothesis.strategies.from_regex(
+        regex,          # 正则表达式模板
+        *,
+        fullmatch=False # 是否需要完全匹配正则表达式模板
+    )
+    ```
+
+    本例中假设了一组符合正则表达式的手机号码进行测试
+    注意: `\d` 会产生各类 Unicode 字符的数字 (例如罗马数字), 所以不能简单的用 `\d`, 
+    而是 `[0-9]`, 限定为阿拉伯数字
+    """
+    assert len(s) == 11
+    assert s[0] == "1"
+
+
+@given(t=st.from_type(thing=int))
+def test_strategies_from_type(t: Any) -> None:
+    """
+    """
+    assert isinstance(t, int)
