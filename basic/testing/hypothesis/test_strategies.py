@@ -2,7 +2,7 @@ import re
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
-from typing import Any, Dict, Tuple, TypeVar
+from typing import Any, Callable, Dict, FrozenSet, Tuple, TypeVar
 from xmlrpc.client import Boolean
 
 from hypothesis import assume, given, note
@@ -111,8 +111,9 @@ def test_strategies_characters(c: str) -> None:
     )
     ```
 
-    备注: 所谓 Unicode 类别, 即对 Unicode 字符的一个分类, 具体参考 https://unicodeplus.com/category
-    和 https://wikipedia.org/wiki/Unicode_character_property
+    备注: 所谓 Unicode 类别, 即对 Unicode 字符的一个分类, 具体参考:
+    https://unicodeplus.com/category
+    https://wikipedia.org/wiki/Unicode_character_property
 
     本例中假设一组 A~Z 的字符
     """
@@ -139,7 +140,8 @@ def test_strategies_complex_numbers(c: complex) -> None:
         max_magnitude=None,  # 假设值所允许的最大值
         allow_nan=None,      # 是否允许假设 NaN 数值
         allow_infinity=None, # 是否允许假设 INF 数值
-        allow_subnormal=True # 是否允许非规格化浮点数, 参考: https://en.wikipedia.org/wiki/Subnormal_number
+        allow_subnormal=True # 是否允许非规格化浮点数
+                        # 参考: https://en.wikipedia.org/wiki/Subnormal_number
     )
     ```
 
@@ -157,7 +159,10 @@ E = TypeVar("E")
 
 
 @st.composite
-def element_and_index(draw: st.DrawFn, element: st.SearchStrategy[E]) -> Tuple[int, E]:
+def element_and_index(
+    draw: st.DrawFn,
+    element: st.SearchStrategy[E],
+) -> Tuple[int, E]:
     """
     利用 `@composite` 装饰器产生一个假设组合, 其定义如下:
 
@@ -446,7 +451,8 @@ def test_strategies_floats(n: float) -> None:
         *,
         allow_nan=None,  # 是否允许假设 NaN 值
         allow_infinity=None,  # 是否允许假设 INF 值
-        allow_subnormal=None, # 是否允许非规格化浮点数, 参考: https://en.wikipedia.org/wiki/Subnormal_number
+        allow_subnormal=None, # 是否允许非规格化浮点数
+                        # 参考: https://en.wikipedia.org/wiki/Subnormal_number
         width=64,   # 浮点数的宽度, 默认为 64bit
         exclude_min=False,  # 如果为 True, 则不包含 min_value 值
         exclude_max=False   # 如果为 True, 则不包含 max_value 值
@@ -493,7 +499,8 @@ def test_strategies_fractions(f: Fraction) -> None:
 
 
 @given(s=st.from_regex(
-    regex=r"(13[0-9]|14[579]|15[0-35-9]|16[6]|17[0135678]|18[0-9]|19[89])[0-9]{8}",
+    regex=r"(13[0-9]|14[579]|15[0-35-9]|16[6]|17[0135678]|18[0-9]|19[89])"
+          r"[0-9]{8}",
     fullmatch=True,  # 是否全量匹配
 ))
 def test_strategies_from_regex(s: str) -> None:
@@ -509,7 +516,7 @@ def test_strategies_from_regex(s: str) -> None:
     ```
 
     本例中假设了一组符合正则表达式的手机号码进行测试
-    注意: `\d` 会产生各类 Unicode 字符的数字 (例如罗马数字), 所以不能简单的用 `\d`,
+    注意: `\d` 会产生各类 Unicode 字符的数字 (例如罗马数字), 所以不能简单的用 `\d`, # noqa
     而是 `[0-9]`, 限定为阿拉伯数字
     """
     assert len(s) == 11
@@ -522,3 +529,93 @@ def test_strategies_from_type(t: Any) -> None:
     从给定的类型中假设一组值, 并传递给测试参数
     """
     assert isinstance(t, int)
+
+
+@given(st.frozensets(
+    elements=st.integers(),
+    min_size=1,
+    max_size=10,
+))
+def test_strategies_frozensets(fs: FrozenSet) -> None:
+    """
+    假设一个 `FrozenSet` 对象, 即一个不可修改的 Set 集合, 并传递给测试参数
+
+    ```
+    hypothesis.strategies.frozensets(
+        elements,       # 集合元素值的假设定义
+        *,
+        min_size=0,     # 集合的最小长度
+        max_size=None   # 集合的最大长度
+    )
+    ```
+
+    本例假设了一个长度在 `1`~`10` 之间的 `FrozenSet` 集合, 元素类型为 `int` 类型
+    """
+    # 确保参数类型为 `FrozenSet`
+    assert isinstance(fs, FrozenSet)
+
+    # 确认集合长度的范围
+    assert 1 <= len(fs) <= 10
+
+    # 确认集合元素类型
+    for n in fs:
+        assert isinstance(n, int)
+
+
+@given(st.functions(
+    like=lambda n: ...,  # 设置参数为整数类型的函数定义
+    returns=st.from_regex(r"[0-9]{3,5}", fullmatch=True),  # 设置假设函数的返回值假设
+))
+def test_strategies_functions(fn: Callable[[int], str]) -> None:
+    """
+    假设一个函数, 并指定函数的定义和返回值的假设规则, 其定义如下:
+
+    ```
+    hypothesis.strategies.functions(
+        *,
+        like=lambda: ...,  # 设置假设函数的定义
+        returns=...,       # 设置假设函数的返回值, 是一个假设规则
+        pure=False         # 是否为纯函数, 若为纯函数, 则入参必须可哈希, 且入参相同返回的结果也相同
+    )
+    ```
+    """
+    # 调用假设的函数
+    r = fn(100)
+
+    # 确保假设函数返回字符串类型返回值
+    assert isinstance(r, str)
+
+    # 确认返回结果
+    assert re.match(r"[0-9]{3,5}", r)
+
+
+@given(n=st.integers(
+    min_value=1,  # 假设值的最小值
+    max_value=100,  # 假设值的最大值
+))
+def test_strategies_integers(n: int) -> None:
+    """
+    假设一组整数, 并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.integers(
+        min_value=None,  # 假设值的最小值
+        max_value=None   # 假设值的最大值
+    )
+    ```
+
+    本例中假设了一组 `1`~`100` 之间的整数
+    """
+    # 确保参数类型
+    assert isinstance(n, int)
+
+    # 确保假设值的取值范围
+    assert 1 <= n <= 100
+
+
+@given(ip=st.ip_addresses(
+    v=4,
+    network="192.168.0.0/24"
+))
+def test_strategies_ip_addresses(ip: str) -> None:
+    print(ip)
