@@ -672,3 +672,21 @@ def test_strategies_iterables(it: Iterable[int]) -> None:
     # 确保迭代器元素值的唯一性
     l = list(it)
     assert len(set(l)) == len(l)
+
+
+@given(v=st.just("Hello"))
+def test_strategies_just(v: Any) -> None:
+    """
+    假设一个固定值并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.just(value)
+    ```
+
+    `just` 函数返回给定参数的一个拷贝, 用于在假设中产生特定值
+    """
+    # 确保参数类型为字符串类型, 和传递给 just 参数的参数类型一致
+    assert isinstance(v, str)
+
+    # 确认参数的值, 和传递给 just 参数的参数值一致
+    assert v == "Hello"
