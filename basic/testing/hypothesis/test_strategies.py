@@ -2,7 +2,8 @@ import re
 from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
-from typing import Any, Callable, Dict, FrozenSet, Tuple, TypeVar
+from ipaddress import IPv4Address
+from typing import Any, Callable, Dict, FrozenSet, Iterable, Tuple, TypeVar
 from xmlrpc.client import Boolean
 
 from hypothesis import assume, given, note
@@ -516,7 +517,7 @@ def test_strategies_from_regex(s: str) -> None:
     ```
 
     本例中假设了一组符合正则表达式的手机号码进行测试
-    注意: `\d` 会产生各类 Unicode 字符的数字 (例如罗马数字), 所以不能简单的用 `\d`, # noqa
+    注意: `\\d` 会产生各类 Unicode 字符的数字 (例如罗马数字), 所以不能简单的用 `\\d`,
     而是 `[0-9]`, 限定为阿拉伯数字
     """
     assert len(s) == 11
@@ -614,8 +615,60 @@ def test_strategies_integers(n: int) -> None:
 
 
 @given(ip=st.ip_addresses(
-    v=4,
-    network="192.168.0.0/24"
+    v=4,  # 使用 IPv4 协议
+    network="192.168.1.0/24"  # 设置子网掩码为一个 C 类 IP 子网掩码
 ))
-def test_strategies_ip_addresses(ip: str) -> None:
-    print(ip)
+def test_strategies_ip_addresses(ip: IPv4Address) -> None:
+    """
+    假设一个指定掩码的 IP 地址, 并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.ip_addresses(
+        *,
+        v=None,       # 指定 IP 地址的版本, 可以为 4 和 6
+        network=None  # 指定子网掩码
+    )
+    ```
+
+    子网掩码计算规则:
+    1. CIDR 标准的 `/24` 表示的子网掩码为 `11111111 11111111 11111111 00000000`, 即 `255.255.255.0`
+    2. 该掩码下可用的主机地址为 `254` 个
+
+    对于 `192.168.1.0/24`, C 类子网掩码, 可容纳 `254` 个主机, 即 `192.168.1.0 ~ 192.168.1.254`
+    """
+    # 确保参数为字符串类型
+    assert isinstance(ip, IPv4Address)
+
+    # 确保假设的为指定的 IP 地址
+    assert re.match(r"192\.168\.1\.\d?\d?\d", str(ip))
+
+
+@given(it=st.iterables(
+    elements=st.integers(min_value=1, max_value=20),  # 设置迭代器的元素假设规则
+    min_size=1,  # 迭代器最小元素个数
+    max_size=10,  # 迭代器最大元素个数
+    unique_by=lambda n: n,  # 计算元素唯一性的依据
+))
+def test_strategies_iterables(it: Iterable[int]) -> None:
+    """
+    假设一个可迭代对象, 并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.iterables(
+        elements,       # 迭代器元素的假设规则
+        *,
+        min_size=0,     # 迭代器元素的最小个数
+        max_size=None,  # 迭代器元素的最大个数
+        unique_by=None, # 计算元素唯一性的依据, 为一个函数, 通过其返回值计算唯一性
+        unique=False    # 是否令元素唯一, 对于简单值可用, 和 unique_by 参数二选一
+    )
+    ```
+
+    本例中假设一组长度为 1~10 之间, 元素类型为 int 类型, 元素唯一的可迭代对象
+    """
+    # 确保参数为可迭代类型
+    assert isinstance(it, Iterable)
+
+    # 确保迭代器元素值的唯一性
+    l = list(it)
+    assert len(set(l)) == len(l)
