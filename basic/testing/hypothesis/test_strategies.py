@@ -4,7 +4,6 @@ from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
-from sys import maxsize
 from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
                     Tuple, TypeVar, Union)
 from xmlrpc.client import Boolean

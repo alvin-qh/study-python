@@ -1,10 +1,14 @@
 #!/usr/bin/env bash
 
-for DIR in ./*
-do
-    if [[ -d $DIR && $DIR != *_ && $DIR != *. ]];
-    then
-        echo "Check .py files in folder $DIR ..."
-        flake8 $DIR
-    fi
-done
+function travel() {
+    for FILE in $1
+    do
+        echo $FILE
+        # if [[ -f "$FILE" && "$FILE" == *.py ]];
+        # then
+            # echo "Check $FILE ..."
+        # fi
+    done
+}
+
+travel ./*
