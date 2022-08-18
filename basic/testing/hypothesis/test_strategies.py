@@ -4,6 +4,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
+from sys import maxsize
 from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
                     Tuple, TypeVar, Union)
 from xmlrpc.client import Boolean
@@ -803,3 +804,66 @@ def test_strategies_randoms(r: random.Random) -> None:
     ```
     """
     assert isinstance(r, random.Random)
+
+
+@given(r=st.recursive(
+    base=st.integers(min_value=1, max_value=10),  # 定义基础假设规则
+    extend=lambda b: st.lists(b, min_size=2),  # 定义递归函数
+    max_leaves=3,  # 定义最大递归次数
+))
+def test_strategies_recursive(r) -> None:
+    """
+    用递归方法进行假设, 并将结果传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.recursive(
+        base,     # 基础假设规则
+        extend,   # 递归函数
+        *,
+        max_leaves=100  # 最大的递归次数
+    )
+    ```
+
+    递归执行的过程如下:
+    1. 实例化 `base` 定义的假设对象;
+    2. 调用 `extend` 定义的函数 `0` ~ `max_leaves` 次;
+    3. 每次调用 `extend` 函数, 传入 `base` 假设的值或前一次 `extend` 函数的返回值
+
+    例如:
+    ```
+    recursive(
+        base=integers(),
+        extend=lambda b: lists(b, min_size=2),
+        max_leaves=3,
+    )
+    ```
+    - 首先调用 `base`, 得到一个 `int` 类型假设对象;
+    - 如果调用 `extend` 函数 `0` 次, 则最终返回结果为一个 `int` 值， 即 `n`;
+    - 如果调用 `extend` 函数 `1` 次, 则参数为一个假设的 `int` 值, 最终返回结果为一个
+      `int` 列表, 且长度为 `2`, 即 `[n1, n2]`;
+    - 如果调用 `extend` 函数 `3` 次, 则参数可能为一个 `int` 值, 或者为一个长度为 `2` 的
+      列表, 所以最终返回结果为 `[n1, n2, n3]` 或 `[[n1, n2], n3]` 或
+      `[n1, [n2, n3]]`
+
+    """
+    # 确认参数的类型为 List 或 int
+    assert isinstance(r, (List, int))
+
+    if isinstance(r, List):
+        # 对于参数类型为 List 类型, 确认列表的最大长度
+        assert 1 <= len(r) <= 10
+
+        # 遍历列表
+        for n in r:
+            # 列表元素类型为 int 或 List 集合
+            assert isinstance(n, (List, int))
+
+            if isinstance(n, int):
+                # 如果元素类型为 int, 则确认整数范围
+                assert 1 <= n <= 10
+            elif isinstance(n, List):
+                # 如果元素类型为 List, 则确认集合长度范围
+                assert len(n) == 2
+    elif isinstance(r, int):
+        # 对于参数类型为 int 类型, 确认整数的范围
+        assert 1 <= r <= 10
