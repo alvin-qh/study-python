@@ -1,3 +1,4 @@
+import random
 import re
 from datetime import date, datetime
 from decimal import Decimal
@@ -771,3 +772,34 @@ def test_strategies_permutations(v: List[int]) -> None:
 
     # 确认参数列表元素和原始列表元素相同
     assert set(v) == {1, 2, 3, 4, 5}
+
+
+@given(m=st.random_module())
+def test_strategies_random_module(m: Any) -> None:
+    """
+    返回产生随机数的种子对象
+
+    ```
+    hypothesis.strategies.random_module()
+    ```
+    """
+    assert isinstance(m.seed, int)
+
+
+@given(r=st.randoms(
+    note_method_calls=True,
+    use_true_random=True,
+))
+def test_strategies_randoms(r: random.Random) -> None:
+    """
+    假设一个随机数生成器对象, 并传递给测试参数, 其定义如下：
+
+    ```
+    hypothesis.strategies.randoms(
+        *,
+        note_method_calls=False,
+        use_true_random=False
+    )
+    ```
+    """
+    assert isinstance(r, random.Random)
