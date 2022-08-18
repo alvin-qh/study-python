@@ -46,8 +46,8 @@ counter = FixtureVisitorCount()
 @fixture(scope="function")
 def function_scope_fixture() -> str:
     """
-    参数 `scope="function"` 表示所有的测试函数 (包括测试类方法) 在执行前会执行一次该 `fixture`.
-    测试类中的方法无法通过参数访问到这类 `fixture`
+    参数 `scope="function"` 表示所有的测试函数 (包括测试类方法) 在执行前会执行一次该
+    `fixture`. 测试类中的方法无法通过参数访问到这类 `fixture`
 
     Returns:
         str: 返回字符串表示当前 `fixture` 的 `scope`
@@ -59,8 +59,8 @@ def function_scope_fixture() -> str:
 @fixture(scope="class")
 def class_scope_fixture() -> str:
     """
-    参数 `scope="class"` 表示所有的测试函数和测试类中的测试方法在执行前会执行一次该 `fixture`.
-    所有的测试函数和测试类中的方法均能通过参数访问到这类 `fixture`
+    参数 `scope="class"` 表示所有的测试函数和测试类中的测试方法在执行前会执行一次该
+    `fixture`. 所有的测试函数和测试类中的方法均能通过参数访问到这类 `fixture`
 
     Returns:
         str: 返回字符串表示当前 `fixture` 的 `scope`
@@ -107,7 +107,8 @@ def test_function_scope(
     所有范围内的 `fixture`
 
     Args:
-        function_scope_fixture (str): `scope` 为 `"function"` 的 `fixture` 函数返回值
+        function_scope_fixture (str): `scope` 为 `"function"` 的 `fixture` 函数
+                                      返回值
         class_scope_fixture (str): `scope` 为 `"class"` 的 `fixture` 函数返回值
         module_scope_fixture (str): `scope` 为 `"module"` 的 `fixture` 函数返回值
         session_scope_fixture (str): `scope` 为 `"session"` 的 `fixture` 函数返回值
@@ -138,8 +139,10 @@ class TestScope:
         Args:
             function_scope_fixture (str): `scope` 为 `"function"`
             的 `fixture` 函数返回值
-            class_scope_fixture (str): `scope` 为 `"class"` 的 `fixture` 函数返回值
-            module_scope_fixture (str): `scope` 为 `"module"` 的 `fixture` 函数返回值
+            class_scope_fixture (str): `scope` 为 `"class"` 的 `fixture` 函数
+                                       返回值
+            module_scope_fixture (str): `scope` 为 `"module"` 的 `fixture` 函数
+                                        返回值
             session_scope_fixture (str): `scope` 为 `"session"`
             的 `fixture` 函数返回值
         """

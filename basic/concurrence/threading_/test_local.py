@@ -131,9 +131,8 @@ def test_werkzeug_local_proxy() -> None:
         or
         str(e.value) == "object is not bound"
     )
-    
 
-    # 测试 LocalProxy 作为 Local 内容访问的代理方法
+    """测试 LocalProxy 作为 Local 内容访问的代理方法"""
 
     def get_local_value() -> Holder:
         """

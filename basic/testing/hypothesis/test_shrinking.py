@@ -6,7 +6,8 @@ from hypothesis import strategies as st
 def test_strategies_mapping_single_value() -> None:
     """
     `SearchStrategy` 类型的 `map` 方法可以将假设的值进行转换.
-    `map` 方法的参数为一个 `Callable[[Any], Any]` 类型的函数, 即传入一个原始参数, 返回转换结果
+    `map` 方法的参数为一个 `Callable[[Any], Any]` 类型的函数, 即传入一个原始参数, 返回
+    转换结果
 
     本例演示对单个值进行转换
     """
@@ -27,7 +28,8 @@ def test_strategies_mapping_single_value() -> None:
 def test_strategies_mapping_list() -> None:
     """
     `SearchStrategy` 类型的 `map` 方法可以将假设的值进行转换.
-    `map` 方法的参数为一个 `Callable[[Any], Any]` 类型的函数, 即传入一个原始参数, 返回转换结果
+    `map` 方法的参数为一个 `Callable[[Any], Any]` 类型的函数, 即传入一个原始参数, 返回
+    转换结果
 
     本例演示对集合类型或复杂类型值进行转换
     """
@@ -77,7 +79,9 @@ def test_strategies_filter_complex_value() -> None:
             st.integers(min_value=1, max_value=100),  # 假设其中的元素 1
             st.integers(min_value=1, max_value=100),  # 假设其中的元素 2
         )
-        .filter(lambda x: x[0] < x[1])  # type: ignore # 过滤假设, 条件是元素 1 的值小于元素 2
+        .filter(  # type: ignore # 过滤假设, 条件是元素 1 的值小于元素 2
+            lambda x: x[0] < x[1],
+        )
         .example()
     )
 

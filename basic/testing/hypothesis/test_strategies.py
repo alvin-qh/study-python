@@ -3,7 +3,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
-from typing import Any, Callable, Dict, FrozenSet, Iterable, Tuple, TypeVar
+from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
+                    Tuple, TypeVar, Union)
 from xmlrpc.client import Boolean
 
 from hypothesis import assume, given, note
@@ -60,7 +61,9 @@ def format_num(num: int, unit: str) -> str:
 @given(r=st.builds(
     format_num,  # 要调用的参数
     num=st.integers(),  # 为 format_num 函数假设的第一个参数
-    unit=st.sampled_from(["mm", "cm", "m", "km"]),  # 为 format_num 函数假设的第二个参数
+    unit=st.sampled_from(  # 为 format_num 函数假设的第二个参数
+        ["mm", "cm", "m", "km"],
+    ),
 ))
 def test_strategies_builds(r: Any) -> None:
     """
@@ -332,8 +335,8 @@ def test_strategies_deferred() -> None:
     """
     允许一个假设引用另一个尚未定义的假设, 通过之后定义的假设产生值
 
-    注意: 这并不是意味着要把后一个假设的值用于前一个假设, 而是通过后一个假设定义为前一个假设产生值,
-    所以两个假设的值并不相同
+    注意: 这并不是意味着要把后一个假设的值用于前一个假设, 而是通过后一个假设定义为前一个假设
+    产生值, 所以两个假设的值并不相同
     """
     # 假设 a 引用假设 b, 此时假设 b 尚未定义
     a = st.deferred(lambda: b)
@@ -347,7 +350,10 @@ def test_strategies_deferred() -> None:
 
 @given(d=st.dictionaries(
     keys=st.from_regex(r"[a-z]{3}", fullmatch=True),  # 假设任意三个字母作为 key
-    values=st.integers(min_value=1, max_value=100),  # 假设任意 1~100 整数作为 value
+    values=st.integers(  # 假设任意 1~100 整数作为 value
+        min_value=1,
+        max_value=100,
+    ),
 ))
 def test_strategies_dictionaries(d: Dict) -> None:
     """
@@ -453,7 +459,7 @@ def test_strategies_floats(n: float) -> None:
         allow_nan=None,  # 是否允许假设 NaN 值
         allow_infinity=None,  # 是否允许假设 INF 值
         allow_subnormal=None, # 是否允许非规格化浮点数
-                        # 参考: https://en.wikipedia.org/wiki/Subnormal_number
+                           # 参考: https://en.wikipedia.org/wiki/Subnormal_number
         width=64,   # 浮点数的宽度, 默认为 64bit
         exclude_min=False,  # 如果为 True, 则不包含 min_value 值
         exclude_max=False   # 如果为 True, 则不包含 max_value 值
@@ -576,7 +582,8 @@ def test_strategies_functions(fn: Callable[[int], str]) -> None:
         *,
         like=lambda: ...,  # 设置假设函数的定义
         returns=...,       # 设置假设函数的返回值, 是一个假设规则
-        pure=False         # 是否为纯函数, 若为纯函数, 则入参必须可哈希, 且入参相同返回的结果也相同
+        pure=False         # 是否为纯函数, 若为纯函数, 则入参必须可哈希, 且入参相同返回
+                           # 的结果也相同
     )
     ```
     """
@@ -631,10 +638,12 @@ def test_strategies_ip_addresses(ip: IPv4Address) -> None:
     ```
 
     子网掩码计算规则:
-    1. CIDR 标准的 `/24` 表示的子网掩码为 `11111111 11111111 11111111 00000000`, 即 `255.255.255.0`
+    1. CIDR 标准的 `/24` 表示的子网掩码为 `11111111 11111111 11111111 00000000`,
+       即 `255.255.255.0`
     2. 该掩码下可用的主机地址为 `254` 个
 
-    对于 `192.168.1.0/24`, C 类子网掩码, 可容纳 `254` 个主机, 即 `192.168.1.0 ~ 192.168.1.254`
+    对于 `192.168.1.0/24`, C 类子网掩码, 可容纳 `254` 个主机,
+    即 `192.168.1.0 ~ 192.168.1.254`
     """
     # 确保参数为字符串类型
     assert isinstance(ip, IPv4Address)
@@ -651,7 +660,7 @@ def test_strategies_ip_addresses(ip: IPv4Address) -> None:
 ))
 def test_strategies_iterables(it: Iterable[int]) -> None:
     """
-    假设一个可迭代对象, 并传入测试参数, 其定义如下:
+    假设一组可迭代对象, 并传入测试参数, 其定义如下:
 
     ```
     hypothesis.strategies.iterables(
@@ -659,8 +668,8 @@ def test_strategies_iterables(it: Iterable[int]) -> None:
         *,
         min_size=0,     # 迭代器元素的最小个数
         max_size=None,  # 迭代器元素的最大个数
-        unique_by=None, # 计算元素唯一性的依据, 为一个函数, 通过其返回值计算唯一性
-        unique=False    # 是否令元素唯一, 对于简单值可用, 和 unique_by 参数二选一
+        unique_by=None, # 返回用于计算集合唯一性值的函数
+        unique=False    # 是否令元素唯一, 对于简单元素类型适用, 和 unique_by 参数二选一
     )
     ```
 
@@ -670,8 +679,8 @@ def test_strategies_iterables(it: Iterable[int]) -> None:
     assert isinstance(it, Iterable)
 
     # 确保迭代器元素值的唯一性
-    l = list(it)
-    assert len(set(l)) == len(l)
+    lst = list(it)
+    assert len(set(lst)) == len(lst)
 
 
 @given(v=st.just("Hello"))
@@ -690,3 +699,75 @@ def test_strategies_just(v: Any) -> None:
 
     # 确认参数的值, 和传递给 just 参数的参数值一致
     assert v == "Hello"
+
+
+@given(st.lists(
+    elements=st.integers(min_value=1, max_value=10),  # 集合元素的假设规则
+    min_size=10,  # 集合元素数量最小值
+    max_size=10,  # 集合元素数量最大值
+    unique_by=lambda n: n,  # 返回用于计算唯一性值得函数
+))
+def test_strategies_lists(lst: List[int]) -> None:
+    """
+    假设一组列表集合对象, 并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.lists(
+        elements,       # 集合元素值得假设规则
+        *,
+        min_size=0,     # 集合最小元素个数
+        max_size=None,  # 集合最大元素个数
+        unique_by=None, # 返回用于计算集合唯一性值的函数
+        unique=False    # 集合元素是否唯一, 对于简单元素类型适用, 和 unique_by 二选一
+    )
+    ```
+    """
+    # 确保参数为 List 类型
+    assert isinstance(lst, List)
+
+    # 确保结合元素值唯一性
+    assert len(set(lst)) == len(lst)
+
+    # 确保集合元素值类型为 int
+    for n in lst:
+        assert isinstance(n, int)
+
+
+@given(v=st.one_of(  # 在指定的假设定义中人选其一
+    st.integers(),
+    st.none(),
+    st.text(),
+))
+def test_strategies_one_of(v: Union[int, Literal[None], str]) -> None:
+    """
+    从给定的若干个假设定义中产生一个假设值并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.one_of(
+        *args   # 若干个假设规则定义, 返回值即从这些假设规则中产生
+    )
+    ```
+    """
+    # 确保参数类型在指定的假设定义范围内
+    if v is not None:
+        assert isinstance(v, (int, str))
+
+
+@given(st.permutations(
+    values=[1, 2, 3, 4, 5]
+))
+def test_strategies_permutations(v: List[int]) -> None:
+    """
+    根据所给的列表, 假设一组元素相同, 但打乱顺序的列表并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.permutations(
+        values  # 所给的列表, 再此基础上打乱顺序
+    )
+    ```
+    """
+    # 确认参数类型为列表集合
+    assert isinstance(v, List)
+
+    # 确认参数列表元素和原始列表元素相同
+    assert set(v) == {1, 2, 3, 4, 5}
