@@ -33,6 +33,7 @@
         "dateutil",
         "dayfirst",
         "delayfunc",
+        "derandomize",
         "dtstart",
         "excinfo",
         "exitfirst",

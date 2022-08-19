@@ -3,6 +3,7 @@ pytest-asyncio
 pytest-rerunfailures
 pytest-repeat
 pytest-assume
+pytest-xdist
 sortedcontainers
 python-dateutil
 types-python-dateutil
