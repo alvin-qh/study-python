@@ -57,7 +57,7 @@ def test_manager_list() -> None:
     # 实例化 Manager 对象
     with Manager() as manager:
         # 获取一个 List 类型的共享代理对象
-        r: List[Tuple[int, bool]] = manager.list()
+        r: List[Tuple[int, bool]] = manager.list()  # type: ignore
 
         # 实例化进程池
         with Pool(processes=_n_processes) as pool:
@@ -120,7 +120,7 @@ def test_manager_dict() -> None:
     # 实例化 Manager 对象
     with Manager() as manager:
         # 获取一个 Dict 类型的共享代理对象
-        kv: Dict[int, bool] = manager.dict()
+        kv: Dict[int, bool] = manager.dict()  # type: ignore
 
         # 实例化进程池
         with Pool(processes=_n_processes) as pool:
