@@ -1,4 +1,5 @@
 import time
+from datetime import timedelta
 from typing import Callable, List, Sequence
 
 import pytest
@@ -142,6 +143,35 @@ def test_disable_health_check(ss: Sequence[str]) -> None:
     # 确认列表元素项为字符串类型
     for s in ss:
         assert isinstance(s, str)
+
+
+def test_settings_object() -> None:
+    """
+    如何创建各类 `settings` 对象
+
+    - 默认的 `settings` 对象, 即不使用 `@settings` 装饰器时默认使用的 `settings` 对象
+    - 可以通过 `settings` 类型创建自定义的对象, 通过 `@settings` 装饰器设置
+    - 如果已有 `settings` 对象, 则可以在其基础上派生一个新对象
+    """
+    # 获取默认的 settings 对象
+    default_s: settings = settings.default
+    # 确认默认设置的参数
+    assert default_s.max_examples == 100
+    assert default_s.deadline == timedelta(milliseconds=200)
+
+    # 自定义 settings 对象, 自定义对象会自动从默认 settings 对象派生
+    parent_s = settings(deadline=timedelta(milliseconds=500))
+    # 确认未设置值的项遵守默认 settings 对象的对应值
+    assert parent_s.max_examples == 100
+    # 确认已设置值的项
+    assert parent_s.deadline == timedelta(milliseconds=500)
+
+    # 从已有的 settings 对象派生新的 settings 对象
+    child_s = settings(parent_s, max_examples=200)
+    # 确认未设置值的项从父 settings 对象继承
+    assert child_s.max_examples == 200
+    # 确认以设置值的项
+    assert child_s.deadline == timedelta(milliseconds=500)
 
 
 def teardown_function(fn: Callable) -> None:
