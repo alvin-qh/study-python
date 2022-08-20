@@ -146,7 +146,7 @@ def test_strategies_complex_numbers(c: complex) -> None:
         allow_nan=None,      # 是否允许假设 NaN 数值
         allow_infinity=None, # 是否允许假设 INF 数值
         allow_subnormal=True # 是否允许非规格化浮点数
-                        # 参考: https://en.wikipedia.org/wiki/Subnormal_number
+                          # 参考: https://en.wikipedia.org/wiki/Subnormal_number
     )
     ```
 
