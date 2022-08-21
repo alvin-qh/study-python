@@ -3,7 +3,7 @@ from datetime import timedelta
 from typing import Callable, List, Sequence
 
 import pytest
-from hypothesis import HealthCheck, Verbosity, given, settings
+from hypothesis import HealthCheck, Phase, Verbosity, example, given, settings
 from hypothesis import strategies as st
 
 _examples = []
@@ -23,7 +23,7 @@ def test_hypothesis_settings(n: int) -> None:
         derandomize=not_set,  # 布尔值, 默认值 False, 如果为 True, 则用例不再随机
         database=not_set,
         verbosity=not_set, # 枚举, 默认值 Verbosity.normal, 控制消息的详细度
-        phases=not_set,
+        phases=not_set,    # 对产生测试用例的几个阶段进行控制
         stateful_step_count=not_set,  #
         report_multiple_bugs=not_set, # 布尔值, 默认为 True, 是否同时报告多个测试失
                                       # 败, 如果为 False, 则一旦测试失败, 整个测试
@@ -77,6 +77,40 @@ def test_print_blob(v: float) -> None:
     assert v == v
 
 # cspell: enable
+
+
+@settings(phases=[
+    Phase.generate,
+    Phase.reuse,
+    Phase.shrink,
+    Phase.target,
+    Phase.explain,
+])
+@example(n=0)  # 由于没有 Phase.explicit 阶段, 所以该代码无效
+@given(n=st.integers(min_value=1))
+def test_control_testing_running(n: int) -> None:
+    """
+
+    假设的测试用例生成逻辑遵循如下几个阶段:
+    - 执行 `@example` 装饰器定义的显式用例;
+    - 重新运行一系列之前失败的用例以便重现之前发生的错误;
+    - 生成新的测试用例
+    - 基于目标产生的变化的测试用例
+    - 尝试简化 (减少) 之前使用的测试用例 (除过通过 `@example` 指定的显式用例)
+    - 尝试根据之前失败的代码假设的测试用例
+
+    可以通过 `hypothesis.Phase` 枚举的值控制上述产生用例的各个阶段, 枚举定义如下:
+    - explicit: 是否运行显式的用例
+    - reuse: 是否复用之前使用的用例
+    - generate: 是否产生新的用例
+    - target: 是否基于目标的产生变化的测试用例
+    - shrink: 是否对测试用例进行收缩操作
+    - explain: 是否对失败代码进行解释并产生对应的测试用例
+
+    本例中, 取消了 `Phase.explicit` 阶段用例的产生, 即 `@example` 装饰器不在起作用
+    """
+    # 确保没有 n = 0 的用例产生
+    assert n
 
 
 def _data_generator(count: int, delay=10) -> Sequence[str]:
