@@ -174,6 +174,50 @@ def test_settings_object() -> None:
     assert child_s.deadline == timedelta(milliseconds=500)
 
 
+def test_use_profile() -> None:
+    """
+    `settings.register_profile` 方法可以注册一个命名的配置信息, 并在之后进行获取和使用,
+    其定义如下:
+
+    ```
+    static settings.register_profile(
+        name,        # 配置文件的名称
+        parent=None, # 要继承的父配置对象
+        **kwargs     # 要修改的配置项, 未设置的保持其默认值
+    )
+    ```
+
+    获取配置文件的方式有两种:
+    - `settings.get_profile(name)` 获取之前注册的配置文件, 返回一个 `settings` 对象,
+      为之前注册的配置信息
+    - `settings.load_profile(name)` 读取之前注册的配置文件, 将会覆盖默认的配置信息, 之
+      后通过 `settings()` 实例化的对象, 其内容为注册的配置信息
+    """
+    # 注册一个配置文件, 为其中的某些设置项做出更改
+    settings.register_profile("p1", max_examples=1000)
+
+    # 读取默认的设置信息
+    s = settings()
+    # 确认配置项为默认值
+    assert s.max_examples == 100
+
+    # 获取注册名为 p1 的配置信息, 返回 settings 对象
+    s = settings.get_profile("p1")
+    # 确认配置项为修改后的值
+    assert s.max_examples == 1000
+
+    # 重新确认默认的配置信息未被更改
+    s = settings()
+    assert s.max_examples == 100
+
+    # 读取配置文件, 此时默认配置信息会被修改为 p1 中的内容
+    settings.load_profile("p1")
+
+    # 在此读取默认的配置信息, 确认配置项已不是默认值
+    s = settings()
+    assert s.max_examples == 1000
+
+
 def teardown_function(fn: Callable) -> None:
     """
     测试结束后, 验证最终结果
