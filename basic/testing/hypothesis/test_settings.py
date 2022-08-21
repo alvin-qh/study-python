@@ -179,7 +179,7 @@ def test_use_profile() -> None:
     `settings.register_profile` 方法可以注册一个命名的配置信息, 并在之后进行获取和使用,
     其定义如下:
 
-    ```
+    ```python
     static settings.register_profile(
         name,        # 配置文件的名称
         parent=None, # 要继承的父配置对象
@@ -192,6 +192,14 @@ def test_use_profile() -> None:
       为之前注册的配置信息
     - `settings.load_profile(name)` 读取之前注册的配置文件, 将会覆盖默认的配置信息, 之
       后通过 `settings()` 实例化的对象, 其内容为注册的配置信息
+
+    另外的使用方式包括:
+    在测试命令行中指定要使用的配置文件名称, 当前需要提前注册对应的配置文件 (例如在
+    `conftest.py` 文件中进行注册)
+
+    ```bash
+    pytest tests --hypothesis-profile <profile-name>
+    ```
     """
     # 注册一个配置文件, 为其中的某些设置项做出更改
     settings.register_profile("p1", max_examples=1000)
