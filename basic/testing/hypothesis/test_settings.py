@@ -90,8 +90,9 @@ def test_print_blob(v: float) -> None:
 @given(n=st.integers(min_value=1))
 def test_control_testing_running(n: int) -> None:
     """
+    配置假设值生成的阶段
 
-    假设的测试用例生成逻辑遵循如下几个阶段:
+    假设的测试用例生成遵循如下几个阶段:
     - 执行 `@example` 装饰器定义的显式用例;
     - 重新运行一系列之前失败的用例以便重现之前发生的错误;
     - 生成新的测试用例
