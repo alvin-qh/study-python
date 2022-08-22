@@ -3,6 +3,7 @@ from typing import Callable, Union, cast
 
 from hypothesis import assume, event, example, given, note
 from hypothesis import strategies as st
+from hypothesis import target
 
 # 基于属性的自动化测试 (Property-based testing)
 #
@@ -149,8 +150,8 @@ def test_event_outupt(n: int) -> None:
     testing/hypothesis/test_core.py::test_event:
 
     - during reuse phase (0.00 seconds):
-        - Typical runtimes: < 1ms, ~ 40% in data generation
-        - 1 passing examples, 0 failing examples, 0 invalid examples
+      - Typical runtimes: < 1ms, ~ 40% in data generation
+      - 1 passing examples, 0 failing examples, 0 invalid examples
 
     - during generate phase (0.09 seconds):
       - Typical runtimes: < 1ms, ~ 56% in data generation
@@ -166,6 +167,15 @@ def test_event_outupt(n: int) -> None:
     ```
     """
     event(f"n % 3 == {n % 3}")
+
+
+@given(n=st.integers())
+def test_hypothesis_target(n: int) -> None:
+    """
+
+    """
+    if n < 0:
+        target(n, label="error")
 
 
 def teardown_function(fn: Callable) -> None:
