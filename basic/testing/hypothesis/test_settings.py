@@ -87,7 +87,10 @@ def test_print_blob(v: float) -> None:
     Phase.explain,
 ])
 @example(n=0)  # 由于没有 Phase.explicit 阶段, 所以该代码无效
-@given(n=st.integers(min_value=1))
+@given(n=(
+    st.integers(min_value=1)
+    .filter(lambda n: n % 2 == 0)
+))
 def test_control_testing_running(n: int) -> None:
     """
     配置假设值生成的阶段
@@ -107,6 +110,20 @@ def test_control_testing_running(n: int) -> None:
     - target: 是否基于目标的产生变化的测试用例
     - shrink: 是否对测试用例进行收缩操作
     - explain: 是否对失败代码进行解释并产生对应的测试用例
+
+    可以在测试测试启动命令行中加入 `--hypothesis-show-statistics` 参数, 将在终端中生成
+    各个阶段的假设生成的具体信息, 输出下列内容:
+
+    ```plaintext # noqa
+    - during generate phase (0.11 seconds):
+      - Typical runtimes: < 1ms, ~ 56% in data generation
+      - 100 passing examples, 0 failing examples, 20 invalid examples
+      - Events:
+        * 54.17%, Retried draw from integers(min_value=1).filter(lambda n: <unknown>) to satisfy filter
+        * 15.83%, Aborted test because unable to satisfy integers(min_value=1).filter(lambda n: <unknown>)
+
+    - Stopped because settings.max_examples=100
+    ```
 
     本例中, 取消了 `Phase.explicit` 阶段用例的产生, 即 `@example` 装饰器不在起作用
     """

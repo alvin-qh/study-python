@@ -1,7 +1,7 @@
 import re
 from typing import Callable, Union, cast
 
-from hypothesis import assume, example, given, note
+from hypothesis import assume, event, example, given, note
 from hypothesis import strategies as st
 
 # 基于属性的自动化测试 (Property-based testing)
@@ -133,6 +133,39 @@ def test_assume(s: str) -> None:
     # 因为 assume(s) 的作用, s 为 None 及空字符串的测试已被停止, 所以不会触发断言
     # 若去掉 assume(s) 函数调用, 则会引发断言
     assert len(s) > 0
+
+
+@given(n=st.integers().filter(lambda x: x % 2 == 0))
+def test_event_outupt(n: int) -> None:
+    """
+    输出事件信息, 以便对假设用例的产生做更进一步的说明.
+    要查看详细的测试用例产生日志, 需要在测试启动命令行上加入
+    `--hypothesis-show-statistics` 参数
+
+    本例中执行 `pytest testing/hypothesis/test_core.py::test_event --hypothesis-show-statistics` 
+    命令行后, 可以看到如下输出:
+
+    ``` # noqa
+    testing/hypothesis/test_core.py::test_event:
+
+    - during reuse phase (0.00 seconds):
+        - Typical runtimes: < 1ms, ~ 40% in data generation
+        - 1 passing examples, 0 failing examples, 0 invalid examples
+
+    - during generate phase (0.09 seconds):
+      - Typical runtimes: < 1ms, ~ 56% in data generation
+      - 99 passing examples, 0 failing examples, 18 invalid examples
+      - Events:
+        * 51.28%, Retried draw from integers().filter(lambda x: x % 2 == 0) to satisfy filter
+        * 35.04%, n % 3 == 0
+        * 26.50%, n % 3 == 2
+        * 23.08%, n % 3 == 1
+        * 15.38%, Aborted test because unable to satisfy integers().filter(lambda x: x % 2 == 0)
+
+    - Stopped because settings.max_examples=100
+    ```
+    """
+    event(f"n % 3 == {n % 3}")
 
 
 def teardown_function(fn: Callable) -> None:
