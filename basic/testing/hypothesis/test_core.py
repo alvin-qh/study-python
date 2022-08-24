@@ -1,7 +1,7 @@
 import re
 from typing import Callable, Union, cast
 
-from hypothesis import assume, event, example, given, note, settings
+from hypothesis import assume, event, example, given, note
 from hypothesis import strategies as st
 from hypothesis import target
 
