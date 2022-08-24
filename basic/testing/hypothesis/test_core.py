@@ -1,7 +1,7 @@
 import re
 from typing import Callable, Union, cast
 
-from hypothesis import assume, event, example, given, note
+from hypothesis import assume, event, example, given, note, settings
 from hypothesis import strategies as st
 from hypothesis import target
 
@@ -169,13 +169,31 @@ def test_event_outupt(n: int) -> None:
     event(f"n % 3 == {n % 3}")
 
 
-@given(n=st.integers())
+@given(n=st.integers(min_value=-100, max_value=100))
 def test_hypothesis_target(n: int) -> None:
-    """
+    """ # noqa
+    target 方法可以对一个目标结果进行观察, 目标结果是一个 `int` 或 `float` 类型值, 可以
+    表示任意指标
 
+    指标值可以为
+    — 集合中的元素或队列中的任务数
+    - 任务的平均运行时间或最大运行时间 (如果使用 `label` 参数，则两者皆可)
+    - 数据的压缩比 (可能是每个算法或每个级别)
+    - 状态机执行的步骤数
+
+    可选的 `label` 参数可以用来区分. 因此分别优化不同的观察结果，比如:
+    数据集的平均值和标准差
+
+    通过如下命令执行测试, 可以看到指标的统计结果
+
+    ```
+    pytest testing/hypothesis/test_core.py::test_hypothesis_target --hypothesis-show-statistics
+    ```
     """
     if n < 0:
-        target(n, label="error")
+        target(n, label="negative")
+    elif n > 0:
+        target(n, label="positive")
 
 
 def teardown_function(fn: Callable) -> None:
