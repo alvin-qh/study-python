@@ -151,13 +151,13 @@ def test_assume(s: str) -> None:
 
 
 @given(n=st.integers().filter(lambda x: x % 2 == 0))
-def test_event_outupt(n: int) -> None:
+def test_event_output(n: int) -> None:
     """
     输出事件信息, 以便对假设用例的产生做更进一步的说明.
     要查看详细的测试用例产生日志, 需要在测试启动命令行上加入
     `--hypothesis-show-statistics` 参数
 
-    本例中执行 `pytest testing/hypothesis/test_core.py::test_event --hypothesis-show-statistics` 
+    本例中执行 `pytest testing/hypothesis/test_core.py::test_event --hypothesis-show-statistics`
     命令行后, 可以看到如下输出:
 
     ``` # noqa

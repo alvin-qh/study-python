@@ -10,6 +10,8 @@ from xmlrpc.client import Boolean
 
 from hypothesis import assume, given, note
 from hypothesis import strategies as st
+from hypothesis.strategies._internal.core import RandomSeeder
+from testing.hypothesis.strategies import User, UserStrategy
 
 
 @given(bs=st.binary(min_size=10, max_size=20))
@@ -531,12 +533,55 @@ def test_strategies_from_regex(s: str) -> None:
     assert s[0] == "1"
 
 
-@given(t=st.from_type(thing=int))
-def test_strategies_from_type(t: Any) -> None:
+@given(u=UserStrategy(
+    st.from_regex(r"[A-Z][a-z]{3,5}", fullmatch=True)
+))
+def test_custom_strategy(u: User) -> None:
+    """
+    自定义假设类型
+
+    自定义假设类型的对象可以产生自定义的数据类型
+
+    本例中通过 `UserStrategy` 类型假设一组 `User` 类型对象并传入测试参数
+    """
+    # 确认参数为 User 类型
+    assert isinstance(u, User)
+
+    # 确认 name 属性的首字母为大写字母
+    assert ord("A") <= ord(u.name[0]) <= ord("Z")
+
+    # 确认 name 属性的长度范围
+    assert 4 <= len(u.name) <= 6
+
+    # 确认 name 属性的后续字符为小写字母
+    assert all([ord("a") <= ord(c) <= ord("z") for c in u.name[1:]])
+
+
+@given(n=st.from_type(thing=int))
+def test_strategies_from_regular_type(n: int) -> None:
     """
     从给定的类型中假设一组值, 并传递给测试参数
     """
-    assert isinstance(t, int)
+    # 确认参数类型和指定类型相同
+    assert isinstance(n, int)
+
+
+@given(u=st.from_type(thing=User))
+def test_strategies_from_custom_type(u: User) -> None:
+    """
+    从给定的类型中假设一组值, 并传递给测试参数
+    """
+    # 确认参数类型符合指定的类型
+    assert isinstance(u, User)
+
+    # 确认 name 属性的首字母为大写字母
+    assert ord("A") <= ord(u.name[0]) <= ord("Z")
+
+    # 确认 name 属性的长度范围
+    assert 4 <= len(u.name) <= 6
+
+    # 确认 name 属性的后续字符为小写字母
+    assert all([ord("a") <= ord(c) <= ord("z") for c in u.name[1:]])
 
 
 @given(st.frozensets(
@@ -774,8 +819,8 @@ def test_strategies_permutations(v: List[int]) -> None:
     assert set(v) == {1, 2, 3, 4, 5}
 
 
-@given(m=st.random_module())
-def test_strategies_random_module(m: Any) -> None:
+@given(r=st.random_module())
+def test_strategies_random_module(r: RandomSeeder) -> None:
     """
     返回产生随机数的种子对象
 
@@ -783,7 +828,7 @@ def test_strategies_random_module(m: Any) -> None:
     hypothesis.strategies.random_module()
     ```
     """
-    assert isinstance(m.seed, int)
+    assert isinstance(r.seed, int)
 
 
 @given(r=st.randoms(
