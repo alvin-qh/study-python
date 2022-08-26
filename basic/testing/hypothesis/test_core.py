@@ -82,7 +82,7 @@ expected_str = set()
 @given(s=st.text())
 @example(s="alvin")
 @example(s="emma")
-def test_example(s: str) -> None:
+def test_example_decorator(s: str) -> None:
     """
     本例演示了 `@example` 装饰器, 定义如下:
 
@@ -113,6 +113,20 @@ def test_example(s: str) -> None:
     if s in {"alvin", "emma"}:
         # 将指定测试用例值加到确认列表中
         expected_str.add(s)
+
+
+def test_example_output() -> None:
+    """
+    通过 `example()` 方法获取测试用例
+
+    本例中获取 `10` 个测试用例
+    """
+    examples = [
+        st.integers(min_value=0, max_value=10).example()
+        for _ in range(10)
+    ]
+    assert len(examples) == 10
+    assert all([0 <= n <= 10 for n in examples])
 
 
 @given(s=st.text(
@@ -200,6 +214,6 @@ def teardown_function(fn: Callable) -> None:
     """
     测试结束后验证整体结果
     """
-    if fn == test_example:
+    if fn == test_example_decorator:
         # 确认 test_example 中指定的测试用例被执行
         assert expected_str == {"alvin", "emma"}
