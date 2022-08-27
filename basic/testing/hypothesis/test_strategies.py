@@ -4,8 +4,9 @@ from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
+from sys import maxsize
 from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
-                    Tuple, TypeVar, Union)
+                    Sequence, Set, Tuple, TypeVar, Union)
 from xmlrpc.client import Boolean
 
 from hypothesis import assume, given, note
@@ -533,9 +534,12 @@ def test_strategies_from_regex(s: str) -> None:
     assert s[0] == "1"
 
 
-@given(u=UserStrategy(
-    st.from_regex(r"[A-Z][a-z]{3,5}", fullmatch=True)
-))
+@given(
+    u=UserStrategy(
+        st.from_regex(r"[A-Z][a-z]{3,5}", fullmatch=True)
+    )
+    .filter(lambda u: len(u.name) > 0)
+)
 def test_custom_strategy(u: User) -> None:
     """
     自定义假设类型
@@ -911,3 +915,51 @@ def test_strategies_recursive(r) -> None:
     elif isinstance(r, int):
         # 对于参数类型为 int 类型, 确认整数的范围
         assert 1 <= r <= 10
+
+
+@given(
+    n=st.sampled_from(list(range(100)))
+    .filter(lambda n: n % 2 == 0)
+)
+def test_strategies_sampled_from(n: int) -> None:
+    """
+    从一个集合中每次选择一个用例, 并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.sampled_from(elements)
+    ```
+    """
+    # 确认参数类型为所给集合元素类型
+    assert isinstance(n, int)
+    # 确认参数值符合过滤器条件
+    assert n % 2 == 0
+    # 确认符合假设数据的范围
+    assert 0 <= n < 100
+
+
+@given(s=st.sets(
+    elements=st.integers(min_value=1, max_value=100),
+    min_size=1,
+    max_size=10,
+))
+def test_strategies_sets(s: Set[int]) -> None:
+    """
+    假设一组 `Set` 集合对象, 并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.sets(
+        elements,       # Set 集合元素类型
+        *,
+        min_size=0,     # 集合最小长度
+        max_size=None   # 集合最大长度
+    )
+    ```
+    """
+    # 确认参数类型为 Set 类型
+    assert isinstance(s, Set)
+    # 确认 Set 集合元素长度为
+    # 确认 Set 集合中元素为 int 类型
+    assert all([isinstance(n, int) for n in s])
+
+    # 确认集合元素取值范围
+    assert all([1 <= n <= 100 for n in s])
