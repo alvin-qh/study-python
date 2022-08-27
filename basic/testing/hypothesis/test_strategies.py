@@ -1,6 +1,6 @@
 import random
 import re
-from datetime import date, datetime
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
@@ -981,14 +981,14 @@ def test_strategies_shared() -> None:
     s = st.integers(min_value=1)
 
     v1 = st.shared(base=s)
-    assert type(s.example()) == type(v1.example())
+    assert type(s.example()) == type(v1.example())  # noqa
 
     v2 = st.shared(base=s)
-    assert type(v1.example()) == type(v2.example())
+    assert type(v1.example()) == type(v2.example())  # noqa
 
     v1 = st.shared(base=s, key="h1")
     v2 = st.shared(base=s, key="hi")
-    assert type(v1.example()) == type(v2.example())
+    assert type(v1.example()) == type(v2.example())  # noqa
 
 
 @given(
@@ -1017,3 +1017,80 @@ def test_strategies_slices(s: Any) -> None:
     # 通过假设的切片对象获取子集合
     sub = ns[s]
     assert len(sub) < len(ns)
+
+
+@given(s=st.text(
+    alphabet="abcde",  # 从 abcde 这个序列中产生字符组成最终的测试用例
+    min_size=1,
+    max_size=10,
+))
+def test_strategies_text(s: str) -> None:
+    """
+    假设一组字符串并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.text(
+        alphabet=characters(blacklist_categories=('Cs',)), # 组成字符串的字符假设
+            # 规则. 该参数可以为一个字符序列或者一个字符串假设对象, 最终产生的字符串的各
+            # 个字符会在参数指定的字符范围内随机产生
+        *,
+        min_size=0,    # 字符串的最小长度
+        max_size=None  # 字符串的最大长度
+    )
+    ```
+
+    本例中假设了一组由 `abcde` 字母组成的长度在 `1` ~ `10` 之间的字符串
+    """
+    # 确认参数类型为字符串类型
+    assert isinstance(s, str)
+
+    # 确认字符串的字符组成
+    assert re.match("^[a-e]+$", s)
+
+    # 确认字符串长度限定范围
+    assert 1 <= len(s) <= 10
+
+
+@given(dt=st.timedeltas(
+    min_value=timedelta(days=1, hours=1, minutes=1),
+    max_value=timedelta(days=2, hours=2, minutes=2),
+))
+def test_strategies_timedeltas(dt: timedelta) -> None:
+    """
+    假设一组时差对象并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.timedeltas(
+        min_value=datetime.timedelta.min, # 时差允许的最小值
+        max_value=datetime.timedelta.max  # 时差允许的最大值
+    )
+    ```
+    """
+    # 确认参数类型为时差对象类型
+    assert isinstance(dt, timedelta)
+
+    # 确认时差对象的取值范围在规定范围内
+    assert (
+        timedelta(days=1, hours=1, minutes=1)
+        <= dt
+        <= timedelta(days=2, hours=2, minutes=2)
+    )
+
+
+@given(t=st.times(
+    min_value=time(1, 0, 0),
+    max_value=time(12, 59, 59),
+    timezones=st.timezones(),
+))
+def test_strategies_times(t: time) -> None:
+    """
+    """
+    # 确保参数类型为时间类型
+    assert isinstance(t, time)
+
+    # 确保假设的时间对象带有时区信息
+    assert t.tzinfo is not None
+
+    # 去掉时区信息, 确保假设的时间对象在指定的范围内
+    t = t.replace(tzinfo=None)
+    assert time(1, 0, 0) <= t <= time(12, 59, 59)

@@ -82,6 +82,7 @@
         "skipmark",
         "sortedcontainers",
         "stdoffset",
+        "timedeltas",
         "timefunc",
         "timegm",
         "tobytes",

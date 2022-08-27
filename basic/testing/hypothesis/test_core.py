@@ -130,7 +130,7 @@ def test_example_output() -> None:
 
 
 @given(s=st.text(
-    alphabet="".join(  # 字符串由 A-Za-z 字符组成
+    alphabet=(  # 字符串由 A-Za-z 字符组成
         [chr(c) for c in range(ord("a"), ord("z"))] +
         [chr(c) for c in range(ord("A"), ord("Z"))]
     )
