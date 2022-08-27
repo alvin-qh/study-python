@@ -4,9 +4,8 @@ from datetime import date, datetime
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
-from sys import maxsize
 from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
-                    Sequence, Set, Tuple, TypeVar, Union)
+                    Set, Tuple, TypeVar, Union)
 from xmlrpc.client import Boolean
 
 from hypothesis import assume, given, note
@@ -963,3 +962,58 @@ def test_strategies_sets(s: Set[int]) -> None:
 
     # 确认集合元素取值范围
     assert all([1 <= n <= 100 for n in s])
+
+
+def test_strategies_shared() -> None:
+    """
+    返回一个假设对象, 该对象基于其 `base` 参数定义的假设对象, 产生一个共享的测试用例值.
+    任意两个具备相同 `key` 参数的 `shared` 假设对象将共享相同的值. 否则将自动使用当前假设
+    的标识作为 `key`, 其定义如下:
+
+    ```
+    hypothesis.strategies.shared(
+        base,       # 基本的假设对象, shared 假设对象将基于此对象产生用例
+        *,
+        key=None    # 标识字符串
+    )
+    ```
+    """
+    s = st.integers(min_value=1)
+
+    v1 = st.shared(base=s)
+    assert type(s.example()) == type(v1.example())
+
+    v2 = st.shared(base=s)
+    assert type(v1.example()) == type(v2.example())
+
+    v1 = st.shared(base=s, key="h1")
+    v2 = st.shared(base=s, key="hi")
+    assert type(v1.example()) == type(v2.example())
+
+
+@given(
+    s=st.slices(size=10)
+    .filter(lambda s: s.start is not None)  # 过滤掉非正常 slice 取值的情况
+    .filter(lambda s: s.stop is not None)
+    .filter(lambda s: s.step is not None)
+)
+def test_strategies_slices(s: Any) -> None:
+    """
+    根据设定的集合长度, 假设一组切片对象, 传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.slices(size)  # size 表示对应的集合最大长度
+    ```
+
+    本例中, 假设能在长度为 `10` 的集合上进行切片操作的切片对象, 所以改切片对象的 `start`,
+    `stop` 和 `step` 属性会在设置的集合长度范围内随机变化
+    """
+    # 确定参数类型为切片类型
+    assert isinstance(s, slice)
+
+    # 产生一个长度为 10 的列表集合对象
+    ns = list(range(1, 11))
+
+    # 通过假设的切片对象获取子集合
+    sub = ns[s]
+    assert len(sub) < len(ns)
