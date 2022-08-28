@@ -15,4 +15,11 @@ function travel() {
     done
 }
 
-travel "./*"
+arg="./"
+
+if [[ -n "$1" ]]
+then
+    arg="$1"
+fi
+
+travel "$arg"
