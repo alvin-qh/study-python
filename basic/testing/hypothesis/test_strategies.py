@@ -6,6 +6,7 @@ from fractions import Fraction
 from ipaddress import IPv4Address
 from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
                     Set, Tuple, TypeVar, Union)
+from uuid import UUID
 from xmlrpc.client import Boolean
 
 import pytz
@@ -1191,3 +1192,22 @@ def test_strategies_tuples(t: Tuple[int, int, bool, str]) -> None:
     assert isinstance(t[1], int)
     assert isinstance(t[2], bool)
     assert isinstance(t[3], str)
+
+
+@given(id_=st.uuids(
+    version=4,
+))
+def test_strategies_uuids(id_: UUID) -> None:
+    """
+    假设一组 UUID 并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.uuids(
+        *,
+        version=None,    # UUID 的版本, 取值 1~4
+        allow_nil=False  # 如果为 True, 则允许生成 nil UUID
+    )
+    ```
+    """
+    # 判断参数类型为 UUID 类型
+    assert isinstance(id_, UUID)
