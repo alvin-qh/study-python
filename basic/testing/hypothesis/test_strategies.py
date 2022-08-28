@@ -11,6 +11,7 @@ from xmlrpc.client import Boolean
 
 import pytz
 from hypothesis import assume, given, note
+from hypothesis import provisional as pr
 from hypothesis import strategies as st
 from hypothesis.strategies._internal.core import RandomSeeder
 from testing.hypothesis.strategies import User, UserStrategy
@@ -1211,3 +1212,34 @@ def test_strategies_uuids(id_: UUID) -> None:
     """
     # 判断参数类型为 UUID 类型
     assert isinstance(id_, UUID)
+
+
+@given(domain=pr.domains(
+    max_length=255,
+    max_element_length=63,
+))
+def test_provisional_domains(domain: str) -> None:
+    """
+    假设一组域名并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.provisional.domains(
+        *,
+        max_length=255,
+        max_element_length=63
+    )
+    ```
+    """
+    # 确认参数类型为字符串类型
+    assert isinstance(domain, str)
+
+    # 确认参数长度在限制范围内
+    assert len(domain) <= 255
+
+    # 确保参数符合 xxxx.xxx 格式
+    rs = re.findall(r"(\.?[a-z0-9\-]+)", domain, flags=re.I)
+    assert rs
+
+    # 确认每个部分的最大长度在限制范围内
+    for r in rs:
+        assert len(r) <= 63
