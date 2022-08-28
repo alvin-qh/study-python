@@ -1137,7 +1137,7 @@ def test_strategies_timezone_keys(tz: str) -> None:
 @given(tz=st.timezones())
 def test_strategies_timezones(tz: tzinfo) -> None:
     """ # noqa
-    假设一组时区类型 (`tzinfo`) 对象, 其定义如下:
+    假设一组时区类型 (`tzinfo`) 对象并传入测试参数, 其定义如下:
 
     ```
     hypothesis.strategies.timezones(
@@ -1162,3 +1162,32 @@ def test_strategies_timezones(tz: tzinfo) -> None:
 
     # 确认假设的时区是有效时区
     assert tz_name in pytz.all_timezones
+
+
+@given(t=st.tuples(
+    st.integers(),
+    st.integers(),
+    st.booleans(),
+    st.text(min_size=1),
+))
+def test_strategies_tuples(t: Tuple[int, int, bool, str]) -> None:
+    """
+    假设一组 `Tuple` 对象并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.tuples(*args)
+    ```
+
+    `*args` 参数是一组假设器, 用于假设 `Tuple` 对象的每一个元素
+    """
+    # 确认参数类型
+    assert isinstance(t, tuple)
+
+    # 确认参数长度
+    assert len(t) == 4
+
+    # 确认每个元素的类型
+    assert isinstance(t[0], int)
+    assert isinstance(t[1], int)
+    assert isinstance(t[2], bool)
+    assert isinstance(t[3], str)
