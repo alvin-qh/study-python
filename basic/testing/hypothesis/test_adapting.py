@@ -1,4 +1,5 @@
-from typing import List, Tuple
+from string import printable
+from typing import Dict, List, Tuple
 
 from hypothesis import strategies as st
 
@@ -119,6 +120,38 @@ def test_strategies_chain_together() -> None:
         n = r[i]
 
 
-def test_recursive_data() -> None:
+def test_strategies_recursive_data() -> None:
     """
+    有时候需要能够递归的生成测试数据. 例如需要根据下列条件生成一个 JSON 数据:
+    1. 任意 `float`, `boolean` 和 `unicode` 字符串类型数据
+    2. 任意列表集合, 包含符合当前条件的 JSON 元素
+    3. 任何字典集合, `key` 为字符串, `value` 为符合当前条件的 JSON 数据
+
+    此时, 可以通过 `hypothesis.strategies.recursive()` 函数递归的进行数据生成:
+
+    ```
+    hypothesis.strategies.recursive(
+        base,     # 基础假设规则
+        extend,   # 递归函数
+        *,
+        max_leaves=100  # 最大的递归次数
+    )
+    ```
+
+    基本的使用方法是通过 `base` 参数定义基本的数据假设规则, 然后再通过 `extend` 参数定义
+    的函数产生嵌套的数据
     """
+    # 递归产生数据
+    json = st.recursive(
+        # 基本数据假设定义
+        base=st.none() | st.booleans() | st.floats() | st.text(printable),
+        # 参数 children 为 base 定义假设产生的数据或者前一次 extend 函数的返回值
+        extend=lambda children:
+            st.lists(children) | st.dictionaries(st.text(printable), children)
+    )
+
+    # 产生测试用例数据
+    value = json.example()
+
+    # 产生数据为一个字典类型
+    assert isinstance(value, Dict)
