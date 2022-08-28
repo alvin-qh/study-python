@@ -4,6 +4,7 @@ from datetime import date, datetime, time, timedelta, tzinfo
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
+from string import printable
 from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
                     Set, Tuple, TypeVar, Union)
 from uuid import UUID
@@ -560,7 +561,7 @@ def test_custom_strategy(u: User) -> None:
     assert 4 <= len(u.name) <= 6
 
     # 确认 name 属性的后续字符为小写字母
-    assert all([ord("a") <= ord(c) <= ord("z") for c in u.name[1:]])
+    assert all(ord("a") <= ord(c) <= ord("z") for c in u.name[1:])
 
 
 @given(n=st.from_type(thing=int))
@@ -587,7 +588,7 @@ def test_strategies_from_custom_type(u: User) -> None:
     assert 4 <= len(u.name) <= 6
 
     # 确认 name 属性的后续字符为小写字母
-    assert all([ord("a") <= ord(c) <= ord("z") for c in u.name[1:]])
+    assert all(ord("a") <= ord(c) <= ord("z") for c in u.name[1:])
 
 
 @given(st.frozensets(
@@ -961,10 +962,10 @@ def test_strategies_sets(s: Set[int]) -> None:
     assert isinstance(s, Set)
     # 确认 Set 集合元素长度为
     # 确认 Set 集合中元素为 int 类型
-    assert all([isinstance(n, int) for n in s])
+    assert all(isinstance(n, int) for n in s)
 
     # 确认集合元素取值范围
-    assert all([1 <= n <= 100 for n in s])
+    assert all(1 <= n <= 100 for n in s)
 
 
 def test_strategies_shared() -> None:
@@ -1023,7 +1024,7 @@ def test_strategies_slices(s: Any) -> None:
 
 
 @given(s=st.text(
-    alphabet="abcde",  # 从 abcde 这个序列中产生字符组成最终的测试用例
+    alphabet=printable,  # 从 abcde 这个序列中产生字符组成最终的测试用例
     min_size=1,
     max_size=10,
 ))
@@ -1048,7 +1049,7 @@ def test_strategies_text(s: str) -> None:
     assert isinstance(s, str)
 
     # 确认字符串的字符组成
-    assert re.match("^[a-e]+$", s)
+    assert all(c in printable for c in s)
 
     # 确认字符串长度限定范围
     assert 1 <= len(s) <= 10

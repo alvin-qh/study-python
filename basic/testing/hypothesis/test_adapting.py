@@ -117,3 +117,8 @@ def test_strategies_chain_together() -> None:
     for i in range(1, len(r)):
         assert n <= r[i]
         n = r[i]
+
+
+def test_recursive_data() -> None:
+    """
+    """

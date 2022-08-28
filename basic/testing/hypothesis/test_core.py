@@ -126,7 +126,7 @@ def test_example_output() -> None:
         for _ in range(10)
     ]
     assert len(examples) == 10
-    assert all([0 <= n <= 10 for n in examples])
+    assert all(0 <= n <= 10 for n in examples)
 
 
 @given(s=st.text(
