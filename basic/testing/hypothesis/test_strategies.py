@@ -1,6 +1,6 @@
 import random
 import re
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, tzinfo
 from decimal import Decimal
 from fractions import Fraction
 from ipaddress import IPv4Address
@@ -1132,3 +1132,33 @@ def test_strategies_timezone_keys(tz: str) -> None:
 
     # 确认假设的时区是有效时区
     assert tz in pytz.all_timezones
+
+
+@given(tz=st.timezones())
+def test_strategies_timezones(tz: tzinfo) -> None:
+    """ # noqa
+    假设一组时区类型 (`tzinfo`) 对象, 其定义如下:
+
+    ```
+    hypothesis.strategies.timezones(
+        *,
+        no_cache=False  # 如果设置为 True, 会在 tzinfo 构造器中传递
+                        # ZoneInfo.no_cache 参数, 可能会在产生时区对象时产生一些意外
+                        # 情况. 参考: https://docs.python.org/3/library/zoneinfo.html#zoneinfo.ZoneInfo.no_cache
+    )
+    ```
+    """
+    # 确认参数类型为 tzinfo 类型
+    assert isinstance(tz, tzinfo)
+
+    # 获取时区名称
+    tz_name = str(tz)
+
+    # 过滤特殊的时区名称
+    assume(not tz_name.startswith("posix"))
+    assume(not tz_name.startswith("right"))
+    assume(tz_name != "localtime")
+    assume(tz_name != "Factory")
+
+    # 确认假设的时区是有效时区
+    assert tz_name in pytz.all_timezones
