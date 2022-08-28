@@ -1243,3 +1243,22 @@ def test_provisional_domains(domain: str) -> None:
     # 确认每个部分的最大长度在限制范围内
     for r in rs:
         assert len(r) <= 63
+
+
+@given(url=pr.urls())
+def test_provisional_urls(url: str) -> None:
+    """
+    假设一组 URL 并传入测试参数, 其定义如下:
+
+    ```
+    hypothesis.provisional.urls()
+    ```
+    """
+    # 确认参数类型为字符串
+    assert isinstance(url, str)
+
+    # 确认参数不为空
+    assert url
+
+    # 确认参数为一个 url
+    assert url.startswith("http://") or url.startswith("https://")
