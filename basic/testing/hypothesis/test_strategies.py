@@ -8,6 +8,7 @@ from typing import (Any, Callable, Dict, FrozenSet, Iterable, List, Literal,
                     Set, Tuple, TypeVar, Union)
 from xmlrpc.client import Boolean
 
+import pytz
 from hypothesis import assume, given, note
 from hypothesis import strategies as st
 from hypothesis.strategies._internal.core import RandomSeeder
@@ -1080,10 +1081,20 @@ def test_strategies_timedeltas(dt: timedelta) -> None:
 @given(t=st.times(
     min_value=time(1, 0, 0),
     max_value=time(12, 59, 59),
-    timezones=st.timezones(),
+    timezones=st.timezones(),  # 允许为生成的时间假设时区
 ))
 def test_strategies_times(t: time) -> None:
     """
+    假设一组时间对象并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.times(
+        min_value=datetime.time.min,  # 允许的最小值
+        max_value=datetime.time.max,  # 允许的最大值
+        *,
+        timezones=none()  # 生成时区的假设对象
+    )
+    ```
     """
     # 确保参数类型为时间类型
     assert isinstance(t, time)
@@ -1094,3 +1105,30 @@ def test_strategies_times(t: time) -> None:
     # 去掉时区信息, 确保假设的时间对象在指定的范围内
     t = t.replace(tzinfo=None)
     assert time(1, 0, 0) <= t <= time(12, 59, 59)
+
+
+@given(tz=st.timezone_keys(
+    allow_prefix=True,  # 允许时区前缀
+))
+def test_strategies_timezone_keys(tz: str) -> None:
+    """
+    假设一组时区名称并传递给测试参数, 其定义如下:
+
+    ```
+    hypothesis.strategies.timezone_keys(
+        *,
+        allow_prefix=True  # 时区名称允许添加前缀
+    )
+    ```
+    """
+    # 确保参数为字符串类型, 表示一个时区名称
+    assert isinstance(tz, str)
+
+    # 过滤特殊的时区名称
+    assume(not tz.startswith("posix"))
+    assume(not tz.startswith("right"))
+    assume(tz != "localtime")
+    assume(tz != "Factory")
+
+    # 确认假设的时区是有效时区
+    assert tz in pytz.all_timezones
