@@ -70,13 +70,16 @@ def test_base_provider_bothify() -> None:
 
     ```
     bothify(
-        text: str = '## ??',
-        letters: str = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        text: str = "## ??",
+        letters: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     ) -> str
     ```
 
-    其中, `#` 占位符表示一个数字, `?` 占位符表示一个字母. 字母的范围由 `letters` 参数确
-    定, 默认为全部英文字母 (含大小写)
+    其中:
+    - `text` 参数为一个模板字符串, 可以包含占位符和其它字符
+        - `#` 占位符表示一个数字
+        - `?` 占位符表示一个字母
+    - `letters` 参数表示字符的取值范围, 默认为全部英文字母 (含大小写)
     """
     value = fake.bothify("###:??", letters="AB")
     assert re.match(r"^\d{3}:[AB]{2}$", value)
@@ -89,15 +92,16 @@ def test_base_provider_filter_by_length() -> None:
 
     ```
     staticfilter_by_length(
-        elements: Collection[T] = ('a', 'b', 'c'),
+        elements: Collection[T] = ("a", "b", "c"),
         max_element_length: Optional[int] = None,
         min_element_length: Optional[int] = None
     ) -> Collection[T]  # 返回符合要求的集合列表
     ```
 
-    - `elements` 一组集合组成的列表
-    - `max_element_length` 允许的集合最大长度
-    - `min_element_length` 允许的集合最小长度
+    其中:
+    - `elements` 参数表示一组集合组成的列表
+    - `max_element_length` 参数表示允许的集合最大长度
+    - `min_element_length` 参数表示允许的集合最小长度
     """
     # 初始化集合, 包含 10 个列表集合, 每个列表集合的长度在 1~20 之间
     elements = [
@@ -121,12 +125,14 @@ def test_base_provider_hexify() -> None:
 
     ```
     hexify(
-        text: str = '^^^^',
+        text: str = "^^^^",
         upper: bool = False
     ) -> str
     ```
 
-    - `^` 占位符表示一位 16 进制数字
+    其中:
+    - `text` 参数为一个模板字符串, 可以包含占位符和其它字符
+        - `^` 占位符表示一位 16 进制数字
     - `upper` 参数为 `True` 表示 `A`~`F` 用大写字母
     """
     value = fake.hexify(text="MAC Address: ^^:^^:^^:^^:^^:^^")
@@ -144,6 +150,7 @@ def test_base_provider_language_code() -> None:
     ) -> str
     ```
 
+    其中:
     - `min_length` 表示所产生的语言代码的最小长度, 默认为 2
     - `max_length` 表示所产生的语言代码的最大长度, 默认为 3
     """
@@ -156,5 +163,165 @@ def test_base_provider_language_code() -> None:
 
 def test_base_provider_lexify() -> None:
     """
+    生成任意字符, 其定义如下:
+
+    ```
+    lexify(
+        text: str = "????",
+        letters: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+    ) -> str
+    ```
+
+    其中:
+    - `text` 参数为一个模板字符串, 可以包含占位符和其它字符
+        - `?` 占位符表示一个任意字符
+    - `letters` 参数表示字符集, 即字符的取值范围
     """
-    value = fake.lexify(text='Random Identifier: ??????????')
+    # 产生由一组随机字符组成的字符串
+    value = fake.lexify(text="Random Identifier: ??????????")
+
+    # 确认字符串的组成符合字符集规定
+    assert re.match(r"Random Identifier: [a-zA-Z]{10}", value)
+
+
+def test_base_provider_locale() -> None:
+    """
+    生成随机的 i18n 本地化地区代码, 其定义如下:
+
+    ```
+    locale() -> str
+    ```
+
+    地区代码由 `2`~`3` 位小写语言代码 + `_` + `2` 位大写国家代码组成
+    """
+    # 产生一个本地化地区代码
+    value = fake.locale()
+
+    # 确认地区代码的组成符合规范
+    assert re.match(r"[a-z]{2,3}_[A-Z]{2}", value)
+
+
+def test_base_provider_numerify() -> None:
+    """
+    产生随机数字, 其定义如下:
+
+    ```
+    numerify(text: str = "###") -> str
+    ```
+
+    其中:
+    - `text` 参数为一个模板字符串, 可以包含占位符和其它字符
+        - `#` 占位符表示一个 `0`~`9` 之间的数字
+        - `%` 占位符表示一个 `1`~`9` 之间的数字
+        - `!` 占位符表示一个任意数字或空
+        - `@` 占位符表示一个非零的任意数字或空
+    """
+    value = fake.numerify(text="Intel Core i%-%%##K vs AMD Ryzen % %%##X")
+    assert re.match(
+        r"Intel Core i\d\-\d{4}K vs AMD Ryzen \d \d{4}X",
+        value,
+    )
+
+
+def test_base_provider_random_choices() -> None:
+    """
+    从已知集合中挑选指定个数的任意元素组成新的集合, 其定义如下:
+
+    ```
+    random_choices(
+        elements: Collection[T] = ("a", "b", "c"),
+        length: Optional[int] = None
+    ) -> Sequence[T]
+    ```
+
+    其中:
+    - `elements` 参数表示原集合, 从该集合中挑选元素
+    - `length` 参数表示组成新集合的长度, 可以比原集合大或小, 默认为随机
+    """
+    elements = ["a", "b", "c", "d"]
+
+    # 在已知集合中随机挑选元素组成新集合
+    value = fake.random_choices(
+        elements=elements
+    )
+
+    # 确认结果是已知集合的子集
+    assert len(value) <= len(elements)
+    assert all(n in elements for n in value)
+
+
+def test_base_provider_random_digit() -> None:
+    """
+    产生 `0`~`9` 之间的随机数字, 其定义如下:
+
+    ```
+    random_digit() -> int
+    ```
+    """
+    value = fake.random_digit()
+    assert 0 <= value <= 9
+
+
+def test_base_provider_random_digit_not_null() -> None:
+    """
+    产生 `1`~`9` 之间的随机数字, 其定义如下:
+
+    ```
+    random_digit_not_null() -> int
+    ```
+    """
+    value = fake.random_digit_not_null()
+    assert 1 <= value <= 9
+
+
+def test_base_provider_random_digit_not_null_or_empty() -> None:
+    """
+     产生 `1`~`9` 之间的随机数字或一个空字符串, 其定义如下:
+
+    ```
+    random_digit_not_null_or_empty() -> Union[int, str]
+    ```
+    """
+    value = fake.random_digit_not_null_or_empty()
+    if isinstance(value, str):
+        assert value == ""
+    else:
+        assert 1 <= value <= 9
+
+
+def test_base_provider_random_digit_or_empty() -> None:
+    """
+     产生 `0`~`9` 之间的随机数字或一个空字符串, 其定义如下:
+
+    ```
+    random_digit_or_empty() -> Union[int, str]
+    ```
+    """
+    value = fake.random_digit_or_empty()
+    if isinstance(value, str):
+        assert value == ""
+    else:
+        assert 0 <= value <= 9
+
+
+def test_base_provider_random_element() -> None:
+    """
+    从集合中随机选取一个元素, 其定义如下:
+
+    ```
+    random_element(
+        elements: Collection[T] = ("a", "b", "c"),
+        min_element_length: Optional[int] = None,
+        max_element_length: Optional[int] = None
+    ) -> T
+    ```
+
+    其中:
+    - `elements` 参数, 要筛选元素的集合
+    - `min_element_length` 参数, 选取元素的最小范围
+    - `max_element_length` 参数, 选取元素的最大范围
+    """
+    elements = ["a", "b", "c", "d"]
+
+    value = fake.random_element(elements=elements)
+    assert value in elements
