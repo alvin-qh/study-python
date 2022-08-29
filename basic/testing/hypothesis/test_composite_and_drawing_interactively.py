@@ -1,4 +1,4 @@
-from typing import Any, List, Tuple, TypeVar
+from typing import List, Tuple, TypeVar
 
 from hypothesis import Verbosity, given, note, settings
 from hypothesis import strategies as st
