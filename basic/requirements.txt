@@ -13,4 +13,5 @@ atomics
 werkzeug
 wrapt
 hypothesis
+faker
 mypy
