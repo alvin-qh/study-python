@@ -11,7 +11,7 @@ from uuid import UUID
 from xmlrpc.client import Boolean
 
 import pytz
-from hypothesis import assume, given, note
+from hypothesis import assume, given, infer, note
 from hypothesis import provisional as pr
 from hypothesis import strategies as st
 from hypothesis.strategies._internal.core import RandomSeeder
@@ -1263,3 +1263,33 @@ def test_provisional_urls(url: str) -> None:
 
     # 确认参数为一个 url
     assert url.startswith("http://") or url.startswith("https://")
+
+
+@given(a=infer, b=...)  # 通过 infer 对象定义 a 和 b 两个参数
+def test_hypothesis_infer(a: int, b: str) -> None:
+    """
+    如果对假设用例没有其它要求, 可以通过 `hypothesis.infer` 对象来表达一个自适应的假设参
+    数定义
+
+    `hypothesis.infer` 的定义实际上是一个 `Ellipsis` 对象, 即 `...`, 所以也可以直接使
+    用 `Ellipsis` 或 `...`
+
+    如果使用 `hypothesis.infer`, 则必须保证函数的参数定义包含类型注解, 否则会抛出异常
+    """
+    # 确认 a 参数的类型
+    assert isinstance(a, int)
+
+    # 确认 b 参数的类型
+    assert isinstance(b, str)
+
+
+@given(...)
+def test_hypothesis_infer_more(a: int, b: str) -> None:
+    """
+    更进一步, 可以简化 `@given` 装饰器的参数, 让其完全根据测试参数列表的定义来假设用例
+    """
+    # 确认 a 参数的类型
+    assert isinstance(a, int)
+
+    # 确认 b 参数的类型
+    assert isinstance(b, str)
