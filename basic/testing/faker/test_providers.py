@@ -1,5 +1,7 @@
+from hmac import digest
 import random
 import re
+from string import ascii_letters, ascii_lowercase
 
 from faker import Faker
 from faker.providers import BaseProvider, DynamicProvider
@@ -383,3 +385,59 @@ def test_base_provider_random_int() -> None:
     # 确认取值范围
     assert 0 <= value <= 10
     assert value % 2 == 0
+
+
+def test_base_provider_random_letter() -> None:
+    """
+    产生一个随机字母, 包含大小写, 其定义如下:
+
+    ```
+    random_letter() -> str
+    ```
+    """
+    # 产生一个随机字符
+    value = fake.random_letter()
+
+    # 确认产生的字符在预期范围内
+    assert value in ascii_letters
+
+
+def test_base_provider_random_letters() -> None:
+    """
+    产生一组指定长度的随机字母集合, 包含大小写, 其定义如下:
+
+    ```
+    random_letters(length: int = 16) -> Sequence[str]
+    ```
+    """
+    # 产生一个随机字符
+    value = fake.random_letters(length=8)
+
+    # 确认产生的字符在预期范围内
+    assert len(value) == 8
+    assert all(c in ascii_letters for c in value)
+
+
+def test_base_provider_random_lowercase_letter() -> None:
+    """
+    产生一个随机小写字母, 其定义如下:
+
+    ```
+    random_lowercase_letter() -> str
+    ```
+    """
+    # 产生一个小写随机字符
+    value = fake.random_lowercase_letter()
+
+    # 确认产生的字符在预期范围内
+    assert value in ascii_lowercase
+
+
+def test_base_provider_random_number() -> None:
+    """
+
+    ```
+    random_number(digits: Optional[int] = None, fix_len: bool = False) → int
+    ```
+    """
+    value = fake.random_number(digits)
