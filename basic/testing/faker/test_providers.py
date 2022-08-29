@@ -325,3 +325,61 @@ def test_base_provider_random_element() -> None:
 
     value = fake.random_element(elements=elements)
     assert value in elements
+
+
+def test_base_provider_random_elements() -> None:
+    """
+    从集合中随机选取任意若干元素并组成新的集合, 其定义如下:
+
+    ```
+    random_elements(
+        elements: Collection[T] = ("a", "b", "c"),
+        length: Optional[int] = None,
+        unique: bool = False,
+        use_weighting: Optional[bool] = None,
+        min_element_length: Optional[int] = None,
+        max_element_length: Optional[int] = None
+    ) -> Sequence[T]
+    ```
+
+    其中:
+    - `elements` 参数, 要筛选元素的集合
+    - `length` 参数, 产生的新集合的长度, 可以大于或小于原集合
+    - `unique` 参数, 筛选元素是否具备唯一性
+    - `use_weighting` 是否使用加权计算
+    - `min_element_length` 参数, 选取元素的最小范围
+    - `max_element_length` 参数, 选取元素的最大范围
+    """
+    elements = ["a", "b", "c", "d"]
+
+    value = fake.random_elements(
+        elements=elements,
+        unique=True,
+    )
+    assert len(value) <= len(elements)
+    assert all(n in elements for n in value)
+
+
+def test_base_provider_random_int() -> None:
+    """
+    产生一个随机数字, 其定义如下:
+
+    ```
+    random_int(
+        min: int = 0,
+        max: int = 9999,
+        step: int = 1
+    ) -> int
+    ```
+
+    其中:
+    - `min` 参数, 表示随机数的最小值
+    - `max` 参数, 表示随机数的最大值
+    - `step` 参数, 表示随机数的步长
+    """
+    # 从 `min` 值开始, 每隔 `step` 随机取数, 直到 `max` 结束, 在此范围内随机取一个数
+    value = fake.random_int(min=0, max=10, step=2)
+
+    # 确认取值范围
+    assert 0 <= value <= 10
+    assert value % 2 == 0
