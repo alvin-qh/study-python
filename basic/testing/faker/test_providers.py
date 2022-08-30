@@ -1,7 +1,10 @@
-from hmac import digest
+# 介绍最基本的 providers, 包括字符, 字符串和数字的生成策略
+
 import random
 import re
-from string import ascii_letters, ascii_lowercase
+from hmac import digest
+from operator import ge, le
+from string import ascii_letters, ascii_lowercase, ascii_uppercase
 
 from faker import Faker
 from faker.providers import BaseProvider, DynamicProvider
@@ -78,7 +81,7 @@ def test_base_provider_bothify() -> None:
     ```
 
     其中:
-    - `text` 参数为一个模板字符串, 可以包含占位符和其它字符
+    - `text` 参数为一个模板字符串, 可以包含占符和其它字符
         - `#` 占位符表示一个数字
         - `?` 占位符表示一个字母
     - `letters` 参数表示字符的取值范围, 默认为全部英文字母 (含大小写)
@@ -435,9 +438,95 @@ def test_base_provider_random_lowercase_letter() -> None:
 
 def test_base_provider_random_number() -> None:
     """
+    产生一个随机整数, 其定义如下:
 
     ```
-    random_number(digits: Optional[int] = None, fix_len: bool = False) → int
+    random_number(
+        digits: Optional[int] = None,
+        fix_len: bool = False
+    ) -> int
+    ```
+
+    其中:
+    - `digits` 参数, 如果为 `None` (默认值), 则生成任意随机整数; 如果为其它整数值 `n`,
+      则生成 `n` 位整数
+    - `fix_len` 参数, 如果为 `False`, 则生成不超过 `digits` 位数的随机整数; 如果为
+      `True` 则生成等于 `digits` 位数的随机整数
+    """
+    value = fake.random_number(digits=3, fix_len=True)
+    assert isinstance(value, int)
+    assert len(str(value)) == 3
+
+
+def test_base_provider_random_sample() -> None:
+    """
+    依据一个集合, 随机生成其子集合
+    """
+    elements = ["a", "b", "c", "d", "e", "f"]
+
+    # 从 elements 集合中随机产生长度为 4 的子集合
+    value = fake.random_sample(elements=elements, length=4)
+
+    # 确认返回值的类型
+    assert isinstance(value, list)
+
+    # 确认返回的确是原集合的子集
+    assert all(n in elements for n in value)
+
+    # 确认返回的子集长度
+    assert len(value) == 4
+
+
+def test_base_provider_random_uppercase_letter() -> None:
+    """
+    产生一个随机的大写字母, 其定义如下:
+
+    ```
+    random_uppercase_letter() -> str
     ```
     """
-    value = fake.random_number(digits)
+    # 产生一个大写字母
+    value = fake.random_uppercase_letter()
+
+    # 确认产生的是大写字母
+    assert value in ascii_uppercase
+
+
+def test_base_provider_randomize_nb_elements() -> None:
+    """
+    产生一个在指定值附近的随机数
+
+    ```
+    randomize_nb_elements(
+        number: int = 10,
+        le: bool = False,
+        ge: bool = False,
+        min: Optional[int] = None,
+        max: Optional[int] = None
+    ) -> int
+    ```
+
+    其中:
+    - `le` 参数: 如果为 `False` (默认值), 允许生成最多为 `number` 的 `140%`; 如果为
+      `True`, 则生成的上限为 `100%`
+    - `ge` 参数: 如果为 `False` (默认值), 则允许生成数量减少到 `60%`; 如果为
+      `True`, 则下限生成上限为 `100%`
+    - `min` 参数: 如果提供了 `min` 的数值, 则生成小于 `min` 的值不小于 `min`
+      值; 如果提供了 `max` 的数值, 则生成大于 `max` 的值不大于 `max`
+
+    如果 `le` 和 `ge` 都为 `True`, 则 `number` 的值将自动返回, 而不管 `min` 和
+    `max` 的值是多少
+    """
+    base = 100
+
+    # 产生一个在 100 附近, 不小于 60 且 不大于 140 的随机整数
+    value = fake.randomize_nb_elements(number=base, min=60, max=140)
+
+    # 确认在 le 和 ge 参数为 False 时, 产生的随机数和 base 值得偏差范围
+    if value < base:
+        assert value / base > 0.6
+    elif value > base:
+        assert value / base < 1.4
+
+    # 确认产生的值得取值范围
+    assert 60 <= value <= 140
