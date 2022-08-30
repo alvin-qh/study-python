@@ -1,6 +1,7 @@
 from string import printable
 from typing import Dict, List, Tuple
 
+from hypothesis import assume
 from hypothesis import strategies as st
 
 
@@ -138,8 +139,11 @@ def test_strategies_recursive_data() -> None:
     )
     ```
 
-    基本的使用方法是通过 `base` 参数定义基本的数据假设规则, 然后再通过 `extend` 参数定义
-    的函数产生嵌套的数据
+    基本的使用方法是通过 `base` 参数定义基本的数据假设规则, 然后再通过 `extend`
+    参数定义的函数产生嵌套的数据
+
+    最终产生的用例数据类型为调用 `extend` 参数 `0` 到 `max_leaves` 次的返回值,
+    当调用 `extend` 参数 `0` 次, 则为 `base` 参数定义的假设值
     """
     # 递归产生数据
     json = st.recursive(
@@ -153,5 +157,7 @@ def test_strategies_recursive_data() -> None:
     # 产生测试用例数据
     value = json.example()
 
+    assume(value is not None)
+
     # 产生数据为一个字典类型
-    assert isinstance(value, Dict)
+    assert isinstance(value, (bool, float, str, list, dict))
