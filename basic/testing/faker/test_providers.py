@@ -69,7 +69,7 @@ def test_dynamic_custom_provider() -> None:
     assert value in {"dr.", "doctor", "nurse", "surgeon", "clerk"}
 
 
-def test_base_provider_bothify() -> None:
+def test_provider_bothify() -> None:
     """
     通过 `bothify` 方法产生任意数字和字母组合的字符串, 其定义如下:
 
@@ -90,7 +90,7 @@ def test_base_provider_bothify() -> None:
     assert re.match(r"^\d{3}:[AB]{2}$", value)
 
 
-def test_base_provider_filter_by_length() -> None:
+def test_provider_filter_by_length() -> None:
     """
     对输入的集合依照长度进行过滤, 集合表示任意具有 `__len__` 操作符的集合对象, 如 `list`,
     `str`, `set` 等, 其定义如下:
@@ -124,7 +124,7 @@ def test_base_provider_filter_by_length() -> None:
     assert 1 <= len(value) <= 10
 
 
-def test_base_provider_hexify() -> None:
+def test_provider_hexify() -> None:
     """
     产生任意一位 16 进制数字, 其定义如下:
 
@@ -144,7 +144,7 @@ def test_base_provider_hexify() -> None:
     assert re.match(r"MAC Address: (:?[0-9a-f]{2}){6}", value)
 
 
-def test_base_provider_language_code() -> None:
+def test_provider_language_code() -> None:
     """
     产生一个随机的 i18n 语言代码 (例如: `en`, `zh`), 其定义如下:
 
@@ -166,7 +166,7 @@ def test_base_provider_language_code() -> None:
     assert 2 <= len(value) <= 3
 
 
-def test_base_provider_lexify() -> None:
+def test_provider_lexify() -> None:
     """
     生成任意字符, 其定义如下:
 
@@ -189,7 +189,7 @@ def test_base_provider_lexify() -> None:
     assert re.match(r"Random Identifier: [a-zA-Z]{10}", value)
 
 
-def test_base_provider_locale() -> None:
+def test_provider_locale() -> None:
     """
     生成随机的 i18n 本地化地区代码, 其定义如下:
 
@@ -206,7 +206,7 @@ def test_base_provider_locale() -> None:
     assert re.match(r"[a-z]{2,3}_[A-Z]{2}", value)
 
 
-def test_base_provider_numerify() -> None:
+def test_provider_numerify() -> None:
     """
     产生随机数字, 其定义如下:
 
@@ -228,7 +228,7 @@ def test_base_provider_numerify() -> None:
     )
 
 
-def test_base_provider_random_choices() -> None:
+def test_provider_random_choices() -> None:
     """
     从已知集合中挑选指定个数的任意元素组成新的集合, 其定义如下:
 
@@ -255,7 +255,7 @@ def test_base_provider_random_choices() -> None:
     assert all(n in elements for n in value)
 
 
-def test_base_provider_random_digit() -> None:
+def test_provider_random_digit() -> None:
     """
     产生 `0`~`9` 之间的随机数字, 其定义如下:
 
@@ -267,7 +267,7 @@ def test_base_provider_random_digit() -> None:
     assert 0 <= value <= 9
 
 
-def test_base_provider_random_digit_not_null() -> None:
+def test_provider_random_digit_not_null() -> None:
     """
     产生 `1`~`9` 之间的随机数字, 其定义如下:
 
@@ -279,7 +279,7 @@ def test_base_provider_random_digit_not_null() -> None:
     assert 1 <= value <= 9
 
 
-def test_base_provider_random_digit_not_null_or_empty() -> None:
+def test_provider_random_digit_not_null_or_empty() -> None:
     """
      产生 `1`~`9` 之间的随机数字或一个空字符串, 其定义如下:
 
@@ -294,7 +294,7 @@ def test_base_provider_random_digit_not_null_or_empty() -> None:
         assert 1 <= value <= 9
 
 
-def test_base_provider_random_digit_or_empty() -> None:
+def test_provider_random_digit_or_empty() -> None:
     """
      产生 `0`~`9` 之间的随机数字或一个空字符串, 其定义如下:
 
@@ -309,7 +309,7 @@ def test_base_provider_random_digit_or_empty() -> None:
         assert 0 <= value <= 9
 
 
-def test_base_provider_random_element() -> None:
+def test_provider_random_element() -> None:
     """
     从集合中随机选取一个元素, 其定义如下:
 
@@ -332,7 +332,7 @@ def test_base_provider_random_element() -> None:
     assert value in elements
 
 
-def test_base_provider_random_elements() -> None:
+def test_provider_random_elements() -> None:
     """
     从集合中随机选取任意若干元素并组成新的集合, 其定义如下:
 
@@ -365,7 +365,7 @@ def test_base_provider_random_elements() -> None:
     assert all(n in elements for n in value)
 
 
-def test_base_provider_random_int() -> None:
+def test_provider_random_int() -> None:
     """
     产生一个随机数字, 其定义如下:
 
@@ -390,7 +390,7 @@ def test_base_provider_random_int() -> None:
     assert value % 2 == 0
 
 
-def test_base_provider_random_letter() -> None:
+def test_provider_random_letter() -> None:
     """
     产生一个随机字母, 包含大小写, 其定义如下:
 
@@ -405,7 +405,7 @@ def test_base_provider_random_letter() -> None:
     assert value in ascii_letters
 
 
-def test_base_provider_random_letters() -> None:
+def test_provider_random_letters() -> None:
     """
     产生一组指定长度的随机字母集合, 包含大小写, 其定义如下:
 
@@ -421,7 +421,7 @@ def test_base_provider_random_letters() -> None:
     assert all(c in ascii_letters for c in value)
 
 
-def test_base_provider_random_lowercase_letter() -> None:
+def test_provider_random_lowercase_letter() -> None:
     """
     产生一个随机小写字母, 其定义如下:
 
@@ -436,7 +436,7 @@ def test_base_provider_random_lowercase_letter() -> None:
     assert value in ascii_lowercase
 
 
-def test_base_provider_random_number() -> None:
+def test_provider_random_number() -> None:
     """
     产生一个随机整数, 其定义如下:
 
@@ -458,7 +458,7 @@ def test_base_provider_random_number() -> None:
     assert len(str(value)) == 3
 
 
-def test_base_provider_random_sample() -> None:
+def test_provider_random_sample() -> None:
     """
     依据一个集合, 随机生成其子集合
     """
@@ -477,7 +477,7 @@ def test_base_provider_random_sample() -> None:
     assert len(value) == 4
 
 
-def test_base_provider_random_uppercase_letter() -> None:
+def test_provider_random_uppercase_letter() -> None:
     """
     产生一个随机的大写字母, 其定义如下:
 
@@ -492,7 +492,7 @@ def test_base_provider_random_uppercase_letter() -> None:
     assert value in ascii_uppercase
 
 
-def test_base_provider_randomize_nb_elements() -> None:
+def test_provider_randomize_nb_elements() -> None:
     """
     产生一个在指定值附近的随机数
 

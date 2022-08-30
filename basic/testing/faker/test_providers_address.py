@@ -6,7 +6,7 @@ from faker import Faker
 fake = Faker()
 
 
-def test_address_providers() -> None:
+def test_provider() -> None:
     """
     产生一个随机的地址, 其定义如下:
 
@@ -18,7 +18,7 @@ def test_address_providers() -> None:
     assert isinstance(value, str)
 
 
-def test_address_providers_building_number() -> None:
+def test_provider_building_number() -> None:
     """
     产生一个随机的楼号, 其定义如下:
 
@@ -33,7 +33,7 @@ def test_address_providers_building_number() -> None:
     assert int(value) is not None
 
 
-def test_address_providers_city() -> None:
+def test_provider_city() -> None:
     """
     产生一个随机的城市名称, 其定义如下:
 
@@ -45,7 +45,7 @@ def test_address_providers_city() -> None:
     assert isinstance(value, str)
 
 
-def test_address_providers_city_suffix() -> None:
+def test_provider_city_suffix() -> None:
     """
     随机产生一个城市后缀, 其定义如下:
 
@@ -67,7 +67,7 @@ def test_address_providers_city_suffix() -> None:
     assert 2 <= len(value) <= 10
 
 
-def test_address_providers_country() -> None:
+def test_provider_country() -> None:
     """
     随机产生一个国家名称, 其定义如下:
 
@@ -82,7 +82,7 @@ def test_address_providers_country() -> None:
     assert 2 <= len(value) <= 4
 
 
-def test_address_providers_country_code() -> None:
+def test_provider_country_code() -> None:
     """
     产生一个随机的国家编码, 其定义如下:
 
@@ -100,7 +100,7 @@ def test_address_providers_country_code() -> None:
     assert len(value) == 2
 
 
-def test_address_providers_current_country() -> None:
+def test_provider_current_country() -> None:
     """
     获取当前国家名称, 其定义如下:
 
@@ -116,7 +116,7 @@ def test_address_providers_current_country() -> None:
     assert value == "United States"
 
 
-def test_address_providers_postcode() -> None:
+def test_provider_postcode() -> None:
     """
     获取一个随机的邮政编码
 
@@ -130,7 +130,7 @@ def test_address_providers_postcode() -> None:
     assert int(value) is not None
 
 
-def test_address_providers_street_address() -> None:
+def test_provider_street_address() -> None:
     """
     随机产生一个精确到街道的地址数据, 定义如下:
 
@@ -145,7 +145,7 @@ def test_address_providers_street_address() -> None:
     assert re.match(r"\d+[\s\w]+\s*\d*", value)
 
 
-def test_address_providers_street_name() -> None:
+def test_provider_street_name() -> None:
     """
     随机产生一个街道名称, 其定义如下:
 
@@ -159,7 +159,7 @@ def test_address_providers_street_name() -> None:
     assert re.match(r"\w+\s\w+", value)
 
 
-def test_address_providers_street_suffix() -> None:
+def test_provider_street_suffix() -> None:
     """
     随机产生一个街道名称的后缀, 其定义如下:
 
