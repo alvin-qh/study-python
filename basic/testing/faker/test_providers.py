@@ -1,4 +1,4 @@
-# 介绍最基本的 providers, 包括字符, 字符串和数字的生成策略
+# 演示最基本的 providers, 包括字符, 字符串和数字的生成策略
 
 import random
 import re
