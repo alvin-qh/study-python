@@ -1,4 +1,6 @@
 # 介绍产生各种地址用例的操作
+import re
+
 from faker import Faker
 
 fake = Faker()
@@ -112,3 +114,67 @@ def test_address_providers_current_country() -> None:
     """
     value = fake.current_country()
     assert value == "United States"
+
+
+def test_address_providers_postcode() -> None:
+    """
+    获取一个随机的邮政编码
+
+    ```
+    postcode() -> str
+    ```
+    """
+    value = fake.postcode()
+
+    # 确认产生邮编是由数字字符组成的
+    assert int(value) is not None
+
+
+def test_address_providers_street_address() -> None:
+    """
+    随机产生一个精确到街道的地址数据, 定义如下:
+
+    ```
+    street_address() -> str
+    ```
+    """
+    # 产生一个街道地址数据
+    value = fake.street_address()
+
+    # 确认街道地址数据的格式
+    assert re.match(r"\d+[\s\w]+\s*\d*", value)
+
+
+def test_address_providers_street_name() -> None:
+    """
+    随机产生一个街道名称, 其定义如下:
+
+    ```
+    street_name() -> str
+    ```
+    """
+    value = fake.street_name()
+
+    # 确认街道数据符合要求
+    assert re.match(r"\w+\s\w+", value)
+
+
+def test_address_providers_street_suffix() -> None:
+    """
+    随机产生一个街道名称的后缀, 其定义如下:
+
+    ```
+    street_suffix(
+        min_length: Optional[int] = None,
+        max_length: Optional[int] = None
+    ) -> str
+    ```
+
+    其中:
+    - `min_length` 参数表示后缀的最小长度
+    - `max_length` 参数表示后缀的最大长度
+    """
+    value = fake.street_suffix(min_length=2, max_length=4)
+
+    # 确认产生的后缀长度范围
+    assert 2 <= len(value) <= 4
