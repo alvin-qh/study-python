@@ -251,10 +251,10 @@ def test_provider_date_this_decade() -> None:
     )
 
     # 计算近 10 年最后一天的日期
-    end_of_century = date(int(date.today().year // 10 * 10) + 10, 12, 31)
+    end_of_decade = date(int(date.today().year // 10 * 10) + 10, 12, 31)
 
     assert value >= date.today()
-    assert value <= end_of_century
+    assert value <= end_of_decade
 
 
 def test_provider_date_this_month() -> None:
@@ -281,14 +281,14 @@ def test_provider_date_this_month() -> None:
     today = date.today()
 
     # 计算近一个月最后一天的日期
-    end_of_century = date(
+    end_of_month = date(
         today.year,
         today.month,
         last_day_of_month(today.year, today.month),
     )
 
     assert value >= date.today()
-    assert value <= end_of_century
+    assert value <= end_of_month
 
 
 def test_provider_date_this_year() -> None:
@@ -414,3 +414,295 @@ def test_provider_date_time_ad() -> None:
     # 确认生成时间日期的范围
     # 注意, start_time 和 end_time 均为设置时区, 比较时也需要擅长 value 的时区
     assert start_time <= value.replace(tzinfo=None) <= end_time
+
+
+def test_provider_date_time_between() -> None:
+    """
+    获取指定两个时间之间的随机时间, 其定义如下:
+
+    ```
+    date_time_between(
+        start_date: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "-30y",
+        end_date: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "now",
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `start_date` 参数, 要生成时间的起始时间
+    - `end_date` 参数, 要生成时间的截至时间
+    - `tzinfo` 参数, 表示要获取时间的时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    start_date = datetime.fromisoformat("2022-10-01T12:00")
+    end_date = datetime.fromisoformat("2022-10-15T00:00")
+
+    value: datetime = fake.date_time_between(
+        start_date=start_date,
+        end_date=end_date,
+        tzinfo=zone,
+    )
+
+    tz = value.tzinfo
+    assert tz
+
+    # 计算时间的时区偏移量
+    offset = tz.utcoffset(value)
+    assert offset
+    # 确认生成的时间日期的时区为东八区
+    assert offset.seconds // 3600 == 8
+
+    # 确认生成时间日期的范围
+    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要擅长 value 的时区
+    assert start_date <= value.replace(tzinfo=None) <= end_date
+
+
+def test_provider_date_time_between_dates() -> None:
+    """
+    获取指定两个时间之间的随机时间, 和 `date_time_between` 方法类似, 但
+    `datetime_start` 和 `datetime_end` 参数可以为 `None`, 表示不设限制:
+
+    ```
+    date_time_between_dates(
+        datetime_start: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None,
+        datetime_end: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None,
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `datetime_start` 参数, 要生成时间的起始时间
+    - `datetime_end` 参数, 要生成时间的截至时间
+    - `tzinfo` 参数, 表示要获取时间的时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    datetime_start = datetime.fromisoformat("2022-10-01T12:00")
+    datetime_end = datetime.fromisoformat("2022-10-15T00:00")
+
+    value: datetime = fake.date_time_between_dates(
+        datetime_start=datetime_start,
+        datetime_end=datetime_end,
+        tzinfo=zone,
+    )
+
+    tz = value.tzinfo
+    assert tz
+
+    # 计算时间的时区偏移量
+    offset = tz.utcoffset(value)
+    assert offset
+    # 确认生成的时间日期的时区为东八区
+    assert offset.seconds // 3600 == 8
+
+    # 确认生成时间日期的范围
+    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要擅长 value 的时区
+    assert datetime_start <= value.replace(tzinfo=None) <= datetime_end
+
+
+def test_provider_date_time_this_century() -> None:
+    """
+    产生近一个世纪 (100 年) 内的随机时间, 其定义如下:
+
+    ```
+    date_time_this_century(
+        before_now: bool = True,
+        after_now: bool = False,
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `before_now` 参数, 是否产生当时之前的时间
+    - `after_now` 参数, 是否产生当时之后的时间
+    - `tzinfo` 参数, 表示要获取时间的时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+
+    # 获取一个不小于当前时间的本世纪内的随机时间
+    value = fake.date_time_this_century(
+        before_now=False,
+        after_now=True,
+        tzinfo=zone,
+    )
+
+    # 计算下世纪第一天 0 点的时间
+    end_of_century = zone.localize(
+        datetime(int(date.today().year // 100 * 100) + 101, 1, 1, 0, 0, 0),
+    )
+
+    assert value >= zone.localize(datetime.now())
+    assert value < end_of_century
+
+
+def test_provider_date_time_this_decade() -> None:
+    """
+    产生近 10 年内的随机时间, 其定义如下:
+
+    ```
+    date_time_this_decade(
+        before_now: bool = True,
+        after_now: bool = False,
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `before_now` 参数, 是否产生当时之前的时间
+    - `after_now` 参数, 是否产生当时之后的时间
+    - `tzinfo` 参数, 表示要获取时间的时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+
+    # 获取一个不小于当前时间的近 10 年随机时间
+    value = fake.date_time_this_decade(
+        before_now=False,
+        after_now=True,
+        tzinfo=zone,
+    )
+
+    # 计算近 11 年 1 号 0 点时间
+    end_of_decade = zone.localize(
+        datetime(int(date.today().year // 10 * 10) + 11, 1, 1, 0, 0, 0),
+    )
+
+    assert value >= zone.localize(datetime.now())
+    assert value < end_of_decade
+
+
+def test_provider_date_time_this_month() -> None:
+    """
+    产生当前月内的随机时间, 其定义如下:
+
+    ```
+    date_time_this_month(
+        before_now: bool = True,
+        after_now: bool = False,
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `before_now` 参数, 是否产生当时之前的时间
+    - `after_now` 参数, 是否产生当时之后的时间
+    - `tzinfo` 参数, 表示要获取时间的时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+
+    # 获取一个不小于当前时间的当月的随机时间
+    value = fake.date_time_this_month(
+        before_now=False,
+        after_now=True,
+        tzinfo=zone,
+    )
+
+    today = date.today()
+
+    # 计算下个月 1 号 0 点的时间
+    end_of_month = zone.localize(
+        datetime(today.year, today.month + 1, 1, 0, 0, 0),
+    )
+
+    assert value >= zone.localize(datetime.now())
+    assert value < end_of_month
+
+
+def test_provider_date_time_this_year() -> None:
+    """
+    产生今年内的随机时间, 其定义如下:
+
+    ```
+    date_time_this_year(
+        before_now: bool = True,
+        after_now: bool = False,
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `before_now` 参数, 是否产生当时之前的时间
+    - `after_now` 参数, 是否产生当时之后的时间
+    - `tzinfo` 参数, 表示要获取时间的时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+
+    # 获取一个不小于当前时间的当年的随机时间
+    value = fake.date_time_this_year(
+        before_now=False,
+        after_now=True,
+        tzinfo=zone,
+    )
+
+    today = date.today()
+
+    # 计算下一年 1 号 0 点的时间
+    end_of_month = zone.localize(
+        datetime(today.year + 1, 1, 1, 0, 0, 0),
+    )
+
+    assert value >= zone.localize(datetime.now())
+    assert value < end_of_month
+
+
+def test_provider_day_of_month() -> None:
+    """
+    获取一个随机日期, 取值从 `1`~`31`
+
+    ```
+    day_of_month() -> str
+    ```
+    """
+    value = fake.day_of_month()
+
+    # 确认返回的值在指定范围内
+    assert 1 <= int(value) <= 31
+
+
+def test_provider_day_of_week() -> None:
+    """
+    获取一个随机星期, 取值包括: "Monday", "Tuesday", "Wednesday", "Thursday",
+    "Friday", "Saturday", "Sunday"
+
+    ```
+    day_of_week() -> str
+    ```
+    """
+    weeks = [
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday",
+        "Sunday",
+    ]
+
+    value = fake.day_of_week()
+
+    # 确认返回的值在指定范围内
+    assert 1 <= weeks.index(value) + 1 <= 7
