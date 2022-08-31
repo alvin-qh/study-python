@@ -2,8 +2,6 @@
 
 import random
 import re
-from hmac import digest
-from operator import ge, le
 from string import ascii_letters, ascii_lowercase, ascii_uppercase
 
 from faker import Faker
