@@ -1,6 +1,6 @@
 # 演示时间日期相关的测试用例提供者
 import re
-from datetime import date, datetime, timedelta, tzinfo
+from datetime import date, datetime, timedelta
 
 import pytz
 from dateutil.relativedelta import relativedelta
