@@ -1,10 +1,12 @@
 # 演示时间日期相关的测试用例提供者
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, tzinfo
 
 import pytz
 from dateutil.relativedelta import relativedelta
 from faker import Faker
+
+from .date_calculate import last_day_of_month
 
 fake = Faker()
 
@@ -197,3 +199,218 @@ def test_provider_date_of_birth() -> None:
     # 将计算的日期换算回年龄
     age = relativedelta(date.today(), value)
     assert 18 <= age.years <= 35
+
+
+def test_provider_date_this_century() -> None:
+    """
+    产生近一个世纪 (100 年) 内的随机日期, 其定义如下:
+
+    ```
+    date_this_century(
+        before_today: bool = True,
+        after_today: bool = False
+    ) -> datetime.date
+    ```
+
+    其中:
+    - `before_today` 参数, 是否产生当日之前的日期
+    - `after_today` 参数, 是否产生当日之后的日期
+    """
+    # 获取一个不小于当天的本世纪随机日期
+    value = fake.date_this_century(
+        before_today=False,
+        after_today=True,
+    )
+
+    # 计算本世纪最后一天的日期
+    end_of_century = date(int(date.today().year // 100 * 100) + 100, 12, 31)
+
+    assert value >= date.today()
+    assert value <= end_of_century
+
+
+def test_provider_date_this_decade() -> None:
+    """
+    产生近 10 年内的随机日期, 其定义如下:
+
+    ```
+    date_this_decade(
+        before_today: bool = True,
+        after_today: bool = False
+    ) -> datetime.date
+    ```
+
+    其中:
+    - `before_today` 参数, 是否产生当日之前的日期
+    - `after_today` 参数, 是否产生当日之后的日期
+    """
+    # 获取一个不小于当天的近 10 年随机日期
+    value = fake.date_this_decade(
+        before_today=False,
+        after_today=True,
+    )
+
+    # 计算近 10 年最后一天的日期
+    end_of_century = date(int(date.today().year // 10 * 10) + 10, 12, 31)
+
+    assert value >= date.today()
+    assert value <= end_of_century
+
+
+def test_provider_date_this_month() -> None:
+    """
+    产生近 1 个月内的随机日期, 其定义如下:
+
+    ```
+    date_this_month(
+        before_today: bool = True,
+        after_today: bool = False
+    ) -> datetime.date
+    ```
+
+    其中:
+    - `before_today` 参数, 是否产生当日之前的日期
+    - `after_today` 参数, 是否产生当日之后的日期
+    """
+    # 获取一个不小于当天的近一月的随机日期
+    value = fake.date_this_month(
+        before_today=False,
+        after_today=True,
+    )
+
+    today = date.today()
+
+    # 计算近一个月最后一天的日期
+    end_of_century = date(
+        today.year,
+        today.month,
+        last_day_of_month(today.year, today.month),
+    )
+
+    assert value >= date.today()
+    assert value <= end_of_century
+
+
+def test_provider_date_this_year() -> None:
+    """
+    产生近 1 年内的随机日期, 其定义如下:
+
+    ```
+    date_this_year(
+        before_today: bool = True,
+        after_today: bool = False
+    ) -> datetime.date
+    ```
+
+    其中:
+    - `before_today` 参数, 是否产生当日之前的日期
+    - `after_today` 参数, 是否产生当日之后的日期
+    """
+    # 获取一个不小于当天的近一年的随机日期
+    value = fake.date_this_year(
+        before_today=False,
+        after_today=True,
+    )
+
+    today = date.today()
+
+    # 计算近一年年最后一天的日期
+    end_of_year = date(today.year, 12, 31)
+
+    assert value >= date.today()
+    assert value <= end_of_year
+
+
+def test_provider_date_time() -> None:
+    """
+    获取一个从 1970-01-01 00:00 到当前时间的随机时间对象
+
+    ```
+    date_time(
+        tzinfo: Optional[datetime.tzinfo] = None,
+        end_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `tzinfo` 参数, 表示要获取时间的时区
+    - `end_datetime` 参数, 要生成时间的截止时间
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+
+    value: datetime = fake.date_time(tzinfo=zone, end_datetime="-2day1hour")
+
+    tz = value.tzinfo
+    assert tz
+
+    # 计算时间的时区偏移量
+    offset = tz.utcoffset(value)
+    assert offset
+    # 确认生成的时间日期的时区为东八区
+    assert offset.seconds // 3600 == 8
+
+    # 确认生成时间日期的范围
+    end_datetime = datetime.now(tz=zone) - timedelta(days=-2, hours=-1)
+    assert value <= end_datetime
+
+
+def test_provider_date_time_ad() -> None:
+    """
+    获取一个从公元后 (0001-01-01 00:00:00) 到当前时间的随机时间对象
+
+    ```
+    date_time_ad(
+        tzinfo: Optional[datetime.tzinfo] = None,
+        end_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None,
+        start_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `tzinfo` 参数, 表示要获取时间的时区
+    - `end_datetime` 参数, 要生成时间的截止时间
+    - `start_datetime` 参数, 要生成时间的起始时间
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    start_time = datetime.fromisoformat("0998-01-01T12:00")
+    end_time = datetime.fromisoformat("1000-01-01T00:00")
+
+    value: datetime = fake.date_time_ad(
+        tzinfo=zone,
+        end_datetime=end_time,
+        start_datetime=start_time,
+    )
+
+    tz = value.tzinfo
+    assert tz
+
+    # 计算时间的时区偏移量
+    offset = tz.utcoffset(value)
+    assert offset
+    # 确认生成的时间日期的时区为东八区
+    assert offset.seconds // 3600 == 8
+
+    # 确认生成时间日期的范围
+    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要擅长 value 的时区
+    assert start_time <= value.replace(tzinfo=None) <= end_time
