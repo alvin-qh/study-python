@@ -88,7 +88,7 @@ def test_provider_country_code() -> None:
 
     ```
     country_code(
-        representation: str = 'alpha-2'
+        representation: str = "alpha-2"
     ) -> str
     ```
 

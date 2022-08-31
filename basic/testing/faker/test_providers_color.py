@@ -22,7 +22,7 @@ def test_provider_color() -> None:
     color(
         hue: Optional[HueType] = None,
         luminosity: Optional[str] = None,
-        color_format: str = 'hex'
+        color_format: str = "hex"
     ) -> str
     ```
 
