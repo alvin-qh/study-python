@@ -4,6 +4,7 @@ from datetime import date, datetime, timedelta
 
 import pytz
 from dateutil.relativedelta import relativedelta
+from dateutil.tz import tzfile
 from faker import Faker
 
 from .date_calculate import last_day_of_month
@@ -412,7 +413,7 @@ def test_provider_date_time_ad() -> None:
     assert offset.seconds // 3600 == 8
 
     # 确认生成时间日期的范围
-    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要擅长 value 的时区
+    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要删除 value 的时区
     assert start_time <= value.replace(tzinfo=None) <= end_time
 
 
@@ -446,8 +447,8 @@ def test_provider_date_time_between() -> None:
     - `tzinfo` 参数, 表示要获取时间的时区
     """
     zone = pytz.timezone("Asia/Shanghai")
-    start_date = datetime.fromisoformat("2022-10-01T12:00")
-    end_date = datetime.fromisoformat("2022-10-15T00:00")
+    start_date = date.fromisoformat("2022-10-01")
+    end_date = date.fromisoformat("2022-10-15")
 
     value: datetime = fake.date_time_between(
         start_date=start_date,
@@ -461,12 +462,13 @@ def test_provider_date_time_between() -> None:
     # 计算时间的时区偏移量
     offset = tz.utcoffset(value)
     assert offset
+
     # 确认生成的时间日期的时区为东八区
     assert offset.seconds // 3600 == 8
 
     # 确认生成时间日期的范围
-    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要擅长 value 的时区
-    assert start_date <= value.replace(tzinfo=None) <= end_date
+    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要删除 value 的时区
+    assert start_date <= value.date() <= end_date
 
 
 def test_provider_date_time_between_dates() -> None:
@@ -521,7 +523,7 @@ def test_provider_date_time_between_dates() -> None:
     assert offset.seconds // 3600 == 8
 
     # 确认生成时间日期的范围
-    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要擅长 value 的时区
+    # 注意, start_time 和 end_time 均为设置时区, 比较时也需要删除 value 的时区
     assert datetime_start <= value.replace(tzinfo=None) <= datetime_end
 
 
@@ -706,3 +708,306 @@ def test_provider_day_of_week() -> None:
 
     # 确认返回的值在指定范围内
     assert 1 <= weeks.index(value) + 1 <= 7
+
+
+def test_provider_future_date() -> None:
+    """
+    获取从当天到 `end_date` 之间的随机日期, 其定义如下:
+
+    ```
+    future_date(
+        end_date: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "+30d",
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.date
+    ```
+
+    其中:
+    - `end_date` 参数用于设置日期限制, 获取的随机日期不能大于该时间
+    - `tzinfo`参数用于设置时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    today = date.today()
+
+    end_date = today + timedelta(days=100)
+
+    # 获取当前日期到 end_date 之间的随机日期
+    value = fake.future_date(end_date=end_date, tzinfo=zone)
+
+    # 确认获取的日期在指定范围内
+    assert today <= value <= end_date
+
+
+def test_provider_future_datetime() -> None:
+    """
+    获取当前到 `end_date` 之间的随机时间, 其定义如下:
+
+    ```
+    future_datetime(
+        end_date: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "+30d",
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `end_date` 参数用于设置日期限制, 获取的随机时间不能大于该时间
+    - `tzinfo`参数用于设置时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    now = zone.localize(datetime.now())
+
+    end_time = now + timedelta(days=100)
+
+    # 获取当前时间到 end_date 之间的随机时间
+    value = fake.future_datetime(end_date=end_time, tzinfo=zone)
+
+    # 确认获取的时间在指定范围内
+    assert now <= value <= end_time
+
+
+def test_provider_iso8601() -> None:
+    """
+    获取一个符合 iso8601 规范的时间字符串, 其定义如下:
+
+    ```
+    iso8601(
+        tzinfo: Optional[datetime.tzinfo] = None,
+        end_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None,
+        sep: str = "T",
+        timespec: str = "auto"
+    ) -> str
+    ```
+
+    其中:
+    - `tzinfo`参数用于设置时区
+    - `end_datetime` 参数用于设置日期限制, 获取的随机事件不能大于该事件
+    - `sep` 参数用于设置日期和时间之间的分割字符
+    - `timespec` 参数用于指定时间部分格式的说明, 包括: `"auto"`, `"hours"`,
+      `"minutes"`, `"seconds"`, `"milliseconds"` 和 `"microseconds"`
+
+    对于 `sep` 和 `timespec` 参数, 可以参考 `datetime.isoformat` 函数的说明
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    now = zone.localize(datetime.now())
+
+    end_time = now + timedelta(days=30)
+
+    value = fake.iso8601(
+        tzinfo=zone,
+        end_datetime=end_time,
+    )
+
+    assert isinstance(value, str)
+
+    # 确认获取的字符串符合 iso8601 格式
+    assert re.match(
+        r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$", value
+    )
+
+
+def test_provider_month() -> None:
+    """
+    产生随机的月份, 取值 `01`~`12`, 其定义如下:
+
+    ```
+    month() -> str
+    ```
+    """
+    all_month = {f"{m:0>2}" for m in range(1, 13)}
+
+    value = fake.month()
+
+    # 确认产生的月份正确
+    assert value in all_month
+
+
+def test_provider_month_name() -> None:
+    """
+    返回随机月份的名称, 其定义如下:
+
+    ```
+    month_name() -> str
+    ```
+    """
+    all_month = {
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    }
+
+    # 获取随机的月份名称
+    value = fake.month_name()
+
+    # 判断返回值正确
+    assert value in all_month
+
+
+def test_provider_past_date() -> None:
+    """
+    获取从 `start_date` 到当前日期之间的随机日期, 其定义如下:
+
+    ```
+    past_date(
+        start_date : Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "-30d",
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.date
+    ```
+
+    其中:
+    - `start_date ` 参数用于设置日期限制, 获取的随机日期不小于该时间
+    - `tzinfo`参数用于设置时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    today = date.today()
+
+    start_date = today - timedelta(days=100)
+
+    # 获取 start_date 到当前日期的随机日期
+    value = fake.past_date(start_date=start_date, tzinfo=zone)
+
+    # 确认获取的日期在指定范围内
+    assert start_date <= value <= today
+
+
+def test_provider_past_datetime() -> None:
+    """
+    获取从 `start_date` 到当前之间的随机时间, 其定义如下:
+
+    ```
+    past_datetime(
+        start_date: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "-30d",
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> datetime.datetime
+    ```
+
+    其中:
+    - `start_date` 参数用于设置日期限制, 获取的随机时间不小于该时间
+    - `tzinfo`参数用于设置时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+    now = zone.localize(datetime.now())
+
+    start_date = now - timedelta(days=100)
+
+    # 获取 start_date 到当前时间之间的随机时间
+    value = fake.past_datetime(start_date=start_date, tzinfo=zone)
+
+    # 确认获取的时间在指定范围内
+    assert start_date <= value <= now
+
+
+def test_provider_pytimezone() -> None:
+    """
+    产生一个随机的 timezone 对象, 可作为 `tzinfo` 参数用于 `datetime.datetime` 函数
+    或其它 fakers
+
+    ```
+    pytimezone(*args, **kwargs) -> Optional[datetime.tzinfo]
+    ```
+    """
+    value = fake.pytimezone()
+
+    # 确认返回结果为 dateutil.tz.tzfile 类型
+    assert isinstance(value, tzfile)
+
+
+def test_provider_time() -> None:
+    """
+    产生一个随机时间字符串 (默认为 24 小时制), 其定义如下:
+
+    ```
+    time(
+        pattern: str = "%H:%M:%S",
+        end_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None
+    ) -> str
+    ```
+
+    其中:
+    - `pattern` 参数, 定义时间字符串的格式
+    - `end_datetime` 参数, 定义随机时间字符串的下限
+    """
+    end_time = datetime.now() + timedelta(days=30)
+
+    # 获取一个日期字符串
+    value = fake.time(end_datetime=end_time)
+
+    # 确认返回值符合定义的格式
+    assert re.match(r"\d{2}:\d{2}:\d{2}", value)
+
+
+def test_provider_time_delta() -> None:
+    """
+    获取一个随机的 `datetime.timedelta` 对象
+
+    ```
+    time_delta(
+        end_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None
+    ) -> datetime.timedelta
+    ```
+
+    其中:
+    - `end_datetime` 参数, 定义时间的下限, 即获取的 `timedelta` 加上当前时间不能大于这个
+      参数值
+    """
+    end_time = datetime.now() + timedelta(days=30)
+
+    value = fake.time_delta(end_datetime=end_time)
+
+    # 确认返回值的类型
+    assert isinstance(value, timedelta)
+
+    # 确认返回值在规定范围内
+    assert datetime.now() + value <= end_time
