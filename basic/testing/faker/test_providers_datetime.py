@@ -1,6 +1,6 @@
 # 演示时间日期相关的测试用例提供者
 import re
-from datetime import date, datetime, time, timedelta, tzinfo
+from datetime import date, datetime, time, timedelta
 from typing import Iterable
 
 import pytz
