@@ -1,6 +1,7 @@
 # 演示时间日期相关的测试用例提供者
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, time, timedelta, tzinfo
+from typing import Iterable
 
 import pytz
 from dateutil.relativedelta import relativedelta
@@ -1011,3 +1012,187 @@ def test_provider_time_delta() -> None:
 
     # 确认返回值在规定范围内
     assert datetime.now() + value <= end_time
+
+
+def test_provider_time_object() -> None:
+    """
+    获取一个随机时间对象, 其定义如下:
+
+    ```
+    time_object(
+        end_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None
+    ) -> datetime.time
+    ```
+
+    其中:
+    - `end_datetime` 参数, 获取的随机时间不会大于这个时间. 但注意, 这个范围是一个时间日期的
+      上限, 但返回的结果是一个时间对象.
+    """
+    # 获取一个不小于当前时间 2 小时范围的时间对象
+    value = fake.time_object(
+        end_datetime="+2h",
+    )
+
+    assert isinstance(value, time)
+
+    # 由于 +2h 是在当期时间日期上加 2 小时, 所以比较时也要将返回的时间对象合并日期才能比较
+    # 将获取的时间对象加上当前日期, 合并为时间日期对象
+    value = datetime.combine(date.today(), value)
+
+    # 确认时间对象的范围
+    assert value <= (datetime.now() + timedelta(hours=2))
+
+
+def test_provider_time_series() -> None:
+    """
+    产生一个序列, 元素为 `(datetime, value)`, `datetime` 取值在 `start_date` 和
+    `end_date` 参数指定的时间范围内, `value` 是一个回调函数返回的值, 其定义如下:
+
+    ```
+    time_series(
+        start_date: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "-30d",
+        end_date: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int
+        ] = "now",
+        precision: Optional[float] = None,
+        distrib: Optional[Callable[[datetime.datetime], float]] = None,
+        tzinfo: Optional[datetime.tzinfo] = None
+    ) -> Iterator[Tuple[datetime.datetime, Any]]
+    ```
+
+    其中:
+    - `start_date` 参数表示产生时间序列的起始日期时间
+    - `end_date` 参数表示产生时间序列的结束时间日期
+    - `precision` 参数指定了产生日期时间序列的精度
+    - `distrib` 参数表示一个回调函数, 用于产生序列的第二个值
+    - `tzinfo` 参数表示一个时区
+    """
+    zone = pytz.timezone("Asia/Shanghai")
+
+    # 设定时间序列的起始时间
+    # 需要将毫秒部分去掉
+    start_date = (
+        zone.localize(datetime.now() - timedelta(days=30))
+        .replace(microsecond=0)
+    )
+
+    # 设定时间序列的结束时间
+    # 需要将毫秒部分去掉
+    end_date = (
+        zone.localize(datetime.now() + timedelta(days=10))
+        .replace(microsecond=0)
+    )
+
+    now = zone.localize(datetime.now())
+
+    # 产生一个日期时间序列
+    value = fake.time_series(
+        start_date=start_date,
+        end_date=end_date,
+        distrib=lambda d: (now - d).total_seconds(),  # tuple 第二项为当前时间和产
+                                                      # 生时间相差的秒数
+        tzinfo=zone,
+    )
+    assert isinstance(value, Iterable)
+
+    # 查看序列中的每个时间日期对象
+    for v in value:
+        assert len(v) == 2
+
+        # tuple 第一项为产生的日期时间, 确认这个时间的范围
+        assert start_date <= v[0] <= end_date
+
+        # tuple 第二项为当前日期时间和产生日期时间相差的秒数
+        assert (now - v[0]).total_seconds() == v[1]
+
+
+def test_provider_timezone() -> None:
+    """
+    获取一个随机的时区字符串, 例如: `"Indian/Maldives"`, `"America/Barbados"` 这样的
+    格式, 其定义如下:
+
+    ```
+    timezone() -> str
+    ```
+    """
+    value = fake.timezone()
+
+    # 确认获取的值表示一个时区
+    assert value in pytz.all_timezones_set
+
+
+def test_provider_unix_time() -> None:
+    """
+    产生一个随机的 unix 时间戳, 其定义如下:
+
+    ```
+    unix_time(
+        end_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None,
+        start_datetime: Union[
+            datetime.date,
+            datetime.datetime,
+            datetime.timedelta,
+            str,
+            int,
+            None
+        ] = None
+    ) -> int
+    ```
+
+    其中:
+    - `end_datetime` 参数表示产生时间戳的结束日期时间点
+    - `start_datetime` 参数表示产生时间戳的起始日期时间点
+    """
+    now = datetime.now()
+
+    start_datetime = now - timedelta(hours=1)
+    end_datetime = now + timedelta(hours=1)
+
+    # 产生一个在指定范围内的随机 unix 时间戳
+    value = fake.unix_time(
+        start_datetime=start_datetime,
+        end_datetime=end_datetime,
+    )
+
+    # 从 unix 时间戳创建时间日期对象
+    # 注意: unix 时间戳是 UTC 时间
+    value = datetime.utcfromtimestamp(value)
+
+    # 确认生成的 unix 时间戳在指定范围内
+    assert start_datetime <= value <= end_datetime
+
+
+def test_provider_year() -> None:
+    """
+    产生一个随机的年份, 其定义如下:
+
+    ```
+    year() -> str
+    ```
+    """
+    value = fake.year()
+    assert 1970 <= int(value) <= 9999
