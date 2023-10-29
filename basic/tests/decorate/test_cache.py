@@ -8,6 +8,7 @@ class TestCache:
     """
     测试 Cache 类
     """
+
     def setup_method(self) -> None:
         """
         每个测试开始前, 生成缓存对象

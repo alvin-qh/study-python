@@ -159,7 +159,7 @@ def test_event_queue() -> None:
         """
         n: int = 0
         # 持续循环, 直到传递 0 或超时
-        while 1:
+        while True:
             # 从入参消息队列获取一个整数
             n = in_que.get(timeout=1)
             if n <= 0:
@@ -218,7 +218,7 @@ def test_pipe() -> None:
         """
         # 持续循环, 直到传递 0 或超时
         n: int = 0
-        while 1:
+        while True:
             # 从管道中读取一个数, 判断其是否为质数
             n = child_conn.recv()
             if n <= 0:

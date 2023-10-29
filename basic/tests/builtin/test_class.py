@@ -424,7 +424,7 @@ def test_create_dynamic_class() -> None:
         "A",  # 类型名称
         (object,),  # 类型的父类
         {
-            "__init__":  A__init__,  # 类型的构造方法
+            "__init__": A__init__,  # 类型的构造方法
             "value": 0,  # 类型的属性
             "work": lambda self, x: self.value + x,  # 类型的方法
         }
@@ -432,7 +432,7 @@ def test_create_dynamic_class() -> None:
 
     # 通过类型
     a = A(100)  # type: ignore
-    assert type(a) == A
+    assert isinstance(a, A)
     assert a.value == 100  # type: ignore
 
     a.value = 10  # type: ignore
@@ -478,7 +478,7 @@ def test_class_slot() -> None:
 
     c2 = C2()
 
-    c2.name = "Alvin"  # type: ignore
+    c2.name = "Alvin"
     assert c2.name == "Alvin"  # type: ignore
 
     c2.age = 41  # type: ignore

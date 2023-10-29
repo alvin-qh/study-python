@@ -436,7 +436,7 @@ def test_strategies_floats(n: float) -> None:
 
 
 @given(f=st.fractions(
-    min_value=1/2,  # 假设值所允许的最小值
+    min_value=1 / 2,  # 假设值所允许的最小值
     max_value=1,  # 假设值所允许的最大值
     max_denominator=10,  # 假设值允许的最大分母值
 ))
@@ -459,7 +459,7 @@ def test_strategies_fractions(f: Fraction) -> None:
     assert isinstance(f, Fraction)
 
     # 确认假设值的范围
-    assert 1/2 <= float(f) <= 1
+    assert 1 / 2 <= float(f) <= 1
 
     # 确认假设值的最大分母值范围
     assert f.denominator <= 10
@@ -938,14 +938,14 @@ def test_strategies_shared() -> None:
     s = st.integers(min_value=1)
 
     v1 = st.shared(base=s)
-    assert type(s.example()) == type(v1.example())  # noqa
+    assert isinstance(s.example(), type(v1.example()))  # noqa
 
     v2 = st.shared(base=s)
-    assert type(v1.example()) == type(v2.example())  # noqa
+    assert isinstance(v1.example(), type(v2.example()))  # noqa
 
     v1 = st.shared(base=s, key="h1")
     v2 = st.shared(base=s, key="hi")
-    assert type(v1.example()) == type(v2.example())  # noqa
+    assert isinstance(v1.example(), type(v2.example()))  # noqa
 
 
 @given(

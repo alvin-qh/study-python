@@ -47,7 +47,7 @@ def test_str_slice() -> None:
     # 将首位, 末尾位置加上后, 产生 2 元组序列
     # 相当于 zip([0, 2, 5, 9], [2, 5, 9, 10])
     slices = list(zip([0] + cuts, cuts + [len(s)]))
-    assert slices == [(0, 2), (2, 5),  (5, 9), (9, 10)]
+    assert slices == [(0, 2), (2, 5), (5, 9), (9, 10)]
     # 进行切片
     fivers = [s[i:j] for i, j in slices]
     assert fivers == ["一二", "三四五", "六七八九", "零"]

@@ -95,7 +95,7 @@ def test_cancel_schedule() -> None:
     schedule2.enter(1, 0, cancel_schedule_event, kwargs={"event_": event})
 
     # 执行第二个计划对象
-    while 1:
+    while True:
         # 非阻塞执行, 返回下一个对象执行的时间
         next_ev = schedule2.run(blocking=False)
         # 返回 None 表示任务列表中已经无可执行任务

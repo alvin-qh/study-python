@@ -632,7 +632,7 @@ def test_none_async_call_in_event_loop() -> None:
         loop.call_at(now + 3, sync_func, 5)
 
         # 循环异步检查是否可以结束
-        while 1:
+        while True:
             if await is_finished():
                 break
 

@@ -24,6 +24,6 @@
 
 # travel "$arg"
 
-set -ex;
+set -e;
 pdm run mypy src
-pdm run flake8 src  
+pdm run autopep8 src/**/*.py tests/**/*.py
