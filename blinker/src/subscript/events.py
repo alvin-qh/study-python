@@ -4,7 +4,7 @@ from subscript.signals import (AnonymousSignals, anonymous_signals,
                                on_initialized)
 
 
-def handle_initialized_event(sender: Any, **kwargs) -> str:
+def handle_initialized_event(sender: Any, **kwargs: Any) -> str:
     """
     初始化信号的事件处理函数
 
@@ -22,7 +22,7 @@ on_initialized.connect(handle_initialized_event)
 
 
 @on_initialized.connect
-def handle_initialized_again_event(sender: Any, **kwargs) -> str:
+def handle_initialized_again_event(sender: Any, **kwargs: Any) -> str:
     """
     通过 @on_initialized.connect 装饰器可以同时完成事件处理函数的定义和与指定事件的关联
 
@@ -36,7 +36,7 @@ def handle_initialized_again_event(sender: Any, **kwargs) -> str:
 
 
 @anonymous_signals.on_ready.connect
-def handle_ready_event(sender: AnonymousSignals, **kwargs) -> str:
+def handle_ready_event(sender: AnonymousSignals, **kwargs: Any) -> str:
     """
     定义 AnonymousSignals::on_ready 信号的事件处理函数
 
@@ -50,7 +50,7 @@ def handle_ready_event(sender: AnonymousSignals, **kwargs) -> str:
 
 
 @anonymous_signals.on_complete.connect
-def handle_complete_event(sender: AnonymousSignals, **kwargs) -> str:
+def handle_complete_event(sender: AnonymousSignals, **kwargs: Any) -> str:
     """
     定义 AnonymousSignals::on_ready 信号的事件处理函数
 

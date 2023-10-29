@@ -2,10 +2,23 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default"]
+groups = ["default", "lint", "test"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:f5d9730d9728fbaafbc78eff0306aca55a12e2f7f82698058700137c861e3f38"
+content_hash = "sha256:9b9d1fd786c7d1352cba3df34586371513187baeb397ad09e07191039b9facb6"
+
+[[package]]
+name = "autopep8"
+version = "2.0.4"
+requires_python = ">=3.6"
+summary = "A tool that automatically formats Python code to conform to the PEP 8 style guide"
+dependencies = [
+    "pycodestyle>=2.10.0",
+]
+files = [
+    {file = "autopep8-2.0.4-py2.py3-none-any.whl", hash = "sha256:067959ca4a07b24dbd5345efa8325f5f58da4298dab0dde0443d5ed765de80cb"},
+    {file = "autopep8-2.0.4.tar.gz", hash = "sha256:2913064abd97b3419d1cc83ea71f042cb821f87e45b9c88cad5ad3c4ea87fe0c"},
+]
 
 [[package]]
 name = "blinker"

@@ -31,7 +31,7 @@ class AnonymousSignals:
     on_ready = Signal()
     on_complete = Signal()
 
-    def go(self, fn: Callable) -> Tuple[Any, Any, Any]:
+    def go(self, fn: Callable[..., Any]) -> Tuple[Any, Any, Any]:
         """
         演示匿名信号的调用
         会在回调函数调用前和调用后, 发送两次信号, 引发对应的事件处理程序
