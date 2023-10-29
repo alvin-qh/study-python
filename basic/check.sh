@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e;
 
 # function travel() {
 #     for FILE in $1
@@ -24,6 +25,5 @@
 
 # travel "$arg"
 
-set -e;
 pdm run mypy src
-pdm run autopep8 src/**/*.py tests/**/*.py
+pdm run autopep8 --in-place src/**/*.py
