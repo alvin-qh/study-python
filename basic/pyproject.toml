@@ -10,24 +10,11 @@ authors = [{ name = 'Alvin', email = 'quhao317@163.com' }]
 
 # 依赖包
 dependencies = [
-    'pytest',
-    'pytest-asyncio',
-    'pytest-rerunfailures',
-    'pytest-repeat',
-    'pytest-assume',
-    'pytest-xdist',
-    'sortedcontainers',
-    'python-dateutil',
-    'types-python-dateutil',
     'pytz',
     'types-pytz',
     'atomics',
     'werkzeug',
     'wrapt',
-    'hypothesis',
-    'faker',
-    'mypy',
-    'autopep8',
 ]
 
 # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
@@ -38,6 +25,24 @@ readme = 'README.md'
 
 # 指定软件许可协议
 license = { text = 'MIT' }
+
+# PDM 工具提供的 dev 模式依赖包组, 通过 pdm update -d / pdm install -d 进行安装
+# [tool.pdm.dev-dependencies]
+# dev = ["pytest", "mypy", "autopep8"]
+
+# PEP 517 规范提供的可选模式依赖包组, 通过 pdm update -G <group-name> / pdm install -G <group-name> 进行安装
+[project.optional-dependencies]
+lint = ["mypy", "autopep8"]
+test = [
+    "pytest",
+    "pytest-asyncio",
+    "pytest-rerunfailures",
+    "pytest-repeat",
+    "pytest-assume",
+    "pytest-xdist",
+    "hypothesis",
+    "faker",
+]
 
 [build-system]
 # 定义打包工具链
