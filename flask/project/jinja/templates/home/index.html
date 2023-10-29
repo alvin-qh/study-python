@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+
+{% block title %}
+Jinja Demo
+{% endblock %}
+
+{% block header %}
+  <link rel="stylesheet" href="{{ assets.css('home.css') }}">
+{% endblock %}
+
+{% block footer %}
+  <script type="text/javascript" src="{{ assets.js('home.js') }}"></script>
+  <script>home.index()</script>
+{% endblock %}
+
+{% block content %}
+  <div class="title py-4 text-center">
+    <img src="{{ assets.image('logo.png') }}" class="logo">
+    <h2><a href="{{ url('') }}">Jinja2 Demo<a/></h2>
+    <p>This demo is for flask with jinja2</p>
+  </div>
+  <div class="content text-center">
+    <div class="timer">${ currentTime }</div>
+    <name-input class="widget-name-input" text="Search" v-model="searchResults"></name-input>
+    <search-result class="search-results" :results="searchResults"></search-result>
+  </div>
+{% endblock %}

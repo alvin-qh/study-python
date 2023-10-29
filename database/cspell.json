@@ -1,0 +1,30 @@
+{
+    "version": "0.2",
+    "language": "en",
+    "words": [
+        "autopep",
+        "configurator",
+        "dbutils",
+        "disturl",
+        "gname",
+        "Inno",
+        "jsonify",
+        "jupyterlab",
+        "labextension",
+        "lastrowid",
+        "lckr",
+        "nbextensions",
+        "percona",
+        "pyenv",
+        "pymysql",
+        "repr",
+        "ryantam",
+        "serverextension",
+        "sqlalchemy",
+        "uroot",
+        "variableinspector",
+        "venv",
+        "virtualenv"
+    ],
+    "flagWords": []
+}

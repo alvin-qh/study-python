@@ -1,0 +1,71 @@
+# Translations template for PROJECT.
+# Copyright (C) 2021 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2021.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2021-04-02 00:04+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: app.py:48
+msgid "zh_CN"
+msgstr ""
+
+#: app.py:48
+msgid "en_US"
+msgstr ""
+
+#: templates/index.html:17
+msgid "Current language is:"
+msgstr ""
+
+#: templates/index.html:31
+msgid "Spring Goeth All in White"
+msgstr ""
+
+#: templates/index.html:33
+msgid "Robert Bridges"
+msgstr ""
+
+#: templates/index.html:36
+msgid "Spring goeth all in white,"
+msgstr ""
+
+#: templates/index.html:37
+msgid "crowned with milk-white may;"
+msgstr ""
+
+#: templates/index.html:38
+msgid "In fleecy flocks of light,"
+msgstr ""
+
+#: templates/index.html:39
+msgid "o'er heaven the white clouds stray;"
+msgstr ""
+
+#: templates/index.html:40
+msgid "White butterflies in the air;"
+msgstr ""
+
+#: templates/index.html:41
+msgid "White daisies prank the ground;"
+msgstr ""
+
+#: templates/index.html:42
+msgid "The cherry and hoary pear,"
+msgstr ""
+
+#: templates/index.html:43
+msgid "Scatter their snow around."
+msgstr ""
+

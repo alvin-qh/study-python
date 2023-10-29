@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-type" content="text/html" charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="{{ assets.css('main.css') }}"
+    />
+    <title>Request Demo</title>
+  </head>
+  <body>
+    <div class="main">
+      <form class="search" method="post" action="/">
+        <label>
+          Search:
+          <input type="text" name="name" value="{{ name | default('') }}" />
+          <button type="button" class="search-button">Search</button>
+          <button type="submit">Add</button>
+        </label>
+      </form>
+      {% if results %}
+      <div class="results">
+        <h4>Results:</h4>
+        <table>
+          {% for r in results %}
+          <tr>
+            <td>
+              <span class="content">{{ r }}</span>
+              <a href="#" class="close">×</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+      {% endif %}
+    </div>
+    <form class="change" method="post" action="/?__method=PUT">
+      <input type="hidden" name="old_value" value="" />
+      <input type="hidden" name="new_value" value="" />
+    </form>
+    <form
+      class="delete"
+      method="post"
+      action="/?__method=DELETE&value={0}"
+    ></form>
+    <script src="{{ assets.js('main.js') }}"></script>
+  </body>
+</html>

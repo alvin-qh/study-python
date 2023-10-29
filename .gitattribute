@@ -1,0 +1,13 @@
+*		text=auto
+*.txt 	text eol=crlf
+
+*.jpg 	binary
+*.jpeg 	binary
+*.git 	binary
+*.png 	binary
+*.bmp 	binary
+*.ico 	binary
+*.mo    binary
+*.dat   binary
+*.webp  binary
+

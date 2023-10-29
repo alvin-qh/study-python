@@ -1,0 +1,35 @@
+[project]
+name = "study_python_blinker"
+version = "1.0.0"
+authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+dependencies = ["blinker", "pytest", "mypy>=1.6.1", "pycodestyle>=2.11.1"]
+requires-python = ">=3.11"
+readme = "README.md"
+license = { text = "MIT" }
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+# warn_unreachable = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = ['^.venv\.py$', '^.test\.py$']
+
+[tool.flake8]
+ignore = ['E231', 'E241']
+per-file-ignores = ['__init__.py:F401']
+max-line-length = 120
+count = true
+
+# 定义 pytest 配置
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-s"

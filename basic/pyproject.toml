@@ -1,0 +1,83 @@
+[project]
+# 项目名称 (必填项)
+name = 'study_python_basic'
+
+# 项目版本号
+version = '1.0'
+
+# 项目作者 (可选)
+authors = [{ name = 'Alvin', email = 'quhao317@163.com' }]
+
+# 依赖包
+dependencies = [
+    'pytest',
+    'pytest-asyncio',
+    'pytest-rerunfailures',
+    'pytest-repeat',
+    'pytest-assume',
+    'pytest-xdist',
+    'sortedcontainers',
+    'python-dateutil',
+    'types-python-dateutil',
+    'pytz',
+    'types-pytz',
+    'atomics',
+    'werkzeug',
+    'wrapt',
+    'hypothesis',
+    'faker',
+    'mypy',
+    'autopep8',
+]
+
+# 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
+requires-python = '>=3.11'
+
+# 指定说明文件
+readme = 'README.md'
+
+# 指定软件许可协议
+license = { text = 'MIT' }
+
+[build-system]
+# 定义打包工具链
+requires = ['pdm-backend']
+build-backend = 'pdm.backend'
+
+# 定义 mypy 配置
+[tool.mypy]
+python_version = '3.11'
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+# warn_unreachable = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = ['^.venv\.py$', '^.test\.py$']
+
+[tool.flake8]
+ignore = ['E231', 'E241']
+per-file-ignores = ['__init__.py:F401']
+max-line-length = 120
+count = true
+exclude = ['__pycache__', '.history', '.venv', '.pytest_cache', '.mypy_cache', '.hypothesis', '.vscode']
+
+# 定义 pytest 配置
+[tool.pytest.ini_options]
+# 测试所在路径
+testpaths = ['tests']
+
+# 指定 Python 路径
+pythonpath = ['.']
+
+# 自定义测试标识, 取消则对应标识的测试不执行
+markers = [
+    'webtest', # 测试标记
+]
+
+# -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
+addopts = '-vs'
+
+# 忽略指定的警告信息
+filterwarnings = ['ignore::hypothesis.errors.NonInteractiveExampleWarning']

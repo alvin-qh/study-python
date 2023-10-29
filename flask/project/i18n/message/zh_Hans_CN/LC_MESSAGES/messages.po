@@ -1,0 +1,72 @@
+# Chinese (Simplified, China) translations for PROJECT.
+# Copyright (C) 2018 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2018.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2019-10-12 14:12+0800\n"
+"PO-Revision-Date: 2018-09-23 13:16+0800\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_Hans_CN\n"
+"Language-Team: zh_Hans_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.7.0\n"
+
+#: app.py:48
+msgid "zh_CN"
+msgstr "简体中文"
+
+#: app.py:48
+msgid "en_US"
+msgstr "英文"
+
+#: templates/index.html:17
+msgid "Current language is:"
+msgstr "当前语言："
+
+#: templates/index.html:31
+msgid "Spring Goeth All in White"
+msgstr "春之女神着素装"
+
+#: templates/index.html:33
+msgid "Robert Bridges"
+msgstr "罗伯特·布里季"
+
+#: templates/index.html:36
+msgid "Spring goeth all in white,"
+msgstr "春之女神着素装，"
+
+#: templates/index.html:37
+msgid "crowned with milk-white may;"
+msgstr "山楂花冠乳白光；"
+
+#: templates/index.html:38
+msgid "In fleecy flocks of light,"
+msgstr "天上分明一群羊，"
+
+#: templates/index.html:39
+msgid "o'er heaven the white clouds stray;"
+msgstr "白云朵朵自来往；"
+
+#: templates/index.html:40
+msgid "White butterflies in the air;"
+msgstr "粉蝶空中时蹁跹；"
+
+#: templates/index.html:41
+msgid "White daisies prank the ground;"
+msgstr "廷命菊花饰郊原；"
+
+#: templates/index.html:42
+msgid "The cherry and hoary pear,"
+msgstr "樱桃梨树共争艳，"
+
+#: templates/index.html:43
+msgid "Scatter their snow around."
+msgstr "四处非花如雪片。"
+

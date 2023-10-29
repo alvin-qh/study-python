@@ -1,0 +1,53 @@
+<!--suppress HtmlUnknownTarget -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="content-type" content="text/html" charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1"
+    />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <link rel="stylesheet" href="{{ assets.css('common.css') }}" />
+
+    <title>Group Edit</title>
+  </head>
+  <body>
+    <div role="main">
+      <header>
+        <div class="mt-1 ml-2 text-small">
+          <a href="{{ back_url }}">&larr; Back</a>
+        </div>
+        <div class="title text-center py-4">Edit Groups</div>
+      </header>
+      <main class="container">
+        <ul class="groups">
+          {% for group in groups %}
+          <li>
+            {{ group.name }}
+            <a href="#" class="close" data-name="{{ group.name }}">×</a>
+          </li>
+          {% endfor %}
+        </ul>
+
+        <form method="post" action="/groups?__back={{ back_url }}">
+          <div class="row inline-input">
+            <label class="label">{{ form.name.label }}: </label>
+            <div class="field">{{ form.name }}</div>
+            {% if 'name' in form.errors %}
+            <div class="error">{{ form.errors['name'][0] }}</div>
+            {% endif %}
+          </div>
+          <div class="actions">
+            <button class="btn">Add</button>
+          </div>
+        </form>
+      </main>
+    </div>
+    <form class="delete-form" method="post"></form>
+    <script src="{{ assets.js('delete-group.js') }}"></script>
+  </body>
+</html>

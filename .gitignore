@@ -1,0 +1,12 @@
+.DS_Store
+.vscode
+.idea
+.coverage
+.cache
+.pytest_cache
+.mypy_cache
+__pycache__
+*.log
+.virtual_documents
+.history
+.ipynb_checkpoints

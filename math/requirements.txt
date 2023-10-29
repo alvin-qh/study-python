@@ -1,0 +1,9 @@
+ipykernel
+matplotlib
+data-science-types
+numpy
+pygame
+pyopengl
+
+mypy
+pytest

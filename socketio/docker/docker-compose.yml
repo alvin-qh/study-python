@@ -1,0 +1,26 @@
+version: "3.9"
+
+services:
+  redis:
+    image: redis
+    container_name: redis
+    hostname: redis
+    volumes:
+      - ./conf/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis_data:/data
+    command: redis-server /usr/local/etc/redis/redis.conf
+    networks:
+      - redis_network
+    ports:
+      - 6379:6379
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 256M
+        reservations:
+          memory: 128M
+volumes:
+  redis_data:
+networks:
+  redis_network:
