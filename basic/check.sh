@@ -25,5 +25,11 @@ set -e;
 
 # travel "$arg"
 
+echo "Check type hits..."
 pdm run mypy src
-pdm run autopep8 --in-place src/**/*.py
+
+echo "Check code style in 'src'..."
+pdm run autopep8 src/**/*.py
+
+echo "Check code style in 'tests'..."
+pdm run autopep8 tests/**/*.py
