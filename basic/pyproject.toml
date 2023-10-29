@@ -49,6 +49,18 @@ test = [
 requires = ['pdm-backend']
 build-backend = 'pdm.backend'
 
+# 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
+[tool.pdm.scripts]
+check = { composite = ["mypy src", "autopep8 src tests"] }
+test = "pytest -v -s tests"
+clean = { composite = [
+    "rm -rf .mypy_cache",
+    "rm -rf .pytest_cache",
+    "rm -rf dist",
+    'find src -type d -name "__pycache__" -exec rm -rf {} +',
+    'find tests -type d -name "__pycache__" -exec rm -rf {} +',
+] }
+
 # 定义 mypy 配置
 [tool.mypy]
 python_version = '3.11'

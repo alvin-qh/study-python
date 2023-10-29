@@ -1,25 +1,15 @@
 import os
 import subprocess
 import time
-from typing import Generator, List, Union
+from typing import Iterator, Optional
 
 import click
-
-
-@click.group()
-def cli():
-    """
-    演示 click 框架命令行功能
-
-    第一个 @click.group() 定义了根命令组, 所有的命令和子命令组需要加入到该命令组中
-    """
-
 
 # 设置语言列表, 用于 type=click.Choice 类型的参数选项
 LANGUAGE_SET = ["en", "zh"]
 
 
-def _generate_output() -> Generator[str, None, None]:
+def _generate_output() -> Iterator[str]:
     """
     产生 100 行输出, 用于测试分页输出
 
@@ -30,7 +20,7 @@ def _generate_output() -> Generator[str, None, None]:
         yield "Line {}\n".format(i)
 
 
-def _get_commit_message() -> Union[List[str], None]:
+def _get_commit_message() -> Optional[str]:
     """
     获取一条提交信息
 
@@ -39,14 +29,17 @@ def _get_commit_message() -> Union[List[str], None]:
     """
     marker = "# Everything below is ignored\n"
     message = click.edit("\n\n" + marker)
-    if message is not None:
-        return message.split(marker, 1)[0].rstrip("\n")
+
+    if message is None:
+        return None
+
+    return message.split(marker, 1)[0].rstrip("\n")
 
 
-DEMO_FILE_NAME = "demo.txt"
+click_FILE_NAME = "click.txt"
 
 
-@click.command("demo")
+@click.command("click")
 @click.option("-n", "--name", "name",
               type=click.STRING, required=True,
               help="Name of people")
@@ -59,11 +52,11 @@ DEMO_FILE_NAME = "demo.txt"
               help="Number between 1 and 20, default is 10",
               default=10)
 @click.argument("color", type=click.STRING)
-def demo(name: str, lang: str, count: int, color: str) -> None:
+def cmd_click(name: str, lang: str, count: int, color: str) -> None:
     """
-    demo 命令, 演示 click 命令的基本使用
+    click 命令, 演示 click 命令的基本使用
 
-    通过一组 decrotor 可以定义该命令的“选项”和“参数”：
+    通过一组 decorator 可以定义该命令的"选项"和"参数":
 
     - @click.option, 定义命令的选项, 包括:
         - 短名称, 长名称
@@ -85,6 +78,7 @@ def demo(name: str, lang: str, count: int, color: str) -> None:
     """
     # 清除屏幕
     click.clear()
+
     # click.echo 输出文本, click.style 用于为部分字符增加样式（前景色、背景色）
     click.echo(f"* name is \"{click.style(name, fg='red')}\"")
     click.echo(f"* language is \"{click.style(lang, bg='blue')}\"")
@@ -107,18 +101,18 @@ def demo(name: str, lang: str, count: int, color: str) -> None:
     _get_commit_message()
     click.echo(f"Your comment is: \"{_get_commit_message()}\"")
 
-    # 启动编辑器, 编辑名为 demo.txt 文件的内容
-    click.edit(filename=DEMO_FILE_NAME)
+    # 启动编辑器, 编辑名为 click.txt 文件的内容
+    click.edit(filename=click_FILE_NAME)
 
     # 输出上一步录入的内容
-    if os.path.exists(DEMO_FILE_NAME):
+    if os.path.exists(click_FILE_NAME):
         output = subprocess.run(
-            ["cat", DEMO_FILE_NAME],
+            ["cat", click_FILE_NAME],
             check=True,
             capture_output=True,
         ).stdout.decode(encoding="utf-8")
 
-        click.echo(f"File content of \"{DEMO_FILE_NAME}\" file is: {output}")
+        click.echo(f"File content of \"{click_FILE_NAME}\" file is: {output}")
 
     # 输出一个进度条
     max_ = [n for n in range(100)]
@@ -127,7 +121,7 @@ def demo(name: str, lang: str, count: int, color: str) -> None:
             time.sleep(0.01)
 
     n = 50
-    with click.progressbar(length=100, label="Please waiting...") as bar:
+    with click.progressbar(max_, length=100, label="Please waiting...") as bar:
         while n <= 100:
             time.sleep(1)
             # 更新进度条进度
@@ -135,8 +129,18 @@ def demo(name: str, lang: str, count: int, color: str) -> None:
             n += n
 
 
-# 将 demo 命令添加到分组中
-cli.add_command(demo)
+@click.group()
+def cli() -> None:
+    """
+    演示 click 框架命令行功能
 
-if __name__ == "__main__":
+    第一个 @click.group() 定义了根命令组, 所有的命令和子命令组需要加入到该命令组中
+    """
+
+
+# 将 click 命令添加到分组中
+cli.add_command(cmd_click)
+
+
+def main() -> None:
     cli()
