@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Any, Dict
+from typing import Any, Dict, List
 
 from pymysql import Connection
 
@@ -15,7 +15,8 @@ def init_tables(conn: Connection) -> None:
         c.execute("DROP TABLE IF EXISTS `core_users`")
 
         # 创建 "core_users" 数据表
-        c.execute("""
+        c.execute(
+            r"""
             CREATE TABLE `core_users` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `id_num` VARCHAR(50) NOT NULL,
@@ -23,14 +24,34 @@ def init_tables(conn: Connection) -> None:
                 `gender` CHAR(1) NOT NULL,
                 `birthday` DATE DEFAULT NULL,
                 `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP(),
-                `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP() ON UPDATE CURRENT_TIMESTAMP(),
+                `updated_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP()
+                             ON UPDATE CURRENT_TIMESTAMP(),
                 PRIMARY KEY (`id`),
                 UNIQUE KEY `ux_id_num` (`id_num`),
                 KEY `ix_name` (`name`)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;""")
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            """
+        )
 
 
-def insert_user(conn: Connection, id_num: str, name: str, gender: str, birthday: date) -> int:
+def get_all_tables(conn: Connection) -> List[str]:
+    """
+    获取数据库中所有的表
+
+    Returns:
+        List[str]: 数据库中表名称列表
+    """
+    with conn.cursor() as c:
+        # 获取所有的数据表
+        c.execute(r"SHOW TABLES")
+        rows = c.fetchall()
+
+    return [val for row in rows for val in row.values()] if rows else []
+
+
+def insert_user(
+    conn: Connection, id_num: str, name: str, gender: str, birthday: date
+) -> int:
     """
     插入用户数据
 
@@ -45,7 +66,10 @@ def insert_user(conn: Connection, id_num: str, name: str, gender: str, birthday:
         int: 数据表主键 ID
     """
     # 设置 SQL 模板
-    sql = r"INSERT INTO `core_users` (`id_num`, `name`, `gender`, `birthday`) VALUES (%s, %s, %s, %s)"
+    sql = (
+        r"INSERT INTO `core_users`"
+        r"(`id_num`, `name`, `gender`, `birthday`) VALUES (%s, %s, %s, %s)"
+    )
 
     with conn.cursor() as c:
         # 执行 SQL 语句
@@ -73,7 +97,9 @@ def get_user(conn: Connection, id_: int) -> Dict[str, Any]:
         return c.fetchone()
 
 
-def update_user(conn: Connection, id_: int, id_num: str, name: str, gender: str, birthday: date) -> int:
+def update_user(
+    conn: Connection, id_: int, id_num: str, name: str, gender: str, birthday: date
+) -> int:
     """
     更新用户信息
 
@@ -88,7 +114,11 @@ def update_user(conn: Connection, id_: int, id_num: str, name: str, gender: str,
     Returns:
         int: 受影响的行数, 保持为 1
     """
-    sql = r"UPDATE `core_users` SET `id_num` = %s, `name` = %s, `gender` = %s, `birthday` = %s WHERE `id` = %s"
+    sql = (
+        r"UPDATE `core_users` "
+        r"SET `id_num` = %s, `name` = %s, `gender` = %s, `birthday` = %s "
+        r"WHERE `id` = %s"
+    )
 
     with conn.cursor() as c:
         return c.execute(sql, (id_num, name, gender, birthday, id_))

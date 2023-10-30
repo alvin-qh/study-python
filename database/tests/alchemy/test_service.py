@@ -1,10 +1,15 @@
 from datetime import date
 
-from sqlalchemy_ import initialize_tables, session
-from sqlalchemy_.service import (add_user_into_group, create_group,
-                                 create_user, get_group, get_user,
-                                 get_user_group_with_user_and_group,
-                                 update_user)
+from alchemy import initialize_tables, session
+from alchemy.service import (
+    add_user_into_group,
+    create_group,
+    create_user,
+    get_group,
+    get_user,
+    get_user_group_with_user_and_group,
+    update_user,
+)
 
 
 def setup_function() -> None:
@@ -157,8 +162,8 @@ def test_join_user_and_group() -> None:
     assert user_group.group_id == group.id
 
     # 联合查询, 同时获取组关系, 用户对象和组对象
-    found_user_group, found_user, found_group = (
-        get_user_group_with_user_and_group(user_group.id)
+    found_user_group, found_user, found_group = get_user_group_with_user_and_group(
+        user_group.id
     )
     assert found_user_group == user_group
     assert found_user == user

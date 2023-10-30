@@ -1,10 +1,9 @@
 from datetime import date
 from typing import Optional, Tuple
 
-from sqlalchemy import and_, orm
+from sqlalchemy import and_, orm, select
 
-from . import session
-from .model import Group, User, UserGroup
+from .model import Group, User, UserGroup, session
 
 
 def create_user(id_num: str, name: str, gender: str, birthday: date) -> User:
@@ -37,10 +36,12 @@ def get_user(id_: int) -> Optional[User]:
 
     select * from core_user where id = id_
     """
-    return session.query(User).filter(User.id == id_).first()
+    return session.scalars(select(User).where(User.id == id_)).one()
 
 
-def update_user(id_: int, *, id_num: str, name: str, gender: str, birthday: date) -> Optional[User]:
+def update_user(
+    id_: int, *, id_num: str, name: str, gender: str, birthday: date
+) -> Optional[User]:
     """
     根据 ID 更新用户对象
 
@@ -54,7 +55,7 @@ def update_user(id_: int, *, id_num: str, name: str, gender: str, birthday: date
     Returns:
         User: 用户实体对象
     """
-    user = session.query(User).filter(User.id == id_).one()
+    user = session.scalars(select(User).where(User.id == id_)).one()
     if not user:
         return None
 
@@ -111,11 +112,13 @@ def add_user_into_group(user_id: int, group_id: int) -> UserGroup:
     Returns:
         UserGroup: 用户组关系对象
     """
-
     # 判断用户是否已经在组中
-    user_group = session.query(UserGroup).filter(
-        and_(UserGroup.user_id == user_id, UserGroup.group_id == group_id),
+    user_group = session.scalars(
+        select(UserGroup)
+        .where(UserGroup.user_id == user_id)
+        .where(UserGroup.group_id == group_id)
     ).first()
+
     if user_group:
         return user_group
 
@@ -159,8 +162,8 @@ def get_user_group_with_user_and_group(id_: int) -> Tuple[UserGroup, User, Group
     Returns:
         Tuple[UserGroup, User, Group]: 同时返回三个实体对象
     """
-    u = orm.aliased(User, name='u')
-    g = orm.aliased(Group, name='g')
+    u = orm.aliased(User, name="u")
+    g = orm.aliased(Group, name="g")
 
     return (
         # 这里同时查询了三个实体类型, 所以返回值的每一行包含这三个结果

@@ -1,23 +1,37 @@
-version: "3"
+version: "3.9"
 services:
   percona:
     image: percona:8
     container_name: percona
     restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: root
+    privileged: true
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 256M
+        reservations:
+          memory: 100M
+    env_file:
+      - ./env/percona.env
     ports:
       - 3306:3306
     volumes:
-      - percona_data:/var/lib/mysql
+      - ./conf/default.cnf:/etc/my.cnf.d/default.cnf:ro
+      - ./sql/initialize.sql:/docker-entrypoint-initdb.d/initialize.sql:ro
       - ./log:/var/log/mysql
-      - ./my.cnf:/etc/my.cnf:ro
+      - percona_data:/var/lib/mysql
     networks:
       - percona_network
 networks:
   percona_network:
 volumes:
   percona_data:
-    driver_opts:
-      type: tmpfs
-      device: tmpfs

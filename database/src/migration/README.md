@@ -15,7 +15,7 @@ SQLAlchemy
 指定目录，生成 Alembic 配置内容
 
 ```bash
-$ alembic init <dir>
+alembic init <dir>
 ```
 
 上述命令会在目标目录中的 `scripts` 目录下，创建如下内容
@@ -38,7 +38,7 @@ sqlalchemy.url = mysql+pymysql://<user>:<password>:@localhost/<database>
 如果非要使用其它 `.ini` 文件，则需要通过 `-c` 选项指定:
 
 ```bash
-$ alembic -c test.ini upgrade head
+alembic -c test.ini upgrade head
 ```
 
 ## 2. 使用
@@ -46,30 +46,30 @@ $ alembic -c test.ini upgrade head
 将数据库更新/恢复到指定版本的脚本
 
 ```bash
-$ alembic upgrade <Revision ID>
-$ alembic downgrade <Revision ID>
+alembic upgrade <Revision ID>
+alembic downgrade <Revision ID>
 ```
 
 将数据库更新到最新版本
 
 ```bash
-$ alembic upgrade head
+alembic upgrade head
 ```
 
 将数据库恢复到最初版本
 
 ```bash
-$ alembic downgrade base
+alembic downgrade base
 ```
 
 查看数据库的当前版本
 
 ```bash
-$ alembic current
+alembic current
 ```
 
 查看数据库的更新历史
 
 ```bash
-$ alembic history
+alembic history
 ```

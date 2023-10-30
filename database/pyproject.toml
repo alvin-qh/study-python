@@ -1,8 +1,8 @@
 [project]
-name = "study_python_click"
+name = "study_python_database"
 version = "1.0.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
-dependencies = ["click", "colorama"]
+dependencies = ["sqlalchemy", "dbutils", "pymysql", "alembic", "cryptography"]
 requires-python = ">=3.11"
 readme = "README.md"
 license = { text = "MIT" }
@@ -12,11 +12,10 @@ lint = ["mypy", "autopep8"]
 test = ["pytest"]
 
 [build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
+requires = ['pdm-backend']
+build-backend = 'pdm.backend'
 
 [tool.pdm.scripts]
-cli = { call = "run:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
 clean = { composite = [
@@ -28,7 +27,7 @@ clean = { composite = [
 ] }
 
 [tool.mypy]
-python_version = "3.11"
+python_version = '3.11'
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -48,4 +47,5 @@ aggressive = 3
 [tool.pytest.ini_options]
 testpaths = ['tests']
 pythonpath = ['.']
-addopts = '-vs'
+addopts = '-vs -p no:warnings'
+filterwarnings = ['ignore::hypothesis.errors.NonInteractiveExampleWarning']

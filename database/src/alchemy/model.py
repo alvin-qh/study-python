@@ -1,10 +1,27 @@
 import json
 from datetime import date, datetime
-from typing import Any, Dict, Optional, Tuple, Type
+from typing import Any, Dict, List, Optional, Tuple, Type
 
-from sqlalchemy import (Boolean, Column, Date, DateTime, ForeignKey, Integer,
-                        String, create_engine, func, orm, pool)
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import (
+    Boolean,
+    Date,
+    DateTime,
+    ForeignKey,
+    Integer,
+    String,
+    create_engine,
+    func,
+    pool,
+)
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    Query,
+    mapped_column,
+    relationship,
+    scoped_session,
+    sessionmaker,
+)
 
 # 创建数据库连接引擎
 engine = create_engine(
@@ -16,10 +33,11 @@ engine = create_engine(
 )
 
 
-class ExtQuery(orm.Query):
+class ExtQuery(Query):
     """
     扩展查询类, 继承原查询类
     """
+
     def __new__(cls, *args, **kwargs) -> "ExtQuery":
         """
         实例化查询对象
@@ -57,12 +75,14 @@ class ExtQuery(orm.Query):
 
 # 创建 Session, scoped_session 函数用于在 Locale 范围中创建 session 对象
 # 指定查询类为 ExtQuery, 对原查询做扩展
-Session = orm.scoped_session(
-    orm.sessionmaker(bind=engine, autocommit=False, query_cls=ExtQuery)
+session = scoped_session(
+    sessionmaker(bind=engine, autocommit=False, query_cls=ExtQuery)
 )
 
+
 # 创建模型基类
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 
 class ObjectEncoder(json.JSONEncoder):
@@ -105,10 +125,12 @@ class CommonMixin:
     }
 
     # 主键, ID 字段
-    id = Column(Integer, primary_key=True)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
 
     # 记录创建时间戳
-    created_at = Column(DateTime, nullable=False, server_default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime, nullable=False, server_default=func.now()
+    )
 
     def jsonify(self) -> Dict[str, Any]:
         """
@@ -117,7 +139,6 @@ class CommonMixin:
         Returns:
             Dict[str, Any]: 返回的字典对象
         """
-
         return {
             "id": self.id,
             "created_at": self.created_at,
@@ -128,8 +149,9 @@ class SoftDeleteMixin:
     """
     软删除混入类, 为数据实体添加软删除能力
     """
+
     # 表示删除的字段
-    deleted = Column(Boolean, nullable=False, default=False)
+    deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     def soft_delete(self) -> None:
         """
@@ -174,19 +196,29 @@ class User(Base, CommonMixin, SoftDeleteMixin):
     __tablename__ = "core_users"
 
     # 身份证字段
-    id_num = Column(String(length=50), nullable=False)
+    id_num: Mapped[int] = mapped_column(String(length=50), nullable=False)
+
     # 姓名字段
-    name = Column(String(length=50), nullable=False)
+    name: Mapped[str] = mapped_column(String(length=50), nullable=False)
+
     # 性别字段
-    gender = Column(String(length=1), nullable=False)
+    gender: Mapped[str] = mapped_column(String(length=1), nullable=False)
+
     # 生日字段
-    birthday = Column(Date, nullable=True)
+    birthday: Mapped[date] = mapped_column(Date, nullable=True)
 
     # 连接到 UserGroup 类，外键 `core_users.id`, 在 `UserGroup` 对象添加 user 字段
-    user_group = orm.relationship("UserGroup", backref="user")
+    user_group: Mapped[List["UserGroup"]] = relationship(
+        "UserGroup",
+        backref="user",
+        # uselist=True,
+    )
+
     # 以 `core_user_groups` 为中间表，连接到 Group 类, 在 `Group` 对象添加 users 字段
-    groups = orm.relationship(
-        "Group", secondary="core_user_groups", back_populates="users",
+    groups: Mapped[List["Group"]] = relationship(
+        "Group",
+        secondary="core_user_groups",
+        back_populates="users",
     )
 
     def jsonify(self) -> Dict[str, Any]:
@@ -224,13 +256,20 @@ class Group(Base, CommonMixin):
     __tablename__ = "core_groups"
 
     # 组名称
-    name = Column(String(length=50), nullable=False)
+    name: Mapped[str] = mapped_column(String(length=50), nullable=False)
 
     # 连接到 UserGroup 类，外键 `core_users.id`, 在 `UserGroup` 对象添加 group 字段
-    user_group = orm.relationship("UserGroup", backref="group")
+    user_group: Mapped[List["UserGroup"]] = relationship(
+        "UserGroup",
+        backref="group",
+        # uselist=True,
+    )
+
     # 以 `core_user_groups` 为中间表，连接到 User 类, 在 `User` 对象添加 groups 字段
-    users = orm.relationship(
-        "User", secondary="core_user_groups", back_populates="groups",
+    users: Mapped[List[User]] = relationship(
+        "User",
+        secondary="core_user_groups",
+        back_populates="groups",
     )
 
     def jsonify(self) -> Dict[str, Any]:
@@ -265,9 +304,14 @@ class UserGroup(Base, CommonMixin):
     __tablename__ = "core_user_groups"
 
     # 组成员 ID
-    user_id = Column(Integer, ForeignKey("core_users.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("core_users.id"), nullable=False
+    )
+
     # 组 ID
-    group_id = Column(Integer, ForeignKey("core_groups.id"), nullable=False)
+    group_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("core_groups.id"), nullable=False
+    )
 
     # user - backref by User.user_group
     # user = relationship("User", back_populates="user_group")
