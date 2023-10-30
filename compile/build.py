@@ -1,29 +1,20 @@
-"""
-编译当前项目
-"""
-from itertools import chain
+import glob
 import os
 import py_compile
-
-import glob
-from typing import Set
-from os import path
-
 import shutil
-from distutils.core import setup
-from Cython.Build import cythonize
+import sys
+from dataclasses import dataclass, field
+from itertools import chain
+from os import path
+from typing import Dict, Set
 
-
-_SRC_DIR = path.dirname(__file__)
+_SRC_DIR = "src"
+_CUR_DIR = path.dirname(__file__)
 _BUILD_IGNORE = ".buildignore"
 _DIST_DIR = "dist"
 
 
 class File:
-    """
-    目标文件类
-    """
-
     def __init__(self, filename: str) -> None:
         self._filename = filename
         self._to_compile = filename.endswith(".py")
@@ -41,16 +32,15 @@ class File:
 
     def _make_compile_dist(self) -> str:
         base, _ = path.splitext(self._filename)
-        dist = self._create_base_path(
-            path.join(_DIST_DIR, f"{base}.pyc")
-        )
+        base = base.removeprefix(f"{_SRC_DIR}/")
+        dist = self._create_base_path(path.join(_DIST_DIR, f"{base}.pyc"))
 
         print(f"{self._filename:30} => {dist}")
         return dist
 
     def _make_copy_dist(self) -> str:
         return self._create_base_path(
-            path.join(_SRC_DIR, _DIST_DIR, self._filename)
+            path.join(_CUR_DIR, _DIST_DIR, self._filename.removeprefix(f"{_SRC_DIR}/"))
         )
 
     def _do_compile(self) -> None:
@@ -83,8 +73,10 @@ def _collect_ignore_files() -> Set[str]:
     def fix(name: str) -> str:
         if name and (name.startswith("/") or name.startswith("\\")):
             name = name[1:]
+
         if name and (name.endswith("/") or name.endswith("\\")):
             name = name[0:-1]
+
         return name
 
     def read_build_ignore() -> Set[str]:
@@ -100,25 +92,33 @@ def _collect_ignore_files() -> Set[str]:
             )
 
     return set(
-        chain(*[glob.glob(
-            pattern,
-            root_dir=_SRC_DIR,
-            recursive=True,
-            include_hidden=True
-        ) for pattern in read_build_ignore()])
+        chain(
+            *[
+                glob.glob(
+                    pattern, root_dir=_CUR_DIR, recursive=True, include_hidden=True
+                )
+                for pattern in read_build_ignore()
+            ]
+        )
     )
 
 
-def build() -> None:
-    """
-    编译所有文件
-    """
+def _error(err: str) -> None:
+    print(f"ERR: {err}")
+    sys.exit(-1)
+
+
+@dataclass
+class CommandArgs:
+    cmd: str = field(default="")
+    args: Dict[str, str] = field(default_factory=lambda: {})
+
+
+def build_pyc() -> None:
     ignore_files = _collect_ignore_files()
     ignore_files.add(_BUILD_IGNORE)
-    ignore_files.add("build.py")
 
-    for root, dirs, files in os.walk("."):
-        root = root.removeprefix("./")
+    for root, dirs, files in os.walk(_SRC_DIR):
         if root in ignore_files:
             dirs[:] = []
             continue
@@ -128,8 +128,6 @@ def build() -> None:
             if file not in ignore_files:
                 File(file).build()
 
-    setup(ext_modules=cythonize(["utils/web.py"]))
-
 
 if __name__ == "__main__":
-    build()
+    build_pyc()

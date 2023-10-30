@@ -1,4 +1,0 @@
-flask
-xxhash
-werkzeug
-cython
