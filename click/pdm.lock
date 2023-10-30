@@ -3,9 +3,10 @@
 
 [metadata]
 groups = ["default", "lint", "type", "test"]
-strategy = ["cross_platform"]
-lock_version = "4.4"
-content_hash = "sha256:ac15fc1f733578efcf7de0f707552899be9b6806eecebacf483f62bf978872a5"
+cross_platform = true
+static_urls = false
+lock_version = "4.3"
+content_hash = "sha256:fb81c13dd31f0aa014a7315fe1a8e16c9d1c5ab8f5a51c56af927274c2ff16ae"
 
 [[package]]
 name = "autopep8"

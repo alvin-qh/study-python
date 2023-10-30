@@ -1,0 +1,21 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "瞿昊", email = "quhao317@163.com"},
+]
+dependencies = [
+    "flask",
+    "xxhash",
+    "werkzeug",
+    "cython",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "MIT"}
+
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
