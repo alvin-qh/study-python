@@ -1,0 +1,66 @@
+[project]
+name = "study_python_wheel"
+version = "1.0.0"
+authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+dependencies = [
+    "Flask @ file:///${PROJECT_ROOT}/.wheelhouse/flask-3.0.0-py3-none-any.whl",
+    "xxhash @ file:///${PROJECT_ROOT}/.wheelhouse/xxhash-3.4.1-cp311-cp311-macosx_10_9_x86_64.whl",
+    "Werkzeug @ file:///${PROJECT_ROOT}/.wheelhouse/werkzeug-3.0.1-py3-none-any.whl",
+]
+requires-python = ">=3.11"
+readme = "README.md"
+license = { text = "MIT" }
+
+[project.optional-dependencies]
+basic = ["pip", "setuptools"]
+build = [
+]
+test = [
+    "pytest @ file:///${PROJECT_ROOT}/.wheelhouse/pytest-7.4.3-py3-none-any.whl",
+]
+lint = [
+    "autopep8 @ file:///${PROJECT_ROOT}/.wheelhouse/autopep8-2.0.4-py2.py3-none-any.whl",
+    "mypy @ file:///${PROJECT_ROOT}/.wheelhouse/mypy-1.6.1-cp311-cp311-macosx_10_9_x86_64.whl",
+]
+
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[tool.pdm.scripts]
+start = { call = "app:main" }
+check = { composite = ["mypy src", "autopep8 src tests"] }
+test = "pytest -v -s tests"
+clean = { composite = [
+    "rm -rf .mypy_cache",
+    "rm -rf .pytest_cache",
+    "rm -rf .wheelhouse",
+    'find src -type d -name "__pycache__" -exec rm -rf {} +',
+    'find tests -type d -name "__pycache__" -exec rm -rf {} +',
+] }
+export = "pdm export -f requirements -o requirements.txt --without-hash"
+build-wheel = "pip wheel -r requirements.txt -w .wheelhouse"
+restore-wheel = "pip install --no-index --find-links=.wheelhouse -r requirements.txt"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = ['^.venv\.py$', '^.test\.py$']
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+
+[tool.pytest.ini_options]
+testpaths = ['tests']
+pythonpath = ['.']
+addopts = '-vs'

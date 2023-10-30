@@ -5,10 +5,7 @@ from utils import templated, watch_files_for_develop
 
 from flask import Flask, Response, jsonify
 
-# 创建 Flask 对象，并指定静态文件存储路径以及 html 模板存储路径
 app = Flask(__name__, static_folder="static", template_folder="templates")
-
-# 定义 route
 
 
 @app.route("/", methods=["GET"])
@@ -25,7 +22,8 @@ def index() -> Tuple[str, int]:
   <a href="/template">Next</a>
 </body>
 </html>
-""", 200
+""",
+        200,
     )
 
 
@@ -41,12 +39,14 @@ def use_json() -> Tuple[Response, Literal[200]]:
     return jsonify(time=int(tm)), 200
 
 
-# 进程启动时执行
-if __name__ == "__main__":
-    # 启动 flask 应用
+def main() -> None:
     app.run(
         host="127.0.0.1",
         port=5000,
         debug=True,
         extra_files=watch_files_for_develop(app),
     )
+
+
+if __name__ == "__main__":
+    main()
