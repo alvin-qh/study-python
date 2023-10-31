@@ -5,8 +5,6 @@ Revises: 20180923_2349
 Create Date: 2018-09-23 23:54:14.880453
 
 """
-from typing import Optional
-
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy import BIGINT, TIMESTAMP, func, text
@@ -14,11 +12,11 @@ from sqlalchemy import BIGINT, TIMESTAMP, func, text
 # revision identifiers, used by Alembic.
 revision = "20180923_2354"
 down_revision = "20180923_2349"
-branch_labels: Optional[str] = None
-depends_on: Optional[str] = None
+branch_labels = None
+depends_on = None
 
 
-def upgrade() -> None:
+def upgrade():
     op.create_table(
         "core_user_groups",
         sa.Column("id", BIGINT(), primary_key=True, autoincrement=True),
@@ -40,6 +38,6 @@ def upgrade() -> None:
     )
 
 
-def downgrade() -> None:
+def downgrade():
     op.drop_index("ux_user_group_id", table_name="core_user_groups")
     op.drop_table("core_user_groups")

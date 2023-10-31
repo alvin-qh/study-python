@@ -5,8 +5,6 @@ Revises: 20180923_1656
 Create Date: 2018-09-23 19:59:19.527802
 
 """
-from typing import Optional
-
 from alembic import op
 from sqlalchemy import column, table
 from sqlalchemy.orm import Session
@@ -14,11 +12,11 @@ from sqlalchemy.orm import Session
 # revision identifiers, used by Alembic.
 revision = "20180923_1959"
 down_revision = "20180923_1624"
-branch_labels: Optional[str] = None
-depends_on: Optional[str] = None
+branch_labels = None
+depends_on = None
 
 
-def upgrade() -> None:
+def upgrade():
     core_user = table(
         "core_users",
         column("id_num"),
@@ -36,7 +34,7 @@ def upgrade() -> None:
     session.commit()
 
 
-def downgrade() -> None:
+def downgrade():
     core_user = table("core_users", column("id_num"))
 
     session = Session(bind=op.get_bind())

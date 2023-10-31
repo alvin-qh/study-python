@@ -5,20 +5,18 @@ Revises:
 Create Date: 2018-09-23 16:24:34.657226
 
 """
-from typing import Optional
-
 import sqlalchemy as sa
 from alembic import op
 from sqlalchemy import BIGINT, CHAR, DATE, TIMESTAMP, VARCHAR, func, text
 
 # revision identifiers, used by Alembic.
 revision = "20180923_1624"
-down_revision: Optional[str] = None
-branch_labels: Optional[str] = None
-depends_on: Optional[str] = None
+down_revision = None
+branch_labels = None
+depends_on = None
 
 
-def upgrade() -> None:
+def upgrade():
     op.create_table(
         "core_users",
         sa.Column("id", BIGINT(), primary_key=True, autoincrement=True),
@@ -40,6 +38,6 @@ def upgrade() -> None:
     op.create_index("ix_name", table_name="core_users", columns=["name"], unique=False)
 
 
-def downgrade() -> None:
+def downgrade():
     op.drop_index("ux_id_num", table_name="core_users")
     op.drop_table("core_users")
