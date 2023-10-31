@@ -1,4 +1,4 @@
-from .model import session
+from .core import session
 
 __all__ = [
     "session",
@@ -9,7 +9,8 @@ __all__ = [
 def initialize_tables():
     from sqlalchemy import text
 
-    from .model import Group, User, UserGroup, engine, session
+    from .core import engine
+    from .model import Group, User, UserGroup
 
     for table in [User, Group, UserGroup]:
         try:

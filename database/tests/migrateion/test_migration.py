@@ -1,6 +1,3 @@
-from typing import List
-
-import pymysql
 from migration.command import Command
 from native import get_all_tables, get_connection
 

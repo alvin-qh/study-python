@@ -1,163 +1,18 @@
 import json
-from datetime import date, datetime
-from typing import Any, Dict, List, Optional, Tuple, Type
+from datetime import date
+from typing import Any, Dict, List
 
-from sqlalchemy import (
-    Boolean,
-    Date,
-    DateTime,
-    ForeignKey,
-    Integer,
-    String,
-    create_engine,
-    func,
-    pool,
-)
-from sqlalchemy.orm import (
-    DeclarativeBase,
-    Mapped,
-    Query,
-    mapped_column,
-    relationship,
-    scoped_session,
-    sessionmaker,
-)
+from sqlalchemy import Date, ForeignKey, Integer, String
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
-# 创建数据库连接引擎
-engine = create_engine(
-    "sqlite:///:memory:",
-    echo=True,
-    pool_size=5,
-    max_overflow=0,
-    poolclass=pool.QueuePool,
-)
+from .encoder import ObjectEncoder
+from .mixin import CommonMixin, SoftDeleteMixin
 
 
-class ExtQuery(Query):
-    """
-    扩展查询类, 继承原查询类
-    """
-
-    def __new__(cls, *args, **kwargs) -> "ExtQuery":
-        """
-        实例化查询对象
-
-        Returns:
-            ExtQuery: 实例化的查询对象
-        """
-        query = super().__new__(cls)
-
-        # 判断是否携带参数
-        if args and len(args) > 0:
-            # 对 soft delete 进行处理
-            query = query._add_soft_delete_filter(args[0])
-
-        return query
-
-    def _add_soft_delete_filter(self, query_types: Tuple[Type]) -> "ExtQuery":
-        """
-        尝试增加 soft delete 查询条件
-
-        Args:
-            query_types (Tuple[Type]): 要查询的实体类型
-
-        Returns:
-            ExtQuery: 返回查询对象
-        """
-        for t in query_types:
-            # 判断实体类型是否支持 soft delete
-            if isinstance(t, type) and issubclass(t, SoftDeleteMixin):
-                # 增加 soft delete 查询条件
-                return self.filter(t.deleted == False)
-
-        return self
-
-
-# 创建 Session, scoped_session 函数用于在 Locale 范围中创建 session 对象
-# 指定查询类为 ExtQuery, 对原查询做扩展
-session = scoped_session(
-    sessionmaker(bind=engine, autocommit=False, query_cls=ExtQuery)
-)
-
-
-# 创建模型基类
 class Base(DeclarativeBase):
-    pass
-
-
-class ObjectEncoder(json.JSONEncoder):
     """
-    Json 序列化扩展类
+    创建模型基类
     """
-
-    def default(self, obj: Any) -> Optional[str]:
-        """
-        默认转换规则
-
-        Args:
-            obj (Any): 任意对象
-
-        Returns:
-            Optional[str]: None 或字符串
-        """
-
-        s: Optional[str] = None
-
-        # 判断如果对象是日期或时间按日期类型, 则将其转为字符串
-        if isinstance(obj, (date, datetime)):
-            s = obj.isoformat()
-
-        # 其它类型不做转换
-        return s
-
-
-class CommonMixin:
-    """
-    公共混入类, 为数据实体添加 ID 和 created_at 字段
-    """
-
-    # 抽象类
-    __abstract__ = True
-
-    # 表参数, 允许自增 ID
-    __table_args__ = {
-        "sqlite_autoincrement": True,
-    }
-
-    # 主键, ID 字段
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-
-    # 记录创建时间戳
-    created_at: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, server_default=func.now()
-    )
-
-    def jsonify(self) -> Dict[str, Any]:
-        """
-        当前对象转为字段
-
-        Returns:
-            Dict[str, Any]: 返回的字典对象
-        """
-        return {
-            "id": self.id,
-            "created_at": self.created_at,
-        }
-
-
-class SoftDeleteMixin:
-    """
-    软删除混入类, 为数据实体添加软删除能力
-    """
-
-    # 表示删除的字段
-    deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
-
-    def soft_delete(self) -> None:
-        """
-        软删除当前实体
-        """
-        self.deleted = True
 
 
 # 以下注释代码演示了如何监听查询 SqlAlchemy 的事件
@@ -318,13 +173,6 @@ class UserGroup(Base, CommonMixin):
 
     # group - backref by Group.user_group
     # group = relationship("Group", back_populates="user_group")
-
-    def jsonify(self):
-        return {
-            **super().jsonify(),
-            "user": self.user.jsonify(),
-            "group": self.group.jsonify(),
-        }
 
     def __str__(self):
         return json.dumps(self.jsonify(), cls=ObjectEncoder, indent=2)

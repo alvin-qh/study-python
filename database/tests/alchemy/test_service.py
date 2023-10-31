@@ -90,7 +90,6 @@ def test_user_soft_delete() -> None:
 
     # 执行软删除
     user.soft_delete()
-    session.commit()
 
     # 查询所创建的用户实体对象
     user = get_user(user.id)

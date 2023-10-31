@@ -1,9 +1,10 @@
 from datetime import date
 from typing import Optional, Tuple
 
-from sqlalchemy import and_, orm, select
+from sqlalchemy import orm, select
 
-from .model import Group, User, UserGroup, session
+from .core import session
+from .model import Group, User, UserGroup
 
 
 def create_user(id_num: str, name: str, gender: str, birthday: date) -> User:
@@ -25,8 +26,10 @@ def create_user(id_num: str, name: str, gender: str, birthday: date) -> User:
         gender=gender,
         birthday=birthday,
     )
+
     session.add(user)
     session.commit()
+
     return user
 
 
@@ -36,7 +39,7 @@ def get_user(id_: int) -> Optional[User]:
 
     select * from core_user where id = id_
     """
-    return session.scalars(select(User).where(User.id == id_)).one()
+    return session.scalars(select(User).where(User.id == id_)).one_or_none()
 
 
 def update_user(
