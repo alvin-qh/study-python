@@ -38,7 +38,7 @@ class Command:
         curdir = os.path.dirname(__file__)
         return os.path.abspath(os.path.join(curdir, "scripts"))
 
-    def upgrade(self, revision="head") -> None:
+    def upgrade(self, revision: str = "head") -> None:
         """
         升级数据库
 
@@ -47,7 +47,7 @@ class Command:
         """
         command.upgrade(self._conf, revision)
 
-    def downgrade(self, revision="base") -> None:
+    def downgrade(self, revision: str = "base") -> None:
         """
         降级数据库
 
@@ -56,7 +56,7 @@ class Command:
         """
         command.downgrade(self._conf, revision)
 
-    def reset(self):
+    def reset(self) -> None:
         """
         重置数据库, 即降级到最后版本后重新升级到最新版本
         """

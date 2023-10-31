@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Optional, Tuple
 
-from sqlalchemy import orm, select
+from sqlalchemy import Row, and_, orm, select
 
 from .core import session
 from .model import Group, User, UserGroup
@@ -39,7 +39,16 @@ def get_user(id_: int) -> Optional[User]:
 
     select * from core_user where id = id_
     """
-    return session.scalars(select(User).where(User.id == id_)).one_or_none()
+    return session.scalars(
+        select(User).where(and_(User.id == id_, User.deleted == False))  # noqa
+    ).one_or_none()
+
+
+def get_user_legacy(id_: int) -> Optional[User]:
+    """
+    `get_user` 函数的老式写法, 由于这种写法可以使用到 `.core.ExtQuery` 类中定义的过滤器, 所以无需显式指定软删除字段条件
+    """
+    return session.query(User).filter(User.id == id_).one_or_none()
 
 
 def update_user(
@@ -101,7 +110,7 @@ def get_group(id_: int) -> Optional[Group]:
     Returns:
         Optional[Group]: 组实体对象
     """
-    return session.query(Group).filter(Group.id == id_).one()
+    return session.scalars(select(Group).where(Group.id == id_)).one_or_none()
 
 
 def add_user_into_group(user_id: int, group_id: int) -> UserGroup:
@@ -117,9 +126,9 @@ def add_user_into_group(user_id: int, group_id: int) -> UserGroup:
     """
     # 判断用户是否已经在组中
     user_group = session.scalars(
-        select(UserGroup)
-        .where(UserGroup.user_id == user_id)
-        .where(UserGroup.group_id == group_id)
+        select(UserGroup).where(
+            and_(UserGroup.user_id == user_id, UserGroup.group_id == group_id)
+        )
     ).first()
 
     if user_group:
@@ -130,13 +139,16 @@ def add_user_into_group(user_id: int, group_id: int) -> UserGroup:
         user_id=user_id,
         group_id=group_id,
     )
+
     session.add(user_group)
     session.commit()
 
     return user_group
 
 
-def get_user_group_with_user_and_group(id_: int) -> Tuple[UserGroup, User, Group]:
+def get_user_group_with_user_and_group(
+    id_: int,
+) -> Optional[Row[Tuple[UserGroup, User, Group]]]:
     """
     联合查询
 
@@ -168,12 +180,29 @@ def get_user_group_with_user_and_group(id_: int) -> Tuple[UserGroup, User, Group
     u = orm.aliased(User, name="u")
     g = orm.aliased(Group, name="g")
 
+    # 这里同时查询了三个实体类型, 所以返回值的每一行包含这三个结果
+    # 由于 UserGroup 是根实体, 必须包括. 其余两个实体可选
+    return session.execute(
+        select(UserGroup, User, Group)
+        .join(u)
+        .join(g)
+        .where(and_(UserGroup.id == id_, User.deleted == False))  # noqa
+    ).first()
+
+
+def get_user_group_with_user_and_group_legacy(
+    id_: int,
+) -> Optional[Row[Tuple[UserGroup, User, Group]]]:
+    """
+    `get_user_group_with_user_and_group` 函数的老式写法
+    """
+    u = orm.aliased(User, name="u")
+    g = orm.aliased(Group, name="g")
+
     return (
-        # 这里同时查询了三个实体类型, 所以返回值的每一行包含这三个结果
-        # 由于 UserGroup 是根实体, 必须包括. 其余两个实体可选
         session.query(UserGroup, User, Group)
         .join(u)
         .join(g)
         .filter(UserGroup.id == id_)
-        .one()
+        .one_or_none()
     )

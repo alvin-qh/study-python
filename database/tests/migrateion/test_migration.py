@@ -9,9 +9,9 @@ def test_alembic_command() -> None:
     conn = get_connection()
 
     tables = get_all_tables(conn)
-    assert set(tables) == {
+    assert {
         "alembic_version",
         "core_groups",
         "core_users",
         "core_user_groups",
-    }
+    }.issubset(set(tables))

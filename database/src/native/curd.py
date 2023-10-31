@@ -1,7 +1,7 @@
 from datetime import date
-from typing import Any, Dict, List
+from typing import Any, Dict, List, cast
 
-from pymysql import Connection
+from pymysql import Connection  # type:ignore
 
 
 def init_tables(conn: Connection) -> None:
@@ -12,12 +12,12 @@ def init_tables(conn: Connection) -> None:
     # 创建游标对象
     with conn.cursor() as c:
         # 清空所有数据表
-        c.execute("DROP TABLE IF EXISTS `core_users`")
+        c.execute("DROP TABLE IF EXISTS `native_users`")
 
-        # 创建 "core_users" 数据表
+        # 创建 "native_users" 数据表
         c.execute(
             r"""
-            CREATE TABLE `core_users` (
+            CREATE TABLE `native_users` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `id_num` VARCHAR(50) NOT NULL,
                 `name` VARCHAR(50) NOT NULL,
@@ -67,7 +67,7 @@ def insert_user(
     """
     # 设置 SQL 模板
     sql = (
-        r"INSERT INTO `core_users`"
+        r"INSERT INTO `native_users`"
         r"(`id_num`, `name`, `gender`, `birthday`) VALUES (%s, %s, %s, %s)"
     )
 
@@ -75,7 +75,7 @@ def insert_user(
         # 执行 SQL 语句
         c.execute(sql, (id_num, name, gender, birthday))
         # 返回最后一次插入的 ID
-        return c.lastrowid
+        return cast(int, c.lastrowid)
 
 
 def get_user(conn: Connection, id_: int) -> Dict[str, Any]:
@@ -89,12 +89,12 @@ def get_user(conn: Connection, id_: int) -> Dict[str, Any]:
     Returns:
         Dict[str, Any]: 用户信息字典
     """
-    sql = r"SELECT `id`, `id_num`, `name`, `gender`, `birthday` FROM `core_users` WHERE `id` = %s"
+    sql = r"SELECT `id`, `id_num`, `name`, `gender`, `birthday` FROM `native_users` WHERE `id` = %s"
 
     with conn.cursor() as c:
         c.execute(sql, (id_,))
         # 获取查询结果 (一行)
-        return c.fetchone()
+        return cast(Dict[str, Any], c.fetchone())
 
 
 def update_user(
@@ -115,13 +115,13 @@ def update_user(
         int: 受影响的行数, 保持为 1
     """
     sql = (
-        r"UPDATE `core_users` "
+        r"UPDATE `native_users` "
         r"SET `id_num` = %s, `name` = %s, `gender` = %s, `birthday` = %s "
         r"WHERE `id` = %s"
     )
 
     with conn.cursor() as c:
-        return c.execute(sql, (id_num, name, gender, birthday, id_))
+        return cast(int, c.execute(sql, (id_num, name, gender, birthday, id_)))
 
 
 def delete_user(conn: Connection, id_: int) -> int:
@@ -135,7 +135,7 @@ def delete_user(conn: Connection, id_: int) -> int:
     Returns:
         int: 删除的行数, 保持为 1
     """
-    sql = r"DELETE from `core_users` WHERE `id` = %s"
+    sql = r"DELETE from `native_users` WHERE `id` = %s"
 
     with conn.cursor() as c:
-        return c.execute(sql, (id_))
+        return cast(int, c.execute(sql, (id_)))

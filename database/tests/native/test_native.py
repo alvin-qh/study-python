@@ -1,14 +1,8 @@
 from datetime import date
 
 import pytest
-from native import (
-    delete_user,
-    get_connection,
-    get_pooled_connection,
-    get_user,
-    insert_user,
-    update_user,
-)
+from native import (delete_user, get_connection, get_pooled_connection,
+                    get_user, insert_user, update_user)
 from pymysql import Connection
 
 

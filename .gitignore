@@ -125,7 +125,6 @@ celerybeat.pid
 .env
 .venv
 .virtual_documents
-env/
 venv/
 ENV/
 env.bak/

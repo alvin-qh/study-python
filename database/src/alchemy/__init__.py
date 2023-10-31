@@ -6,7 +6,7 @@ __all__ = [
 ]
 
 
-def initialize_tables():
+def initialize_tables() -> None:
     from sqlalchemy import text
 
     from .core import engine
@@ -14,7 +14,7 @@ def initialize_tables():
 
     for table in [User, Group, UserGroup]:
         try:
-            table.__table__.create(engine)
+            table.__table__.create(engine)  # type: ignore
             session.commit()
         except Exception:
             pass

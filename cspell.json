@@ -66,6 +66,7 @@
         "isoparse",
         "itemsize",
         "jsonify",
+        "lastrowid",
         "levelname",
         "lexify",
         "looponfail",

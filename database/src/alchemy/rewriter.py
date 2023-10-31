@@ -1,3 +1,4 @@
+"""
 from typing import TypeVar, Union
 
 from sqlalchemy import Table
@@ -24,6 +25,7 @@ def soft_delete_rewriter(stmt: Statement) -> Statement:
         if column_obj is None:
             continue
 
-        stmt = stmt.where(column_obj == 0)
+        # do something
 
     return stmt
+"""

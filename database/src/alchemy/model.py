@@ -15,33 +15,6 @@ class Base(DeclarativeBase):
     """
 
 
-# 以下注释代码演示了如何监听查询 SqlAlchemy 的事件
-#
-# @event.listens_for(Query, "before_compile", retval=True)
-# def _soft_delete_handler(query: Query) -> Query:
-#     """
-#     执行查询时的事件处理函数, "before_compile" 表示在生成 SQL 语句前执行
-#
-#     Args:
-#         query(Query): 被监听的查询对象
-#
-#     Returns:
-#         Query: 做过处理的 Query 对象
-#     """
-#
-#     # 遍历查询对象的字段描述
-#     for desc in query.column_descriptions:
-#         # 获取查询的实体对象类型
-#         type_ = desc["type"]
-#         # 判断实体对象是否支持软删除
-#         if type_ and issubclass(type_, SoftDeleteMixin):
-#             # 添加软删除检索条件
-#             entity = desc["entity"]
-#             query = query.filter(entity.deleted == False)
-#
-#     return query
-
-
 class User(Base, CommonMixin, SoftDeleteMixin):
     """
     表示用户的实体类
@@ -51,7 +24,7 @@ class User(Base, CommonMixin, SoftDeleteMixin):
     __tablename__ = "core_users"
 
     # 身份证字段
-    id_num: Mapped[int] = mapped_column(String(length=50), nullable=False)
+    id_num: Mapped[str] = mapped_column(String(length=50), nullable=False)
 
     # 姓名字段
     name: Mapped[str] = mapped_column(String(length=50), nullable=False)
@@ -174,5 +147,5 @@ class UserGroup(Base, CommonMixin):
     # group - backref by Group.user_group
     # group = relationship("Group", back_populates="user_group")
 
-    def __str__(self):
+    def __str__(self) -> str:
         return json.dumps(self.jsonify(), cls=ObjectEncoder, indent=2)

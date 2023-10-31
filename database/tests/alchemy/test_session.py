@@ -1,7 +1,7 @@
 from datetime import date
 
-from alchemy import initialize_tables
-from sqlalchemy import and_, column, table
+from alchemy import initialize_tables, session
+from sqlalchemy import and_, column, select, table
 from sqlalchemy.orm import aliased
 
 
@@ -16,7 +16,7 @@ def teardown_function() -> None:
     """
     在每个测试结束后执行, 关闭连接
     """
-    # session.close()
+    session.close()
 
 
 def test_insert_and_query() -> None:
@@ -51,7 +51,13 @@ def test_insert_and_query() -> None:
 
     # 执行一条查询语句
     # 对于 one() 函数， 返回一个 dict 对象, 包含查询结果
-    user = session.query(table_core_users).filter(table_core_users.c.id == id_).one()
+    user = (
+        session.execute(select(table_core_users).where(table_core_users.c.id == id_))
+        .mappings()
+        .one_or_none()
+    )
+
+    assert user is not None
 
     # 检查查询结果
     assert len(user) == 6
@@ -94,7 +100,9 @@ def test_query_by_select() -> None:
 
     # 执行一条 select 语句
     # 返回一个 CursorResult 对象, 表示结果集
-    res = session.execute(table_core_users.select().where(table_core_users.c.id == id_))
+    res = session.execute(
+        table_core_users.select().where(table_core_users.c.id == id_)
+    ).mappings()
 
     # CursorResult 对象可迭代, 获取其第一项
     # 获取结果为 dict, 表示查询一行的结果
@@ -150,7 +158,12 @@ def test_update() -> None:
     assert rowcount == 1
 
     # 查询用户对象, 验证更新结果
-    user = session.query(table_core_users).filter(table_core_users.c.id == id_).one()
+    user = (
+        session.execute(select(table_core_users).where(table_core_users.c.id == id_))
+        .mappings()
+        .one_or_none()
+    )
+    assert user is not None
     assert user["birthday"] == "1981-03-19"
 
 
@@ -193,7 +206,11 @@ def test_delete() -> None:
     assert rowcount == 1
 
     # 查询用户对象, 验证删除结果
-    user = session.query(table_core_users).filter(table_core_users.c.id == id_).first()
+    user = (
+        session.execute(select(table_core_users).where(table_core_users.c.id == id_))
+        .mappings()
+        .one_or_none()
+    )
     assert user is None
 
 
@@ -249,18 +266,21 @@ def test_join() -> None:
 
     # 通过 join 进行联合查询, 查询结果中包含 core_user, core_group 的结果
     results = (
-        session.query(ug)
-        .join(u, and_(ug.c.user_id == u.c.id))
-        .join(g, and_(ug.c.group_id == g.c.id))
-        .filter(table_core_users.c.id == user_id)
-        .with_entities(  # 为查询结果中重名的结果字段设置别名
-            u,
-            g,
-            u.c.id.label("uid"),
-            u.c.name.label("uname"),
-            g.c.id.label("gid"),
-            g.c.name.label("gname"),
+        session.execute(
+            select(
+                ug,
+                u,
+                g,
+                u.c.id.label("uid"),
+                u.c.name.label("uname"),
+                g.c.id.label("gid"),
+                g.c.name.label("gname"),
+            )
+            .join(u, and_(ug.c.user_id == u.c.id))
+            .join(g, and_(ug.c.group_id == g.c.id))
+            .filter(table_core_users.c.id == user_id)
         )
+        .mappings()
         .all()
     )
 

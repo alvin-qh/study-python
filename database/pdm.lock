@@ -2,10 +2,10 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default", "lint", "test"]
+groups = ["default", "lint", "test", ":type"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:34055b80ea2a0adac93f9b235b2aff2aa732ce67a674ee9f9f2b348b1d118526"
+content_hash = "sha256:6c75df07f877a9ac0fd95d90369d910629fb2d47364495a0a7107e5d354a793f"
 
 [[package]]
 name = "alembic"

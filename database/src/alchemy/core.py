@@ -1,14 +1,12 @@
 from typing import Any, Self, Tuple, Type
 
 from sqlalchemy import create_engine, pool
-from sqlalchemy.event import listens_for
-from sqlalchemy.orm import ORMExecuteState, Query, Session, scoped_session, sessionmaker
+from sqlalchemy.orm import Query, scoped_session, sessionmaker
 
 from .mixin import SoftDeleteMixin
-from .rewriter import soft_delete_rewriter
 
 
-class ExtQuery(Query):
+class ExtQuery(Query[Any]):
     """
     扩展查询类, 继承原查询类
     """
@@ -29,7 +27,7 @@ class ExtQuery(Query):
 
         return query
 
-    def _add_soft_delete_filter(self, query_types: Tuple[Type]) -> "ExtQuery":
+    def _add_soft_delete_filter(self, query_types: Tuple[Type[Any]]) -> Self:
         """
         尝试增加 soft delete 查询条件
 
@@ -41,9 +39,9 @@ class ExtQuery(Query):
         """
         for t in query_types:
             # 判断实体类型是否支持 soft delete
-            if isinstance(t, object) and issubclass(t, SoftDeleteMixin):
+            if isinstance(t, type) and issubclass(t, SoftDeleteMixin):
                 # 增加 soft delete 查询条件
-                return self.filter(t.deleted is False)
+                return self.filter(t.deleted == False)  # noqa
 
         return self
 
@@ -64,6 +62,7 @@ session = scoped_session(
 )
 
 
+""" 以下代码演示了如何增加监听器, 在语句执行前执行处理
 @listens_for(Session, identifier="do_orm_execute")
 def execution_listener(state: ORMExecuteState):
     if not state.is_select:
@@ -74,3 +73,4 @@ def execution_listener(state: ORMExecuteState):
 
     # Replace the statement
     state.statement = adapted
+"""
