@@ -1,20 +1,44 @@
----
-version: "3"
+version: "3.9"
 services:
   mongo:
-    image: "mongo:4.4.6"
-    container_name: "mongo"
+    image: mongo
+    container_name: mongo
+    restart: always
+    privileged: true
+    env_file:
+      - env/mongo.env
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 65536
+        hard: 65536
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          cpus: "1.00"
+          memory: 256M
+        reservations:
+          memory: 100M
     ports:
-      - "27017:27017"
+      - 27017:27017
     volumes:
-      - "mongo-data:/data"
+      - mongo_data:/data
     networks:
-      - "mongo-network"
+      - mongo_network
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    env_file:
+      - env/mongo-express.env
+    networks:
+      - mongo_network
 networks:
-  mongo-network:
-    external: false
+  mongo_network:
 volumes:
-  mongo-data:
-    driver_opts:
-      type: "tmpfs"
-      device: "tmpfs"
+  mongo_data:
+
