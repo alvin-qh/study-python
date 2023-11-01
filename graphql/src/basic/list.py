@@ -1,5 +1,4 @@
-"""
-类别类型
+"""类别类型
 
 如果希望查询结果为一个集合, 则需要使用 graphql 的列表类型, 定义如下:
 
@@ -55,8 +54,7 @@ from graphene import List, NonNull, ObjectType, ResolveInfo, Schema, String
 
 
 class Query(ObjectType):
-    """
-    演示 `List` 类型使用
+    """演示 `List` 类型使用
 
     对应的 GraphQL 定义如下:
 
@@ -81,8 +79,7 @@ class Query(ObjectType):
         start: str,
         end: str,
     ) -> ListType[str]:
-        """
-        解析 `items` 字段
+        """解析 `items` 字段
 
         Args:
             start (str): 返回数组的起始字符
@@ -94,8 +91,7 @@ class Query(ObjectType):
         return [chr(c) for c in range(ord(start), ord(end) + 1)]
 
 
-"""
-定义 schema 对象, 对应的 GraphQL 定义为
+"""定义 schema 对象, 对应的 GraphQL 定义为
 
 ```
 schema {

@@ -37,6 +37,7 @@ async def test_data_loader() -> None:
     assert r.errors is None
 
     # 确认查询结果正确性
+    assert r.data is not None
 
     # 主实体对象正确性
     assert r.data["user"]["id"]

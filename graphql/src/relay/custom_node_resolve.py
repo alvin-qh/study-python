@@ -1,5 +1,6 @@
-import datetime
+import datetime as dt
 import time
+from dataclasses import dataclass
 from typing import Any, Dict
 from typing import List as ListType
 from typing import Type, Union, cast
@@ -8,44 +9,25 @@ from aiodataloader import DataLoader
 from graphene import ID, DateTime, Field, Node, ObjectType, ResolveInfo, Schema, String
 
 
+@dataclass
 class UserModel:
-    """
-    定义模型类型, 表示一个用户
-    """
+    """定义模型类型, 表示一个用户"""
 
     id: int
     name: str
 
-    def __init__(self, **kwargs: Any) -> None:
-        """
-        初始化对象
-        """
-        self.id = kwargs["id"]
-        self.name = kwargs["name"]
 
-
+@dataclass
 class PhotoModel:
-    """
-    定义模型类型, 表示一张照片
-    """
+    """定义模型类型, 表示一张照片"""
 
     id: int
     for_user_id: int
-    datetime: datetime.datetime
-
-    def __init__(self, **kwargs: Any) -> None:
-        """
-        初始化对象
-        """
-        self.id = kwargs["id"]
-        self.for_user_id = kwargs["for_user_id"]
-        self.datetime = kwargs["datetime"]
+    datetime: dt.datetime
 
 
 class Dataset:
-    """
-    数据集类型
-    """
+    """数据集类型"""
 
     users: Dict[int, UserModel]
     photos: Dict[int, PhotoModel]
@@ -55,8 +37,7 @@ class Dataset:
         self.photos = {}
 
     def get_user(self, id: int) -> UserModel:
-        """
-        根据用户 ID 获取用户实体对象
+        """根据用户 ID 获取用户实体对象
 
         Args:
             id (str): 用户 ID
@@ -67,8 +48,7 @@ class Dataset:
         return self.users[id]
 
     def get_photo(self, id: int) -> PhotoModel:
-        """
-        根据 ID 获取照片实体对象
+        """根据 ID 获取照片实体对象
 
         Args:
             id (int): 照片 ID
@@ -79,8 +59,7 @@ class Dataset:
         return self.photos[id]
 
     def save_user(self, user: UserModel) -> None:
-        """
-        保存用户实体对象
+        """保存用户实体对象
 
         Args:
             user (User): 用户实体对象
@@ -88,8 +67,7 @@ class Dataset:
         self.users[user.id] = user
 
     def save_photo(self, photo: PhotoModel) -> None:
-        """
-        存储照片实体对象
+        """存储照片实体对象
 
         Args:
             photo (Photo): 照片实体对象
@@ -97,8 +75,7 @@ class Dataset:
         self.photos[photo.id] = photo
 
     def user_count(self) -> int:
-        """
-        获取用户数量
+        """获取用户数量
 
         Returns:
             int: 用户数量
@@ -128,7 +105,7 @@ class Dataset:
                 PhotoModel(
                     id=id,
                     for_user_id=dataset.user_count() - 1 - id,
-                    datetime=datetime.datetime.fromtimestamp(start_date),
+                    datetime=dt.datetime.fromtimestamp(start_date),
                 )
             )
             start_date += 1
@@ -141,13 +118,10 @@ dataset = Dataset.build()
 
 
 class UserModelLoader(DataLoader[int, UserModel]):
-    """
-    用户模型对象的 Loader 类
-    """
+    """用户模型对象的 Loader 类"""
 
     async def batch_load_fn(self, keys: ListType[int]) -> ListType[UserModel]:
-        """
-        批量读取模型对象
+        """批量读取模型对象
 
         Args:
             keys (ListType[int]): 模型对象 id 集合
@@ -160,13 +134,10 @@ class UserModelLoader(DataLoader[int, UserModel]):
 
 
 class PhotoModelLoader(DataLoader[int, PhotoModel]):
-    """
-    照片模型对象 Loader 类
-    """
+    """照片模型对象 Loader 类"""
 
     async def batch_load_fn(self, keys: ListType[int]) -> ListType[PhotoModel]:
-        """
-        批量读取实体对象
+        """批量读取实体对象
 
         Args:
             keys (ListType[ID]): 模型对象 id 集合
@@ -179,9 +150,7 @@ class PhotoModelLoader(DataLoader[int, PhotoModel]):
 
 
 class CustomNode(Node):
-    """
-    自定义 `Node` 类型, 可以同时表示多种实体类型
-    """
+    """自定义 `Node` 类型, 可以同时表示多种实体类型"""
 
     class Meta:
         name = "Node"
@@ -190,8 +159,7 @@ class CustomNode(Node):
     def resolve_type(
         cls, instance: Any, info: ResolveInfo
     ) -> Type[Union["User", "Photo"]]:
-        """
-        解析当前 `Node` 对象的类型
+        """解析当前 `Node` 对象的类型
 
         Args:
             instance (Any): `Node` 对象实例
@@ -210,9 +178,7 @@ class CustomNode(Node):
 
 
 class User(ObjectType):
-    """
-    定义实体对象, 表示用户
-    """
+    """定义实体对象, 表示用户"""
 
     class Meta:
         # 继承 CustomNode 接口
@@ -220,10 +186,9 @@ class User(ObjectType):
 
     name = String(required=True)
 
-    @staticmethod
-    async def get_node(parent: UserModel, info: ResolveInfo, id: ID) -> UserModel:
-        """
-        根据 ID 获取当前实体对应的模型对象
+    @classmethod
+    async def get_node(cls, info: ResolveInfo, id: ID) -> UserModel:
+        """根据 ID 获取当前实体对应的模型对象
 
         Args:
             info (ResolveInfo): 查询上下文对象
@@ -237,9 +202,7 @@ class User(ObjectType):
 
 
 class Photo(ObjectType):
-    """
-    定义实体对象, 表示照片
-    """
+    """定义实体对象, 表示照片"""
 
     class Meta:
         # 继承 CustomNode 接口
@@ -250,8 +213,7 @@ class Photo(ObjectType):
 
     @staticmethod
     async def resolve_for_user(parent: PhotoModel, info: ResolveInfo) -> UserModel:
-        """
-        解析 `for_user` 字段
+        """解析 `for_user` 字段
 
         Args:
             parent (PhotoModel): 当前查询的模型对象
@@ -263,10 +225,9 @@ class Photo(ObjectType):
         loader = cast(UserModelLoader, info.context.user_model_loader)
         return await loader.load(int(parent.for_user_id))
 
-    @staticmethod
-    async def get_node(parent: PhotoModel, info: ResolveInfo, id: ID) -> PhotoModel:
-        """
-        根据 ID 获取当前实体对应的模型对象
+    @classmethod
+    async def get_node(cls, info: ResolveInfo, id: ID) -> PhotoModel:
+        """根据 ID 获取当前实体对应的模型对象
 
         Args:
             info (ResolveInfo): 查询上下文对象
@@ -280,9 +241,7 @@ class Photo(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    定义查询实体类型
-    """
+    """定义查询实体类型"""
 
     user = CustomNode.Field(User)
     photo = CustomNode.Field(Photo)

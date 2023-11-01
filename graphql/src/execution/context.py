@@ -4,8 +4,7 @@ from graphene import Context, ObjectType, ResolveInfo, Schema, String
 
 
 class Query(ObjectType):
-    """
-    定义查询类
+    """定义查询类
 
     对应的 GraphQL 定义如下:
 
@@ -21,8 +20,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_name(parent: Literal[None], info: ResolveInfo) -> str:
-        """
-        解析 `name` 字段
+        """解析 `name` 字段
 
         Returns:
             str: 字段值
@@ -38,8 +36,7 @@ class Query(ObjectType):
         raise ValueError("")
 
 
-"""
-定义 schema 结构, 指定根查询对象
+"""定义 schema 结构, 指定根查询对象
 
 对应的 GraphQL 定义为
 

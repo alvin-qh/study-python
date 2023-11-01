@@ -4,8 +4,7 @@ from graphene import Mutation, ObjectType, ResolveInfo, Schema, String
 
 
 class RootQuery(ObjectType):
-    """
-    定义查询类型
+    """定义查询类型
 
     对应的 GraphQL 定义为:
 
@@ -23,8 +22,7 @@ class RootQuery(ObjectType):
 
     @staticmethod
     def resolve_hello(parent: Literal[None], info: ResolveInfo, name: str) -> str:
-        """
-        解析 `hello` 字段
+        """解析 `hello` 字段
 
         Args:
             name (str): 查询参数
@@ -40,14 +38,10 @@ class RootQuery(ObjectType):
 
 
 class CreateSomething(Mutation):
-    """
-    定义某个具体更改操作的 `Mutation` 类型
-    """
+    """定义某个具体更改操作的 `Mutation` 类型"""
 
     class Arguments:
-        """
-        更新操作的参数定义
-        """
+        """更新操作的参数定义"""
 
         # 定义字符串类型的 arg 参数
         arg = String(required=True)
@@ -61,8 +55,7 @@ class CreateSomething(Mutation):
 
 
 class RootMutation(ObjectType):
-    """
-    定义变更类型, 用于创建, 更新, 删除实体对象
+    """定义变更类型, 用于创建, 更新, 删除实体对象
 
     对应的 GraphQL 定义为:
 
@@ -78,9 +71,7 @@ class RootMutation(ObjectType):
 
 
 class RootSubscription(ObjectType):
-    """
-    定义订阅类型
-    """
+    """定义订阅类型"""
 
     field = String()
 
@@ -89,8 +80,7 @@ class RootSubscription(ObjectType):
         """Empty 定义字段"""
 
 
-"""
-定义 schema 结构, 指定根查询对象
+"""定义 schema 结构, 指定根查询对象
 
 对应的 GraphQL 定义为
 

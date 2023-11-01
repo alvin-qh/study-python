@@ -1,11 +1,11 @@
 import asyncio
-from typing import Generator
+from typing import Iterator
 
 from pytest import fixture
 
 
-@fixture
-def event_loop(scope="session") -> Generator[asyncio.AbstractEventLoop, None, None]:
+@fixture(scope="session")
+def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
     """
     定义 pytest 的 `fixture`, 为所有使用 `AbstractEventLoop` 对象的测试中提供 `event_loop` 对象
 
@@ -27,5 +27,5 @@ def event_loop(scope="session") -> Generator[asyncio.AbstractEventLoop, None, No
     loop.run_until_complete(asyncio.gather(*pending))
 
     # 等待 1 秒保证所有任务完毕后, 再关闭事件循环
-    loop.run_until_complete(asyncio.sleep(1))
+    loop.run_until_complete(asyncio.sleep(5))
     loop.close()

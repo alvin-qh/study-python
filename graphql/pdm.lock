@@ -5,7 +5,7 @@
 groups = ["default", "test", "lint"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:2a53b7fff4dabec22f29616f6dbded16ec009d509584a0a9f1afa2f6256be3f2"
+content_hash = "sha256:cc5ac8080453bd6d83ad9a59d165bd354d1bd5f30b5dce2e49d36974bafa9c32"
 
 [[package]]
 name = "aiodataloader"

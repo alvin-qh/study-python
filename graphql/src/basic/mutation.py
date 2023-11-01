@@ -1,5 +1,4 @@
-"""
-更新操作
+"""更新操作
 
 若要对实体对象进行更新操作 (添加/修改/删除), 需要用到 `Mutation` 类型.
 
@@ -99,8 +98,7 @@ from graphene import (
 
 
 class Person(ObjectType):
-    """
-    实体类
+    """实体类
 
     ```graphql
     type Person {
@@ -117,9 +115,7 @@ class Person(ObjectType):
 
 
 class CreatePerson1(Mutation):
-    """
-    通过 `Scalar` 类型参数更像实体的 `Mutation` 类型
-    """
+    """通过 `Scalar` 类型参数更像实体的 `Mutation` 类型"""
 
     class Arguments:
         """
@@ -148,8 +144,7 @@ class CreatePerson1(Mutation):
 
 
 class PersonInput(InputObjectType):
-    """
-    输入类, 用于输入要创建的对象
+    """输入类, 用于输入要创建的对象
 
     对应的 Graphql 定义为
 
@@ -167,8 +162,7 @@ class PersonInput(InputObjectType):
     age = Int(required=True)
 
     def to_scalar(self) -> Person:
-        """
-        将当前对象转为 `Person` 类型的对象
+        """将当前对象转为 `Person` 类型的对象
 
         Returns:
             Person: `Person` 类型对象
@@ -180,14 +174,10 @@ class PersonInput(InputObjectType):
 
 
 class CreatePerson2(Mutation):
-    """
-    通过 `InputObjectType` 作为参数更像实体的 `Mutation` 类型
-    """
+    """通过 `InputObjectType` 作为参数更像实体的 `Mutation` 类型"""
 
     class Arguments:
-        """
-        执行更新操作的参数类型
-        """
+        """执行更新操作的参数类型"""
 
         # 通过 `InputObjectType` 类型作为参数字段
         person_data = PersonInput(required=True)
@@ -199,8 +189,7 @@ class CreatePerson2(Mutation):
     def mutate(
         parent: Literal[None], info: ResolveInfo, person_data: PersonInput
     ) -> Person:
-        """
-        执行更像操作, 创建一个 `Person` 类型实体对象
+        """执行更像操作, 创建一个 `Person` 类型实体对象
 
         Args:
             person_data (PersonInput): `PersonInput` 类型参数对象
@@ -213,8 +202,7 @@ class CreatePerson2(Mutation):
 
 
 class Mutations(ObjectType):
-    """
-    进行更新处理的实体类型
+    """进行更新处理的实体类型
 
     对应的 Graphql 定义为:
 
@@ -234,16 +222,13 @@ class Mutations(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    创建查询实体类 (本测试中无用, 仅为填充参数)
-    """
+    """创建查询实体类 (本测试中无用, 仅为填充参数)"""
 
     # 定义一个任意字段
     answer = String(default_value="")
 
 
-"""
-定义 schema 结构
+"""定义 schema 结构
 
 对应的 GraphQL 定义为
 

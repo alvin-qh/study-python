@@ -1,14 +1,24 @@
 from typing import Any, Callable, Literal, Optional
 
-from graphene import (ID, Argument, Field, InputObjectType, Int, Mutation,
-                      ObjectType, ResolveInfo, Schema, String)
+from graphene import (
+    ID,
+    Argument,
+    Field,
+    InputObjectType,
+    Int,
+    Mutation,
+    ObjectType,
+    ResolveInfo,
+    Schema,
+    String,
+)
+from mypy_extensions import KwArg
 
 from graphql import OperationType
 
 
 class User(ObjectType):
-    """
-    定义实体类型
+    """定义实体类型
 
     对应的 GraphQL 定义如下:
 
@@ -29,8 +39,7 @@ class User(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    定义查询类型, 用于查询 `User` 类型的实体对象
+    """定义查询类型, 用于查询 `User` 类型的实体对象
 
     对应的 GraphQL 定义如下:
 
@@ -46,8 +55,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_user(parent: Literal[None], info: ResolveInfo, id: str) -> User:
-        """
-        解析 `user` 字段
+        """解析 `user` 字段
 
         Args:
             id (str): 查询参数, 要查询 `User` 对象 `id` 值
@@ -65,8 +73,7 @@ class Query(ObjectType):
 
 
 class UserInput(InputObjectType):
-    """
-    定义创建 `User` 对象的输入对象
+    """定义创建 `User` 对象的输入对象
 
     对应的 GraphQL 定义如下:
 
@@ -83,14 +90,10 @@ class UserInput(InputObjectType):
 
 
 class UserCreate(Mutation):
-    """
-    本类型用于创建 `User` 实体对象
-    """
+    """本类型用于创建 `User` 实体对象"""
 
     class Arguments:
-        """
-        创建实体对象所需的参数定义类型
-        """
+        """创建实体对象所需的参数定义类型"""
 
         # 定义输入参数, 为 UserInput 类型
         user_input = UserInput(required=True)
@@ -100,8 +103,7 @@ class UserCreate(Mutation):
 
     @staticmethod
     def mutate(parent: Any, info: ResolveInfo, user_input: UserInput) -> User:
-        """
-        定义变更操作
+        """定义变更操作
 
         Args:
             user_input (UserInput): 创建对象的参数
@@ -117,8 +119,7 @@ class UserCreate(Mutation):
 
 
 class UserMutation(ObjectType):
-    """
-    定义变更类型, 用于创建, 更新, 删除实体对象
+    """定义变更类型, 用于创建, 更新, 删除实体对象
 
     对应的 GraphQL 定义如下:
 
@@ -134,8 +135,7 @@ class UserMutation(ObjectType):
 
 
 class ModificationMiddleware:
-    """
-    定义类型中间件
+    """定义类型中间件
 
     `graphene` 具备两种类型的中间件形式, 类型和函数, 当前是类型形式的中间件
 
@@ -143,10 +143,13 @@ class ModificationMiddleware:
     """
 
     def resolve(
-        self, next: Callable, instance: Optional[User], info: ResolveInfo, **kwargs
+        self,
+        next: Callable[[Optional[User], ResolveInfo, KwArg(Any)], Any],
+        instance: Optional[User],
+        info: ResolveInfo,
+        **kwargs: Any,
     ) -> Any:
-        """
-        解析方法, 在查询或更新前对参数或上下文进行处理
+        """解析方法, 在查询或更新前对参数或上下文进行处理
 
         Args:
             next (Callable): 下一个中间件解析方法
@@ -177,8 +180,7 @@ class ModificationMiddleware:
 
     @staticmethod
     def _check_operation(info: ResolveInfo, type_: OperationType, name: str) -> bool:
-        """
-        判断当前进行的操作
+        """判断当前进行的操作
 
         Args:
             info (ResolveInfo): 上下文信息对象
@@ -188,13 +190,13 @@ class ModificationMiddleware:
         Returns:
             bool: 是否为期待的操作
         """
-        return (
-            info.operation.operation == type_ and info.operation.name.value == name  # 判断操作名称是否符合期待
+        return (  # 判断操作名称是否符合期待
+            bool(info.operation.operation == type_)
+            and info.operation.name.value == name
         )
 
 
-"""
-定义 schema 结构, 指定根查询对象
+"""定义 schema 结构, 指定根查询对象
 
 对应的 GraphQL 定义为
 

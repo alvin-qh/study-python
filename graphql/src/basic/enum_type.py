@@ -1,5 +1,4 @@
-"""
-枚举类型
+"""枚举类型
 
 Graphql 支持定义枚举, 用于定义一组有意义的标识符, 例如:
 
@@ -75,8 +74,7 @@ from graphene import (
 
 
 class Episode(Enum):
-    """
-    以标准形式定义 graphql 枚举类型
+    """以标准形式定义 graphql 枚举类型
 
     对应的 GraphQL 定义如下:
 
@@ -95,8 +93,7 @@ class Episode(Enum):
 
 
 class Movie(ObjectType):
-    """
-    定义一个表示影片的类型
+    """定义一个表示影片的类型
 
     对应的 GraphQL 定义如下:
 
@@ -115,8 +112,7 @@ class Movie(ObjectType):
     episode = Episode(required=True)
 
 
-"""
-以 Enum 实例形式定义 graphql 枚举类型
+"""以 Enum 实例形式定义 graphql 枚举类型
 
 对应的 GraphQL 定义如下:
 
@@ -131,8 +127,7 @@ Faction = Enum("Faction", [("LIGHT_SIDE", 2), ("DARK_SIDE", 3)])
 
 
 class Character(ObjectType):
-    """
-    定义一个表示角色的类型
+    """定义一个表示角色的类型
 
     对应的 GraphQL 定义如下:
 
@@ -153,8 +148,7 @@ class Character(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    定义查询类型
+    """定义查询类型
 
     对应的 GraphQL 定义如下:
 
@@ -186,8 +180,7 @@ class Query(ObjectType):
         info: ResolveInfo,
         episode: Episode,
     ) -> Movie:
-        """
-        解析影片字段
+        """解析影片字段
 
         Args:
             episode (Episode): 影片所属的阶段 (枚举类型)
@@ -215,8 +208,7 @@ class Query(ObjectType):
         info: ResolveInfo,
         faction: Faction,  # type: ignore
     ) -> ListType[Character]:
-        """
-        解析角色字段
+        """解析角色字段
 
         Args:
             faction (Faction): 角色的派别
@@ -242,8 +234,7 @@ class Query(ObjectType):
         raise ValueError("faction")
 
 
-"""
-定义 schema 结构, 包括查询对象和定义的类型
+"""定义 schema 结构, 包括查询对象和定义的类型
 
 对应的 GraphQL 定义为
 

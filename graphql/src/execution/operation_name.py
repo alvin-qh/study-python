@@ -4,8 +4,7 @@ from graphene import ID, Field, ObjectType, ResolveInfo, Schema, String
 
 
 class User(ObjectType):
-    """
-    定义实体对象
+    """定义实体对象
 
     对应的 GraphQL 定义为
 
@@ -26,8 +25,7 @@ class User(ObjectType):
 
     @staticmethod
     def resolve_full_name(parent: "User", info: ResolveInfo) -> str:
-        """
-        解析 `full_name` 字段.
+        """解析 `full_name` 字段.
 
         `full_name` 字段属于 `User` 类型, 相当于 `User` 类型的关联数据.
         所以此时 `parent` 参数的值为 `User` 类型的对象
@@ -51,8 +49,7 @@ dataset = {
 
 
 class Query(ObjectType):
-    """
-    定义查询类型
+    """定义查询类型
 
     对应的 GraphQL 定义为
 
@@ -68,9 +65,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_user(parent: Literal[None], info: ResolveInfo, id: str) -> User:
-        """
-        解析 `user` 字段, 这是整个查询的顶级实体.
-        `User` 类型还包括 `full_name` 字段, 相当于是下一级关联实体
+        """解析 `user` 字段, 这是整个查询的顶级实体.`User` 类型还包括 `full_name` 字段, 相当于是下一级关联实体
 
         Args:
             id (str): 查询参数, 用户 ID
@@ -81,8 +76,7 @@ class Query(ObjectType):
         return dataset[int(id)]
 
 
-"""
-定义 schema 结构, 指定根查询对象
+"""定义 schema 结构, 指定根查询对象
 
 对应的 GraphQL 定义为
 

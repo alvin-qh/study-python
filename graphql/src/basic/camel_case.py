@@ -1,5 +1,4 @@
-"""
-Graphql 中的命名规范
+"""Graphql 中的命名规范
 
 Graphql 默认使用 Camel Case (驼峰) 规范命名字段, 而 Python 采用下划线规范进行命名
 
@@ -33,8 +32,7 @@ from graphene import Field, ObjectType, ResolveInfo, Schema, String
 
 
 class Person(ObjectType):
-    """
-    定义实体类型用来验证字段名称转化规则
+    """定义实体类型用来验证字段名称转化规则
 
     标准的 GraphQL 要求使用 "驼峰" 法对字段进行命名, Python 一般使用 "下划线" 分割的规则对字段命名.
     为了符合标准, graphene 框架采用了自动转换的规则, 将下划线命名的字段自动转为驼峰命名方式, 规则为:
@@ -64,8 +62,7 @@ class Person(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    定义根查询类型
+    """定义根查询类型
 
     对应的 GraphQL 定义为:
 
@@ -81,8 +78,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_person(parent: Literal[None], info: ResolveInfo) -> Person:
-        """
-        解析 `person` 字段, 返回 `Person` 类型的实体对象
+        """解析 `person` 字段, 返回 `Person` 类型的实体对象
 
         Returns:
             Student: 获取一个 `Person` 类型的实体对象
@@ -91,8 +87,7 @@ class Query(ObjectType):
         return Person(last_name="Qu", other_name="Alvin")
 
 
-"""
-定义 schema 对象, auto_camelcase 为 True (默认值) 表示遵循自动转驼峰的命名规则
+"""定义 schema 对象, auto_camelcase 为 True (默认值) 表示遵循自动转驼峰的命名规则
 
 对应的 GraphQL 定义为
 

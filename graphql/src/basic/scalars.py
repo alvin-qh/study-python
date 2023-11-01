@@ -1,5 +1,4 @@
-"""
-Scalar 类型
+"""Scalar 类型
 
 Scalar (标量) 类型是 Graphene 中定义的一系列对应 Graphql 内置类型的类型, 包含:
 
@@ -40,8 +39,7 @@ from graphql import StringValueNode, ValueNode
 
 
 class Stuff(ObjectType):
-    """
-    graphene 框架内置了所有 GraphQL 基本类型, 包括:
+    """graphene 框架内置了所有 GraphQL 基本类型, 包括:
     - `ID`
     - `String`
     - `Int`
@@ -78,8 +76,7 @@ class Stuff(ObjectType):
 
 
 class Calendar(ObjectType):
-    """
-    演示 `Date`, `DateTime` 和 `Time` 三个表示日期时间的类型
+    """演示 `Date`, `DateTime` 和 `Time` 三个表示日期时间的类型
 
     - `Date` 对应 Python 的 `datetime.date` 类型, 表示一个日期
     - `DateTime` 对应 Python 的 `datetime.datetime` 类型, 表示一个日期时间, 格式采用 ISO-8601
@@ -109,8 +106,7 @@ class Calendar(ObjectType):
     def resolve_one_week_from(
         parent: "Calendar", info: ResolveInfo, date: Date
     ) -> Date:
-        """
-        解析 `one_week_from` 字段, 根据传入的 `date` 参数, 返回其加上一周后的日期
+        """解析 `one_week_from` 字段, 根据传入的 `date` 参数, 返回其加上一周后的日期
 
         Args:
             date (Date): 传入的日期参数
@@ -126,8 +122,7 @@ class Calendar(ObjectType):
         info: ResolveInfo,
         datetime: DateTime,
     ) -> DateTime:
-        """
-        解析 `one_hour_from` 字段, 根据传入的 `datetime` 参数, 返回其加上一小时后的日期时间
+        """解析 `one_hour_from` 字段, 根据传入的 `datetime` 参数, 返回其加上一小时后的日期时间
 
         Args:
             datetime (DateTime): 传入的日期时间参数
@@ -157,8 +152,7 @@ class Calendar(ObjectType):
 
 
 class Calculator(ObjectType):
-    """
-    演示 `Decimal` 大数类型
+    """演示 `Decimal` 大数类型
 
     对应的 GraphQL 定义如下:
 
@@ -178,8 +172,7 @@ class Calculator(ObjectType):
         info: ResolveInfo,
         number: Decimal,
     ) -> Decimal:
-        """
-        解析 `add_one_to` 类型, 对传入的 `Decimal` 类型数值加 `1` 后返回
+        """解析 `add_one_to` 类型, 对传入的 `Decimal` 类型数值加 `1` 后返回
 
         Args:
             number (Decimal): 传入的任意 `Decimal` 类型参数
@@ -191,8 +184,7 @@ class Calculator(ObjectType):
 
 
 class GenericType(Scalar):
-    """
-    自定义 Scalar 类型, 可以处理泛化类型
+    """自定义 Scalar 类型, 可以处理泛化类型
 
     对应的 GraphQL 定义如下:
 
@@ -203,8 +195,7 @@ class GenericType(Scalar):
 
     @staticmethod
     def serialize(value: Any) -> Any:
-        """
-        将返回客户端的值 (字段值) 序列化成所需的形式
+        """将返回客户端的值 (字段值) 序列化成所需的形式
 
         Args:
             value (Any): 为字段的 `resolve_xxx` 方法返回的结果 (或赋值给字段的值)
@@ -236,8 +227,7 @@ class GenericType(Scalar):
 
     @staticmethod
     def parse_literal(node: ValueNode) -> Any:
-        """
-        将从发送到服务端的字面量值进行解析
+        """将从发送到服务端的字面量值进行解析
 
         Args:
             node (ValueNode): 包装字面量的对象
@@ -248,8 +238,7 @@ class GenericType(Scalar):
 
     @staticmethod
     def parse_value(value: Any) -> Any:
-        """
-        将从发送到服务端的值 (参数值) 进行解析
+        """将从发送到服务端的值 (参数值) 进行解析
 
         Args:
             value (Any): 发送到服务端的值, 可以为 `str`, `int`, `float`, `boolean` 类型
@@ -264,8 +253,7 @@ class GenericType(Scalar):
 
 
 class JSONObject(ObjectType):
-    """
-    演示 `JSONString` json 字符串类型
+    """演示 `JSONString` json 字符串类型
 
     对应的 GraphQL 定义如下:
 
@@ -296,8 +284,7 @@ class JSONObject(ObjectType):
         key: str,
         value: str,
     ) -> Dict[str, Any]:
-        """
-        解析 `update_json_key` 字段
+        """解析 `update_json_key` 字段
 
         本方法返回类型为一个 `Dict` 字典对象, 但客户端会接收到一个对应的 JSON 字符串
 
@@ -319,8 +306,7 @@ class JSONObject(ObjectType):
 
 
 class Base64(Scalar):
-    """
-    自定义 Scalar 类型
+    """自定义 Scalar 类型
 
     当默认的 Scalar 类型无法满足要求是, 可以自定义所需的 Scalar 类型
 
@@ -336,8 +322,7 @@ class Base64(Scalar):
 
     @staticmethod
     def serialize(value: Any) -> Any:
-        """
-        将返回客户端的值 (字段值) 序列化成所需的形式
+        """将返回客户端的值 (字段值) 序列化成所需的形式
 
         序列化的结果的类型可以为 `str`, `int`, `float`, `boolean` 类型
 
@@ -351,8 +336,7 @@ class Base64(Scalar):
 
     @staticmethod
     def parse_literal(node: ValueNode) -> Any:
-        """
-        将从发送到服务端的字面量值进行解析
+        """将从发送到服务端的字面量值进行解析
 
         Args:
             node (ValueNode): 包装字面量的对象
@@ -370,8 +354,7 @@ class Base64(Scalar):
 
     @staticmethod
     def parse_value(value: Any) -> Any:
-        """
-        将从发送到服务端的值 (参数值) 进行解析
+        """将从发送到服务端的值 (参数值) 进行解析
 
         客户端发送的值类型可以为 `str`, `int`, `float`, `boolean` 类型, 本方法将其解析为所需
         的类型
@@ -393,9 +376,7 @@ class Base64(Scalar):
 
 
 class EncodedId(ObjectType):
-    """
-    测试自定义 Scalar 类型
-    """
+    """测试自定义 Scalar 类型"""
 
     # 定义 Base64 自定义类型字段
     # 字段值会发送到客户端, 执行 Base64 类型的 serialize 方法
@@ -408,8 +389,7 @@ class EncodedId(ObjectType):
         info: ResolveInfo,
         value: str,
     ) -> int:
-        """
-        解析 `increment_encoded_id` 字段, 将传上来的 Base64 值解析为整数, 加 `1` 后返回
+        """解析 `increment_encoded_id` 字段, 将传上来的 Base64 值解析为整数, 加 `1` 后返回
 
         Args:
             value (str): `Base64` 值解析后的结果, 解析调用 `Base64` 类型的 `parse_value` 方法
@@ -421,8 +401,7 @@ class EncodedId(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    组合上述类型为一个 `Query` 类型的字段
+    """组合上述类型为一个 `Query` 类型的字段
 
     对应的 GraphQL 定义如下:
 
@@ -445,9 +424,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_stuff(parent: Literal[None], info: ResolveInfo) -> Stuff:
-        """
-        解析 `stuff` 字段
-        """
+        """解析 `stuff` 字段"""
         # 返回 Stuff 类型对象
         return Stuff(
             id=1,
@@ -459,9 +436,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_calendar(parent: Literal[None], info: ResolveInfo) -> Calendar:
-        """
-        解析 `calendar` 字段
-        """
+        """解析 `calendar` 字段"""
         # 返回 Calendar 类型对象
         return Calendar()
 
@@ -475,23 +450,18 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_json_object(parent: Literal[None], info: ResolveInfo) -> JSONObject:
-        """
-        解析 `json_object` 字段
-        """
+        """解析 `json_object` 字段"""
         # 返回 JSONObject 类型对象
         return JSONObject()
 
     @staticmethod
     def resolve_encoded_id(parent: Literal[None], info: ResolveInfo) -> EncodedId:
-        """
-        解析 `encoded_id` 字段
-        """
+        """解析 `encoded_id` 字段"""
         # 返回 EncodedId 类型对象
         return EncodedId()
 
 
-"""
-定义 schema 对象, 对应的 GraphQL 定义为
+"""定义 schema 对象, 对应的 GraphQL 定义为
 
 ```
 schema {

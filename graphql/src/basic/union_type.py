@@ -14,8 +14,7 @@ from graphene import (
 
 
 class Human(ObjectType):
-    """
-    表示人类的实体类型
+    """表示人类的实体类型
 
     对应的 GraphQL 定义如下:
 
@@ -32,8 +31,7 @@ class Human(ObjectType):
 
 
 class Droid(ObjectType):
-    """
-    表示机器人的实体类型
+    """表示机器人的实体类型
 
     对应的 GraphQL 定义如下:
 
@@ -68,8 +66,7 @@ class StarShip(ObjectType):
 
 
 class SearchResult(Union):
-    """
-    表示查询结果的实体类型,
+    """表示查询结果的实体类型,
 
     该类型是一个组合类型, 可以同时表示 `Human`, `Droid` 或 `Starship` 之一
 
@@ -85,9 +82,7 @@ class SearchResult(Union):
     """
 
     class Meta:
-        """
-        实体类型元类型, 对于 `Union` 类型来说, 需要说明要组合的类型列表
-        """
+        """实体类型元类型, 对于 `Union` 类型来说, 需要说明要组合的类型列表"""
 
         types = (Human, Droid, StarShip)
 
@@ -113,9 +108,7 @@ dataset: Dict[str, UnionType[Human, Droid, StarShip]] = {
 
 
 class Query(ObjectType):
-    """
-    查询类型, 演示 `Union` 实体类型的使用
-    """
+    """查询类型, 演示 `Union` 实体类型的使用"""
 
     # 查询结果字段, 为 Union 实体类型字段
     search_result = Field(
@@ -129,8 +122,7 @@ class Query(ObjectType):
         info: ResolveInfo,
         name: str,
     ) -> Optional[UnionType[Human, Droid, StarShip]]:
-        """
-        解析 `search_result` 字段
+        """解析 `search_result` 字段
 
         Args:
             name (str): 查询参数
@@ -141,8 +133,7 @@ class Query(ObjectType):
         return dataset.get(name)
 
 
-"""
-定义 schema 结构, 包括查询对象和定义的类型
+"""定义 schema 结构, 包括查询对象和定义的类型
 
 对应的 GraphQL 定义为
 

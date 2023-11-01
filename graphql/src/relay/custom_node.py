@@ -9,8 +9,7 @@ from graphene import ID, DateTime, Field, Node, ObjectType, ResolveInfo, Schema,
 
 
 class CustomNode(Node):
-    """
-    自定义 `Node` 类型
+    """自定义 `Node` 类型
 
     自定义 `Node` 类型主要是为了解决 Global ID 的编码和解析
 
@@ -28,8 +27,7 @@ class CustomNode(Node):
 
     @staticmethod
     def to_global_id(type: str, id: str) -> str:
-        """
-        将实体类型和实体对象 ID 转为 Global ID
+        """将实体类型和实体对象 ID 转为 Global ID
 
         Args:
             type (str): 实体类型名称
@@ -46,8 +44,7 @@ class CustomNode(Node):
         global_id: str,
         only_type: Optional[ObjectType] = None,
     ) -> Node:
-        """
-        通过 Global ID 获取 `Node` 类型实体对象
+        """通过 Global ID 获取 `Node` 类型实体对象
 
         Args:
             info (ResolveInfo): 查询上下文对象
@@ -65,8 +62,7 @@ class CustomNode(Node):
 
 
 class User(ObjectType):
-    """
-    定义用户实体类型
+    """定义用户实体类型
 
     对应的 GraphQL 定义如下:
 
@@ -78,9 +74,7 @@ class User(ObjectType):
     """
 
     class Meta:
-        """
-        定义实体类型元类型, 指定所实现的接口
-        """
+        """定义实体类型元类型, 指定所实现的接口"""
 
         interfaces = (CustomNode,)
 
@@ -89,8 +83,7 @@ class User(ObjectType):
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: ID) -> Self:
-        """
-        根据 `id` 获取当前实体对象
+        """根据 `id` 获取当前实体对象
 
         Args:
             info (ResolveInfo): 上下文对象
@@ -104,8 +97,7 @@ class User(ObjectType):
 
 
 class Photo(ObjectType):
-    """
-    照片实体对象
+    """照片实体对象
 
     对应的 GraphQL 定义如下:
 
@@ -118,9 +110,7 @@ class Photo(ObjectType):
     """
 
     class Meta:
-        """
-        元类型, 指定实体类型所实现的接口
-        """
+        """元类型, 指定实体类型所实现的接口"""
 
         interfaces = (CustomNode,)
 
@@ -132,8 +122,7 @@ class Photo(ObjectType):
 
     @staticmethod
     async def resolve_for_user(parent: "Photo", info: ResolveInfo) -> User:
-        """
-        解析 `for_user` 字段
+        """解析 `for_user` 字段
 
         Args:
             parent (Photo): 当前实体对象
@@ -147,8 +136,7 @@ class Photo(ObjectType):
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: ID) -> Self:
-        """
-        根据 ID 获取当前实体类型对象
+        """根据 ID 获取当前实体类型对象
 
         Args:
             info (ResolveInfo): 上下文对象
@@ -162,9 +150,7 @@ class Photo(ObjectType):
 
 
 class UserLoader(DataLoader[int, User]):
-    """
-    用户实体对象的 Loader 类
-    """
+    """用户实体对象的 Loader 类"""
 
     async def batch_load_fn(self, keys: ListType[ID]) -> ListType[User]:
         """
@@ -181,9 +167,7 @@ class UserLoader(DataLoader[int, User]):
 
 
 class PhotoLoader(DataLoader[int, Photo]):
-    """
-    照片实体对象 Loader 类
-    """
+    """照片实体对象 Loader 类"""
 
     async def batch_load_fn(self, keys: ListType[ID]) -> ListType[Photo]:
         """
@@ -200,9 +184,7 @@ class PhotoLoader(DataLoader[int, Photo]):
 
 
 class Dataset:
-    """
-    数据集类型
-    """
+    """数据集类型"""
 
     users: Dict[int, User]
     photos: Dict[int, Photo]
@@ -212,8 +194,7 @@ class Dataset:
         self.photos = {}
 
     def get_user(self, id: int) -> User:
-        """
-        根据用户 ID 获取用户实体对象
+        """根据用户 ID 获取用户实体对象
 
         Args:
             id (str): 用户 ID
@@ -224,8 +205,7 @@ class Dataset:
         return self.users[id]
 
     def get_photo(self, id: int) -> Photo:
-        """
-        根据 ID 获取照片实体对象
+        """根据 ID 获取照片实体对象
 
         Args:
             id (int): 照片 ID
@@ -236,8 +216,7 @@ class Dataset:
         return self.photos[id]
 
     def save_user(self, user: User) -> None:
-        """
-        保存用户实体对象
+        """保存用户实体对象
 
         Args:
             user (User): 用户实体对象
@@ -245,8 +224,7 @@ class Dataset:
         self.users[user.id] = user
 
     def save_photo(self, photo: Photo) -> None:
-        """
-        存储照片实体对象
+        """存储照片实体对象
 
         Args:
             photo (Photo): 照片实体对象
@@ -254,8 +232,7 @@ class Dataset:
         self.photos[photo.id] = photo
 
     def user_count(self) -> int:
-        """
-        获取用户数量
+        """获取用户数量
 
         Returns:
             int: 用户数量
@@ -264,6 +241,7 @@ class Dataset:
 
     @staticmethod
     def build() -> "Dataset":
+        """构建数据集对象"""
         dataset = Dataset()
 
         # 设置 User 对象集合
@@ -298,8 +276,7 @@ dataset = Dataset.build()
 
 
 class Query(ObjectType):
-    """
-    查询实体类型
+    """查询实体类型
 
     对应的 GraphQL 定义如下:
 
@@ -318,8 +295,7 @@ class Query(ObjectType):
     node = CustomNode.Field()
 
 
-"""
-定义 schema 结构
+"""定义 schema 结构
 
 对应的 GraphQL 定义为
 

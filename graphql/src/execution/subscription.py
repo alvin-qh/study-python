@@ -7,8 +7,7 @@ from graphene import ObjectType, ResolveInfo, Schema, String
 
 
 class Query(ObjectType):
-    """
-    查询类型, 在本例中, 该类型仅是为了满足 `graphene` 框架的参数要求
+    """查询类型, 在本例中, 该类型仅是为了满足 `graphene` 框架的参数要求
 
     对应的 GraphQL 定义为
 
@@ -23,8 +22,7 @@ class Query(ObjectType):
 
 
 class Subscription(ObjectType):
-    """
-    订阅类型, 可以向调用方
+    """订阅类型, 可以向调用方
 
     对应的 GraphQL 定义为
 

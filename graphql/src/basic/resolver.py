@@ -1,5 +1,4 @@
-"""
-解析器
+"""解析器
 
 对于 Graphene 框架来说, 一个字段的值有两种获取方式:
 
@@ -49,8 +48,7 @@ ChinesePerson = namedtuple("ChinesePerson", ["xing", "ming"])
 
 
 def get_chinese_person() -> ChinesePerson:
-    """
-    获取一个中文名的 `ChinesePerson` 对象
+    """获取一个中文名的 `ChinesePerson` 对象
 
     Returns:
         ChinesePerson: `ChinesePerson` 对象, 具备 `xing`, `ming` 两个属性
@@ -59,8 +57,7 @@ def get_chinese_person() -> ChinesePerson:
 
 
 class Person(ObjectType):
-    """
-    人员类型
+    """人员类型
 
     对应的 GraphQL 定义如下:
 
@@ -81,8 +78,7 @@ class Person(ObjectType):
     def resolve_full_name(
         parent: Union[ChinesePerson, "Person"], info: ResolveInfo
     ) -> str:
-        """
-        解析 `full_name` 字段
+        """解析 `full_name` 字段
 
         Args:
             parent (Union[ChinesePerson, Person]): 根据上一级解析, 可以是 `ChinesePerson` 和
@@ -105,9 +101,7 @@ def resolve_person(
     info: ResolveInfo,
     type: str,
 ) -> Union[Person, ChinesePerson]:
-    """
-    解析 `person` 字段, Graphene 可以使用独立的函数用作字段解析, 只需要在字段声明时指定
-    `resolver` 参数即可
+    """解析 `person` 字段, Graphene 可以使用独立的函数用作字段解析, 只需要在字段声明时指定 `resolver` 参数即可
 
     根据 `type` 参数的值, 该方法会返回 `ChinesePerson` 和 `Person` 类型的对象
 
@@ -135,8 +129,7 @@ def resolve_person(
 
 
 class Query(ObjectType):
-    """
-    定义 `Query` 类型
+    """定义 `Query` 类型
 
     对应的 GraphQL 定义如下:
 
@@ -152,8 +145,7 @@ class Query(ObjectType):
     )
 
 
-"""
-定义 schema 对象, 对应的 GraphQL 定义为
+"""定义 schema 对象, 对应的 GraphQL 定义为
 
 ```
 schema {

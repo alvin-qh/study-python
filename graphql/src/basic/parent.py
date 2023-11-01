@@ -1,5 +1,4 @@
-"""
-`parent` 参数
+"""`parent` 参数
 
 Graphene 中的各类方法, 往往要传递一个 `parent` 参数 (例如: resolve 方法或 mutation 方法)
 
@@ -38,8 +37,7 @@ from graphene import Field, ObjectType, ResolveInfo, Schema, String
 
 
 class Person(ObjectType):
-    """
-    定义实体类型
+    """定义实体类型
 
     对应的 Graphql 定义为:
 
@@ -54,15 +52,16 @@ class Person(ObjectType):
 
     # 第一个名字
     first_name = String(required=True)
+
     # 第二个名字
     last_name = String(required=True)
+
     # 全名
     full_name = String(required=True)
 
     @staticmethod
     def resolve_full_name(parent: "Person", info: ResolveInfo) -> str:
-        """
-        解析 `full_name` 字段
+        """解析 `full_name` 字段
 
         Args:
             parent (Person): 当前对象本身
@@ -75,8 +74,7 @@ class Person(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    查询实体类型
+    """查询实体类型
 
     对应的 Graphql 定义:
 
@@ -91,8 +89,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_person(parent: Optional[str], info: ResolveInfo) -> Person:
-        """
-        解析 `person` 字段
+        """解析 `person` 字段
 
         Returns:
             parent: `schema.execute` 函数的 `root` 参数值
@@ -111,8 +108,7 @@ class Query(ObjectType):
         )
 
 
-"""
-定义 schema 结构
+"""定义 schema 结构
 
 对应的 GraphQL 定义为
 

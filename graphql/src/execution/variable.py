@@ -4,8 +4,7 @@ from graphene import ID, Field, ObjectType, ResolveInfo, Schema, String
 
 
 class User(ObjectType):
-    """
-    定义实体对象
+    """定义实体对象
 
     对应的 GraphQL 定义为
 
@@ -30,8 +29,7 @@ dataset = {
 
 
 class Query(ObjectType):
-    """
-    定义查询类型
+    """定义查询类型
 
     对应的 GraphQL 定义为
 
@@ -47,8 +45,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_user(parent: Literal[None], info: ResolveInfo, id: int) -> User:
-        """
-        解析 `user` 字段
+        """解析 `user` 字段
 
         Args:
             id (int): 查询参数, 实体的 id
@@ -59,8 +56,7 @@ class Query(ObjectType):
         return dataset[int(id)]
 
 
-"""
-定义 schema 结构, 指定根查询对象
+"""定义 schema 结构, 指定根查询对象
 
 对应的 GraphQL 定义为
 

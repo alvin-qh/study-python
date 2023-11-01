@@ -1,5 +1,4 @@
-"""
-演示如何在 Graphql 查询中传递参数
+"""演示如何在 Graphql 查询中传递参数
 
 在 Graphql 结构中, 可以定义参数和传递参数, 例如如下定义:
 
@@ -56,8 +55,7 @@ from graphene import Argument, Field, ObjectType, ResolveInfo, Schema, String
 
 
 class Human(ObjectType):
-    """
-    实体类型, 表示一个人类类型
+    """实体类型, 表示一个人类类型
 
     对应的 GraphQL 定义为:
 
@@ -77,8 +75,7 @@ class Human(ObjectType):
 
     @staticmethod
     def get_human(name: str) -> "Human":
-        """
-        根据一个全名获取 `Human` 实体对象
+        """根据一个全名获取 `Human` 实体对象
 
         Args:
             name (str): 全名, 用 `·` 分隔
@@ -91,8 +88,7 @@ class Human(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    查询对象, 演示查询时的参数传递
+    """查询对象, 演示查询时的参数传递
 
     对应的 GraphQL 定义为:
 
@@ -117,8 +113,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_human1(parent: Literal[None], info: ResolveInfo, name: str) -> Human:
-        """
-        解析字段, 通过命名参数接收查询参数 (`name` 参数), 该参数是通过 `Field` 类型构造器的 `**extra_args`
+        """解析字段, 通过命名参数接收查询参数 (`name` 参数), 该参数是通过 `Field` 类型构造器的 `**extra_args`
         参数传递的
 
         Args:
@@ -133,8 +128,7 @@ class Query(ObjectType):
     def resolve_human2(
         parent: Literal[None], info: ResolveInfo, **kwargs: Any
     ) -> Human:
-        """
-        解析字段, 通过命名参数接收查询参数 (`name` 参数), 该参数是通过 `Field` 类型构造器的 `**extra_args`
+        """解析字段, 通过命名参数接收查询参数 (`name` 参数), 该参数是通过 `Field` 类型构造器的 `**extra_args`
         参数传递的
 
         Args:
@@ -150,8 +144,7 @@ class Query(ObjectType):
 
     @staticmethod
     def resolve_human3(parent: Literal[None], info: ResolveInfo, name: str) -> Human:
-        """
-        解析字段, 通过命名参数接收查询参数 (`name` 参数), 该参数是通过 `Field` 类型构造器的 `args`
+        """解析字段, 通过命名参数接收查询参数 (`name` 参数), 该参数是通过 `Field` 类型构造器的 `args`
         参数传递的
 
         Args:
@@ -163,8 +156,7 @@ class Query(ObjectType):
         return Human.get_human(name=name)
 
 
-"""
-定义 schema 对象
+"""定义 schema 对象
 
 对应的 GraphQL 定义为
 

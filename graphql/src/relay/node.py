@@ -7,8 +7,7 @@ from graphene import ID, Field, Node, ObjectType, ResolveInfo, Schema, String
 
 
 class Ship(ObjectType):
-    """
-    定义实体类型, 该实体类型从 `Node` 接口继承
+    """定义实体类型, 该实体类型从 `Node` 接口继承
 
     `Node` 接口包含 `id` 字段, `id` 字段为 `String` 类型, 保存一个 base64 编码的 ID',
     也称为 Global ID, 即统一 ID
@@ -26,9 +25,7 @@ class Ship(ObjectType):
     """
 
     class Meta:
-        """
-        指定 `interfaces` 接口集合, 从 `Node` 接口继承
-        """
+        """指定 `interfaces` 接口集合, 从 `Node` 接口继承"""
 
         interfaces = (Node,)
 
@@ -37,8 +34,7 @@ class Ship(ObjectType):
 
     @classmethod
     async def get_node(cls, info: ResolveInfo, id: ID) -> Self:
-        """
-        根据 `id` 获取对应当前对象
+        """根据 `id` 获取对应当前对象
 
         该方法为协程异步方法
 
@@ -57,21 +53,16 @@ class Ship(ObjectType):
 
 
 class Dataset:
-    """
-    数据集类型
-    """
+    """数据集类型"""
 
     ships: Dict[int, Ship]
 
     def __init__(self) -> None:
-        """
-        初始化数据集对象
-        """
+        """初始化数据集对象"""
         self.ships = {}
 
     def get_ship(self, id: int) -> Ship:
-        """
-        从数据集中获取 `Ship` 类型实体对象
+        """从数据集中获取 `Ship` 类型实体对象
 
         Args:
             id (int): 对象 ID
@@ -82,8 +73,7 @@ class Dataset:
         return self.ships[id]
 
     def save_ship(self, ship: Ship) -> None:
-        """
-        将 `Ship` 类型实体对象保存到数据集中
+        """将 `Ship` 类型实体对象保存到数据集中
 
         Args:
             ship (Ship): `Ship` 实体对象
@@ -92,8 +82,7 @@ class Dataset:
 
     @staticmethod
     def build() -> "Dataset":
-        """
-        构建测试数据集
+        """构建测试数据集
 
         Returns:
             Dataset: 数据集对象
@@ -115,16 +104,13 @@ class Dataset:
 
 
 class ShipLoader(DataLoader[int, Ship]):
-    """
-    `Ship` 类型实体对象的数据读取器
-    """
+    """`Ship` 类型实体对象的数据读取器"""
 
     # 获取数据集对象
     dataset = Dataset.build()
 
     async def batch_load_fn(self, keys: Iterable[ID]) -> ListType[Ship]:
-        """
-        批量读取 `Ship` 类型实体对象
+        """批量读取 `Ship` 类型实体对象
 
         Args:
             keys (Iterable[ID]): `Ship` 实体对象的 `ID` 集合
@@ -140,8 +126,7 @@ class ShipLoader(DataLoader[int, Ship]):
 
 
 class Query(ObjectType):
-    """
-    查询类型
+    """查询类型
 
     对应的 GraphQL 定义如下:
 
@@ -171,8 +156,7 @@ class Query(ObjectType):
         info: ResolveInfo,
         id: ID,
     ) -> Ship:
-        """
-        解析 `ship` 字段
+        """解析 `ship` 字段
 
         Args:
             info (ResolveInfo): 包含上下文对象的参数
@@ -188,8 +172,7 @@ class Query(ObjectType):
         return await loader.load(int(id))
 
 
-"""
-定义 schema 结构
+"""定义 schema 结构
 
 对应的 GraphQL 定义为
 

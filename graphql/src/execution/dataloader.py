@@ -1,17 +1,14 @@
 import random
 from typing import Dict, Iterable
 from typing import List as ListType
-from typing import Literal, Self
+from typing import Literal
 
 from aiodataloader import DataLoader
 from graphene import ID, Argument, Field, List, ObjectType, ResolveInfo, Schema, String
 
 
 class User(ObjectType):
-    """
-    定义实体类型
-
-    对应的 GraphQL 定义如下:
+    """定义 GraphQL 类型
 
     ```
     type User {
@@ -30,8 +27,7 @@ class User(ObjectType):
 
     @staticmethod
     async def resolve_friends(parent: "User", info: ResolveInfo) -> ListType["User"]:
-        """
-        使用异步的 dataloader 读取 `User` 实体相关的朋友实体列表
+        """使用异步的 dataloader 读取 `User` 实体相关的朋友实体列表
 
         数据集中, `friends` 字段存储的是朋友实体的 ID 列表, 当前方法将其转换为 `List[User]` 实体对象集合
 
@@ -46,9 +42,8 @@ class User(ObjectType):
         return await user_loader.load_many(parent.friends)
 
     @staticmethod
-    async def resolve_best_friend(parent: "User", info: ResolveInfo) -> Self:
-        """
-        使用异步的 dataloader 读取 `User` 实体相关的朋友实体对象
+    async def resolve_best_friend(parent: "User", info: ResolveInfo) -> "User":
+        """使用异步的 dataloader 读取 `User` 实体相关的朋友实体对象
 
         数据集中, `best_friend` 字段存储的是朋友实体的 ID 值, 当前方法将其转换为 `User` 实体对象
 
@@ -64,36 +59,30 @@ class User(ObjectType):
 
 
 class Dataset:
-    """
-    数据集类型, 记录 `User` 实体对象集合
-    """
+    """数据集类型, 记录 `User` 实体对象集合"""
 
     users: Dict[int, User]
 
-    def __init__(self):
-        """
-        实例化数据集对象
-        """
+    def __init__(self) -> None:
+        """实例化数据集对象"""
         self.users = {}  # 存储用户实体的字典对象
 
     def save_user(self, user: User) -> None:
-        """
-        在数据集中保存一个用户实体对象
+        """在数据集中保存一个用户实体对象
 
         Args:
-            user (User): 要保存的用户实体对象
+            user (UserModel): 要保存的用户实体对象
         """
         self.users[user.id] = user
 
     def get_user(self, id: int) -> User:
-        """
-        从数据集中读取一个用户实体对象
+        """从数据集中读取一个用户实体对象
 
         Args:
             id (int): 用户实体的 id
 
         Returns:
-            User: 相关的用户实体对象
+            UserModel: 相关的用户实体对象
         """
         return self.users[id]
 
@@ -106,10 +95,9 @@ class Dataset:
         dataset = Dataset()
 
         def make_friend_ids(
-            user_id: int, all_user_ids: ListType[int], friends_count=4
+            user_id: int, all_user_ids: ListType[int], friends_count: int = 4
         ) -> ListType[int]:
-            """
-            构建朋友列表
+            """构建朋友 id 列表
 
             Args:
                 user_id (int): 当前用户实体 ID
@@ -120,12 +108,12 @@ class Dataset:
             """
             # 从全体用户中随机抽取 friends_count 个 ID 作为朋友 ID 集合
             friend_ids = random.sample(all_user_ids, friends_count)
+
             # 筛选掉当前用户, 构建朋友 ID 列表集合
             return [id_ for id_ in friend_ids if id_ != user_id]
 
         def choose_best_friend_id(friend_ids: ListType[int]) -> int:
-            """
-            从朋友 ID 列表中选择一个作为最好朋友
+            """从朋友 ID 列表中选择一个作为最好朋友
 
             Args:
                 friend_ids (ListType[int]): 朋友 ID 列表集合
@@ -141,6 +129,7 @@ class Dataset:
         for id in all_user_ids:
             # 随机选择 4 个 ID 作为用户实体的朋友关联
             friend_ids = make_friend_ids(id, all_user_ids)
+
             # 随机从朋友列表中选择一名最好的朋友
             best_friend_id = choose_best_friend_id(friend_ids)
 
@@ -161,14 +150,11 @@ class Dataset:
 dataset = Dataset.build()
 
 
-class UserLoader(DataLoader):
-    """
-    定义 `User` 类型的 Loader 类型
-    """
+class UserLoader(DataLoader[int, User]):
+    """定义 `User` 类型的 Loader 类型"""
 
     async def batch_load_fn(self, keys: Iterable[ID]) -> ListType[User]:
-        """
-        重写 `DataLoader` 的批量读方法, 根据一个 Key 集合批量读取实例对象集合
+        """重写 `DataLoader` 的批量读方法, 根据一个 Key 集合批量读取实例对象集合
 
         该方法为异步协程方法, 返回一个 `Future` 对象, 异步读取数据.
 
@@ -180,8 +166,7 @@ class UserLoader(DataLoader):
         Returns:
             Promise[List[User]]: 一个异步处理对象, 可获取 `User` 实体类对象集合
         """
-        users = map(lambda key: dataset.get_user(int(key)), keys)
-        return list(users)
+        return list(map(lambda key: dataset.get_user(int(key)), keys))
 
 
 # 实例化 DataLoader 对象
@@ -189,8 +174,7 @@ user_loader = UserLoader()
 
 
 class Query(ObjectType):
-    """
-    查询类型
+    """查询类型
 
     对应的 GraphQL 定义如下:
 
@@ -205,7 +189,7 @@ class Query(ObjectType):
     user = Field(User, id=Argument(ID, required=True))
 
     @staticmethod
-    def resolve_user(parent: Literal[None], info: ResolveInfo, id: ID) -> User:
+    async def resolve_user(parent: Literal[None], info: ResolveInfo, id: ID) -> User:
         """
         解析 `user` 字段, 返回 `User` 实体对象
 
@@ -213,9 +197,9 @@ class Query(ObjectType):
             id (ID): `User` 实体的 ID 值
 
         Returns:
-            User: `User` 实体对象
+            UserModel: 实体对象
         """
-        return user_loader.load(int(id))
+        return await user_loader.load(int(id))
 
 
 """

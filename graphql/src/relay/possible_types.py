@@ -1,5 +1,4 @@
-"""
-为 `Node` 类型增加 "可能的类型"
+"""为 `Node` 类型增加 "可能的类型"
 
 如果一个类型 `Foo` 从 `Node` 类型继承, 且在使用 `Foo` 类型定义字段时未明确指定字段的类型,
 则需要为 `Foo` 类型指定其可能转化为的类型列表, 可以通过 `Meta.possible_types` 字段或者
@@ -70,43 +69,33 @@ from graphene import ID, DateTime, Field, Node, ObjectType, ResolveInfo, Schema,
 
 
 class UserModel:
-    """
-    定义模型类型, 表示一个用户
-    """
+    """定义模型类型, 表示一个用户"""
 
     id: int
     name: str
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        初始化对象
-        """
+        """初始化对象"""
         self.id = kwargs["id"]
         self.name = kwargs["name"]
 
 
 class PhotoModel:
-    """
-    定义模型类型, 表示一张照片
-    """
+    """定义模型类型, 表示一张照片"""
 
     id: int
     for_user_id: int
     datetime: datetime.datetime
 
     def __init__(self, **kwargs: Any) -> None:
-        """
-        初始化对象
-        """
+        """初始化对象"""
         self.id = kwargs["id"]
         self.for_user_id = kwargs["for_user_id"]
         self.datetime = kwargs["datetime"]
 
 
 class Dataset:
-    """
-    数据集类型
-    """
+    """数据集类型"""
 
     users: Dict[int, UserModel]
     photos: Dict[int, PhotoModel]
@@ -116,8 +105,7 @@ class Dataset:
         self.photos = {}
 
     def get_user(self, id: int) -> UserModel:
-        """
-        根据用户 ID 获取用户实体对象
+        """根据用户 ID 获取用户实体对象
 
         Args:
             id (str): 用户 ID
@@ -128,8 +116,7 @@ class Dataset:
         return self.users[id]
 
     def get_photo(self, id: int) -> PhotoModel:
-        """
-        根据 ID 获取照片实体对象
+        """根据 ID 获取照片实体对象
 
         Args:
             id (int): 照片 ID
@@ -140,8 +127,7 @@ class Dataset:
         return self.photos[id]
 
     def save_user(self, user: UserModel) -> None:
-        """
-        保存用户实体对象
+        """保存用户实体对象
 
         Args:
             user (User): 用户实体对象
@@ -158,8 +144,7 @@ class Dataset:
         self.photos[photo.id] = photo
 
     def user_count(self) -> int:
-        """
-        获取用户数量
+        """获取用户数量
 
         Returns:
             int: 用户数量
@@ -168,6 +153,7 @@ class Dataset:
 
     @staticmethod
     def build() -> "Dataset":
+        """构建数据集对象"""
         dataset = Dataset()
 
         # 设置 User 对象集合
@@ -202,9 +188,7 @@ dataset = Dataset.build()
 
 
 class User(ObjectType):
-    """
-    定义实体对象, 表示用户
-    """
+    """定义实体对象, 表示用户"""
 
     class Meta:
         # 继承 Node 接口
@@ -218,8 +202,7 @@ class User(ObjectType):
 
     @classmethod
     def get_node(cls, info: ResolveInfo, id: ID) -> UserModel:
-        """
-        根据 ID 获取当前实体对应的模型对象
+        """根据 ID 获取当前实体对应的模型对象
 
         Args:
             info (ResolveInfo): 查询上下文对象
@@ -232,9 +215,7 @@ class User(ObjectType):
 
 
 class Photo(ObjectType):
-    """
-    定义实体对象, 表示照片
-    """
+    """定义实体对象, 表示照片"""
 
     class Meta:
         # 继承 CustomNode 接口
@@ -247,8 +228,7 @@ class Photo(ObjectType):
 
     @staticmethod
     def is_type_of(parent: PhotoModel, info: ResolveInfo) -> Tuple[ObjectType]:
-        """
-        如果当前类型从 `Node` 接口继承, 且未提供 `Meta.possible_types` 字段,
+        """如果当前类型从 `Node` 接口继承, 且未提供 `Meta.possible_types` 字段,
         则可以通过 `is_type_of` 方法返回可能的类型
 
         Returns:
@@ -258,8 +238,7 @@ class Photo(ObjectType):
 
     @staticmethod
     def resolve_for_user(parent: PhotoModel, info: ResolveInfo) -> UserModel:
-        """
-        解析 `for_user` 字段
+        """解析 `for_user` 字段
 
         Args:
             parent (PhotoModel): 当前查询的模型对象
@@ -272,8 +251,7 @@ class Photo(ObjectType):
 
     @classmethod
     def get_node(cls, info: ResolveInfo, id: ID) -> PhotoModel:
-        """
-        根据 ID 获取当前实体对应的模型对象
+        """根据 ID 获取当前实体对应的模型对象
 
         Args:
             info (ResolveInfo): 查询上下文对象
@@ -286,9 +264,7 @@ class Photo(ObjectType):
 
 
 class Query(ObjectType):
-    """
-    定义查询实体类型
-    """
+    """定义查询实体类型"""
 
     user = Node.Field(User)
     photo = Node.Field(Photo)

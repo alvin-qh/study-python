@@ -62,8 +62,7 @@ from graphene import (
 
 
 class Character(Interface):
-    """
-    定义一个接口类型, 该类型可作为所有实体类型 (`ObjectType`) 的接口类型
+    """定义一个接口类型, 该类型可作为所有实体类型 (`ObjectType`) 的接口类型
 
     对应的 GraphQL 定义如下:
 
@@ -82,8 +81,7 @@ class Character(Interface):
 
 
 class StarShip(ObjectType):
-    """
-    定义星舰实体类型
+    """定义星舰实体类型
 
     对应的 GraphQL 定义如下:
 
@@ -100,8 +98,7 @@ class StarShip(ObjectType):
 
 
 class Human(ObjectType):
-    """
-    定义人类实体类型, 实现 `Character` 接口
+    """定义人类实体类型, 实现 `Character` 接口
 
     对应的 GraphQL 定义如下:
 
@@ -121,8 +118,7 @@ class Human(ObjectType):
 
 
 class Droid(ObjectType):
-    """
-    定义机器人实体类型, 实现 `Character` 接口
+    """定义机器人实体类型, 实现 `Character` 接口
 
     对应的 GraphQL 定义如下:
 
@@ -219,8 +215,7 @@ dataset["humans"][1].star_ships = [
 
 
 class HeroQuery(ObjectType):
-    """
-    定义英雄查询类型
+    """定义英雄查询类型
 
     对应的 GraphQL 定义如下:
 
@@ -240,8 +235,7 @@ class HeroQuery(ObjectType):
         info: ResolveInfo,
         episode: int,
     ) -> Character:
-        """
-        解析 `hero` 字段
+        """解析 `hero` 字段
 
         Args:
             episode (int): 参数, 表示电影的阶段
@@ -256,8 +250,7 @@ class HeroQuery(ObjectType):
 
 
 class HumanQuery(ObjectType):
-    """
-    定义人类英雄查询类型
+    """定义人类英雄查询类型
 
     对应的 GraphQL 定义如下:
 
@@ -276,8 +269,7 @@ class HumanQuery(ObjectType):
         info: ResolveInfo,
         episode: int,
     ) -> Human:
-        """
-        解析 `human_hero` 字段
+        """解析 `human_hero` 字段
 
         Args:
             episode (int): 参数, 表示电影的阶段
@@ -292,8 +284,7 @@ class HumanQuery(ObjectType):
 
 
 class DroidQuery(ObjectType):
-    """
-    定义机器人英雄查询类型
+    """定义机器人英雄查询类型
 
     对应的 GraphQL 定义如下:
 
@@ -312,8 +303,7 @@ class DroidQuery(ObjectType):
         info: ResolveInfo,
         episode: int,
     ) -> Droid:
-        """
-        解析 `droid_hero` 字段
+        """解析 `droid_hero` 字段
 
         Args:
             episode (int): 参数, 表示电影的阶段
@@ -328,8 +318,7 @@ class DroidQuery(ObjectType):
 
 
 class Query(HeroQuery, HumanQuery, DroidQuery):
-    """
-    将 `HeroQuery`, `HumanQuery` 和 `DroidQuery` 字段进行组合
+    """将 `HeroQuery`, `HumanQuery` 和 `DroidQuery` 字段进行组合
 
     对应的 GraphQL 定义如下:
 
@@ -343,8 +332,7 @@ class Query(HeroQuery, HumanQuery, DroidQuery):
     """
 
 
-"""
-定义 schema 结构, 包括查询对象和定义的类型
+"""定义 schema 结构, 包括查询对象和定义的类型
 
 对应的 GraphQL 定义为
 
