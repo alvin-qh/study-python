@@ -1,9 +1,0 @@
-graphene
-aiodataloader
-promise
-pyhumps
-bson
-
-pytest
-pytest-asyncio
-mypy

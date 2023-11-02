@@ -1,5 +1,5 @@
 from migration.command import Command
-from native import get_all_tables, get_connection
+from mysql import get_all_tables, get_connection  # type:ignore
 
 
 def test_alembic_command() -> None:
