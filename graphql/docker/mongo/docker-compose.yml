@@ -25,7 +25,8 @@ services:
     ports:
       - 27017:27017
     volumes:
-      - mongo_data:/data
+      - mongo_data_db:/data/db
+      - mongo_data_config:/data/configdb
     networks:
       - mongo_network
   mongo-express:
@@ -40,5 +41,6 @@ services:
 networks:
   mongo_network:
 volumes:
-  mongo_data:
+  mongo_data_db:
+  mongo_data_config:
 

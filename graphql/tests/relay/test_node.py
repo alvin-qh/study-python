@@ -24,23 +24,24 @@ async def test_query_ship_field() -> None:
     args = {"id": 10}
 
     # 异步执行查询
-    r = await schema.execute_async(
+    result = await schema.execute_async(
         query,
         variables=args,
         context=Context(ship_loader=ShipLoader()),  # 在上下文中传递 ShipLoader 对象
     )
     # 确保查询正确
-    assert r.errors is None
+    assert result.errors is None
 
     # 确认查询结果
-    assert r.data == {
+    assert result.data is not None
+    assert result.data == {
         "ship": {
             "id": "U2hpcDoxMA==",
             "name": "Ship-10",
         },
     }
     # 确认返回结果中的 ID 字段的解码后内容
-    assert base64.b64decode(r.data["ship"]["id"]).decode() == "Ship:10"
+    assert base64.b64decode(result.data["ship"]["id"]).decode() == "Ship:10"
 
 
 @mark.asyncio

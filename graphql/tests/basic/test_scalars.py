@@ -108,12 +108,13 @@ def test_decimal_scalar_type() -> None:
     }
 
     # 执行查询
-    r = schema.execute(query, variables=vars)
+    result = schema.execute(query, variables=vars)
     # 确保查询正确
-    assert r.errors is None
+    assert result.errors is None
 
     # 确保结果正确
-    val = Decimal(r.data["calculator"]["addOneTo"])
+    assert result.data is not None
+    val = Decimal(result.data["calculator"]["addOneTo"])
     assert val.quantize(Decimal("0.00")) == Decimal("101.20")
 
 

@@ -54,11 +54,14 @@ class CustomNode(Node):
         Returns:
             Node: 实体对象
         """
-        type_, id_ = global_id.split(":", 1)
+        type_name, id_ = global_id.split(":", 1)
         if only_type:
-            assert type_ == only_type._meta.name
+            assert type_name == only_type._meta.name
 
-        return info.schema.get_type(type_).graphene_type.get_node(info, id_)
+        type_ = info.schema.get_type(type_name)
+        assert type_ is not None
+
+        return type_.graphene_type.get_node(info, id_)
 
 
 class User(ObjectType):

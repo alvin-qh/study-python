@@ -25,6 +25,14 @@ lint = [
     "mypy>=1.6.1",
     "autopep8>=2.0.4",
 ]
+demo = [
+    "werkzeug>=3.0.1",
+    "pymongo>=4.6.0",
+    "mongoengine>=0.27.0",
+    "graphene-mongo>=0.2.15",
+    "blinker>=1.7.0",
+    "factory-boy>=3.3.0",
+]
 [build-system]
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"

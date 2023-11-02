@@ -70,7 +70,7 @@ async def test_query_photo() -> None:
     args = {"id": base64.b64encode("Photo:12".encode()).decode()}
 
     # 异步执行查询
-    r = await schema.execute_async(
+    result = await schema.execute_async(
         query,
         variables=args,
         context=Context(
@@ -79,10 +79,10 @@ async def test_query_photo() -> None:
         ),
     )
     # 确保查询执行正确
-    assert r.errors is None
+    assert result.errors is None
 
     # 确认查询结果正确
-    assert r.data == {
+    assert result.data == {
         "photo": {
             "id": "UGhvdG86MTI=",
             "forUser": {"id": "VXNlcjo3", "name": "User-7"},
@@ -121,7 +121,7 @@ async def test_query_node() -> None:
     args = {"id": base64.b64encode("Photo:12".encode()).decode()}
 
     # 异步执行查询
-    r = await schema.execute_async(
+    result = await schema.execute_async(
         query,
         variables=args,
         context=Context(  # 定义查询上下文对象
@@ -130,10 +130,10 @@ async def test_query_node() -> None:
         ),
     )
     # 确保查询正确
-    assert r.errors is None
+    assert result.errors is None
 
     # 确认查询结果正确
-    assert r.data == {
+    assert result.data == {
         "node": {
             "__typename": "Photo",
             "id": "UGhvdG86MTI=",
@@ -149,7 +149,7 @@ async def test_query_node() -> None:
     args = {"id": base64.b64encode("User:12".encode()).decode()}
 
     # 异步执行查询
-    r = await schema.execute_async(
+    result = await schema.execute_async(
         query,
         variables=args,
         context=Context(  # 定义查询上下文对象
@@ -157,10 +157,10 @@ async def test_query_node() -> None:
         ),
     )
     # 确保查询正确
-    assert r.errors is None
+    assert result.errors is None
 
     # 确认查询结果正确
-    assert r.data == {
+    assert result.data == {
         "node": {
             "__typename": "User",
             "id": "VXNlcjoxMg==",

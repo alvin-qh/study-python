@@ -192,6 +192,7 @@ class ModificationMiddleware:
         """
         return (  # 判断操作名称是否符合期待
             bool(info.operation.operation == type_)
+            and info.operation.name is not None
             and info.operation.name.value == name
         )
 
