@@ -20,5 +20,5 @@ indent_size = 2
 [*.{yml,yaml}]
 indent_size = 2
 
-[*.{md}]
+[*.md]
 indent_size = 2

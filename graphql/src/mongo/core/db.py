@@ -59,15 +59,17 @@ class MongoDB:
         self._mongo_client = None
 
     def connect(
-        self, dbname: str, host: str, port: str, user: str = "", password: str = ""
+        self, dbname: str, host: str, port: int, user: str = "", password: str = ""
     ) -> None:
         mongo_connection_pool_logger = MongoConnectionPoolLogger()
         self._mongo_client = connect(
             dbname,
             host=host,
             port=port,
-            username=user,
-            password=password,
+            # username=user,
+            # password=password,
+            directConnection=True,  # 对于单节点集群, 必须设置为 True
+            replicaset="rs0",  # 连接的集群名称
             authentication_source="admin",
             event_listeners=(mongo_connection_pool_logger,),
         )

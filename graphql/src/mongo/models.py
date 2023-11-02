@@ -1,11 +1,16 @@
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from mongo.core.context import AbstractOrg
-from mongoengine.fields import IntField, StringField
+from mongoengine.fields import IntField, ReferenceField, StringField
 
-from .core.fields import ProxyLazyReferenceField, StringEnumField
-from .core.models import AuditedMixin, BaseModel, MultiTenantMixin
+from .core import (
+    AbstractOrg,
+    AuditedMixin,
+    BaseModel,
+    MultiTenantMixin,
+    ProxyLazyReferenceField,
+    StringEnumField,
+)
 
 
 class Org(BaseModel, AuditedMixin, AbstractOrg):
@@ -14,7 +19,11 @@ class Org(BaseModel, AuditedMixin, AbstractOrg):
             {
                 "fields": ["name"],
                 "unique": True,
-                "partialFilterExpression": {"name": {"$type": "string"}},
+                "partialFilterExpression": {
+                    "name": {
+                        "$type": "string",
+                    },
+                },
             }
         ]
     }
@@ -23,14 +32,36 @@ class Org(BaseModel, AuditedMixin, AbstractOrg):
 
 
 class Department(BaseModel, MultiTenantMixin, AuditedMixin):
-    meta: Dict[str, Any] = {"indexes": [{"fields": ["org", "name"], "unique": True}]}
+    meta: Dict[str, Any] = {
+        "indexes": [
+            {
+                "fields": [
+                    "org",
+                    "name",
+                ],
+                "unique": True,
+            }
+        ]
+    }
+
     name: str = StringField(required=True)
     level: int = IntField(required=True, default=0)
-    manager: Optional["Employee"] = ProxyLazyReferenceField("Employee")
+    manager: Optional["Employee"] = ReferenceField("Employee")
 
 
 class Role(BaseModel, MultiTenantMixin):
-    meta: Dict[str, Any] = {"indexes": [{"fields": ["org", "name"], "unique": True}]}
+    meta: Dict[str, Any] = {
+        "indexes": [
+            {
+                "fields": [
+                    "org",
+                    "name",
+                ],
+                "unique": True,
+            }
+        ]
+    }
+
     name: str = StringField(required=True)
 
 
@@ -40,7 +71,18 @@ class Gender(Enum):
 
 
 class Employee(BaseModel, MultiTenantMixin, AuditedMixin):
-    meta: Dict[str, Any] = {"indexes": [{"fields": ["org", "name"], "unique": True}]}
+    meta: Dict[str, Any] = {
+        "indexes": [
+            {
+                "fields": [
+                    "org",
+                    "name",
+                ],
+                "unique": True,
+            }
+        ]
+    }
+
     name: str = StringField(required=True)
     gender: Gender = StringEnumField(Gender, required=True, default=Gender.male)
     department: Optional[Department] = ProxyLazyReferenceField(Department)

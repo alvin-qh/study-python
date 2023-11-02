@@ -14,7 +14,7 @@ class DepartmentQuery(ObjectType):
 
     @staticmethod
     def resolve_department(
-        parent: Any, info: ResolveInfo, name: str
+        parent: Department, info: ResolveInfo, name: str
     ) -> DepartmentModel:
         return cast(DepartmentModel, DepartmentModel.objects(name=name).first())
 
@@ -24,6 +24,7 @@ def _query_employees_by_department_name(
 ) -> QuerySet:
     department_name = kwargs.get("department_name")
     department = DepartmentModel.objects(name=department_name).first()
+
     if not department:
         raise QueryError("invalid_department_name")
 
@@ -40,5 +41,7 @@ class EmployeeQuery(ObjectType):
     )
 
     @staticmethod
-    def resolve_employee(parent: Any, info: ResolveInfo, name: str) -> EmployeeModel:
+    def resolve_employee(
+        parent: Employee, info: ResolveInfo, name: str
+    ) -> EmployeeModel:
         return cast(EmployeeModel, EmployeeModel.objects(name=name).first())
