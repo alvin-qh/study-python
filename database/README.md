@@ -5,13 +5,13 @@
 进入 `../docker/mysql`，执行
 
 ```bash
-$ docker-compose up -d
+docker-compose up -d
 ```
 
 在 docker 容器内启动 `mysql-client`
 
 ```bash
-$ docker exec -it percona mysql -uroot -p
+docker exec -it percona mysql -uroot -p
 ```
 
 创建演示数据库
@@ -31,11 +31,11 @@ mysql> DROP DATABASE `study_python`
 执行升级脚本
 
 ```bash
-$ alembic upgrade head
+alembic upgrade head
 ```
 
 执行降级脚本
 
 ```bash
-$ alembic downgrade base
+alembic downgrade base
 ```
