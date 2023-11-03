@@ -15,6 +15,7 @@ __all__ = [
     "run_once",
 ]
 
+# 连接数据库
 mongodb.connect(
     dbname="study_python_mongo",
     host="127.0.0.1",

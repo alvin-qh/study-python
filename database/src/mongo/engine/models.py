@@ -14,6 +14,8 @@ from .core.context import TenantMixin
 
 
 class Org(AuditedMixin, TenantMixin):
+    """租户文档模型"""
+
     meta: Dict[str, Any] = {
         "indexes": [
             {
@@ -30,6 +32,8 @@ class Org(AuditedMixin, TenantMixin):
 
 
 class Department(BaseModel, MultiTenantMixin, AuditedMixin):
+    """部门文档模型"""
+
     meta: Dict[str, Any] = {
         "indexes": [
             {
@@ -42,8 +46,13 @@ class Department(BaseModel, MultiTenantMixin, AuditedMixin):
         ]
     }
 
+    # 部门名称
     name: str = StringField(required=True)
+
+    # 部门等级
     level: int = IntField(required=True, default=0)
+
+    # 部门管理人员
     manager: Optional["Employee"] = ReferenceField("Employee")
 
 
