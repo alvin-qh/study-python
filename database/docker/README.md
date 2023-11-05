@@ -21,15 +21,15 @@
    ```bash
    docker exec -it mongo mongosh "mongodb://mongo:27017?replicaSet=rs0&directConnection=true" --eval '
       config = {
-          "_id": "rs0",
-          "members": [
+        "_id": "rs0",
+        "members": [
           {
               "_id": 0,
               "host": "mongo:27017"
           }
-          ]
+        ]
       };
-      rs.initiate();
+      rs.initiate(config);
       rs.status();
    '
    ```

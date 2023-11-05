@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        "core_groups",
+        "group",
         sa.Column("id", BIGINT(), primary_key=True, autoincrement=True),
         sa.Column("name", VARCHAR(50), nullable=False),
         sa.Column("created_at", TIMESTAMP, nullable=False, server_default=func.now()),
@@ -29,9 +29,9 @@ def upgrade():
             server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
         ),
     )
-    op.create_index("ux_name", table_name="core_groups", columns=["name"], unique=True)
+    op.create_index("ux_name", table_name="group", columns=["name"], unique=True)
 
 
 def downgrade():
-    op.drop_index("ux_name", table_name="core_groups")
-    op.drop_table("core_groups")
+    op.drop_index("ux_name", table_name="group")
+    op.drop_table("group")

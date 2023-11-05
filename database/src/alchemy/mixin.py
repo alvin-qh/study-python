@@ -2,12 +2,12 @@ from datetime import datetime
 from typing import Any, Dict
 
 from sqlalchemy import Boolean, DateTime, Integer, func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
-class CommonMixin:
+class BaseModel(DeclarativeBase):
     """
-    公共混入类, 为数据实体添加 ID 和 created_at 字段
+    模型基类
     """
 
     # 抽象类
@@ -25,7 +25,7 @@ class CommonMixin:
     created_at: Mapped[datetime] = mapped_column(
         DateTime,
         nullable=False,
-        server_default=func.now(),  # pylint:disable=all # noqa
+        server_default=func.now(),  # noqa
     )
 
     def jsonify(self) -> Dict[str, Any]:
@@ -33,7 +33,7 @@ class CommonMixin:
         当前对象转为字段
 
         Returns:
-            Dict[str, Any]: 返回的字典对象
+            `Dict[str, Any]`: 返回的字典对象
         """
         return {
             "id": self.id,

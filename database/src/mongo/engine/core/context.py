@@ -1,14 +1,11 @@
 from types import TracebackType
 from typing import Any, Optional, Type, cast
 
-from mongoengine import StringField
 from werkzeug.local import Local
 
 
-class TenantMixin:
+class Tenant:
     """租户接口"""
-
-    name: str = StringField(required=True)
 
 
 class Context:
@@ -21,98 +18,103 @@ class Context:
         """实例化线程安全的上下文对象"""
         self.__dict__["_ctx"] = Local()
 
-    def __getattr__(self, item: str, default: Any = None) -> Any:
-        """获取当属性值
+    def __getattr__(self, key: str, default: Any = None) -> Any:
+        """获取上下文属性值
 
         即 `属性值 = context.<属性名称>`
 
         Args:
-            item (str): 属性名称
-            default (Any, optional): 属性默认值. Defaults to None.
+            - `key` (`str`): 属性名称
+            - `default` (`Any`, optional): 属性默认值. Defaults to `None`.
 
         Returns:
             Any: 属性值
         """
-        local: Local = self.__dict__["_ctx"]
+        local = self.__dict__["_ctx"]
+        if not local:
+            return default
+
         try:
-            return local.__getattr__(item)
+            return local.__getattr__(key)
         except AttributeError:
             return default
 
     def __setattr__(self, key: str, value: Any) -> None:
-        """设置属性值
+        """设置上下文属性值
 
         即 `context.<属性名称> = 属性值`
 
         Args:
-            key (str): 属性名称
-            value (Any): 属性值
+            - `key` (`str`): 属性名称
+            - `value` (`Any`): 属性值
         """
-        local: Local = self.__dict__["_ctx"]
+        local = self.__dict__["_ctx"]
         local.__setattr__(key, value)
 
-    def __delattr__(self, item: str) -> None:
-        """删除属性值
+    def __delattr__(self, key: str) -> None:
+        """删除上下文属性值
 
         即 `del context.<属性名称>`
 
         Args:
-            item (str): 属性名称
+            - `key` (`str`): 属性名称
         """
-        local: Local = self.__dict__["_ctx"]
-        local.__delattr__(item)
+        local = self.__dict__["_ctx"]
+        local.__delattr__(key)
 
     def __setitem__(self, key: str, value: Any) -> None:
-        """通过下标设置属性值
+        """通过下标设置上下文属性值
 
         即 `context[<属性名称>] = 属性值`
 
         Args:
-            key (str): 属性名称
-            value (Any): 属性值
+            - `key` (`str`): 属性名称
+            - `value` (`Any`): 属性值
         """
         self.__setattr__(key, value)
 
-    def __getitem__(self, item: str) -> Any:
-        """获取当属性值
+    def __getitem__(self, key: str) -> Any:
+        """通过下标获取上下文属性值
 
         即 `属性值 = context[<属性名称>]`
 
         Args:
-            item (str): 属性名称
+            - `key` (`str`): 属性名称
 
         Returns:
-            Any: 属性值
+            `Any`: 属性值
         """
-        return self.__getattr__(item)
+        return self.__getattr__(key)
 
     def __delitem__(self, key: str) -> None:
-        """删除属性值
+        """通过下标删除上下文属性值
 
         即 `del context[<属性名称>]`
 
         Args:
-            item (str): 属性名称
+            - `key` (`str`): 属性名称
         """
-        self.__delitem__(key)
+        self.__delattr__(key)
 
     def delete(self, key: str) -> None:
         self.__delattr__(key)
 
     def clear(self) -> None:
-        """删除所有属性值"""
-        cast(Local, self._ctx).__release_local__()
+        """删除所有属性值, 即释放本地现场变量"""
+        local = cast(Local, self._ctx)
+        local.__release_local__()
+        self.__dict__["_ctx"] = Local()
 
-    class _TenantContext:
+    class TenantContext:
         """多租户上下文"""
 
-        def __init__(self, ctx: "Context", org: TenantMixin) -> None:
+        def __init__(self, ctx: "Context", tenant: Tenant) -> None:
             self._ctx = ctx
-            self._org = org
+            self._tenant = tenant
 
         def __enter__(self) -> None:
             """进入上下文作用域"""
-            self._ctx["org"] = self._org
+            self._ctx["_tenant"] = self._tenant
 
         def __exit__(
             self,
@@ -120,16 +122,16 @@ class Context:
             exc_value: Optional[Exception],
             exc_tb: Optional[TracebackType],
         ) -> None:
-            """推出上下文作用域"""
-            self._ctx.delete("org")
+            """退出上下文作用域"""
+            self._ctx.delete("_tenant")
 
-    def with_tenant_context(self, org: TenantMixin) -> _TenantContext:
+    def with_tenant_context(self, tenant: Tenant) -> TenantContext:
         """获取租户上下文对象"""
-        return self._TenantContext(self, org)
+        return self.TenantContext(self, tenant)
 
-    def get_current_org(self) -> TenantMixin:
+    def get_current_tenant(self) -> Tenant:
         """获取当前上下文租户"""
-        return cast(TenantMixin, self["org"])
+        return cast(Tenant, self["_tenant"])
 
 
 # 定义上下文对象

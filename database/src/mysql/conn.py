@@ -13,13 +13,18 @@ _conn_options = {
     "port": 3306,
     "user": "root",
     "password": "root",
-    "db": "study_python",
+    "db": "study_python_mysql",
     "charset": "utf8mb4",
     "cursorclass": DictCursor,
 }
 
 
 def _init_tables(conn: Connection) -> None:
+    """初始化当前数据库中的数据表
+
+    Args:
+        - `conn` (`Connection`): 数据库连接对象
+    """
     # 启动事务
     conn.begin()
     try:
@@ -38,9 +43,8 @@ def get_connection() -> Connection:
     获取数据库连接
 
     Returns:
-        Connection: 连接对象
+        `Connection`: 连接对象
     """
-
     # 根据连接配置连接数据库
     conn = connect(**_conn_options)
     # 关闭自动提交
@@ -61,9 +65,8 @@ def get_pooled_connection() -> Connection:
     从连接池获取数据库连接
 
     Returns:
-        Connection: 连接对象
+        `Connection`: 连接对象
     """
-
     # 通过连接池获取连接对象
     conn = cast(Any, pool.connection())
     # 关闭自动提交

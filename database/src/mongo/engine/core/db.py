@@ -75,13 +75,13 @@ class MongoDB:
         """连接数据库
 
         Args:
-            dbname (str): 库名称
-            host (str): mongodb 地址
-            port (int): mongodb 端口号
-            user (str, optional): 用户名. Defaults to "".
-            password (str, optional): 密码. Defaults to "".
-            replicaSet (str, optional): 集群名称. Defaults to "".
-            directConnection (bool, optional): 是否直接连结. Defaults to False.
+            - `dbname` (`str`): 库名称
+            - `host` (`str`): mongodb 地址
+            - `port` (`int`): mongodb 端口号
+            - `user` (`str`, optional): 用户名. Defaults to `""`.
+            - `password` (`str`, optional): 密码. Defaults to `""`.
+            - `replicaSet` (`str`, optional): 集群名称. Defaults to `""`.
+            - `directConnection` (`bool`, optional): 是否直接连结. Defaults to `False`.
         """
         mongo_connection_pool_logger = MongoConnectionPoolLogger()
 
@@ -112,5 +112,5 @@ class MongoDB:
 # 实例化数据库链接辅助对象
 mongodb = MongoDB()
 
-# 监听进程关闭消息, 用于关闭数据库链接
+# 监听系统信号, 当系统退出时关闭数据库连接
 signal.signal(signal.SIGHUP, lambda sig, frame: mongodb.close())

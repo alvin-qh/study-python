@@ -5,19 +5,20 @@ from pymysql import Connection  # type:ignore
 
 
 def init_tables(conn: Connection) -> None:
-    """
-    初始化数据表
-    """
+    """初始化数据表
 
+    Args:
+        - `conn` (`Connection`): 数据库连接对象
+    """
     # 创建游标对象
     with conn.cursor() as c:
         # 清空所有数据表
-        c.execute("DROP TABLE IF EXISTS `native_users`")
+        c.execute(r"DROP TABLE IF EXISTS `user`")
 
         # 创建 "native_users" 数据表
         c.execute(
             r"""
-            CREATE TABLE `native_users` (
+            CREATE TABLE `user` (
                 `id` BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
                 `id_num` VARCHAR(50) NOT NULL,
                 `name` VARCHAR(50) NOT NULL,
@@ -38,8 +39,11 @@ def get_all_tables(conn: Connection) -> List[str]:
     """
     获取数据库中所有的表
 
+    Args:
+        - `conn` (`Connection`): 数据库连接对象
+
     Returns:
-        List[str]: 数据库中表名称列表
+        `List[str]`: 数据库中表名称列表
     """
     with conn.cursor() as c:
         # 获取所有的数据表
@@ -56,18 +60,18 @@ def insert_user(
     插入用户数据
 
     Args:
-        conn (Connection): 数据库连接对象
-        id_num (str): 身份证号
-        name (str): 姓名
-        gender (str): 性别
-        birthday (date): 生日
+        - `conn` (`Connection`): 数据库连接对象
+        - `id_num` (`str`): 身份证号
+        - `name` (`str`): 姓名
+        - `gender` (`str`): 性别
+        - `birthday` (`date`): 生日
 
     Returns:
-        int: 数据表主键 ID
+        `int`: 数据表主键 ID
     """
     # 设置 SQL 模板
     sql = (
-        r"INSERT INTO `native_users`"
+        r"INSERT INTO `user`"
         r"(`id_num`, `name`, `gender`, `birthday`) VALUES (%s, %s, %s, %s)"
     )
 
@@ -83,13 +87,13 @@ def get_user(conn: Connection, id_: int) -> Dict[str, Any]:
     查询一个用户数据
 
     Args:
-        conn (Connection): 数据库连接对象
-        id_ (int): 主键 ID
+        - `conn` (`Connection`): 数据库连接对象
+        - `id_` (`int`): 主键 ID
 
     Returns:
-        Dict[str, Any]: 用户信息字典
+        `Dict[str, Any]`: 用户信息字典
     """
-    sql = r"SELECT `id`, `id_num`, `name`, `gender`, `birthday` FROM `native_users` WHERE `id` = %s"
+    sql = r"SELECT `id`, `id_num`, `name`, `gender`, `birthday` FROM `user` WHERE `id` = %s"
 
     with conn.cursor() as c:
         c.execute(sql, (id_,))
@@ -104,18 +108,18 @@ def update_user(
     更新用户信息
 
     Args:
-        conn (Connection): 数据库连接对象
-        id_ (int): 主键 ID
-        id_num (str): 身份证号
-        name (str): 姓名
-        gender (str): 性别
-        birthday (date): 生日
+        - `conn` (`Connection`): 数据库连接对象
+        - `id_` (`int`): 主键 ID
+        - `id_num` (`str`): 身份证号
+        - `name` (`str`): 姓名
+        - `gender` (`str`): 性别
+        - `birthday` (`date`): 生日
 
     Returns:
-        int: 受影响的行数, 保持为 1
+        `int`: 受影响的行数, 保持为 `1`
     """
     sql = (
-        r"UPDATE `native_users` "
+        r"UPDATE `user` "
         r"SET `id_num` = %s, `name` = %s, `gender` = %s, `birthday` = %s "
         r"WHERE `id` = %s"
     )
@@ -129,13 +133,13 @@ def delete_user(conn: Connection, id_: int) -> int:
     删除用户数据
 
     Args:
-        conn (Connection): 数据库连接对象
-        id_ (int): 主键 ID
+        - `conn` (`Connection`): 数据库连接对象
+        - `id_` (`int`): 主键 ID
 
     Returns:
-        int: 删除的行数, 保持为 1
+        `int`: 删除的行数, 保持为 `1`
     """
-    sql = r"DELETE from `native_users` WHERE `id` = %s"
+    sql = r"DELETE from `user` WHERE `id` = %s"
 
     with conn.cursor() as c:
         return cast(int, c.execute(sql, (id_)))

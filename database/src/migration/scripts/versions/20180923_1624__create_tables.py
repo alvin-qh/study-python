@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        "core_users",
+        "user",
         sa.Column("id", BIGINT(), primary_key=True, autoincrement=True),
         sa.Column("id_num", VARCHAR(50), nullable=False),
         sa.Column("name", VARCHAR(50), nullable=False),
@@ -32,12 +32,10 @@ def upgrade():
             server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"),
         ),
     )
-    op.create_index(
-        "ux_id_num", table_name="core_users", columns=["id_num"], unique=True
-    )
-    op.create_index("ix_name", table_name="core_users", columns=["name"], unique=False)
+    op.create_index("ux_id_num", table_name="user", columns=["id_num"], unique=True)
+    op.create_index("ix_name", table_name="user", columns=["name"], unique=False)
 
 
 def downgrade():
-    op.drop_index("ux_id_num", table_name="core_users")
-    op.drop_table("core_users")
+    op.drop_index("ux_id_num", table_name="user")
+    op.drop_table("user")

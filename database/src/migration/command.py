@@ -13,7 +13,7 @@ class Command:
         初始化 Command 类
 
         Args:
-            conn_url (str): 数据库连接地址
+            - `conn_url` (`str`): 数据库连接地址
         """
         script_location = self._script_location()
 
@@ -33,7 +33,7 @@ class Command:
         获取数据库脚本位置
 
         Returns:
-            str: 数据库脚本的路径地址
+            `str`: 数据库脚本的路径地址
         """
         curdir = os.path.dirname(__file__)
         return os.path.abspath(os.path.join(curdir, "scripts"))
@@ -43,7 +43,7 @@ class Command:
         升级数据库
 
         Args:
-            revision (str, optional): 指定升级到的版本. Defaults to "head", 表示升级到最新版本.
+            - `revision` (`str`, optional): 指定升级到的版本. Defaults to "head", 表示升级到最新版本.
         """
         command.upgrade(self._conf, revision)
 
@@ -52,7 +52,7 @@ class Command:
         降级数据库
 
         Args:
-            revision (str, optional): 指定降级到的版本. Defaults to "base", 表示降级到最老的版本.
+            - `revision` (`str`, optional): 指定降级到的版本. Defaults to "base", 表示降级到最老的版本.
         """
         command.downgrade(self._conf, revision)
 

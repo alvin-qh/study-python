@@ -13,10 +13,10 @@ class ObjectEncoder(json.JSONEncoder):
         默认转换规则
 
         Args:
-            obj (Any): 任意对象
+            - `obj` (`Any`): 任意对象
 
         Returns:
-            Optional[str]: None 或字符串
+            `Optional[str]`: `None` 或字符串
         """
 
         s: Optional[str] = None

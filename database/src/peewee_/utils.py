@@ -1,7 +1,8 @@
 from functools import wraps
 from typing import Any, Callable
 
-from mongoengine import get_db
+from .core import db
+from .models import Department, Employee, Org, Role
 
 # 没有记录返回值时的默认值
 _NoReturnValue = object()
@@ -34,16 +35,11 @@ def run_once(func: Callable[..., Any]) -> Callable[..., Any]:
 
 
 @run_once
-def clear_db() -> None:
-    """清除数据库下的所有文档集合"""
-    db = get_db()
-    for coll in db.list_collection_names():
-        db[coll].drop()
+def initialize_tables() -> None:
+    """初始化数据库中的指定表"""
+    with db.atomic():
+        # 删除表
+        db.drop_tables([Org, Department, Employee, Role])
 
-
-@run_once
-def ensure_indexes() -> None:
-    """重建当前数据库中所有文档的索引"""
-    db = get_db()
-    for coll in db.list_collection_names():
-        db[coll].ensure_indexes()
+        # 重建表
+        db.create_tables([Org, Department, Employee, Role])

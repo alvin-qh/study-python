@@ -1,23 +1,27 @@
-from .core import session
+from .core import session, soft_deleted_select
+from .model import Gender, Group, User, UserGroup
 
 __all__ = [
     "session",
+    "soft_deleted_select",
     "initialize_tables",
+    "Gender",
+    "Group",
+    "User",
+    "UserGroup",
 ]
 
 
 def initialize_tables() -> None:
-    from sqlalchemy import text
-
     from .core import engine
-    from .model import Group, User, UserGroup
 
-    for table in [User, Group, UserGroup]:
+    for table in [UserGroup, User, Group]:
         try:
-            table.__table__.create(engine)  # type: ignore
-            session.commit()
+            table.__table__.drop(engine)  # type: ignore
         except Exception:
             pass
 
-        session.execute(text(f"DELETE FROM {table.__tablename__}"))
-        session.commit()
+    for table in [User, Group, UserGroup]:
+        table.__table__.create(engine)  # type: ignore
+
+    session.commit()

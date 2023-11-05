@@ -2,10 +2,10 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default", "lint", "test", ":type", "demo"]
+groups = ["default", "lint", "test", ":type", "demo", "types"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:ba9285ed255a70e07481b74828e585905da9925744a07925820247f2d1341fee"
+content_hash = "sha256:03ba54386c86f53b5087ccccdc1ef2664dc338cfd31a84d8eab6cf24194d5a9e"
 
 [[package]]
 name = "alembic"
@@ -304,6 +304,14 @@ files = [
 ]
 
 [[package]]
+name = "peewee"
+version = "3.17.0"
+summary = "a little orm"
+files = [
+    {file = "peewee-3.17.0.tar.gz", hash = "sha256:3a56967f28a43ca7a4287f4803752aeeb1a57a08dee2e839b99868181dfb5df8"},
+]
+
+[[package]]
 name = "pluggy"
 version = "1.3.0"
 requires_python = ">=3.8"
@@ -369,6 +377,14 @@ summary = "Pure Python MySQL Driver"
 files = [
     {file = "PyMySQL-1.1.0-py3-none-any.whl", hash = "sha256:8969ec6d763c856f7073c4c64662882675702efcb114b4bcbb955aea3a069fa7"},
     {file = "PyMySQL-1.1.0.tar.gz", hash = "sha256:4f13a7df8bf36a51e81dd9f3605fede45a4878fe02f9236349fd82a3f0612f96"},
+]
+
+[[package]]
+name = "pysqlite3"
+version = "0.5.2"
+summary = "DB-API 2.0 interface for Sqlite 3.x"
+files = [
+    {file = "pysqlite3-0.5.2.tar.gz", hash = "sha256:0abc1756e8b39bd51c303e8fac37497ccaccc7b237c89fe3cf47ee8e614c590b"},
 ]
 
 [[package]]

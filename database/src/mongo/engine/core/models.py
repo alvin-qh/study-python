@@ -19,7 +19,7 @@ class TenantAwareQuerySet(QuerySet):
 
         # 加入租户查询条件
         if issubclass(doc, MultiTenantMixin):
-            q &= Q(org=context.get_current_org())
+            q &= Q(org=context.get_current_tenant())
 
         self._query_obj = q
 
@@ -76,8 +76,8 @@ def _set_document_audited(
     """在文档更新前, 为文档加入审计属性
 
     Args:
-        doc_cls (Type[Document]): 文档类型
-        document (Document): 文档对象
+        - `doc_cls` (`Type[Document]`): 文档类型
+        - `document` (`Document`): 文档对象
     """
     if isinstance(document, AuditedMixin):
         # 加入审计属性
@@ -93,12 +93,12 @@ def _set_document_tenant(
     """为文档加入租户属性
 
     Args:
-        doc_cls (Type[Document]): _description_
-        document (Document): _description_
+        - `doc_cls` (`Type[Document]`): 文档类型
+        - `document` (`Document`): 文档对象
     """
     if isinstance(document, MultiTenantMixin):
         # 加入租户属性
-        org = context.get_current_org()
+        org = context.get_current_tenant()
         if org:
             document.org = org  # type: ignore
 

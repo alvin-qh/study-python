@@ -1,9 +1,7 @@
-from typing import Any, Self, Tuple, Type
+from typing import Any, Optional, Self, Tuple, Type
 
-from sqlalchemy import create_engine, pool
+from sqlalchemy import Select, create_engine, pool, select
 from sqlalchemy.orm import Query, scoped_session, sessionmaker
-
-from .mixin import SoftDeleteMixin
 
 
 class ExtQuery(Query[Any]):
@@ -29,14 +27,16 @@ class ExtQuery(Query[Any]):
 
     def _add_soft_delete_filter(self, query_types: Tuple[Type[Any]]) -> Self:
         """
-        尝试增加 soft delete 查询条件
+        尝试增加 Soft Delete 查询条件
 
         Args:
-            query_types (Tuple[Type]): 要查询的实体类型
+            - `query_types` (`Tuple[Type]`): 要查询的实体类型
 
         Returns:
-            ExtQuery: 返回查询对象
+            `ExtQuery`: 返回查询对象
         """
+        from .mixin import SoftDeleteMixin
+
         for t in query_types:
             # 判断实体类型是否支持 soft delete
             if isinstance(t, type) and issubclass(t, SoftDeleteMixin):
@@ -46,9 +46,24 @@ class ExtQuery(Query[Any]):
         return self
 
 
+def soft_deleted_select(*entities: Any, **__kw: Any) -> Select[Any]:
+    from .mixin import SoftDeleteMixin
+
+    soft_deleted_entity: Optional[Type[SoftDeleteMixin]] = None
+    for e in entities:
+        if isinstance(e, type) and issubclass(e, SoftDeleteMixin):
+            soft_deleted_entity = e
+
+    sel = select(*entities, **__kw)
+    if soft_deleted_entity:
+        sel = sel.where(soft_deleted_entity.deleted == False)  # noqa
+
+    return sel
+
+
 # 创建数据库连接引擎
 engine = create_engine(
-    "sqlite:///:memory:",
+    url="sqlite:///:memory:",
     echo=True,
     pool_size=5,
     max_overflow=0,
@@ -63,6 +78,30 @@ session = scoped_session(
 
 
 """ 以下代码演示了如何增加监听器, 在语句执行前执行处理
+Statement = TypeVar(
+    "Statement", bound=Union[Select, FromStatement, CompoundSelect, Executable]
+)
+
+
+def soft_delete_rewriter(stmt: Statement) -> Statement:
+    if not isinstance(stmt, Select):
+        return stmt
+
+    if stmt.get_execution_options().get("with_deleted"):
+        return stmt
+
+    for from_obj in stmt.get_final_froms():
+        if not isinstance(from_obj, Table):
+            continue
+
+        column_obj = from_obj.columns.get("deleted")
+        if column_obj is None:
+            continue
+
+        # do something
+
+    return stmt
+
 @listens_for(Session, identifier="do_orm_execute")
 def execution_listener(state: ORMExecuteState):
     if not state.is_select:

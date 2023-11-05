@@ -17,8 +17,8 @@ depends_on = None
 
 
 def upgrade():
-    core_user = table(
-        "core_users",
+    user = table(
+        "user",
         column("id_num"),
         column("name"),
         column("gender"),
@@ -27,7 +27,7 @@ def upgrade():
 
     session = Session(bind=op.get_bind())
     op.execute(
-        core_user.insert().values(
+        user.insert().values(
             id_num="61010419810303210X", name="Alvin", gender="M", birthday="1981-03-03"
         )
     )
@@ -35,8 +35,8 @@ def upgrade():
 
 
 def downgrade():
-    core_user = table("core_users", column("id_num"))
+    user = table("user", column("id_num"))
 
     session = Session(bind=op.get_bind())
-    op.execute(core_user.delete().where(core_user.c.id_num == "61010419810303210X"))
+    op.execute(user.delete().where(user.c.id_num == "61010419810303210X"))
     session.commit()

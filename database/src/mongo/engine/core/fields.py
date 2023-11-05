@@ -23,12 +23,27 @@ class ProxyLazyReference(LazyReference):
         pk: ObjectId,
         doc: Optional[Document] = None,
     ) -> None:
+        """构造器
+
+        Args:
+            - `document_type` (`Type[Document]`): 文档对象类型
+            - `pk` (`ObjectId`): 文档主键值
+            - `doc` (`Optional[Document]`, optional): 文档对象. Defaults to `None`.
+        """
         # 通过 `object.__setattr__` 方法设置属性, 跳过 `self.__setattr__` 方法执行
         object.__setattr__(self, "_document_type", document_type)
         object.__setattr__(self, "_pk", pk)
         object.__setattr__(self, "_cached_doc", doc)
 
     def fetch(self, force: bool = False) -> Document:
+        """获取当前字段引用的文档对象
+
+        Args:
+            - `force` (`bool`, optional): 是否强制获取. Defaults to `False`.
+
+        Returns:
+            `Document`: 被当前字段引用的文档对象
+        """
         doc = self._cached_doc
         if not doc:
             document_type = self._document_type
@@ -38,10 +53,10 @@ class ProxyLazyReference(LazyReference):
 
     @property
     def id(self) -> ObjectId:
-        """获取文档 id
+        """获取文档 `id`
 
         Returns:
-            ObjectId: 文档 id 值
+            `ObjectId`: 文档 `id` 值
         """
         return self._pk
 
@@ -50,7 +65,7 @@ class ProxyLazyReference(LazyReference):
         """获取文档集合名称
 
         Returns:
-            str: 文档集合名称
+            `str`: 文档集合名称
         """
         return str(self._document_type._get_collection_name())
 
@@ -59,7 +74,7 @@ class ProxyLazyReference(LazyReference):
         """获取数据库对象
 
         Returns:
-            Any: 数据库对象
+            `Any`: 数据库对象
         """
         return get_db()
 
@@ -68,7 +83,7 @@ class ProxyLazyReference(LazyReference):
         """获取文档类型
 
         Returns:
-            Type[Document]: 文档类型
+            `Type[Document]`: 文档类型
         """
         return self._document_type
 
@@ -77,7 +92,7 @@ class ProxyLazyReference(LazyReference):
         """是否透传
 
         Returns:
-            bool: 是否透传
+            `bool`: 是否透传
         """
         return True
 
@@ -85,10 +100,10 @@ class ProxyLazyReference(LazyReference):
         """以下标形式获取属性值
 
         Args:
-            name (str): 属性名称
+            - `name` (`str`): 属性名称
 
         Returns:
-            Any: 属性值
+            `Any`: 属性值
         """
         doc: Document = self.fetch()
         return doc[name]
@@ -97,10 +112,10 @@ class ProxyLazyReference(LazyReference):
         """获取属性值
 
         Args:
-            name (str): 属性名称
+            - `name` (`str`): 属性名称
 
         Returns:
-            Any: 属性值
+            `Any`: 属性值
         """
         return getattr(self.fetch(), name)
 
@@ -108,8 +123,8 @@ class ProxyLazyReference(LazyReference):
         """设置属性值
 
         Args:
-            name (str): 属性名称
-            value (Any): 属性值
+            - `name` (`str`): 属性名称
+            - `value` (`Any`): 属性值
         """
         doc: Document = self.fetch()
         doc[name] = value
@@ -118,7 +133,7 @@ class ProxyLazyReference(LazyReference):
         """获取对象的字符串形式
 
         Returns:
-            str: 对象的字符串形式值
+            `str`: 对象的字符串形式值
         """
         return (
             f"<ProxyLazyReference doc_cls={self.document_type.__name__} id={self._pk}>"
@@ -128,10 +143,10 @@ class ProxyLazyReference(LazyReference):
         """对象比较
 
         Args:
-            other (object): 待比较对象
+            - `other` (`object`): 待比较对象
 
         Returns:
-            bool: 比较结果
+            `bool`: 比较结果
         """
         if isinstance(other, DBRef):
             return self.collection == other.collection and self._pk == other.id
@@ -144,7 +159,7 @@ class ProxyLazyReference(LazyReference):
         """计算对象的 Hash 值
 
         Returns:
-            int: Hash 值
+            `int`: Hash 值
         """
         return hash(self._pk)
 
@@ -152,10 +167,10 @@ class ProxyLazyReference(LazyReference):
         """复制当前对象
 
         Args:
-            memo (Dict[int, Any]): 用于进行深度拷贝的"备忘录"对象
+            - `memo` (`Dict[int, Any]`): 用于进行深度拷贝的"备忘录"对象
 
         Returns:
-            DBRef: 引用对象
+            `DBRef`: 数据库引用对象
         """
         return DBRef(
             deepcopy(self.collection, memo),
@@ -169,11 +184,11 @@ class ProxyLazyReference(LazyReference):
         """创建引用对象
 
         Args:
-            doc_cls (Type[Document]): 文档类型
-            pk (ObjectId): 文档 id
+            - `doc_cls` (`Type[Document]`): 文档类型
+            - `pk` (`ObjectId`): 文档 id
 
         Returns:
-            ProxyLazyReference: 引用对象
+            `ProxyLazyReference`: 引用对象
         """
         return ProxyLazyReference(doc_cls, pk)
 
@@ -197,10 +212,10 @@ class ProxyLazyReferenceField(LazyReferenceField):
         """构建一个懒加载代理模式引用对象
 
         Args:
-            value (LazyRefValueType): 引用值
+            - `value` (`LazyRefValueType`): 引用值
 
         Returns:
-            Optional[ProxyLazyReference]: 代理模式引用对象
+            `Optional[ProxyLazyReference]`: 代理模式引用对象
         """
         if value is None or isinstance(value, ProxyLazyReference):
             return value
@@ -228,12 +243,37 @@ class EnumField(BaseField):
         return enum.value if hasattr(enum, "value") else enum
 
     def to_python(self, value: Any) -> Any:
+        """mongo 字段值转 Python 值
+
+        Args:
+            - `value` (`Any`): mongo 字段值
+
+        Returns:
+            `Any`: 文档值
+        """
         return self.enum(super().to_python(value))
 
     def to_mongo(self, value: Any) -> Any:
+        """Python 值转 mongo 字段值
+
+        Args:
+            - `value` (`Any`): Python 值
+
+        Returns:
+            Any: Mongo 字段值
+        """
         return self._get_value(value)
 
     def prepare_query_value(self, op: Any, value: Any) -> Any:
+        """准备查询用的值
+
+        Args:
+            op (Any): 查询操作
+            value (Any): 查询值
+
+        Returns:
+            Any: 查询用值
+        """
         return super().prepare_query_value(op, self._get_value(value))
 
     def validate(self, value: Any, clean: bool = True) -> Any:

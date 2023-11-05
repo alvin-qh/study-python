@@ -23,15 +23,23 @@ mongo_db = client.study_python_mongo
 class CityModel(TypedDict):
     """定义表示城市的实体类型"""
 
+    # 城市名称
     name: str
+
+    # 国家名称
     country: str
 
 
 class UserModel(TypedDict):
     """定义表示用户的实体类型"""
 
+    # 用户名
     name: str
+
+    # 用户生日
     birthday: Union[date, str]
+
+    # 用户所在城市
     city: CityModel  # 关联到城市实体类型, 实际存储时, 存储关联到文档的 id
 
 
@@ -48,7 +56,7 @@ def create_user(user: UserModel) -> None:
     """创建一个用户实体文档
 
     Args:
-        user (UserModel): 用户实体对象
+        - `user` (`UserModel`): 用户实体对象
     """
     # 为用户的城市属性设置默认国家
     user["city"].setdefault("country", "China")
@@ -93,12 +101,12 @@ def find_user(
     """查询用户文档
 
     Args:
-        name (Optional[str], optional): 要匹配的用户名称. Defaults to None.
-        birthday (Optional[Union[date, str]], optional): 要匹配的用户生日. Defaults to None.
-        with_id (bool, optional): _description_. Defaults to False.
+        - `name` (`Optional[str]`, optional): 要匹配的用户名称. Defaults to `None`.
+        - `birthday` (`Optional[Union[date, str]]`, optional): 要匹配的用户生日. Defaults to `None`.
+        - `with_id` (`bool`, optional): 查询结果中是否要包含 id 值. Defaults to `False`.
 
     Returns:
-        Optional[UserModel]: 用户实体对象
+        `Optional[UserModel]`: 用户实体对象
     """
     # 存储结果的用户列表
     users: List[DocType] = []

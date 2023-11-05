@@ -12,6 +12,8 @@ dependencies = [
     "werkzeug>=3.0.1",
     "mongoengine>=0.27.0",
     "blinker>=1.7.0",
+    "peewee>=3.17.0",
+    "pysqlite3>=0.5.2",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -46,8 +48,8 @@ warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
+disallow_untyped_calls = false
 disallow_subclassing_any = false
-check_untyped_defs = true
 exclude = ['migration/scripts/.+?\.py$']
 
 [tool.autopep8]

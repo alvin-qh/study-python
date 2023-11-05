@@ -80,7 +80,7 @@ def test_create_department() -> None:
 
     dept = Department.objects(name=created_dept.name).first()
     assert dept == created_dept
-    assert dept.org == context.get_current_org()
+    assert dept.org == context.get_current_tenant()
 
 
 def test_create_employee() -> None:

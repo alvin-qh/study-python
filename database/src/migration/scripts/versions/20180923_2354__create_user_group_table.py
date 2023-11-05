@@ -18,7 +18,7 @@ depends_on = None
 
 def upgrade():
     op.create_table(
-        "core_user_groups",
+        "user_group",
         sa.Column("id", BIGINT(), primary_key=True, autoincrement=True),
         sa.Column("user_id", BIGINT(), nullable=False),
         sa.Column("group_id", BIGINT(), nullable=False),
@@ -32,12 +32,12 @@ def upgrade():
     )
     op.create_index(
         "ux_user_group_id",
-        table_name="core_user_groups",
+        table_name="user_group",
         columns=["user_id", "group_id"],
         unique=True,
     )
 
 
 def downgrade():
-    op.drop_index("ux_user_group_id", table_name="core_user_groups")
-    op.drop_table("core_user_groups")
+    op.drop_index("ux_user_group_id", table_name="user_group")
+    op.drop_table("user_group")
