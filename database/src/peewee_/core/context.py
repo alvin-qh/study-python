@@ -182,7 +182,7 @@ class Context:
         """
         return cast(Tenant, self["_tenant"])
 
-    def get_current_user(self) -> Optional[User]:
+    def get_current_user(self) -> User:
         """获取上下文中存储的当前用户
 
         Returns:

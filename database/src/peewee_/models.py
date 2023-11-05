@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import Optional
 
 from peewee import CharField, DeferredForeignKey, ForeignKeyField, IntegerField
 from peewee_.core import (
@@ -45,7 +44,7 @@ class Department(BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
     level: int = IntegerField(null=False, default=0)
 
     # 部门管理人引用, 通过 `manager_id` 字段对应到 `Employee` 实体的 `id` 字段上, 可以为 `null`
-    manager: Optional["Employee"] = DeferredForeignKey(
+    manager: "Employee" = DeferredForeignKey(
         "Employee",
         object_id_name="manager_id",
         field="id",
@@ -87,7 +86,7 @@ class Employee(User, BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
 
     # 员工所属部门引用, 通过 `department_id` 字段对应到 `Department` 实体的 `id` 字段上, 并在
     # `Department` 实体中增加 `employees` 引用, 可以为 `null`
-    department: Optional[Department] = ForeignKeyField(
+    department: Department = ForeignKeyField(
         Department,
         object_id_name="department_id",
         field="id",

@@ -40,8 +40,6 @@ class PeeweeFactory(factory.base.Factory):
     class Meta:
         """定义工厂类型元数据"""
 
-        pass
-
     @classmethod
     def _create(cls, model_class: Type[Model], *args: Any, **kwargs: Any) -> Any:
         """定义实体创建方法
@@ -108,9 +106,12 @@ class EmployeeFactory(PeeweeFactory):
     name: str = factory.faker.Faker("name")
 
     # 构建员工性别字段
-    gender: Gender = factory.LazyAttribute(
-        lambda e: Gender.MALE if randint(0, 1) == 0 else Gender.FEMALE
+    gender: Gender = factory.LazyFunction(
+        lambda: Gender.MALE if randint(0, 1) == 0 else Gender.FEMALE
     )
+
+    # 构建员工角色字段
+    role: Role = factory.LazyFunction(lambda: RoleFactory.create())
 
 
 # 保存当前组织对象
@@ -121,12 +122,8 @@ current_user: Optional[Employee] = None
 
 
 @fixture(scope="module", autouse=True)
-def org_context() -> Generator[None, None, None]:
-    """为当前测试模块构建测试上下文
-
-    Yields:
-        Generator[None, Any, None]:
-    """
+def build_test_context() -> Generator[None, None, None]:
+    """为当前测试模块构建测试上下文"""
     global current_org, current_user
 
     with db.transaction():
@@ -176,11 +173,72 @@ def test_current_user() -> None:
 
 
 def test_create_department() -> None:
-    assert current_org is not None
-    assert current_user is not None
+    with db.atomic():
+        employee: Employee = EmployeeFactory.create()
+        department: Department = DepartmentFactory.create(manager=employee)
+
+    department = Department.select().where(Department.id == department.id).get()
+
+    assert department.org_id == context.get_current_tenant().id
+    assert department.created_by == context.get_current_user().id
+    assert department.manager == employee
+
+
+def test_join() -> None:
+    """测试 join 查询
+
+    ```sql
+    SELECT d.*, e.*
+    FROM department AS d
+    JOIN employee AS e on d.manager_id = e.id
+    WHERE e.id = :id
+    ```
+    """
 
     with db.atomic():
-        department: Department = DepartmentFactory.create()
+        employee: Employee = EmployeeFactory.create()
+        department: Department = DepartmentFactory.create(manager=employee)
 
-    assert department.org_id == current_org.id
-    assert department.created_by == current_user.id
+    # 定义实体别名
+    alias_d: Department = Department.alias("d")
+    alias_e: Employee = Employee.alias("e")
+
+    # 通过联合查询查询部门实体结果
+    department = (
+        alias_d.select()
+        .join(alias_e, on=(alias_d.manager == alias_e.id))
+        .where(alias_e.id == employee.id)  # type:ignore
+    ).get()
+
+    # 确认查询结果
+    assert department.org_id == context.get_current_tenant().id
+    assert department.created_by == context.get_current_user().id
+    assert department.manager == employee
+
+
+def test_sub_query() -> None:
+    """测试子查询
+
+    ```sql
+    SELECT d.*
+    FROM department AS d
+    WHERE d.manager_id IN (
+        SELECT e.id
+        FROM Employee AS e
+        WHERE e.name = :name
+    )
+    ```
+    """
+
+    with db.atomic():
+        employee: Employee = EmployeeFactory.create()
+        department: Department = DepartmentFactory.create(manager=employee)
+
+    sub_query = Employee.select(Employee.id).where(Employee.name == employee.name)
+
+    department = Department.select().where(Department.manager.in_(sub_query)).get()
+
+    # 确认查询结果
+    assert department.org_id == context.get_current_tenant().id
+    assert department.created_by == context.get_current_user().id
+    assert department.manager == employee

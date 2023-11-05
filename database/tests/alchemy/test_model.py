@@ -24,8 +24,8 @@ class UserFactory(BaseFactory):
 
     id_num = factory.Faker("ean", length=13)
     name = factory.Faker("name")
-    gender = factory.LazyAttribute(
-        lambda u: Gender.MALE if randint(0, 1) == 0 else Gender.FEMALE
+    gender = factory.LazyFunction(
+        lambda: Gender.MALE if randint(0, 1) == 0 else Gender.FEMALE
     )
     birthday = factory.Faker("date_object")
 
