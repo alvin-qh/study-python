@@ -257,7 +257,9 @@ class Dataset:
             )
 
         start_date = int(
-            time.mktime(time.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"))
+            time.mktime(
+                time.strptime("2020-01-01 00:00:00", "%Y-%m-%d %H:%M:%S"),
+            )
         )
 
         # 设置 Photo 对象集合

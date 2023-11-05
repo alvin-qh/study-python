@@ -71,7 +71,10 @@ class MultiTenantMixin(Document):
 
 
 def _set_document_audited(
-    doc_cls: Type[Document], document: Document, *args: Any, **kwargs: Any
+    doc_cls: Type[Document],
+    document: Document,
+    *args: Any,
+    **kwargs: Any,
 ) -> None:
     """在文档更新前, 为文档加入审计属性
 
@@ -88,7 +91,10 @@ def _set_document_audited(
 
 
 def _set_document_tenant(
-    doc_cls: Type[Document], document: Document, *args: Any, **kwargs: Any
+    doc_cls: Type[Document],
+    document: Document,
+    *args: Any,
+    **kwargs: Any,
 ) -> None:
     """为文档加入租户属性
 

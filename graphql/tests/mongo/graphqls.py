@@ -11,12 +11,7 @@ FRAGMENT_EMPLOYEE = """
 
 FRAGMENT_EMPLOYEE_DETAIL = """
     fragment employeeDetailFields on Employee {
-        id
-        name
-        gender
-        role {
-            name
-        }
+        ...employeeFields
         department {
             id
             name
@@ -48,12 +43,12 @@ QUERY_EMPLOYEE_BY_NAME = (
     FRAGMENT_EMPLOYEE
     + FRAGMENT_EMPLOYEE_DETAIL
     + """
-    query($name: String!) {
-        employee(name: $name) {
-            ...employeeDetailFields
+        query($name: String!) {
+            employee(name: $name) {
+                ...employeeDetailFields
+            }
         }
-    }
-"""
+      """
 )
 
 QUERY_EMPLOYEES_BY_DEPARTMENT = """

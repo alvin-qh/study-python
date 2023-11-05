@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    privileged: true
+    env_file:
+      - env/mongo.env
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data_db:/data/db
+      - mongo_data_config:/data/configdb
+    networks:
+      - graphene_network
+  # mongo-express:
+  #   image: mongo-express
+  #   restart: always
+  #   ports:
+  #     - 8081:8081
+  #   env_file:
+  #     - env/express.env
+  #   networks:
+  #     - graphene_network
+networks:
+  graphene_network:
+volumes:
+  mongo_data_db:
+  mongo_data_config:
+

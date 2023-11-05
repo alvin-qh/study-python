@@ -22,6 +22,6 @@ mongodb.connect(
     port=27017,
     replicaSet="rs0",
     directConnection=True,
-    # user="root",
+    # username="root",
     # password="password",
 )

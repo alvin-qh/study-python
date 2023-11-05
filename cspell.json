@@ -62,6 +62,7 @@
         "gettz",
         "gmtime",
         "graphene",
+        "graphqls",
         "hexify",
         "ignoretz",
         "initargs",

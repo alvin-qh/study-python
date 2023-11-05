@@ -5,12 +5,12 @@ authors = [
     {name = "Alvin", email = "quhao317@163.com"},
 ]
 dependencies = [
-    "graphene>=3.3",
-    "aiodataloader>=0.4.0",
-    "promise>=2.3",
-    "pyhumps>=3.8.0",
-    "bson>=0.5.10",
-    "mypy-extensions>=1.0.0",
+    "graphene",
+    "aiodataloader",
+    "promise",
+    "pyhumps",
+    "bson",
+    "mypy-extensions",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -18,20 +18,20 @@ license = {text = "MIT"}
 
 [project.optional-dependencies]
 test = [
-    "pytest>=7.4.3",
-    "pytest-asyncio>=0.21.1",
+    "pytest",
+    "pytest-asyncio",
 ]
 lint = [
-    "mypy>=1.6.1",
-    "autopep8>=2.0.4",
+    "mypy",
+    "autopep8",
 ]
 demo = [
-    "werkzeug>=3.0.1",
-    "pymongo>=4.6.0",
-    "mongoengine>=0.27.0",
-    "graphene-mongo>=0.2.15",
-    "blinker>=1.7.0",
-    "factory-boy>=3.3.0",
+    "werkzeug",
+    "pymongo",
+    "mongoengine",
+    "graphene-mongo",
+    "blinker",
+    "factory-boy",
 ]
 [build-system]
 requires = ["pdm-backend"]

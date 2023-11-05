@@ -31,9 +31,6 @@ class Context:
             Any: 属性值
         """
         local = self.__dict__["_ctx"]
-        if not local:
-            return default
-
         try:
             return local.__getattr__(key)
         except AttributeError:

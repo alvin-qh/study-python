@@ -67,7 +67,7 @@ class MongoDB:
         dbname: str,
         host: str,
         port: int,
-        user: str = "",
+        username: str = "",
         password: str = "",
         replicaSet: str = "",
         directConnection: bool = False,
@@ -78,7 +78,7 @@ class MongoDB:
             - `dbname` (`str`): 库名称
             - `host` (`str`): mongodb 地址
             - `port` (`int`): mongodb 端口号
-            - `user` (`str`, optional): 用户名. Defaults to `""`.
+            - `username` (`str`, optional): 用户名. Defaults to `""`.
             - `password` (`str`, optional): 密码. Defaults to `""`.
             - `replicaSet` (`str`, optional): 集群名称. Defaults to `""`.
             - `directConnection` (`bool`, optional): 是否直接连结. Defaults to `False`.
@@ -92,8 +92,8 @@ class MongoDB:
             "authentication_source": "admin",
             "event_listeners": (mongo_connection_pool_logger,),
         }
-        if user:
-            kwargs["user"] = user
+        if username:
+            kwargs["username"] = username
 
         if password:
             kwargs["password"] = password

@@ -1,19 +1,12 @@
 from enum import Enum
 from typing import Any, Dict, Optional
 
-from mongoengine.fields import IntField, ReferenceField, StringField
+from mongoengine.fields import IntField, LazyReferenceField, StringField
 
-from .core import (
-    AbstractOrg,
-    AuditedMixin,
-    BaseModel,
-    MultiTenantMixin,
-    ProxyLazyReferenceField,
-    StringEnumField,
-)
+from .core import AuditedMixin, BaseModel, MultiTenantMixin, StringEnumField, Tenant
 
 
-class Org(BaseModel, AuditedMixin, AbstractOrg):
+class Org(Tenant, BaseModel, AuditedMixin):
     meta: Dict[str, Any] = {
         "indexes": [
             {
@@ -46,7 +39,7 @@ class Department(BaseModel, MultiTenantMixin, AuditedMixin):
 
     name: str = StringField(required=True)
     level: int = IntField(required=True, default=0)
-    manager: Optional["Employee"] = ReferenceField("Employee")
+    manager: Optional["Employee"] = LazyReferenceField("Employee")
 
 
 class Role(BaseModel, MultiTenantMixin):
@@ -85,8 +78,8 @@ class Employee(BaseModel, MultiTenantMixin, AuditedMixin):
 
     name: str = StringField(required=True)
     gender: Gender = StringEnumField(Gender, required=True, default=Gender.male)
-    department: Optional[Department] = ProxyLazyReferenceField(Department)
-    role: Optional[Role] = ProxyLazyReferenceField(Role)
+    department: Optional[Department] = LazyReferenceField(Department)
+    role: Optional[Role] = LazyReferenceField(Role)
 
     def set_department(
         self, department: Department, role: Optional[Role] = None
