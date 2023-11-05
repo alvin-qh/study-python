@@ -96,6 +96,7 @@
         "poolclass",
         "pyenv",
         "pymongo",
+        "pymsql",
         "pymysql",
         "pypi",
         "pyproject",
