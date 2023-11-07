@@ -23,9 +23,22 @@ services:
   #     - env/express.env
   #   networks:
   #     - graphene_network
+  postgres:
+    image: postgres
+    container_name: postgres
+    restart: always
+    privileged: true
+    env_file:
+      - env/postgres.env
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - graphene_network
 networks:
   graphene_network:
 volumes:
   mongo_data_db:
   mongo_data_config:
-
+  postgres-data:
