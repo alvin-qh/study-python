@@ -2,6 +2,8 @@ from typing import Any, Generic
 from typing import List as ListType
 from typing import Literal, Optional, TypeVar, cast
 
+from graphql import GraphQLError
+
 from graphene import (
     Connection,
     Enum,
@@ -13,8 +15,6 @@ from graphene import (
     String,
 )
 
-from graphql import GraphQLError
-
 from .dataloaders import department_loader, employee_loader, role_loader
 from .models import Department as DepartmentModel
 from .models import Employee as EmployeeModel
@@ -24,20 +24,32 @@ from .utils import make_cursor
 
 
 class QueryError(GraphQLError):
+    """定义表示查询异常的 Graphql 错误对象"""
+
     def __init__(self, message: str) -> None:
         super().__init__(message)
 
 
 class Department(ObjectType):
+    """定义部门 Graphql 类型"""
+
+    # 部门 id 字段
     id: str = String(required=True)
+
+    # 部门名称字段
     name: str = String(required=True)
+
+    # 部门级别字段
     level: int = Int(required=True, default_value=0)
+
+    # 部门主管字段, 表示一个 `Employee` 类型对象
     manager: Optional[EmployeeModel] = Field(lambda: Employee, required=False)
 
     @staticmethod
     async def resolve_manager(
         parent: DepartmentModel, info: ResolveInfo
     ) -> Optional[EmployeeModel]:
+        """解析部门主管字段"""
         if not parent.manager:
             return None
 
@@ -46,10 +58,16 @@ class Department(ObjectType):
 
 
 class Role(ObjectType):
+    """定义权限 Graphql 类型"""
+
+    # 权限 id
     id: str = String(required=True)
+
+    # 权限名称
     name: str = String(required=True)
 
 
+# 将 Python 枚举转为 Graphql 枚举类型
 Gender = Enum.from_enum(GenderModel)
 
 

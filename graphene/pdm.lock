@@ -5,7 +5,7 @@
 groups = ["default", "test", "lint", "demo"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:922920f629f5296a625479a1bfa83b297f8d78a14e2729f8d7deaeae01588c7c"
+content_hash = "sha256:2e503a9b4be7f1c57722e1e5c747545bacee7ddd42236edae8976ea0e56a816c"
 
 [[package]]
 name = "aiodataloader"
@@ -267,6 +267,14 @@ summary = "Core utilities for Python packages"
 files = [
     {file = "packaging-23.2-py3-none-any.whl", hash = "sha256:8c491190033a9af7e1d931d0b5dacc2ef47509b34dd0de67ed209b5203fc88c7"},
     {file = "packaging-23.2.tar.gz", hash = "sha256:048fb0e9405036518eaaf48a55953c750c11e1a1b68e0dd1a9d62ed0c092cfc5"},
+]
+
+[[package]]
+name = "peewee"
+version = "3.17.0"
+summary = "a little orm"
+files = [
+    {file = "peewee-3.17.0.tar.gz", hash = "sha256:3a56967f28a43ca7a4287f4803752aeeb1a57a08dee2e839b99868181dfb5df8"},
 ]
 
 [[package]]

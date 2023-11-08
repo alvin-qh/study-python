@@ -1,95 +1,85 @@
-from typing import Any, Optional
+from typing import Any, Literal, Optional
 
 from graphene import (
     ID,
     ClientIDMutation,
-    Enum,
     Field,
-    GlobalID,
     InputObjectType,
     Int,
+    Mutation,
     ObjectType,
     ResolveInfo,
     String,
 )
-from graphql_relay import from_global_id
 
 from .models import Department as DepartmentModel
 from .models import Employee as EmployeeModel
 from .models import Role as RoleModel
-from .types import Department, Employee
+from .types import Department, Employee, Gender
 
 
-class DepartmentInput(InputObjectType):
+class CreateDepartmentInput(InputObjectType):
     name = String(required=True)
     level = Int(required=True)
 
 
-class DepartmentMutation(ClientIDMutation):
+class CreateDepartmentPayload(ObjectType):
+    id: str = String(required=True)
+    name: str = String(required=True)
+
+
+class CreateDepartment(Mutation):
     class Input:
-        department_input = DepartmentInput(required=True)
+        name = String(required=True)
+        level = Int(required=True)
 
     department = Field(Department)
 
-    @classmethod
+    @staticmethod
     def mutate_and_get_payload(
-        cls,
-        root: Any,
+        root: Literal[None],
         info: ResolveInfo,
-        department_input: DepartmentInput,
-        client_mutation_id: Optional[ID] = None,
-    ) -> "DepartmentMutation":
-        department = DepartmentModel(
-            name=department_input.name, level=department_input.level
-        ).save()
-        return cls(department=department)
+        **input: Any,
+    ) -> "CreateDepartment":
+        department = DepartmentModel(name=input["name"], level=input["level"]).save()
+        return CreateDepartment(department=department)
 
 
-class Gender(Enum):
-    male = "male"
-    female = "female"
-
-
-class EmployeeInput(InputObjectType):
+class CreateEmployeeInput(InputObjectType):
     name: str = String(required=True)
     gender: Gender = Field(Gender, required=True)
-    department: str = GlobalID()
+    department_id: str = ID()
     role: str = String()
 
 
-class EmployeeMutation(ClientIDMutation):
+class CreateEmployee(ClientIDMutation):
     class Input:
-        employee_input = EmployeeInput()
+        input = CreateEmployeeInput()
 
     employee = Field(Employee)
 
-    @classmethod
+    @staticmethod
     def mutate_and_get_payload(
-        cls,
-        root: Any,
+        root: Literal[None],
         info: ResolveInfo,
-        employee_input: EmployeeInput,
-        client_mutation_id: Optional[ID] = None,
-    ) -> "EmployeeMutation":
+        input: CreateEmployeeInput,
+    ) -> "CreateEmployee":
         department: Optional[Department] = None
-        if employee_input.department:
-            department_type, department_id = from_global_id(employee_input.department)
-            assert department_type == DepartmentModel.__name__
-
-            department = DepartmentModel.objects(id=department_id).first()
+        if input.department_id:
+            department = DepartmentModel.objects(id=input.department_id).first()
             if not department:
                 raise ValueError("invalid_department")
 
-        if employee_input.role:
-            role = RoleModel.objects(name=employee_input.role).first()
+        if input.role:
+            role = RoleModel.objects(name=input.role).first()
             if not role:
-                role = RoleModel(name=employee_input.role).save()
+                role = RoleModel(name=input.role).save()
         else:
             role = None
 
         employee = EmployeeModel(
-            name=employee_input.name,
-            gender=employee_input.gender,
+            name=input.name,
+            gender=input.gender,
             department=department,
             role=role,
         ).save()
@@ -99,9 +89,12 @@ class EmployeeMutation(ClientIDMutation):
                 department.manager = employee
                 department.save()
 
-        return EmployeeMutation(employee=employee)
+        return CreateEmployee(employee=employee)
 
 
-class Mutations(ObjectType):
-    department_mutation = DepartmentMutation.Field()
-    employee_mutation = EmployeeMutation.Field()
+class DepartmentMutation(ObjectType):
+    create_department = CreateDepartment.Field()
+
+
+class EmployeeMutation(ObjectType):
+    create_employee = CreateEmployee.Field()

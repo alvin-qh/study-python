@@ -29,7 +29,7 @@ services:
     restart: always
     privileged: true
     env_file:
-      - env/postgres.env
+      - env/pg.env
     volumes:
       - postgres-data:/var/lib/postgresql/data
     ports:

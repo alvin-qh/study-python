@@ -124,6 +124,10 @@ class TestQueries(BaseTest):
 
     @pytest.mark.asyncio
     async def test_query_employees(self) -> None:
+        """测试查询员工列表
+
+        根据部门名称查询部门下所有员工的列表, 并通过 relay 分页
+        """
         result = await self.client.execute_async(
             QUERY_EMPLOYEES_BY_DEPARTMENT,
             variables={
@@ -132,6 +136,7 @@ class TestQueries(BaseTest):
                 "after": make_cursor(1),
             },
         )
+
         assert result == {
             "data": {
                 "employees": {

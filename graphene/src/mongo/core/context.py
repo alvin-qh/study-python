@@ -94,6 +94,11 @@ class Context:
         self.__delattr__(key)
 
     def delete(self, key: str) -> None:
+        """显式删除属性值
+
+        Args:
+            key (str): 属性名称
+        """
         self.__delattr__(key)
 
     def clear(self) -> None:
@@ -127,7 +132,7 @@ class Context:
         return self.TenantContext(self, tenant)
 
     def get_current_tenant(self) -> Tenant:
-        """获取当前上下文租户"""
+        """获取上下文中存储的租户"""
         return cast(Tenant, self["_tenant"])
 
 

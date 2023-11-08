@@ -1,3 +1,4 @@
+# 员工查询片段
 FRAGMENT_EMPLOYEE = """
     fragment employeeFields on Employee {
         id
@@ -9,29 +10,31 @@ FRAGMENT_EMPLOYEE = """
     }
 """
 
+# 员工明细查询片段
 FRAGMENT_EMPLOYEE_DETAIL = """
     fragment employeeDetailFields on Employee {
-        ...employeeFields
-        department {
+        ...employeeFields  # 员工信息, 引用员工查询片段
+        department {       # 员工所属部门
             id
             name
             level
             manager {
-                ...employeeFields
+                ...employeeFields  # 部门主管, 引用员工查询片段
             }
         }
     }
 """
 
+# 根据部门名称查询部门信息
 QUERY_DEPARTMENT_BY_NAME = (
-    FRAGMENT_EMPLOYEE
+    FRAGMENT_EMPLOYEE  # 包含员工查询片段
     + """
     query($name: String!) {
-        department(name: $name) {
+        department(name: $name) {  # 定义 name 参数, 查询部门信息
             id
             name
             level
-            manager {
+            manager { # 部门主管, 包含员工查询片段
                 ...employeeFields
             }
         }
@@ -39,22 +42,24 @@ QUERY_DEPARTMENT_BY_NAME = (
 """
 )
 
+# 根据员工姓名查询员工信息
 QUERY_EMPLOYEE_BY_NAME = (
-    FRAGMENT_EMPLOYEE
-    + FRAGMENT_EMPLOYEE_DETAIL
+    FRAGMENT_EMPLOYEE  # 包含员工查询片段
+    + FRAGMENT_EMPLOYEE_DETAIL  # 包含员工明细查询片段
     + """
         query($name: String!) {
-            employee(name: $name) {
-                ...employeeDetailFields
+            employee(name: $name) {  # 定义 name 参数, 查询员工信息
+                ...employeeDetailFields  # 包含员工明细信息
             }
         }
       """
 )
 
+# 根据部门名称查询部门下所有员工列表
 QUERY_EMPLOYEES_BY_DEPARTMENT = """
     query($departmentName: String!, $first: Int, $after: String) {
-        employees(departmentName: $departmentName, first: $first, after: $after) {
-            edges {
+        employees(departmentName: $departmentName, first: $first, after: $after) {  # 定义查询参数
+            edges {   # 查询列表, 分页查询
                 node {
                     id
                     name
@@ -67,7 +72,7 @@ QUERY_EMPLOYEES_BY_DEPARTMENT = """
                     }
                 }
             }
-            pageInfo {
+            pageInfo {   # 分页信息
                 startCursor
                 endCursor
                 hasNextPage
@@ -77,9 +82,10 @@ QUERY_EMPLOYEES_BY_DEPARTMENT = """
     }
 """
 
+# 创建一个部门
 CREATE_DEPARTMENT = """
-    mutation($departmentInput: DepartmentInput!) {
-        departmentMutation(input: {departmentInput: $departmentInput}) {
+    mutation($createDepartmentInput: ACreateDepartmentInput!) {
+        createDepartment(input: $createDepartmentInput) {
             department {
                 id
                 name
@@ -89,10 +95,10 @@ CREATE_DEPARTMENT = """
     }
 """
 
-
+# 创建一个员工
 CREATE_EMPLOYEE = """
-    mutation($employeeInput: EmployeeInput!) {
-        employeeMutation(input: {employeeInput: $employeeInput}) {
+    mutation($createEmployeeInput: CreateEmployeeInput!) {
+        createEmployee(input: $createEmployeeInput) {
             employee {
                 id
                 name

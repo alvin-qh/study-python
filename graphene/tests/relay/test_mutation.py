@@ -1,3 +1,5 @@
+from typing import Any, Dict
+
 from pytest import mark
 from relay.mutation import schema
 
@@ -23,7 +25,7 @@ async def test_client_id_mutation() -> None:
         }
     """
 
-    args = {
+    args: Dict[str, Any] = {
         "shipInput": {"shipName": "Millennium Falcon", "factionId": "rebel_alliance"}
     }
     result = schema.execute(query, variables=args)

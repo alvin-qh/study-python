@@ -8,12 +8,12 @@ dependencies = [
     "pymysql",
     "alembic",
     "cryptography",
-    "pymongo>=4.6.0",
-    "werkzeug>=3.0.1",
-    "mongoengine>=0.27.0",
-    "blinker>=1.7.0",
-    "peewee>=3.17.0",
-    "pysqlite3>=0.5.2",
+    "pymongo",
+    "werkzeug",
+    "mongoengine",
+    "blinker",
+    "peewee",
+    "pysqlite3",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -23,7 +23,7 @@ license = { text = "MIT" }
 lint = ["mypy", "autopep8"]
 test = [
     "pytest",
-    "factory-boy>=3.3.0",
+    "factory-boy",
 ]
 
 [build-system]
@@ -64,4 +64,3 @@ aggressive = 3
 testpaths = ['tests']
 pythonpath = ['.']
 addopts = '-vs -p no:warnings'
-filterwarnings = ['ignore::hypothesis.errors.NonInteractiveExampleWarning']
