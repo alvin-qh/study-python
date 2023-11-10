@@ -23,6 +23,7 @@ class DepartmentLoader(DataLoader[str, DepartmentModel]):
         return list(DepartmentModel.objects(id__in=keys))
 
 
+# 实例化 Dataloader 对象
 department_loader = DepartmentLoader()
 
 
@@ -41,6 +42,7 @@ class EmployeeLoader(DataLoader[str, EmployeeModel]):
         return list(EmployeeModel.objects(id__in=keys))
 
 
+# 实例化 Dataloader 对象
 employee_loader = EmployeeLoader()
 
 
@@ -59,4 +61,5 @@ class RoleLoader(DataLoader[str, RoleModel]):
         return list(RoleModel.objects(id__in=keys))
 
 
+# 实例化 Dataloader 对象
 role_loader = RoleLoader()

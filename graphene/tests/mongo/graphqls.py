@@ -84,13 +84,10 @@ QUERY_EMPLOYEES_BY_DEPARTMENT = """
 
 # 创建一个部门
 CREATE_DEPARTMENT = """
-    mutation($createDepartmentInput: ACreateDepartmentInput!) {
+    mutation($createDepartmentInput: CreateDepartmentInput!) {
         createDepartment(input: $createDepartmentInput) {
-            department {
-                id
-                name
-                level
-            }
+            id
+            name
         }
     }
 """
@@ -99,19 +96,8 @@ CREATE_DEPARTMENT = """
 CREATE_EMPLOYEE = """
     mutation($createEmployeeInput: CreateEmployeeInput!) {
         createEmployee(input: $createEmployeeInput) {
-            employee {
-                id
-                name
-                gender
-                department {
-                    id
-                    name
-                    level
-                }
-                role {
-                    name
-                }
-            }
+            id
+            name
         }
     }
 """

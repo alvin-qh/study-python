@@ -103,7 +103,7 @@ def _set_document_tenant(
     if isinstance(document, MultiTenantMixin):
         org = context.get_current_tenant()
         if org:
-            document.org = org  # type: ignore
+            document.org = org
 
 
 # 监听 mongoengine 的事件信号

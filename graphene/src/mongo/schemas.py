@@ -8,18 +8,20 @@ class RootQuery(
     DepartmentQuery,
     EmployeeQuery,
 ):
-    """定义根查询 Schema"""
+    """定义根查询 Schema
 
-    pass
+    从 `DepartmentQuery` 和 `EmployeeQuery` 查询类继承, 包括父类的所有字段
+    """
 
 
 class RootMutation(
     DepartmentMutation,
     EmployeeMutation,
 ):
-    """定义根变更 Schema"""
+    """定义根变更 Schema
 
-    pass
+    从 `DepartmentMutation` 和 `EmployeeMutation` 查询类继承, 包括父类的所有字段
+    """
 
 
 # 创建 schema 对象

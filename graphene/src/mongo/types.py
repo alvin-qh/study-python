@@ -72,22 +72,35 @@ Gender = Enum.from_enum(GenderModel)
 
 
 class Employee(ObjectType):
+    """定义员工 Graphql 类型"""
+
+    # 员工 id
     id: str = String(required=True)
+
+    # 员工姓名
     name: str = String(required=True)
+
+    # 员工性别
     gender: GenderModel = Field(Gender, required=True, default_value=GenderModel.male)
+
+    # 员工所属部门
     department: Optional[DepartmentModel] = Field(Department, required=False)
+
+    # 员工角色
     role: Optional[Role] = Field(Role, required=True)
 
     @staticmethod
     def resolve_gender(
         parent: EmployeeModel, info: ResolveInfo
     ) -> Literal["male", "female"]:
+        """解析员工性别字段"""
         return parent.gender.value
 
     @staticmethod
     async def resolve_department(
         parent: EmployeeModel, info: ResolveInfo
     ) -> Optional[DepartmentModel]:
+        """解析员工所属部门字段"""
         if not parent.department:
             return None
 
@@ -100,6 +113,7 @@ class Employee(ObjectType):
     async def resolve_role(
         parent: EmployeeModel, info: ResolveInfo
     ) -> Optional[RoleModel]:
+        """解析员工角色字段"""
         if not parent.role:
             return None
 
