@@ -1,26 +1,18 @@
-from typing import Any, Generic
+from typing import Any
 from typing import List as ListType
-from typing import Literal, Optional, TypeVar, cast
+from typing import Optional, cast
 
 from graphql import GraphQLError
+from peewee import ModelSelect
 
-from graphene import (
-    Connection,
-    Enum,
-    Field,
-    Int,
-    ObjectType,
-    PageInfo,
-    ResolveInfo,
-    String,
-)
+from graphene import ConnectionField, Enum, Field, Int, ObjectType, ResolveInfo, String
 
+from .core import BaseConnection, QueryResult, parse_cursor
 from .dataloaders import department_loader, employee_loader, role_loader
 from .models import Department as DepartmentModel
 from .models import Employee as EmployeeModel
 from .models import Gender as GenderModel
 from .models import Role as RoleModel
-from .utils import make_cursor
 
 
 class QueryError(GraphQLError):
@@ -28,33 +20,6 @@ class QueryError(GraphQLError):
 
     def __init__(self, message: str):
         super().__init__(message)
-
-
-class Department(ObjectType):
-    """定义部门 Graphql 类型"""
-
-    # 部门 id 字段
-    id: str = String(required=True)
-
-    # 部门名称字段
-    name: str = String(required=True)
-
-    # 部门级别字段
-    level: int = Int(required=True, default_value=0)
-
-    # 部门主管字段, 表示一个 `Employee` 类型对象
-    manager: Optional[EmployeeModel] = Field(lambda: Employee, required=False)
-
-    @staticmethod
-    async def resolve_manager(
-        parent: DepartmentModel, info: ResolveInfo
-    ) -> Optional[EmployeeModel]:
-        """解析部门主管字段"""
-        if not parent.manager:
-            return None
-
-        manager = await employee_loader.load(str(parent.manager.id))
-        return manager
 
 
 class Role(ObjectType):
@@ -81,20 +46,18 @@ class Employee(ObjectType):
     name: str = String(required=True)
 
     # 员工性别
-    gender: GenderModel = Field(Gender, required=True, default_value=GenderModel.male)
+    gender: GenderModel = Field(Gender, required=True, default_value=GenderModel.MALE)
 
     # 员工所属部门
-    department: Optional[DepartmentModel] = Field(Department, required=False)
+    department: Optional[DepartmentModel] = Field(lambda: Department, required=False)
 
     # 员工角色
     role: Optional[Role] = Field(Role, required=True)
 
     @staticmethod
-    def resolve_gender(
-        parent: EmployeeModel, info: ResolveInfo
-    ) -> Literal["male", "female"]:
+    def resolve_gender(parent: EmployeeModel, info: ResolveInfo) -> GenderModel:
         """解析员工性别字段"""
-        return parent.gender.value
+        return GenderModel(parent.gender)
 
     @staticmethod
     async def resolve_department(
@@ -121,107 +84,100 @@ class Employee(ObjectType):
         return role
 
 
-T = TypeVar("T")
-
-
-class QueryResult(PageInfo, Generic[T]):
-    """保存查询结果的类型, 记录一页的数据以及分页信息"""
-
-    # 为继承 `Generic` 类打的补丁
-    __parameters__ = ("~T",)
-
-    def __init__(self, data: ListType[T], start: int, end: int, count: int) -> None:
-        self._data = data
-        self.start = start
-        self.end = end
-        self.count = count
-
-    @property
-    def start_cursor(self) -> str:
-        """获取起始游标值
-
-        Returns:
-            int: 游标值
-        """
-        return make_cursor(self.start)
-
-    @property
-    def end_cursor(self) -> str:
-        """获取终止游标值
-
-        Returns:
-            int: 游标值
-        """
-        return make_cursor(self.end)
-
-    @property
-    def has_next_page(self) -> bool:
-        """是否有下一页
-
-        Returns:
-            bool: 是否有下一页
-        """
-        return self.end < self.count
-
-    @property
-    def has_previous_page(self) -> bool:
-        """是否有上一页
-
-        Returns:
-            bool: 是否有上一页
-        """
-        return self.start > 0
-
-    @property
-    def data(self) -> ListType[T]:
-        """获取一页的数据
-
-        Returns:
-            ListType[T]: 一页数据的集合
-        """
-        return self._data
-
-
-class BaseConnection(Connection, Generic[T]):
-    """连接类型超类"""
-
-    # 为继承 `Generic` 类打的补丁
-    __parameters__ = ("~T",)
+class EmployeeConnection(BaseConnection[Employee]):
+    """员工批量查询类型"""
 
     class Meta:
-        abstract = True
+        """`Connection` 类型的元数据类, 设定 node 的类型"""
 
-    class Edge:
-        """设置 `Connection` 中的元素"""
+        node = Employee
 
-        def __init__(self, **kwargs: Any) -> None:
-            """占位方法, 不会被调用"""
 
-    # 表示全部数据数量的属性
-    total_count = Int()
+class Department(ObjectType):
+    """定义部门 Graphql 类型"""
 
-    def resolve_total_count(self, info: ResolveInfo) -> int:
-        """解析总记录数属性
+    # 部门 id 字段
+    id: str = String(required=True)
+
+    # 部门名称字段
+    name: str = String(required=True)
+
+    # 部门级别字段
+    level: int = Int(required=True, default_value=0)
+
+    # 部门主管字段, 表示一个 `Employee` 类型对象
+    manager: Optional[EmployeeModel] = Field(Employee, required=False)
+
+    # 表示要查询 `Employee` 集合结果, 即当前部门下的所有员工
+    employees: EmployeeConnection = ConnectionField(
+        EmployeeConnection,
+        args={
+            "gender": String(),  # 定义查询参数, 表示员工性别
+        },
+    )
+
+    @staticmethod
+    async def resolve_manager(
+        parent: DepartmentModel, info: ResolveInfo
+    ) -> Optional[EmployeeModel]:
+        """解析部门主管字段"""
+        if not parent.manager:
+            return None
+
+        manager = await employee_loader.load(str(parent.manager.id))
+        return manager
+
+    @staticmethod
+    def resolve_employees(
+        parent: DepartmentModel, info: ResolveInfo, gender: Optional[str], **kwargs: Any
+    ) -> EmployeeConnection:
+        """解析 `employees` 字段, 表示当前部门下的所有员工
 
         Args:
-            info (ResolveInfo): 解析上下文对象
+            - `kwargs` (`Dict[str, Any]`): 其它查询参数, 包括分页参数
+
+        Raises:
+            `QueryError`: 查询错误异常
 
         Returns:
-            int: 总记录数
+            `EmployeeConnection`: 查询结果, 表示部门下员工对象的集合
         """
-        return cast(QueryResult[Any], self.page_info).count
+        # 根据 `first` 查询参数计算分页大小
+        page_size: int = max(cast(int, kwargs.get("first", 0)), 0)
+        if page_size == 0:
+            raise QueryError("invalid_first_argument")
 
-    def resolve_edges(self, info: ResolveInfo) -> ListType[Edge]:
-        """解析 `edges` 属性
+        # 根据 `after` 查询参数计算分页开始位置
+        after: str = kwargs.get("after", "")
+        if after:
+            # 将游标解析为数值
+            start = int(parse_cursor(after))
+        else:
+            start = 0
 
-        Args:
-            info (ResolveInfo): 解析上下文对象
+        page_num = (start // 10) + 1
 
-        Returns:
-            ListType[Edge]: Edge 对象集合
-        """
-        start = self.page_info.start
-        return [
-            self.Edge(cursor=start + n, node=data)
-            for n, data in enumerate(self.page_info.data)
-        ]
+        query: ModelSelect = EmployeeModel.select().where(
+            EmployeeModel.department == parent
+        )
+        if gender:
+            query = query.where(EmployeeModel.gender == GenderModel[gender].value)
+
+        # 计算部门下所有员工的数量
+        total_count: int = query.count()
+
+        # 根据分页查询部门下员工集合
+        employees: ListType[EmployeeModel] = list(query.paginate(page_num, page_size))
+
+        # 计算查询结果实际分页大小
+        page_size = len(employees)
+
+        # 包装查询结果供 EmployeeConnection 类型解析
+        result = QueryResult(
+            employees,
+            start,
+            start + page_size,
+            total_count,
+        )
+
+        return EmployeeConnection(result)

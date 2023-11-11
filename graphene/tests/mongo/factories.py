@@ -1,44 +1,55 @@
-import factory
+import factory.faker
+import factory.fuzzy
 from factory.mongoengine import MongoEngineFactory
-from mongo.models import Department, Employee, Org, Role
+from mongo import DepartmentModel, EmployeeModel, OrgModel, RoleModel
 
 
 class BaseFactory(MongoEngineFactory):
-    """模型工厂类超类"""
+    """匹配 mongo engine 框架的工厂类"""
 
     class Meta:
-        pass
+        """工厂元数据类"""
 
 
 class OrgModelFactory(BaseFactory):
     """组织模型工厂类"""
 
     class Meta:
-        model = Org
+        # 定义实体类型
+        model = OrgModel
 
-    name: str = factory.Sequence(lambda n: f"Org-{n}")
+    # 组织名称属性
+    name: str = factory.faker.Faker("name")
 
 
 class DepartmentModelFactory(BaseFactory):
     """部门模型工厂类"""
 
     class Meta:
-        model = Department
+        # 定义实体类型
+        model = DepartmentModel
 
-    name: str = factory.Sequence(lambda n: f"Department-{n}")
+    # 部门名称属性
+    name: str = factory.faker.Faker("name")
+
+    # 部门级别属性
+    level: int = factory.fuzzy.FuzzyInteger(1, 10)
 
 
 class RoleModelFactory(BaseFactory):
     """角色模型工厂类"""
 
     class Meta:
-        model = Role
+        # 定义实体类型
+        model = RoleModel
 
 
 class EmployeeModelFactory(BaseFactory):
     """员工模型工厂类"""
 
     class Meta:
-        model = Employee
+        # 定义实体类型
+        model = EmployeeModel
 
-    name: str = factory.Sequence(lambda n: f"Employee-{n}")
+    # 员工姓名属性
+    name: str = factory.faker.Faker("name")

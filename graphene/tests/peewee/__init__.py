@@ -1,7 +1,7 @@
 from typing import Generator
 
 import pytest
-from mongo import OrgModel, clear_db, context, ensure_indexes, schema
+from peewee_ import OrgModel, context, initialize_tables, pg_db, schema
 
 from graphene.test import Client
 
@@ -21,15 +21,15 @@ class BaseTest:
     def setup_class(cls) -> None:
         """测试初始化"""
 
-        # 清空数据库
-        clear_db()
-        # 重建文档索引
-        ensure_indexes()
+        # 初始化数据表
+        initialize_tables()
 
-        # 创建当前组织
-        cls.current_org = OrgModelFactory.create()
-        # 创建角色
-        cls._setup_roles()
+        with pg_db.atomic():
+            # 创建当前组织
+            cls.current_org = OrgModelFactory.create()
+
+            # 创建角色
+            cls._setup_roles()
 
     def setup_method(self) -> None:
         """在每次测试前执行"""

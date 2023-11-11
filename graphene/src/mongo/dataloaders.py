@@ -14,6 +14,15 @@ _DOC = TypeVar("_DOC", bound=Document)
 
 
 def _order_by_keys(keys: Iterable[str], docs: Iterable[_DOC]) -> List[_DOC]:
+    """将查询结果按照所给的 `keys` 的顺序进行排列
+
+    Args:
+        - `keys` (Iterable[str]): id 集合, 对应着 `docs` 参数集合中各个文档的 id 属性
+        - `docs` (Iterable[_DOC]): 文档集合
+
+    Returns:
+        `List[_DOC]`: 排序后的文档对象集合
+    """
     doc_map = {str(r.id): r for r in docs}
     return [doc_map[key] for key in keys]
 

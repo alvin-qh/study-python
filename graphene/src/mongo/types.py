@@ -1,6 +1,6 @@
 from typing import Any
 from typing import List as ListType
-from typing import Literal, Optional, cast
+from typing import Optional, cast
 
 from graphql import GraphQLError
 
@@ -54,11 +54,9 @@ class Employee(ObjectType):
     role: Optional[Role] = Field(Role, required=True)
 
     @staticmethod
-    def resolve_gender(
-        parent: EmployeeModel, info: ResolveInfo
-    ) -> Literal["male", "female"]:
+    def resolve_gender(parent: EmployeeModel, info: ResolveInfo) -> GenderModel:
         """解析员工性别字段"""
-        return parent.gender.value
+        return parent.gender
 
     @staticmethod
     async def resolve_department(
@@ -85,7 +83,7 @@ class Employee(ObjectType):
         return role
 
 
-class EmployeeConnection(BaseConnection["Employee"]):
+class EmployeeConnection(BaseConnection[Employee]):
     """员工批量查询类型"""
 
     class Meta:
@@ -107,7 +105,7 @@ class Department(ObjectType):
     level: int = Int(required=True, default_value=0)
 
     # 部门主管字段, 表示一个 `Employee` 类型对象
-    manager: Optional[EmployeeModel] = Field(lambda: Employee, required=False)
+    manager: Optional[EmployeeModel] = Field(Employee, required=False)
 
     # 表示要查询 `Employee` 集合结果, 即当前部门下的所有员工
     employees: EmployeeConnection = ConnectionField(

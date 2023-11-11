@@ -1,4 +1,4 @@
-from mongo import OrgModel, context
+from peewee_ import OrgModel, context
 
 
 def test_context_get_set() -> None:

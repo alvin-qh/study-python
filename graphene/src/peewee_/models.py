@@ -1,5 +1,4 @@
 from enum import Enum
-from typing import cast
 
 from peewee import CharField, DeferredForeignKey, ForeignKeyField, IntegerField
 
@@ -22,7 +21,7 @@ class Org(Tenant, BaseModel, AuditAtMixin):
         Returns:
             int: 当前实体 id
         """
-        return cast(int, self.id)
+        return self.id
 
 
 class Department(BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
@@ -77,7 +76,7 @@ class Employee(User, BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
     name: str = CharField(null=False)
 
     # 员工性别字段
-    gender: Gender = CharField(max_length=1, null=False, default="M")
+    gender: str = CharField(choices=[g.value for g in Gender], null=False, default="M")
 
     # 员工所属部门引用, 通过 `department_id` 字段对应到 `Department` 实体的 `id` 字段上, 并在
     # `Department` 实体中增加 `employees` 引用, 可以为 `null`
@@ -98,4 +97,4 @@ class Employee(User, BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
         Returns:
             int: 当前实体 id
         """
-        return cast(int, self.id)
+        return self.id
