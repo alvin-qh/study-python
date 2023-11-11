@@ -13,7 +13,7 @@ class Org(Tenant, BaseModel, AuditAtMixin):
         table_name = "org"
 
     # 组织名称字段
-    name: str = CharField(null=False)
+    name = CharField(null=False)
 
     def _get_id(self) -> int:
         """实现 `Tenant` 类的方法, 获取当前实体 id
@@ -21,7 +21,7 @@ class Org(Tenant, BaseModel, AuditAtMixin):
         Returns:
             int: 当前实体 id
         """
-        return self.id
+        return int(self.id)
 
 
 class Department(BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
@@ -32,10 +32,10 @@ class Department(BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
         table_name = "department"
 
     # 部门名称字段
-    name: str = CharField(null=False)
+    name = CharField(null=False)
 
     # 部门等级字段
-    level: int = IntegerField(null=False, default=0)
+    level = IntegerField(null=False, default=0)
 
     # 部门管理人引用, 通过 `manager_id` 字段对应到 `Employee` 实体的 `id` 字段上, 可以为 `null`
     manager: "Employee" = DeferredForeignKey(
@@ -55,7 +55,7 @@ class Role(BaseModel, AuditAtMixin, MultiTenantMixin):
         table_name = "role"
 
     # 角色名称字段
-    name: str = CharField(null=False)
+    name = CharField(null=False)
 
 
 class Gender(Enum):
@@ -73,10 +73,10 @@ class Employee(User, BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
         table_name = "employee"
 
     # 员工姓名字段
-    name: str = CharField(null=False)
+    name = CharField(null=False)
 
     # 员工性别字段
-    gender: str = CharField(choices=[g.value for g in Gender], null=False, default="M")
+    gender = CharField(choices=[g.value for g in Gender], null=False, default="M")
 
     # 员工所属部门引用, 通过 `department_id` 字段对应到 `Department` 实体的 `id` 字段上, 并在
     # `Department` 实体中增加 `employees` 引用, 可以为 `null`
@@ -97,4 +97,4 @@ class Employee(User, BaseModel, AuditAtMixin, AuditByMixin, MultiTenantMixin):
         Returns:
             int: 当前实体 id
         """
-        return self.id
+        return int(self.id)

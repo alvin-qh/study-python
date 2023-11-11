@@ -25,7 +25,7 @@ class BaseModel(Model):
         database = pg_db  # 定义数据库连接
 
     # 定义主键字段
-    id: int = BigAutoField(primary_key=True)
+    id = BigAutoField(primary_key=True)
 
 
 class AuditByMixin(Model):
