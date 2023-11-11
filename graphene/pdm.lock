@@ -5,7 +5,7 @@
 groups = ["default", "test", "lint", "demo"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:2e503a9b4be7f1c57722e1e5c747545bacee7ddd42236edae8976ea0e56a816c"
+content_hash = "sha256:2cf7fdec65045d7436ed5696bb5a384907ca8201625c113d4914eae6252bc58a"
 
 [[package]]
 name = "aiodataloader"
@@ -125,22 +125,6 @@ files = [
 ]
 
 [[package]]
-name = "graphene-mongo"
-version = "0.2.15"
-requires_python = ">=3.6"
-summary = "Graphene Mongoengine integration"
-dependencies = [
-    "graphene>=3.1.1",
-    "iso8601>=1.1.0",
-    "mongoengine>=0.24.2",
-    "promise==2.3",
-    "singledispatch>=3.7.0",
-]
-files = [
-    {file = "graphene-mongo-0.2.15.tar.gz", hash = "sha256:a7a1c7d44e0b0d9d9dcf013a931d0774163a9cc97c5a79ea4cd068bec67b4025"},
-]
-
-[[package]]
 name = "graphql-core"
 version = "3.2.3"
 requires_python = ">=3.6,<4"
@@ -171,16 +155,6 @@ summary = "brain-dead simple config-ini parsing"
 files = [
     {file = "iniconfig-2.0.0-py3-none-any.whl", hash = "sha256:b6a85871a79d2e3b22d2d1b94ac2824226a63c6b741c88f7ae975f18b6778374"},
     {file = "iniconfig-2.0.0.tar.gz", hash = "sha256:2d91e135bf72d31a410b17c16da610a82cb55f6b0477d1a902134b24a455b8b3"},
-]
-
-[[package]]
-name = "iso8601"
-version = "2.1.0"
-requires_python = ">=3.7,<4.0"
-summary = "Simple module to parse ISO 8601 dates"
-files = [
-    {file = "iso8601-2.1.0-py3-none-any.whl", hash = "sha256:aac4145c4dcb66ad8b648a02830f5e2ff6c24af20f4f482689be402db2429242"},
-    {file = "iso8601-2.1.0.tar.gz", hash = "sha256:6b1d3829ee8921c4301998c909f7829fa9ed3cbdac0d3b16af2d743aed1ba8df"},
 ]
 
 [[package]]
@@ -385,16 +359,6 @@ dependencies = [
 files = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
     {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
-]
-
-[[package]]
-name = "singledispatch"
-version = "4.1.0"
-requires_python = ">=3.8"
-summary = "Backport functools.singledispatch to older Pythons."
-files = [
-    {file = "singledispatch-4.1.0-py2.py3-none-any.whl", hash = "sha256:6061bd291204beaeac90cdbc342b68d213b7a6efb44ae6c5e6422a78be351c8a"},
-    {file = "singledispatch-4.1.0.tar.gz", hash = "sha256:f3430b886d5b4213d07d715096a75da5e4a8105284c497b9aee6d6d48bfe90cb"},
 ]
 
 [[package]]

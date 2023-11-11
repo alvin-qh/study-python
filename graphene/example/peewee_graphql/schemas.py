@@ -1,7 +1,7 @@
 from graphene import Schema
 
 from .mutations import Mutations
-from .queries import DepartmentQuery, EmployeeQuery
+from ...src.peewee_.queries import DepartmentQuery, EmployeeQuery
 
 
 class RootQuery(

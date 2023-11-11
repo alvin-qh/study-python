@@ -1,10 +1,9 @@
-from .core import mongodb
+from .core import make_cursor, mongodb, parse_cursor
 from .models import Department as DepartmentModel
 from .models import Employee as EmployeeModel
 from .models import Gender as GenderModel
 from .models import Org as OrgModel
 from .models import Role as RoleModel
-from .utils import make_cursor, parse_cursor
 
 __all__ = [
     "mongodb",

@@ -25,7 +25,4 @@ def event_loop() -> Iterator[asyncio.AbstractEventLoop]:
 
     # 等待所有任务执行完毕
     loop.run_until_complete(asyncio.gather(*pending))
-
-    # 等待 1 秒保证所有任务完毕后, 再关闭事件循环
-    loop.run_until_complete(asyncio.sleep(5))
     loop.close()

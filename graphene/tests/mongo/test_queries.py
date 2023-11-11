@@ -3,11 +3,7 @@ from mongo import DepartmentModel, EmployeeModel, RoleModel, make_cursor
 
 from . import BaseTest
 from .factories import DepartmentModelFactory, EmployeeModelFactory
-from .graphqls import (
-    QUERY_DEPARTMENT_BY_NAME,
-    QUERY_EMPLOYEE_BY_NAME,
-    QUERY_EMPLOYEES_BY_DEPARTMENT,
-)
+from .graphqls import QUERY_DEPARTMENT_BY_NAME, QUERY_EMPLOYEE_BY_NAME
 
 
 class TestQueries(BaseTest):
@@ -58,6 +54,9 @@ class TestQueries(BaseTest):
             QUERY_DEPARTMENT_BY_NAME,
             variables={
                 "name": self.department1.name,
+                "gender": "male",
+                "first": 10,
+                "after": make_cursor(1),
             },
         )
 
@@ -74,6 +73,26 @@ class TestQueries(BaseTest):
                         "name": self.employee1.name,
                         "role": {
                             "name": "manager",
+                        },
+                    },
+                    "employees": {
+                        "edges": [
+                            {
+                                "node": {
+                                    "id": str(self.employee2.id),
+                                    "name": self.employee2.name,
+                                    "gender": "male",
+                                    "role": {
+                                        "name": "member",
+                                    },
+                                }
+                            }
+                        ],
+                        "pageInfo": {
+                            "startCursor": "X19jdXJzb3JfXzox",
+                            "endCursor": "X19jdXJzb3JfXzoy",
+                            "hasNextPage": False,
+                            "hasPreviousPage": True,
                         },
                     },
                 }
@@ -117,49 +136,6 @@ class TestQueries(BaseTest):
                                 "name": "manager",
                             },
                         },
-                    },
-                }
-            }
-        }
-
-    @pytest.mark.asyncio
-    async def test_query_employees(self) -> None:
-        """测试查询员工列表
-
-        根据部门名称查询部门下所有员工的列表, 并通过 relay 分页
-        """
-        result = await self.client.execute_async(
-            QUERY_EMPLOYEES_BY_DEPARTMENT,
-            variables={
-                "departmentName": self.department1.name,
-                "first": 10,
-                "after": make_cursor(1),
-            },
-        )
-
-        assert result == {
-            "data": {
-                "employees": {
-                    "edges": [
-                        {
-                            "node": {
-                                "id": str(self.employee2.id),
-                                "name": self.employee2.name,
-                                "gender": "male",
-                                "role": {
-                                    "name": "member",
-                                },
-                                "department": {
-                                    "id": str(self.department1.id),
-                                },
-                            }
-                        }
-                    ],
-                    "pageInfo": {
-                        "startCursor": make_cursor(1),
-                        "endCursor": make_cursor(2),
-                        "hasNextPage": False,
-                        "hasPreviousPage": True,
                     },
                 }
             }

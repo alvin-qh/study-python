@@ -29,13 +29,26 @@ FRAGMENT_EMPLOYEE_DETAIL = """
 QUERY_DEPARTMENT_BY_NAME = (
     FRAGMENT_EMPLOYEE  # 包含员工查询片段
     + """
-    query($name: String!) {
+    query($name: String!, $gender: String, $first: Int!, $after: String) {
         department(name: $name) {  # 定义 name 参数, 查询部门信息
             id
             name
             level
             manager { # 部门主管, 包含员工查询片段
                 ...employeeFields
+            }
+            employees(gender: $gender, first: $first, after: $after) {
+                edges {   # 查询列表, 分页查询
+                    node {
+                        ...employeeFields
+                    }
+                }
+                pageInfo {   # 分页信息
+                    startCursor
+                    endCursor
+                    hasNextPage
+                    hasPreviousPage
+                }
             }
         }
     }
@@ -54,33 +67,6 @@ QUERY_EMPLOYEE_BY_NAME = (
         }
       """
 )
-
-# 根据部门名称查询部门下所有员工列表
-QUERY_EMPLOYEES_BY_DEPARTMENT = """
-    query($departmentName: String!, $first: Int, $after: String) {
-        employees(departmentName: $departmentName, first: $first, after: $after) {  # 定义查询参数
-            edges {   # 查询列表, 分页查询
-                node {
-                    id
-                    name
-                    gender
-                    role {
-                        name
-                    }
-                    department {
-                        id
-                    }
-                }
-            }
-            pageInfo {   # 分页信息
-                startCursor
-                endCursor
-                hasNextPage
-                hasPreviousPage
-            }
-        }
-    }
-"""
 
 # 创建一个部门
 CREATE_DEPARTMENT = """

@@ -1,21 +1,11 @@
 from typing import Iterable
-from typing import List
 from typing import List as ListType
-from typing import TypeVar
 
 from aiodataloader import DataLoader
-from mongoengine import Document
 
 from .models import Department as DepartmentModel
 from .models import Employee as EmployeeModel
 from .models import Role as RoleModel
-
-_DOC = TypeVar("_DOC", bound=Document)
-
-
-def _order_by_keys(keys: Iterable[str], docs: Iterable[_DOC]) -> List[_DOC]:
-    doc_map = {str(r.id): r for r in docs}
-    return [doc_map[key] for key in keys]
 
 
 class DepartmentLoader(DataLoader[str, DepartmentModel]):
@@ -30,7 +20,8 @@ class DepartmentLoader(DataLoader[str, DepartmentModel]):
         Returns:
             Promise[List[DepartmentModel]]: 异步对象, 可获取 `DepartmentModel` 实体类对象集合
         """
-        return _order_by_keys(keys, DepartmentModel.objects(id__in=keys))
+        ids = [int(id_) for id_ in keys]
+        return list(DepartmentModel.select().where(DepartmentModel.id.in_(ids)))
 
 
 # 实例化 Dataloader 对象
@@ -49,7 +40,8 @@ class EmployeeLoader(DataLoader[str, EmployeeModel]):
         Returns:
             Promise[List[EmployeeModel]]: 异步对象, 可获取 `EmployeeModel` 实体类对象集合
         """
-        return _order_by_keys(keys, EmployeeModel.objects(id__in=keys))
+        ids = [int(id_) for id_ in keys]
+        return list(EmployeeModel.select().where(EmployeeModel.id.in_(ids)))
 
 
 # 实例化 Dataloader 对象
@@ -68,7 +60,8 @@ class RoleLoader(DataLoader[str, RoleModel]):
         Returns:
             Promise[List[RoleModel]]: 异步对象, 可获取 `RoleModel` 实体类对象集合
         """
-        return _order_by_keys(keys, RoleModel.objects(id__in=keys))
+        ids = [int(id_) for id_ in keys]
+        return list(RoleModel.select().where(RoleModel.id.in_(ids)))
 
 
 # 实例化 Dataloader 对象

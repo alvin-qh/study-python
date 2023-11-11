@@ -29,7 +29,10 @@ class BaseModel(Model):
 
 
 class AuditByMixin(Model):
+    # 记录创建人字段
     created_by: int = BigIntegerField(null=True)
+
+    # 记录更新人字段
     updated_by: int = BigIntegerField(null=True)
 
     def save(self, force_insert: bool = False, only: Any = None) -> int:
@@ -147,6 +150,7 @@ class AuditAtMixin(Model):
 class MultiTenantMixin(Model):
     """多租户附加类型, 为目标类型引入多租户字段"""
 
+    # 租户 id 字段
     org_id: int = BigIntegerField()
 
     @classmethod

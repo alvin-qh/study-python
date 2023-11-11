@@ -123,7 +123,8 @@ class Employee(BaseModel, MultiTenantMixin, AuditedMixin):
         """
         self.department = department
         if role is None:
-            role = self.role
+            if self.role is not None:
+                role = self.role.fetch()
         else:
             self.role = role
 
