@@ -2,9 +2,9 @@ import logging
 import time
 from typing import Any, Dict, Tuple
 
-from flask import Flask, jsonify
+from flask import Flask, Response, jsonify
 
-from utils import templated, watch_files_for_develop
+from utils import templated, get_watch_files_for_develop
 
 # 创建 Flask 对象，并指定静态文件存储路径以及 html 模板存储路径
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -19,6 +19,8 @@ app.logger.setLevel(gunicorn_logger.level)
 
 @app.route("/", methods=["GET"])
 def index() -> Tuple[str, int]:
+    """定义 GET / 路由方法"""
+
     return (
         """<!DOCTYPE html>
 <html lang="en">
@@ -39,11 +41,13 @@ def index() -> Tuple[str, int]:
 @app.route("/template", methods=["GET"])
 @templated()
 def template() -> Dict[str, Any]:
+    """定义 GET /template 路由方法"""
     return dict(data={"title": "Hello", "message": "Hello World"})
 
 
 @app.route("/json", methods=["GET"])
-def use_json() -> Tuple[str, int]:
+def use_json() -> Tuple[Response, int]:
+    """定义 GET /json 路由方法"""
     tm = time.mktime(time.localtime(time.time()))
     return jsonify(time=int(tm)), 200
 
@@ -55,5 +59,5 @@ if __name__ == "__main__":
         host="127.0.0.1",
         port=5000,
         debug=True,
-        extra_files=watch_files_for_develop(app),
+        extra_files=get_watch_files_for_develop(app),
     )
