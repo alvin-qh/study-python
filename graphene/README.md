@@ -18,6 +18,14 @@ docker compose -f docker/docker-compose.yml up
 pdm install -G:all
 ```
 
+如果在安装 `psycopg2` 时报错, 需要安装编译依赖
+
+```bash
+sudo apt install python3-dev libpq-dev
+```
+
+之后即可正常执行 `pdm install` 命令
+
 ### 2.2. 执行代码检查
 
 ```bash
