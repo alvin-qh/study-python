@@ -52,8 +52,7 @@ def use_json() -> Tuple[Response, int]:
     return jsonify(time=int(tm)), 200
 
 
-# 进程启动时执行
-if __name__ == "__main__":
+def main() -> None:
     # 启动 flask 应用
     app.run(
         host="127.0.0.1",
@@ -61,3 +60,8 @@ if __name__ == "__main__":
         debug=True,
         extra_files=get_watch_files_for_develop(app),
     )
+
+
+# 进程启动时执行
+if __name__ == "__main__":
+    main()

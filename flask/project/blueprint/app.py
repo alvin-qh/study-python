@@ -27,7 +27,8 @@ def register_blueprint() -> None:
 # 注册 blueprint
 register_blueprint()
 
-if __name__ == "__main__":
+
+def main() -> None:
     # 启动 flask 应用
     app.run(
         host="127.0.0.1",
@@ -35,3 +36,7 @@ if __name__ == "__main__":
         debug=True,
         extra_files=watch_files_for_develop(app),
     )
+
+
+if __name__ == "__main__":
+    main()
