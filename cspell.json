@@ -95,6 +95,7 @@
         "Paramterize",
         "Percona",
         "poolclass",
+        "psycopg",
         "pyenv",
         "pymongo",
         "pymsql",
