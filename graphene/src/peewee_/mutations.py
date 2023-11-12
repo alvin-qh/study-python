@@ -11,6 +11,7 @@ from graphene import (
     ResolveInfo,
     String,
 )
+from peewee_ import pg_db
 
 from .models import Department as DepartmentModel
 from .models import Employee as EmployeeModel
@@ -64,21 +65,23 @@ class CreateDepartment(Mutation):
         Returns:
             `CreateDepartmentPayload`: 返回结果
         """
-        # 创建部门实体对象并持久化
-        department = DepartmentModel(
-            name=input.name,
-            level=input.level,
-        ).save()
+        with pg_db.atomic():
+            # 创建部门实体对象并持久化
+            department = DepartmentModel(
+                name=input.name,
+                level=input.level,
+            )
+            department.save()
 
         # 返回结果
         return CreateDepartmentPayload(
-            str(department.id),
+            department.id,
             department.name,
         )
 
 
 class CreateEmployeePayload(ObjectType):
-    """创建员工的返回对象类型"""
+    """员工创建结果类型"""
 
     # 员工 id
     id: str = ID(required=True)
@@ -108,7 +111,6 @@ class CreateEmployee(ClientIDMutation):
         # 员工角色名称
         role: str = String()
 
-    # 定义输出类型
     Output = CreateEmployeePayload
 
     @staticmethod
@@ -130,29 +132,34 @@ class CreateEmployee(ClientIDMutation):
             CreateEmployee: _description_
         """
         department: Optional[Department] = None
-        if "department_id" in input:
-            department = DepartmentModel.objects(id=input["department_id"]).first()
-            if not department:
-                raise ValueError("invalid_department")
+        with pg_db.atomic():
+            if "department_id" in input:
+                department = DepartmentModel.get(
+                    DepartmentModel.id == int(input["department_id"])
+                )
+                if not department:
+                    raise ValueError("invalid_department")
 
-        role: Optional[RoleModel] = None
-        if "role" in input:
-            role = RoleModel.objects(name=input["role"]).first()
-            if not role:
-                role = RoleModel(name=input["role"]).save()
+            role: Optional[RoleModel] = None
+            if "role" in input:
+                role = RoleModel.get_or_none(RoleModel.name == input["role"])
+                if not role:
+                    role = RoleModel(name=input["role"])
+                    role.save()
 
-        # 保存实体对象
-        employee: EmployeeModel = EmployeeModel(
-            name=input["name"],
-            gender=input["gender"],
-            department=department,
-            role=role,
-        ).save()
+            # 保存员工实体对象
+            employee = EmployeeModel(
+                name=input["name"],
+                gender=input["gender"].value,
+                department=department,
+                role=role,
+            )
+            employee.save()
 
-        if role and role.name == "manager":
-            if department:
-                department.manager = employee
-                department.save()
+            if role and role.name == "manager":
+                if department:
+                    department.manager = employee
+                    department.save()
 
         # 返回结果
         return CreateEmployeePayload(
@@ -162,14 +169,8 @@ class CreateEmployee(ClientIDMutation):
 
 
 class DepartmentMutation(ObjectType):
-    """部门变更类型"""
-
-    # 创建部门变更字段
     create_department = CreateDepartment.Field()
 
 
 class EmployeeMutation(ObjectType):
-    """员工变更类型"""
-
-    # 创建员工变更字段
     create_employee = CreateEmployee.Field()

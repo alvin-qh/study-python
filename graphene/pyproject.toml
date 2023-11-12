@@ -31,9 +31,8 @@ demo = [
     "mongoengine",
     "blinker",
     "factory-boy",
-    "peewee>=3.17.0",
-    "psycopg2>=2.9.9",
-    "psycopg2-binary>=2.9.9",
+    "peewee",
+    "psycopg2",
 ]
 
 [build-system]

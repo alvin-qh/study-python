@@ -24,7 +24,10 @@ class TestMutation(BaseTest):
         assert result["data"]["createDepartment"] is not None
 
         output = result["data"]["createDepartment"]
-        assert DepartmentModel.objects(id=output["id"]).get() is not None
+        assert (
+            DepartmentModel.get_or_none(DepartmentModel.id == int(output["id"]))
+            is not None
+        )
         assert output["name"] == "研发部"
 
     def test_employee_mutation(self) -> None:
@@ -36,8 +39,8 @@ class TestMutation(BaseTest):
             variables={
                 "createEmployeeInput": {
                     "name": "Alvin",
-                    "gender": "male",
-                    "departmentId": str(department.id),
+                    "gender": "MALE",
+                    "departmentId": department.id,
                     "role": "manager",
                 }
             },
@@ -47,5 +50,7 @@ class TestMutation(BaseTest):
         assert result["data"]["createEmployee"] is not None
 
         output = result["data"]["createEmployee"]
-        assert EmployeeModel.objects(id=output["id"]).get() is not None
+        assert (
+            EmployeeModel.get_or_none(EmployeeModel.id == int(output["id"])) is not None
+        )
         assert output["name"] == "Alvin"

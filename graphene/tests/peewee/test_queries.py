@@ -91,7 +91,7 @@ class TestQueries(BaseTest):
                         ],
                         "pageInfo": {
                             "startCursor": "X19jdXJzb3JfXzox",
-                            "endCursor": "X19jdXJzb3JfXzoz",
+                            "endCursor": "X19jdXJzb3JfXzoy",
                             "hasNextPage": False,
                             "hasPreviousPage": True,
                         },

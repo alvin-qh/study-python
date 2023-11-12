@@ -155,7 +155,7 @@ class Department(ObjectType):
         else:
             start = 0
 
-        page_num = (start // 10) + 1
+        # page_num = (start // 10) + 1
 
         query: ModelSelect = EmployeeModel.select().where(
             EmployeeModel.department == parent
@@ -167,7 +167,8 @@ class Department(ObjectType):
         total_count: int = query.count()
 
         # 根据分页查询部门下员工集合
-        employees: ListType[EmployeeModel] = list(query.paginate(page_num, page_size))
+        # employees: ListType[EmployeeModel] = list(query.paginate(page_num, page_size))
+        employees: ListType[EmployeeModel] = list(query.offset(start).limit(page_size))
 
         # 计算查询结果实际分页大小
         page_size = len(employees)
