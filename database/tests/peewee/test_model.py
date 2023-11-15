@@ -17,6 +17,8 @@ from peewee_ import (
 )
 from pytest import fixture
 
+from . import non_none
+
 
 class PeeweeOptions(factory.base.FactoryOptions):
     """定义 Peewee 工厂属性"""
@@ -177,7 +179,9 @@ def test_create_department() -> None:
         employee: Employee = EmployeeFactory.create()
         department: Department = DepartmentFactory.create(manager=employee)
 
-    department = Department.select().where(Department.id == department.id).get()
+    department = non_none(
+        Department.select().where(Department.id == department.id).get_or_none()
+    )
 
     assert department.org_id == context.get_current_tenant().id
     assert department.created_by == context.get_current_user().id
@@ -204,13 +208,16 @@ def test_join() -> None:
     alias_e: Employee = Employee.alias("e")
 
     # 通过联合查询查询部门实体结果
-    department = (
-        alias_d.select()
-        .join(alias_e, on=(alias_d.manager == alias_e.id))
-        .where(alias_e.id == employee.id)  # type:ignore
-    ).get()
+    department = non_none(
+        (
+            alias_d.select()
+            .join(alias_e, on=(alias_d.manager == alias_e.id))
+            .where(alias_e.id == employee.id)  # type:ignore
+        ).get_or_none()
+    )
 
     # 确认查询结果
+    assert department is not None
     assert department.org_id == context.get_current_tenant().id
     assert department.created_by == context.get_current_user().id
     assert department.manager == employee
@@ -236,7 +243,9 @@ def test_sub_query() -> None:
 
     sub_query = Employee.select(Employee.id).where(Employee.name == employee.name)
 
-    department = Department.select().where(Department.manager.in_(sub_query)).get()
+    department = non_none(
+        Department.select().where(Department.manager.in_(sub_query)).get_or_none()
+    )
 
     # 确认查询结果
     assert department.org_id == context.get_current_tenant().id
