@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Tuple, Union
 
 from utils import Assets, get_watch_files_for_develop, templated
-from werkzeug.wrappers import Response
+from werkzeug import Response
 from wtforms import Form, PasswordField, StringField, validators
 
 from flask import Flask, g, redirect, request, session

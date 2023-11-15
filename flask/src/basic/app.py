@@ -2,9 +2,9 @@ import logging
 import time
 from typing import Any, Dict, Tuple
 
-from flask import Flask, Response, jsonify
+from utils import get_watch_files_for_develop, templated
 
-from utils import templated, get_watch_files_for_develop
+from flask import Flask, Response, jsonify
 
 # 创建 Flask 对象，并指定静态文件存储路径以及 html 模板存储路径
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -42,7 +42,7 @@ def index() -> Tuple[str, int]:
 @templated()
 def template() -> Dict[str, Any]:
     """定义 GET /template 路由方法"""
-    return dict(data={"title": "Hello", "message": "Hello World"})
+    return {"data": {"title": "Hello", "message": "Hello World"}}
 
 
 @app.route("/json", methods=["GET"])

@@ -1,15 +1,15 @@
 from typing import Any, Callable, Dict, List, Set, Union
 
-from flask import Flask, redirect, request
-from werkzeug import Response
-from werkzeug.exceptions import BadRequest
-
 from utils import (
     Assets,
     HttpMethodOverrideMiddleware,
-    templated,
     get_watch_files_for_develop,
+    templated,
 )
+from werkzeug import Response
+from werkzeug.exceptions import BadRequest
+
+from flask import Flask, redirect, request
 
 # 实例化 Flask 对象
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -41,7 +41,7 @@ def _search_result() -> Dict[str, Any]:
         results = list(_NAMES)
 
     # 返回查询结果
-    return dict(name=kwd, results=results)
+    return {"name": kwd, "results": results}
 
 
 def _add_name() -> Response:

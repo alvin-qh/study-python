@@ -79,7 +79,7 @@ def index() -> Dict[str, Any]:
     langs = {"zh_CN": _("zh_CN"), "en_US": _("en_US")}
 
     # 返回语言代码
-    return dict(current_lang=langs.get(lang, _("zh_CN")))
+    return {"current_lang": langs.get(lang, _("zh_CN"))}
 
 
 def main() -> None:
