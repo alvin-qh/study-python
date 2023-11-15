@@ -7,19 +7,21 @@ authors = [
 dependencies = [
     "flask>=3.0.0",
     "xxhash>=3.4.1",
+    "flask-babel>=4.0.0",
+    "wtforms>=3.1.1",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
 
 [project.optional-dependencies]
 test = [
-    "pytest>=7.4.3",
-    "pytest-mock>=3.12.0",
+    "pytest",
+    "pytest-mock",
 ]
 lint = [
-    "autopep8>=2.0.4",
-    "mypy>=1.7.0",
+    "autopep8",
+    "mypy",
 ]
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
