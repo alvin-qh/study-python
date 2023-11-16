@@ -1,0 +1,5 @@
+node_modules
+static
+.eslintrc.cjs
+webpack.config.js
+webpack-common.config.js
