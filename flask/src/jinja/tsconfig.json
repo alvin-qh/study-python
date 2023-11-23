@@ -10,7 +10,6 @@
     ],
     "module": "ESNext",
     "moduleResolution": "Bundler",
-    "noEmit": false,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
