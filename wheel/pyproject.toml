@@ -39,8 +39,8 @@ clean = { composite = [
     'find tests -type d -name "__pycache__" -exec rm -rf {} +',
 ] }
 export = "pdm export -f requirements -o requirements.txt --without-hash"
-build-wheel = "pip wheel -r requirements.txt -w .wheelhouse"
-restore-wheel = "pip install --no-index --find-links=.wheelhouse -r requirements.txt"
+build-wheel = "pip wheel -r requirements.txt -w ./wheelhouse"
+restore-wheel = "pip install --no-index --find-links=./wheelhouse -r requirements.txt"
 
 [tool.mypy]
 python_version = "3.11"
