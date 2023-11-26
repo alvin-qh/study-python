@@ -7,7 +7,6 @@ from flask import Config, Flask
 # 创建 Flask 实例
 app: Flask = Flask(__name__, template_folder="templates", static_folder="static")
 
-# 为 jinja 注入 assets 对象
 app.jinja_env.globals["assets"] = Assets(app)
 
 # 获取 ENV 环境变量

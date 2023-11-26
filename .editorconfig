@@ -14,7 +14,10 @@ end_of_line = crlf
 [*.py]
 indent_size = 4
 
-[*.{js,ts,json}]
+[*.{js,cjs,ts,json}]
+indent_size = 2
+
+[*.{htm,html,xhtml}]
 indent_size = 2
 
 [*.{vue,jsx,tsx}]
@@ -24,4 +27,7 @@ indent_size = 2
 indent_size = 2
 
 [*.md]
+indent_size = 2
+
+[*.{css,sass,scss,less}]
 indent_size = 2

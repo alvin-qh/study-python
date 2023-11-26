@@ -1,0 +1,17 @@
+:root {
+  box-sizing: border-box;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+#app {
+  nav.logo {
+    display: flex;
+    flex-flow: row;
+    justify-content: center;
+  }
+
+  h1 {
+    text-align: center;
+    color: rgb(113, 12, 8);
+  }
+}

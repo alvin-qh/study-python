@@ -1,14 +1,16 @@
 from typing import Any, Dict
 
-from flask import Flask, jsonify, request
+from utils import Assets, templated, watch_files_for_develop
 from werkzeug import Response
 
-from utils import Assets, templated, watch_files_for_develop
+from flask import Flask, jsonify, request
 
 # 实例化 Flask 对象
 app = Flask(__name__, template_folder="templates", static_folder="static")
+
 # 为 jinja 注入 assets 对象
 app.jinja_env.globals["assets"] = Assets(app)
+
 # 为 jinja 注入 url 函数
 app.jinja_env.globals["url"] = lambda url: "/" + url
 
