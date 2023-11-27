@@ -1,6 +1,6 @@
-from typing import Any, Dict
+from typing import Any, Dict, Tuple
 
-from utils import Assets, templated, watch_files_for_develop
+from utils import Assets, get_watch_files_for_develop, templated
 from werkzeug import Response
 
 from flask import Flask, jsonify, request
@@ -16,7 +16,7 @@ app.jinja_env.globals["url"] = lambda url: "/" + url
 
 
 @app.route("/", methods=["GET"])
-@templated("home/index.html")
+@templated("index.html")
 def index() -> Dict[str, Any]:
     """
     获取主页页面
@@ -25,7 +25,7 @@ def index() -> Dict[str, Any]:
 
 
 @app.route("/api/search", methods=["GET"])
-def search() -> Response:
+def search() -> Tuple[Response, int]:
     """
     获取检索结果
     """
@@ -50,11 +50,15 @@ def search() -> Response:
     )
 
 
-if __name__ == "__main__":
+def main() -> None:
     # 启动 flask 应用
     app.run(
         host="127.0.0.1",
         port=5000,
         debug=True,
-        extra_files=watch_files_for_develop(app),
+        extra_files=get_watch_files_for_develop(app),
     )
+
+
+if __name__ == "__main__":
+    main()
