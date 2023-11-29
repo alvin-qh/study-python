@@ -7,17 +7,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="renderer" content="webkit" />
+  <link rel="stylesheet" href="{{ assets.css('common.css') }}" />
 
-  <title>{{ data.title }}</title>
+  <title>{% block title %}{% endblock %}</title>
+  {% block header %}{% endblock %}
 </head>
 
 <body>
-  <div class="main">
-    <h1>{{ data.message }}</h1>
-    <div class="time"></div>
-    <a href="/">Back</a>
-  </div>
-  <script src="/static/js/show-time.js"></script>
+  <div role="main">{% block content %}{% endblock %}</div>
+  {% block footer %}{% endblock %}
 </body>
 
 </html>

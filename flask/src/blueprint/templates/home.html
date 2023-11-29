@@ -1,5 +1,4 @@
-
-{% extends "layout.html" %}
+{% extends "lib/layout.html" %}
 
 {% block title %}
 Blueprint Demo
@@ -9,10 +8,7 @@ Blueprint Demo
 {% endblock %}
 
 {% block footer %}
-<script src="{{ assets.js('home.js') }}"></script>
-<script>
-  window.home.index();
-</script>
+<script src="{{ assets.script('home.js') }}"></script>
 {% endblock %}
 
 {% block content %}
@@ -27,12 +23,7 @@ Blueprint Demo
       <form method="post" action="/">
         <div class="form-group">
           <label class="console-label">Name: </label>
-          <input
-            class="form-control"
-            type="text"
-            name="user"
-            placeholder="Please input your name"
-          />
+          <input class="form-control" type="text" name="user" placeholder="Please input your name" />
         </div>
       </form>
     </div>

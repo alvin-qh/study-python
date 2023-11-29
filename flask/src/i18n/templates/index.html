@@ -1,54 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="content-type" content="text/html" charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, maximum-scale=1"
-    />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="renderer" content="webkit" />
-    <link rel="stylesheet" href="{{ assets.css('common.css') }}" />
 
-    <title>I18N Demo</title>
-  </head>
-  <body>
-    <div class="main" role="main" id="index">
-      <main class="container">
-        <div class="current-lang">
-          {{ _('Current language is:') }}{{ current_lang | default('') }}
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="content-type" content="text/html" charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="renderer" content="webkit" />
+  <link rel="stylesheet" href="{{ assets.css('common.css') }}" />
+
+  <title>I18N Demo</title>
+</head>
+
+<body>
+  <div class="main" role="main" id="index">
+    <main class="container">
+      <div class="current-lang">
+        {{ _('Current language is:') }}{{ current_lang | default('') }}
+      </div>
+      <div class="row">
+        <div class="lang-block">
+          <a href="#" data-lang="en_US">English</a>
         </div>
-        <div class="row">
-          <div class="lang-block">
-            <a href="#" data-lang="en_US">English</a>
+        <div class="lang-block">
+          <a href="#" data-lang="zh_CN">中文</a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="text-area">
+          <div class="text-header">
+            <h3>
+              <a href="/">{{ _('Spring Goeth All in White') }}</a>
+            </h3>
+            <p class="auth">{{ _('Robert Bridges') }}</p>
           </div>
-          <div class="lang-block">
-            <a href="#" data-lang="zh_CN">中文</a>
+          <div class="text-body">
+            <p>{{ _('Spring goeth all in white,') }}</p>
+            <p>{{ _('crowned with milk-white may;') }}</p>
+            <p>{{ _('In fleecy flocks of light,') }}</p>
+            <p>{{ _('o\'er heaven the white clouds stray;') }}</p>
+            <p>{{ _('White butterflies in the air;') }}</p>
+            <p>{{ _('White daisies prank the ground;') }}</p>
+            <p>{{ _('The cherry and hoary pear,') }}</p>
+            <p>{{ _('Scatter their snow around.') }}</p>
           </div>
         </div>
-        <div class="row">
-          <div class="text-area">
-            <div class="text-header">
-              <h3>
-                <a href="/">{{ _('Spring Goeth All in White') }}</a>
-              </h3>
-              <p class="auth">{{ _('Robert Bridges') }}</p>
-            </div>
-            <div class="text-body">
-              <p>{{ _('Spring goeth all in white,') }}</p>
-              <p>{{ _('crowned with milk-white may;') }}</p>
-              <p>{{ _('In fleecy flocks of light,') }}</p>
-              <p>{{ _('o\'er heaven the white clouds stray;') }}</p>
-              <p>{{ _('White butterflies in the air;') }}</p>
-              <p>{{ _('White daisies prank the ground;') }}</p>
-              <p>{{ _('The cherry and hoary pear,') }}</p>
-              <p>{{ _('Scatter their snow around.') }}</p>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
-    <script src="{{ assets.script('index.js') }}"></script>
-  </body>
+      </div>
+    </main>
+  </div>
+  <script src="{{ assets.script('index.js') }}"></script>
+</body>
+
 </html>

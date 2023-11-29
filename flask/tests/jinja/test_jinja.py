@@ -4,6 +4,7 @@ from urllib.parse import quote
 import pytest
 from bs4 import BeautifulSoup
 from jinja import app
+from tests import nn
 
 from flask.testing import FlaskClient
 
@@ -20,7 +21,7 @@ def test_get_home_index(client: FlaskClient) -> None:
 
     soup = BeautifulSoup(resp.data, "html.parser")
 
-    assert soup.title and (soup.title.string or "").strip() == "Jinja Demo"
+    assert nn(nn(soup.title).string).strip() == "Jinja Demo"
     assert [link["href"] for link in soup.select("head>link[rel=stylesheet]")] == [
         "/static/css/common-aca24d29.css",
         "/static/css/index-a7666c5b.css",
