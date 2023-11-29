@@ -95,7 +95,7 @@ markers = [
 ]
 
 # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
-addopts = '-vs'
+addopts = '-vvs'
 
 # 忽略指定的警告信息
 filterwarnings = ['ignore::hypothesis.errors.NonInteractiveExampleWarning']
