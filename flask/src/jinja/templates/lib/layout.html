@@ -10,25 +10,17 @@
   <link rel="shortcut icon" href="{{ assets.image('favicon.ico') }}" />
   <link rel="stylesheet" href="{{ assets.css('common.css') }}" />
   <title>
-    {% block title %}
-
-    {% endblock %}
+    {% block title %}{% endblock %}
   </title>
-  {% block header %}
-
-  {% endblock %}
+  {% block header %}{% endblock %}
 </head>
 
 <body>
   <div id="app" class="container" role="main">
-    {% block content %}
-
-    {% endblock %}
+    {% block content %}{% endblock %}
   </div>
   <script type="text/javascript" src="{{ assets.script('common.js') }}"></script>
-  {% block footer %}
-
-  {% endblock %}
+  {% block footer %}{% endblock %}
 </body>
 
 </html>
