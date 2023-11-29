@@ -18,6 +18,7 @@ license = {text = "MIT"}
 test = [
     "pytest",
     "pytest-mock",
+    "beautifulsoup4>=4.12.2",
 ]
 lint = [
     "autopep8",
