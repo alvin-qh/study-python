@@ -9,6 +9,7 @@ dependencies = [
     "xxhash>=3.4.1",
     "flask-babel>=4.0.0",
     "wtforms>=3.1.1",
+    "flask-login>=0.6.3",
 ]
 requires-python = ">=3.12"
 readme = "README.md"
@@ -24,8 +25,14 @@ lint = [
     "autopep8",
     "mypy",
 ]
+http = [
+    "tornado>=6.4",
+    "gevent>=23.9.1",
+]
 [tool.pdm.scripts]
+dev = "python src/run.py"
 check = { composite = ["mypy src", "autopep8 src tests"] }
+i18n = "pybabel compile -d src/i18n/message"
 test = "pytest -v -s tests"
 clean = { composite = [
     "rm -rf .mypy_cache",

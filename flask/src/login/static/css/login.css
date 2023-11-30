@@ -1,0 +1,31 @@
+.wrapper {
+  margin: 20vh auto;
+}
+
+header h1 {
+  text-align: center;
+}
+
+form.login {
+  width: 500px;
+  margin: 50px auto;
+}
+
+form.login .form-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: baseline;
+  margin-bottom: 20px;
+}
+
+form.login .form-row label {
+  width: 180px;
+  text-align: right;
+  font-size: 18px;
+}
+
+form.login .form-row input {
+  padding: 10px 10px;
+}
