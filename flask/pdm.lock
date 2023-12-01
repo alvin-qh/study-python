@@ -5,7 +5,7 @@
 groups = ["default", "http", "lint", "test"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:a89342e2fd6ba214e370cbceb8c42d5bcf2d3141aee505fffc30883460b2478c"
+content_hash = "sha256:7aea6b254e9f178cf09c7e7b819e7c51338c33c29dbd815476afa855d23edb52"
 
 [[package]]
 name = "autopep8"
@@ -194,6 +194,18 @@ files = [
     {file = "gevent-23.9.1-cp312-cp312-musllinux_1_1_x86_64.whl", hash = "sha256:dd6c32ab977ecf7c7b8c2611ed95fa4aaebd69b74bf08f4b4960ad516861517d"},
     {file = "gevent-23.9.1-cp312-cp312-win_amd64.whl", hash = "sha256:455e5ee8103f722b503fa45dedb04f3ffdec978c1524647f8ba72b4f08490af1"},
     {file = "gevent-23.9.1.tar.gz", hash = "sha256:72c002235390d46f94938a96920d8856d4ffd9ddf62a303a0d7c118894097e34"},
+]
+
+[[package]]
+name = "gevent-websocket"
+version = "0.10.1"
+summary = "Websocket handler for the gevent pywsgi server, a Python network library"
+dependencies = [
+    "gevent",
+]
+files = [
+    {file = "gevent-websocket-0.10.1.tar.gz", hash = "sha256:7eaef32968290c9121f7c35b973e2cc302ffb076d018c9068d2f5ca8b2d85fb0"},
+    {file = "gevent_websocket-0.10.1-py3-none-any.whl", hash = "sha256:17b67d91282f8f4c973eba0551183fc84f56f1c90c8f6b6b30256f31f66f5242"},
 ]
 
 [[package]]
