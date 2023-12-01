@@ -1,3 +1,4 @@
+import logging
 from typing import Any, Dict
 
 from flask_socketio import SocketIO, disconnect
@@ -27,6 +28,7 @@ sio = SocketIO(
     engineio_logger=True,
     cors_allowed_origins="*",
 )
+sio.init_app(app)
 
 
 @app.route("/", methods=["GET"])
@@ -67,3 +69,7 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+else:
+    gunicorn_logger = logging.getLogger("gunicorn.error")
+    app.logger.handlers = gunicorn_logger.handlers
+    app.logger.setLevel(gunicorn_logger.level)
