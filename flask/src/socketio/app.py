@@ -1,7 +1,8 @@
 import logging
-from typing import Any, Dict
+from multiprocessing import RLock
+from typing import Any, Dict, List, Tuple
 
-from flask_socketio import SocketIO, disconnect
+from flask_socketio import SocketIO, disconnect, join_room, leave_room
 from utils import Assets, get_watch_files_for_develop, templated
 
 from flask import Flask, request
@@ -22,6 +23,12 @@ _TOKEN = (
     "rzkicaawapmuwfgloldnwvlkscjriragsiwdifswasceelxnonlwtbfqvi"
 )
 
+_NAMESPACE = "/my-chat"
+
+_ROOMS: Dict[str, List[Tuple[str, str]]] = {}
+
+_lock = RLock()
+
 # 实例化 socketio 对象
 sio = SocketIO(
     app,
@@ -41,7 +48,7 @@ def index() -> Dict[str, Any]:
     return {"token": _TOKEN}
 
 
-@sio.on("connect", namespace="/mychat")
+@sio.on("connect", namespace=_NAMESPACE)
 def on_connect(auth: Dict[str, Any]) -> None:
     sid: str = request.sid  # type: ignore
     app.logger.info(f'A socketio client was connected as "{sid}"')
@@ -51,9 +58,79 @@ def on_connect(auth: Dict[str, Any]) -> None:
         disconnect(sid)
 
 
-@sio.on("aaa", namespace="/mychat")
-def on_message(msg: Dict[str, Any], args: Any) -> None:
-    pass
+def emit_rooms_event() -> None:
+    sio.emit("rooms", {"result": {"rooms": list(_ROOMS.keys())}}, namespace=_NAMESPACE)
+
+
+@sio.on("rooms", namespace=_NAMESPACE)
+def on_rooms() -> None:
+    with _lock:
+        emit_rooms_event()
+
+
+@sio.on("joinRoom", namespace=_NAMESPACE)
+def on_join_room(data: Dict[str, Any]) -> None:
+    with _lock:
+        room_name: str = data.get("roomName", "")
+        if not room_name:
+            sio.emit(
+                "joinRoom",
+                {"result": {"error": "Invalid room name"}},
+                namespace=_NAMESPACE,
+            )
+
+        user_name: str = data.get("userName", "")
+        if not user_name:
+            sio.emit(
+                "joinRoom",
+                {"result": {"error": "Invalid user name"}},
+                namespace=_NAMESPACE,
+            )
+
+        sid: str = request.sid  # type: ignore
+
+        if room_name not in _ROOMS:
+            _ROOMS[room_name] = []
+
+            _ROOMS[room_name].append((sid, user_name))
+            join_room(room_name, sid, namespace=_NAMESPACE)
+        else:
+            if (sid, user_name) not in _ROOMS[room_name]:
+                _ROOMS[room_name].append((sid, user_name))
+                join_room(room_name, sid, namespace=_NAMESPACE)
+            else:
+                sio.emit(
+                    "joinRoom",
+                    {"result": {"error": "User already in the room"}},
+                    namespace=_NAMESPACE,
+                )
+                return
+
+        emit_rooms_event()
+
+
+@sio.on("leaveRoom", namespace=_NAMESPACE)
+def on_leave_room(data: Dict[str, Any]) -> None:
+    with _lock:
+        room_name: str = data.get("roomName", "")
+        if not room_name:
+            sio.emit(
+                "leaveRoom",
+                {"result": {"error": "Invalid room name"}},
+                namespace=_NAMESPACE,
+            )
+
+        sid: str = request.sid  # type: ignore
+
+        if room_name not in _ROOMS:
+            _ROOMS[room_name] = []
+
+        _ROOMS[room_name] = [
+            (sid, user_name) for sid, user_name in _ROOMS[room_name] if sid != sid
+        ]
+        leave_room(room_name, sid, namespace=_NAMESPACE)
+
+        emit_rooms_event()
 
 
 def main() -> None:

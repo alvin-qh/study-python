@@ -35,10 +35,11 @@ function main() {
         shift
     done
 
-    # if [ wsgi = 'gunicorn' ]; then
-    #     echo "gunicorn"
-    # fi
-    echo "$wsgi, $port, $host, $worker, $thread"
+    if [ "$wsgi" == 'gunicorn' ]; then
+        eval "../../.venv/bin/gunicorn -w $worker --threads $thread -k gevent -b $host:$port --log-level=debug app:app"
+    elif [ "$wsgi" == 'uwsgi' ]; then
+        eval "../../.venv/bin/uwsgi --http $host:$port --http-websockets --gevent 1000 --master --processes $worker --threads $thread --wsgi-file app.py --callable app"
+    fi
 }
 
 main $*

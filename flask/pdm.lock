@@ -5,7 +5,7 @@
 groups = ["default", "http", "lint", "test"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:5571f213ddce9f1df7110d7464f07fd49802c91ce90f9cb2134fc9b805f86810"
+content_hash = "sha256:89fc066ac839e61a6414774ca22c1365da8edfc0216ed00ec1b91dc8e7cb27ca"
 
 [[package]]
 name = "autopep8"
@@ -495,6 +495,14 @@ summary = "Backported and Experimental Type Hints for Python 3.8+"
 files = [
     {file = "typing_extensions-4.8.0-py3-none-any.whl", hash = "sha256:8f92fc8806f9a6b641eaa5318da32b44d401efaac0f6678c9bc448ba3605faa0"},
     {file = "typing_extensions-4.8.0.tar.gz", hash = "sha256:df8e4339e9cb77357558cbdbceca33c303714cf861d1eef15e1070055ae8b7ef"},
+]
+
+[[package]]
+name = "uwsgi"
+version = "2.0.23"
+summary = "The uWSGI server"
+files = [
+    {file = "uwsgi-2.0.23.tar.gz", hash = "sha256:0cafda0c16f921db7fe42cfaf81b167cf884ee17350efbdd87d1ecece2d7de37"},
 ]
 
 [[package]]

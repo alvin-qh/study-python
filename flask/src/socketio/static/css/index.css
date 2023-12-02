@@ -14,6 +14,7 @@ body {
 
 input,
 textarea,
+select,
 button {
   font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif;
   font-size: 14px;
@@ -21,8 +22,13 @@ button {
 }
 
 input[type=text],
+select,
 textarea {
   padding: 5px 8px;
+}
+
+label {
+  margin-right: 5px;
 }
 
 .container {
@@ -65,4 +71,21 @@ header h2 {
   resize: none;
   height: 4em;
   border: 1px solid #ccc;
+}
+
+.chat-room {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.chat-room .input-group {
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+}
+
+.new-room {
+  margin-left: 20px;
+  padding: 5px;
 }
