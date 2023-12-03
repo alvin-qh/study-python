@@ -16,14 +16,14 @@ class TemplateResolveError(Exception):
 def return_or_render(
     template: Optional[str], result: Any
 ) -> Union[Any, Tuple[str, int]]:
-    """根据控制器
+    """根据路由函数的返回值, 返回模板或其它响应结果
 
     Args:
-        template (str): _description_
-        result (Any): _description_
+        - `template` (`str`): 模板名称
+        - `result` (`Any`): 路由函数结果
 
     Returns:
-        Union[Any, Tuple[str, int]]: _description_
+        `Union[Any, Tuple[str, int]]`: 请求结果或模板渲染结果
     """
     if isinstance(result, tuple):
         ctx, code = result
@@ -49,7 +49,7 @@ def return_or_render(
 def templated(template: Optional[str] = None) -> Callable[..., Any]:
     """模板文件装饰器
 
-    该装饰器用于修饰控制器函数, 将控制器函数返回的结果传递到指定的 html 模板上并进行渲染
+    该装饰器用于修饰路由函数, 将路由函数返回的结果传递到指定的 html 模板上并进行渲染
 
     Args:
         - `template` (`Optional[str]`): 模板名称, `None` 表示根据规则取默认模板
@@ -76,7 +76,7 @@ def templated(template: Optional[str] = None) -> Callable[..., Any]:
 def async_templated(template: Optional[str] = None) -> Callable[..., Any]:
     """模板文件装饰器
 
-    该装饰器用于修饰控制器函数, 将控制器函数返回的结果传递到指定的 html 模板上并进行渲染
+    该装饰器用于修饰路由函数, 将路由函数返回的结果传递到指定的 html 模板上并进行渲染
 
     Args:
         - `template` (`Optional[str]`): 模板名称, `None` 表示根据规则取默认模板

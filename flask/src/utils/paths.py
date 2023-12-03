@@ -4,6 +4,8 @@ import pkgutil
 import sys
 from typing import Iterable, List, Tuple, Union
 
+from quart import Quart
+
 from flask import Flask
 
 
@@ -105,13 +107,17 @@ _DEFAULT_WATCH_FILE_TYPES = (
 
 
 def get_watch_files_for_develop(
-    app: Flask, types: Tuple[str, ...] = _DEFAULT_WATCH_FILE_TYPES
+    app: Union[Flask, Quart],
+    types: Tuple[str, ...] = _DEFAULT_WATCH_FILE_TYPES,
 ) -> List[str]:
     """获取检测文件的列表（用于开发模式）
 
     Args:
-        app (Flask): Flask 实例对象
-        types (Tuple[str], optional): 用于监控的文件类型列表. Defaults to DEFAULT_WATCH_FILE_TYPES.
+        - `app` (`Union[Flask, Quart]`): Flask/Quart 实例对象
+        - `types` (`Tuple[str]`, optional): 用于监控的文件类型列表. Defaults to `DEFAULT_WATCH_FILE_TYPES`.
+
+    Returns:
+        `List[str]`: 需要被监控的文件列表
     """
     if not app.debug:
         return []

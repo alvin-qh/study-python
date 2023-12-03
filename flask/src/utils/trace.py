@@ -1,3 +1,6 @@
+from typing import Union
+
+
 def is_debug() -> bool:
     """检查当前环境是否为调试环境
 
@@ -14,21 +17,24 @@ def is_debug() -> bool:
     return hasattr(sys, "gettrace") and sys.gettrace() is not None
 
 
-def attach_logger(app: "Flask") -> "Flask":  # type: ignore
-    """附加日志
+def attach_logger(app: Union["Flask", "Quart"]) -> Union["Flask", "Quart"]:  # type: ignore
+    """为 Flask 或 Quart 对象附加日志功能
+
+    如果通过 Gunicorn 等 Web 服务器启动应用, 则无法在控制台输出 Flask/Quart 框架本身的日志, 因此需要为应用附加日志功能,
+    使得日志能够在控制台输出.
 
     Args:
-        - `app` (`Flask`): Flask 对象
+        - `app` (`Union["Flask", "Quart"]`): Flask/Quart 对象
+
+    Returns:
+        `Union["Flask", "Quart"]`: 返回带有日志功能的 Flask/Quart 对象
     """
     import logging
-    from typing import cast
 
     from paste.translogger import TransLogger
-
-    from flask import Flask
 
     gunicorn_logger: logging.Logger = logging.getLogger("gunicorn.error")
     app.logger.handlers = gunicorn_logger.handlers
     app.logger.setLevel(gunicorn_logger.level)
 
-    return cast(Flask, TransLogger(app, setup_console_handler=False))
+    return TransLogger(app, setup_console_handler=False)

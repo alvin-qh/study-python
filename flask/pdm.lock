@@ -5,7 +5,17 @@
 groups = ["default", "http", "lint", "test"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:b5ab5a1c8dddba48a6aa5cc6f2d88c87739595455553ee7ef6a2aeac682cf64b"
+content_hash = "sha256:4fa6803c717b911bbbf1130f7b5d640f06a68e5873967c8cb0272e56f9223fbc"
+
+[[package]]
+name = "aiofiles"
+version = "23.2.1"
+requires_python = ">=3.7"
+summary = "File support for asyncio."
+files = [
+    {file = "aiofiles-23.2.1-py3-none-any.whl", hash = "sha256:19297512c647d4b27a2cf7c34caa7e405c0d60b5560618a29a9fe027b18b0107"},
+    {file = "aiofiles-23.2.1.tar.gz", hash = "sha256:84ec2218d8419404abcb9f0c02df3f34c6e0a68ed41072acfb1cef5cbc29051a"},
+]
 
 [[package]]
 name = "asgiref"
@@ -275,6 +285,56 @@ files = [
 ]
 
 [[package]]
+name = "h2"
+version = "4.1.0"
+requires_python = ">=3.6.1"
+summary = "HTTP/2 State-Machine based protocol implementation"
+dependencies = [
+    "hpack<5,>=4.0",
+    "hyperframe<7,>=6.0",
+]
+files = [
+    {file = "h2-4.1.0-py3-none-any.whl", hash = "sha256:03a46bcf682256c95b5fd9e9a99c1323584c3eec6440d379b9903d709476bc6d"},
+    {file = "h2-4.1.0.tar.gz", hash = "sha256:a83aca08fbe7aacb79fec788c9c0bac936343560ed9ec18b82a13a12c28d2abb"},
+]
+
+[[package]]
+name = "hpack"
+version = "4.0.0"
+requires_python = ">=3.6.1"
+summary = "Pure-Python HPACK header compression"
+files = [
+    {file = "hpack-4.0.0-py3-none-any.whl", hash = "sha256:84a076fad3dc9a9f8063ccb8041ef100867b1878b25ef0ee63847a5d53818a6c"},
+    {file = "hpack-4.0.0.tar.gz", hash = "sha256:fc41de0c63e687ebffde81187a948221294896f6bdc0ae2312708df339430095"},
+]
+
+[[package]]
+name = "hypercorn"
+version = "0.15.0"
+requires_python = ">=3.7"
+summary = "A ASGI Server based on Hyper libraries and inspired by Gunicorn"
+dependencies = [
+    "h11",
+    "h2>=3.1.0",
+    "priority",
+    "wsproto>=0.14.0",
+]
+files = [
+    {file = "hypercorn-0.15.0-py3-none-any.whl", hash = "sha256:5008944999612fd188d7a1ca02e89d20065642b89503020ac392dfed11840730"},
+    {file = "hypercorn-0.15.0.tar.gz", hash = "sha256:d517f68d5dc7afa9a9d50ecefb0f769f466ebe8c1c18d2c2f447a24e763c9a63"},
+]
+
+[[package]]
+name = "hyperframe"
+version = "6.0.1"
+requires_python = ">=3.6.1"
+summary = "HTTP/2 framing layer for Python"
+files = [
+    {file = "hyperframe-6.0.1-py3-none-any.whl", hash = "sha256:0ec6bafd80d8ad2195c4f03aacba3a8265e57bc4cff261e802bf39970ed02a15"},
+    {file = "hyperframe-6.0.1.tar.gz", hash = "sha256:ae510046231dc8e9ecb1a6586f63d2347bf4c8905914aa84ba585ae85f28a914"},
+]
+
+[[package]]
 name = "iniconfig"
 version = "2.0.0"
 requires_python = ">=3.7"
@@ -400,6 +460,16 @@ files = [
 ]
 
 [[package]]
+name = "priority"
+version = "2.0.0"
+requires_python = ">=3.6.1"
+summary = "A pure-Python implementation of the HTTP/2 priority tree"
+files = [
+    {file = "priority-2.0.0-py3-none-any.whl", hash = "sha256:6f8eefce5f3ad59baf2c080a664037bb4725cd0a790d53d59ab4059288faf6aa"},
+    {file = "priority-2.0.0.tar.gz", hash = "sha256:c965d54f1b8d0d0b19479db3924c7c36cf672dbf2aec92d43fbdaf4492ba18c0"},
+]
+
+[[package]]
 name = "pycodestyle"
 version = "2.11.1"
 requires_python = ">=3.8"
@@ -433,6 +503,19 @@ dependencies = [
 files = [
     {file = "pytest-7.4.3-py3-none-any.whl", hash = "sha256:0d009c083ea859a71b76adf7c1d502e4bc170b80a8ef002da5806527b9591fac"},
     {file = "pytest-7.4.3.tar.gz", hash = "sha256:d989d136982de4e3b29dabcc838ad581c64e8ed52c11fbe86ddebd9da0818cd5"},
+]
+
+[[package]]
+name = "pytest-asyncio"
+version = "0.23.0"
+requires_python = ">=3.8"
+summary = "Pytest support for asyncio"
+dependencies = [
+    "pytest>=7.0.0",
+]
+files = [
+    {file = "pytest-asyncio-0.23.0.tar.gz", hash = "sha256:236e89745b8be43b3b473640b523f26fe3c62a2afa7548e38532e9f201d22fc3"},
+    {file = "pytest_asyncio-0.23.0-py3-none-any.whl", hash = "sha256:91ef405536331eb9971511aeb08225869985d800cf491015f7407044e7d1d7f8"},
 ]
 
 [[package]]
@@ -482,6 +565,27 @@ summary = "World timezone definitions, modern and historical"
 files = [
     {file = "pytz-2023.3.post1-py2.py3-none-any.whl", hash = "sha256:ce42d816b81b68506614c11e8937d3aa9e41007ceb50bfdcb0749b921bf646c7"},
     {file = "pytz-2023.3.post1.tar.gz", hash = "sha256:7b4fddbeb94a1eba4b557da24f19fdf9db575192544270a9101d8509f9f43d7b"},
+]
+
+[[package]]
+name = "quart"
+version = "0.19.4"
+requires_python = ">=3.8"
+summary = "A Python ASGI web microframework with the same API as Flask"
+dependencies = [
+    "aiofiles",
+    "blinker>=1.6",
+    "click>=8.0.0",
+    "flask>=3.0.0",
+    "hypercorn>=0.11.2",
+    "itsdangerous",
+    "jinja2",
+    "markupsafe",
+    "werkzeug>=3.0.0",
+]
+files = [
+    {file = "quart-0.19.4-py3-none-any.whl", hash = "sha256:959da9371b44b6f48d952661863f8f64e68a893481ef3f2ef45b177629dc0928"},
+    {file = "quart-0.19.4.tar.gz", hash = "sha256:22ff186cf164955a7bf7483ff42a739a9fad3b119041846b15dc9597ec74c85c"},
 ]
 
 [[package]]
