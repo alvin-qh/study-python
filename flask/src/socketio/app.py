@@ -1,9 +1,16 @@
-import logging
+from utils.trace import is_debug
+
+if not is_debug():
+    from gevent import monkey
+
+    monkey.patch_all()
+
 from multiprocessing import RLock
 from typing import Any, Dict, List, Tuple
 
 from flask_socketio import SocketIO, disconnect, join_room, leave_room
 from utils import Assets, get_watch_files_for_develop, templated
+from utils.trace import attach_logger
 
 from flask import Flask, request
 
@@ -14,7 +21,7 @@ app = Flask(__name__, static_folder="static", template_folder="templates")
 app.jinja_env.globals["assets"] = Assets(app)
 
 # 设置安全密钥
-app.config["SECRET_KEY"] = "secret!"
+app.config["SECRET_KEY"] = "secret!!!"
 
 _TOKEN = (
     "olriajpjatxhhyptgllgrrhuvukhkkbsqrekmeexioeqwkewinhuowzhiakiebxnot"
@@ -35,7 +42,7 @@ sio = SocketIO(
     engineio_logger=True,
     cors_allowed_origins="*",
 )
-sio.init_app(app)
+# sio.init_app(app)
 
 
 @app.route("/", methods=["GET"])
@@ -133,20 +140,17 @@ def on_leave_room(data: Dict[str, Any]) -> None:
         emit_rooms_event()
 
 
-def main() -> None:
-    # 通过 socketio 启动 flask 应用
-    sio.run(
-        app,
-        host="127.0.0.1",
-        port=5001,
-        debug=False,
-        extra_files=get_watch_files_for_develop(app),
-    )
-
+# 暴露给 wsgi 服务器的应用对象
+flask_app = app
 
 if __name__ == "__main__":
-    main()
+    # 进程启动时执行
+    flask_app.run(
+        host="127.0.0.1",
+        port=5000,
+        debug=True,
+        extra_files=get_watch_files_for_develop(app),
+    )
 else:
-    gunicorn_logger = logging.getLogger("gunicorn.error")
-    app.logger.handlers = gunicorn_logger.handlers
-    app.logger.setLevel(gunicorn_logger.level)
+    # 调试模式下执行
+    flask_app = attach_logger(app)

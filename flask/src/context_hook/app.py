@@ -1,6 +1,13 @@
+from utils.trace import is_debug
+
+if not is_debug():
+    from gevent import monkey
+
+    monkey.patch_all()
+
 from typing import Any, Dict, Optional, Tuple, Union
 
-from utils import Assets, get_watch_files_for_develop, templated
+from utils import Assets, attach_logger, get_watch_files_for_develop, templated
 from werkzeug import Response
 from wtforms import Form, PasswordField, StringField, validators
 
@@ -143,7 +150,11 @@ def login() -> Union[Response, Tuple[Union[Response, Dict[str, Any]], int]]:
 
         # 查询用户是否存在
         find_user = next(
-            filter(lambda item: account == item[1].name, USERS.items()), None
+            filter(
+                lambda item: (account or "").lower() == item[1].name.lower(),
+                USERS.items(),
+            ),
+            None,
         )
 
         if find_user:
@@ -175,15 +186,17 @@ def logout() -> dict[str, Any]:
     return {"user": user}
 
 
-def main() -> None:
-    # 启动 flask 应用
-    app.run(
+# 暴露给 wsgi 服务器的应用对象
+flask_app = app
+
+if __name__ == "__main__":
+    # 进程启动时执行
+    flask_app.run(
         host="127.0.0.1",
         port=5000,
         debug=True,
         extra_files=get_watch_files_for_develop(app),
     )
-
-
-if __name__ == "__main__":
-    main()
+else:
+    # 调试模式下执行
+    flask_app = attach_logger(app)

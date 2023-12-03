@@ -1,6 +1,13 @@
+from utils.trace import is_debug
+
+if not is_debug():
+    from gevent import monkey
+
+    monkey.patch_all()
+
 from typing import Any, Dict, Tuple
 
-from utils import Assets, get_watch_files_for_develop, templated
+from utils import Assets, attach_logger, get_watch_files_for_develop, templated
 from werkzeug import Response
 
 from flask import Flask, jsonify, request
@@ -50,15 +57,17 @@ def search() -> Tuple[Response, int]:
     )
 
 
-def main() -> None:
-    # 启动 flask 应用
-    app.run(
+# 暴露给 wsgi 服务器的应用对象
+flask_app = app
+
+if __name__ == "__main__":
+    # 进程启动时执行
+    flask_app.run(
         host="127.0.0.1",
         port=5000,
         debug=True,
         extra_files=get_watch_files_for_develop(app),
     )
-
-
-if __name__ == "__main__":
-    main()
+else:
+    # 调试模式下执行
+    flask_app = attach_logger(app)

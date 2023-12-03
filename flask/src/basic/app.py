@@ -1,13 +1,20 @@
+from utils.trace import is_debug
+
+if not is_debug():
+    from gevent import monkey
+
+    monkey.patch_all()
+
 import logging
 import time
 from typing import Any, Dict, Tuple
 
-from utils import get_watch_files_for_develop, templated
+from utils import attach_logger, get_watch_files_for_develop, templated
 
 from flask import Flask, Response, jsonify
 
 # 创建 Flask 对象，并指定静态文件存储路径以及 html 模板存储路径
-app = Flask(__name__, static_folder="static", template_folder="templates")
+app: Flask = Flask(__name__, static_folder="static", template_folder="templates")
 
 # 将 gunicorn 服务器的 log 接入到 flask log 中
 gunicorn_logger = logging.getLogger("gunicorn.error")
@@ -52,16 +59,17 @@ def use_json() -> Tuple[Response, int]:
     return jsonify(time=int(tm)), 200
 
 
-def main() -> None:
-    # 启动 flask 应用
-    app.run(
+# 暴露给 wsgi 服务器的应用对象
+flask_app = app
+
+if __name__ == "__main__":
+    # 进程启动时执行
+    flask_app.run(
         host="127.0.0.1",
         port=5000,
         debug=True,
         extra_files=get_watch_files_for_develop(app),
     )
-
-
-# 进程启动时执行
-if __name__ == "__main__":
-    main()
+else:
+    # 调试模式下执行
+    flask_app = attach_logger(app)

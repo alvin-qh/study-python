@@ -1,6 +1,13 @@
+from utils.trace import is_debug
+
+if not is_debug():
+    from gevent import monkey
+
+    monkey.patch_all()
+
 from typing import Any, Dict, Tuple, Union
 
-from utils import Assets, get_watch_files_for_develop, templated
+from utils import Assets, attach_logger, get_watch_files_for_develop, templated
 from werkzeug import Response
 from wtforms import DecimalField, Form, SelectField, validators
 
@@ -10,9 +17,7 @@ from flask import Flask, jsonify, request
 app = Flask(__name__, static_folder="static", template_folder="templates")
 
 # 设置密钥
-app.config[
-    "SECRET_KEY"
-] = b"?\xc0\xa9\xfcY\xd7\x9f+\xbe\n\x85\x16\xa0\xd9\xaa\x9fG\x14\x0e\xeb\xf4\x05N\xe3"
+app.config["SECRET_KEY"] = "secret!!!"
 
 # 为 jinja 注入 assets 对象
 app.jinja_env.globals["assets"] = Assets(app)
@@ -103,15 +108,17 @@ def ajax() -> Union[Response, Tuple[Response, int]]:
     return jsonify(ans=ans)
 
 
-def main() -> None:
-    # 启动 flask 应用
-    app.run(
+# 暴露给 wsgi 服务器的应用对象
+flask_app = app
+
+if __name__ == "__main__":
+    # 进程启动时执行
+    flask_app.run(
         host="127.0.0.1",
         port=5000,
         debug=True,
         extra_files=get_watch_files_for_develop(app),
     )
-
-
-if __name__ == "__main__":
-    main()
+else:
+    # 调试模式下执行
+    flask_app = attach_logger(app)

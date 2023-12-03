@@ -5,14 +5,17 @@ authors = [
     {name = "Alvin", email = "quhao317@163.com"},
 ]
 dependencies = [
-    "flask>=3.0.0",
-    "xxhash>=3.4.1",
-    "flask-babel>=4.0.0",
-    "wtforms>=3.1.1",
-    "flask-login>=0.6.3",
-    "flask-socketio>=5.3.6",
-    "gevent-websocket>=0.10.1",
-    "waitress>=2.1.2",
+    "flask-babel",
+    "flask-login",
+    "flask-socketio",
+    "flask[async]",
+    "gevent-websocket",
+    "gevent",
+    "waitress",
+    "wtforms",
+    "xxhash",
+    "paste>=3.7.1",
+    "pip>=23.3.1",
 ]
 requires-python = ">=3.12"
 readme = "README.md"
@@ -20,19 +23,18 @@ license = {text = "MIT"}
 
 [project.optional-dependencies]
 test = [
-    "pytest",
+    "beautifulsoup4",
     "pytest-mock",
-    "beautifulsoup4>=4.12.2",
+    "pytest",
 ]
 lint = [
     "autopep8",
     "mypy",
 ]
 http = [
-    "tornado>=6.4",
-    "gevent>=23.9.1",
-    "gunicorn>=21.2.0",
-    "uwsgi>=2.0.23",
+    "gunicorn",
+    "tornado",
+    "uwsgi",
 ]
 [tool.pdm.scripts]
 dev = "python src/run.py"
@@ -45,6 +47,7 @@ clean = { composite = [
     'find src -type d -name "__pycache__" -exec rm -rf {} +',
     'find tests -type d -name "__pycache__" -exec rm -rf {} +',
 ] }
+type_install = "mypy --install-types"
 
 [tool.mypy]
 python_version = '3.11'

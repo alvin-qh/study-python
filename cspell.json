@@ -148,6 +148,7 @@
         "tobytes",
         "topdown",
         "toreadonly",
+        "translogger",
         "tzfile",
         "tzinfos",
         "tzname",

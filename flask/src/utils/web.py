@@ -1,15 +1,49 @@
 import os
 import time
 from functools import wraps
-from typing import Any, Callable, Dict, Optional
+from typing import Any, Callable, Dict, Optional, Tuple, Union
+from urllib.parse import parse_qs
 
 import xxhash
+
 from flask import Flask, json, render_template, request
-from urllib.parse import parse_qs
 
 
 class TemplateResolveError(Exception):
     """HTML 模板无法解析异常"""
+
+
+def return_or_render(
+    template: Optional[str], result: Any
+) -> Union[Any, Tuple[str, int]]:
+    """根据控制器
+
+    Args:
+        template (str): _description_
+        result (Any): _description_
+
+    Returns:
+        Union[Any, Tuple[str, int]]: _description_
+    """
+    if isinstance(result, tuple):
+        ctx, code = result
+    else:
+        ctx, code = result, 200
+
+    if ctx is None:
+        ctx = {}
+    elif not isinstance(ctx, dict):
+        return ctx
+
+    # 计算模板名称，如果未传递 template 参数，则用当前请求的路径作为模板文件路径名
+    template_name = template
+    if not template_name:
+        if request.endpoint:
+            template_name = f'{request.endpoint.replace(".", "/")}.html'
+        else:
+            raise TemplateResolveError("No template valid")
+
+    return render_template(template_name, **ctx), code
 
 
 def templated(template: Optional[str] = None) -> Callable[..., Any]:
@@ -31,27 +65,35 @@ def templated(template: Optional[str] = None) -> Callable[..., Any]:
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             """定义包装函数"""
 
-            # 计算模板名称，如果未传递 template 参数，则用当前请求的路径作为模板文件路径名
-            template_name = template
-            if not template_name:
-                if request.endpoint:
-                    template_name = f'{request.endpoint.replace(".", "/")}.html'
-                else:
-                    raise TemplateResolveError("No template valid")
+            # 根据计算得到的模板名称渲染 html
+            return return_or_render(template, fn(*args, **kwargs))
 
-            # 调用 controller 函数
-            ctx, code = fn(*args, **kwargs), 200  # 默认 http code 为 200
-            # 如果函数返回了 http code，则替换默认的 code
-            if isinstance(ctx, tuple):
-                ctx, code = ctx
+        return wrapper
 
-            if ctx is None:
-                ctx = {}
-            elif not isinstance(ctx, dict):
-                return ctx
+    return decorator
+
+
+def async_templated(template: Optional[str] = None) -> Callable[..., Any]:
+    """模板文件装饰器
+
+    该装饰器用于修饰控制器函数, 将控制器函数返回的结果传递到指定的 html 模板上并进行渲染
+
+    Args:
+        - `template` (`Optional[str]`): 模板名称, `None` 表示根据规则取默认模板
+
+    Returns:
+        `Callable[..., Any]`: 被装饰方法
+    """
+
+    def decorator(fn: Callable[..., Any]) -> Callable[..., Any]:
+        """定义装饰器方法"""
+
+        @wraps(fn)
+        async def wrapper(*args: Any, **kwargs: Any) -> Any:
+            """定义包装函数"""
 
             # 根据计算得到的模板名称渲染 html
-            return render_template(template_name, **ctx), code
+            return return_or_render(template, await fn(*args, **kwargs))
 
         return wrapper
 
