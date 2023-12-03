@@ -8,7 +8,9 @@ if not is_debug():
 from traceback import format_tb
 from typing import Any, Dict, NoReturn, Tuple
 
-from utils import Assets, attach_logger, get_watch_files_for_develop, templated
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import Assets, templated
 
 from flask import Flask, render_template
 

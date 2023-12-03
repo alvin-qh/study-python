@@ -27,7 +27,7 @@ function show_help() {
 function main() {
     app='basic'
     wsgi='gunicorn'
-    port='8899'
+    port='5001'
     host='0.0.0.0'
     worker='4'
     thread='50'
@@ -75,12 +75,38 @@ function main() {
         shift
     done
 
-    if [ "$wsgi" == 'gunicorn' ]; then
-        eval ".venv/bin/gunicorn -w $worker --threads $thread -k gevent -b $host:$port --log-level=DEBUG ${app}.app:flask_app"
-    elif [ "$wsgi" == 'uwsgi' ]; then
-        eval ".venv/bin/uwsgi --http $host:$port --http-websockets --master --processes $worker --threads $thread -w ${app}.app:flask_app"
-    elif [ "$wsgi" == 'waitress' ]; then
-        eval ".venv/bin/waitress-serve --port=$port --host=$host --threads=$thread --threads=${thread} ${app}.app:flask_app"
+    if [ "$app" == 'quart_' ]; then
+        # 对于 Quart 框架, 无法使用 WSGI 服务器启动, 而需要 ASGI 服务器来启动
+        # https://pgjones.gitlab.io/hypercorn/tutorials/quickstart.html
+        eval ".venv/bin/hypercorn --bind $host:$port --worker-class asyncio --workers $worker --access-logfile - --reload quart_.app:quart_app"
+    else
+        # 对于 Flask 框架, 可以使用 WSGI 服务器来启动
+        if [ "$wsgi" == 'gunicorn' ]; then
+            # https://gunicorn.org/#quickstart
+            if [ "$app" == 'socketio_' ]; then
+                # 如果通过 gunicorn 启动 websocket, 则 worker 数量必须为 1, 否则无法进行正常的负载均衡
+                # 要解决这个问题, 可以在前面加上 Nginx 进行真正的负载均衡, 或者使用 uwsgi 服务器
+                # https://flask-socketio.readthedocs.io/en/latest/deployment.html#gunicorn-web-server
+                worker=1
+                worker_class='geventwebsocket.gunicorn.workers.GeventWebSocketWorker'
+            else
+                worker_class='gevent'
+            fi
+            eval ".venv/bin/gunicorn -w $worker --threads $thread -k $worker_class -b $host:$port --log-level=DEBUG ${app}.app:flask_app"
+        elif [ "$wsgi" == 'uwsgi' ]; then
+            # https://uwsgi-docs.readthedocs.io/en/latest/#quickstarts
+            use_websocket=''
+            if [ "$app" == 'socketio_' ]; then
+                use_websocket='--http-websockets'
+                worker=1
+            else
+                worker=4
+            fi
+            eval ".venv/bin/uwsgi --http $host:$port --gevent 1000 $use_websocket --master --workers $worker -w ${app}.app:flask_app"
+        elif [ "$wsgi" == 'waitress' ]; then
+            # https://docs.pylonsproject.org/projects/waitress/en/stable/usage.html
+            eval ".venv/bin/waitress-serve --port $port --host $host --threads=$worker ${app}.app:flask_app"
+        fi
     fi
 }
 

@@ -5,7 +5,7 @@ from flask import Flask
 
 
 def run_by_flask(app: Flask, host: str, port: int) -> None:
-    from utils import get_watch_files_for_develop
+    from utils.paths import get_watch_files_for_develop
 
     app.run(host, port, debug=True, extra_files=get_watch_files_for_develop(app))
 
@@ -34,7 +34,7 @@ def main(
     app_name: str,
     server_type: ServerType = "flask",
     host: str = "0.0.0.0",
-    port: int = 8899,
+    port: int = 5001,
 ) -> None:
     m = importlib.import_module(app_name)
     app: Flask = m.app

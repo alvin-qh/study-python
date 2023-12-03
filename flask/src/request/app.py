@@ -7,13 +7,9 @@ if not is_debug():
 
 from typing import Any, Callable, Dict, List, Set, Union
 
-from utils import (
-    Assets,
-    HttpMethodOverrideMiddleware,
-    attach_logger,
-    get_watch_files_for_develop,
-    templated,
-)
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import Assets, HttpMethodOverrideMiddleware, templated
 from werkzeug import Response
 from werkzeug.exceptions import BadRequest
 

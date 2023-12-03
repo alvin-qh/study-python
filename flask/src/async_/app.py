@@ -8,7 +8,9 @@ if not is_debug():
 import time
 from typing import Any, Dict, Tuple
 
-from utils import async_templated, attach_logger, get_watch_files_for_develop
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import async_templated
 from werkzeug import Response
 
 from flask import Flask, jsonify, request

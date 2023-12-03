@@ -2,7 +2,7 @@ from functools import wraps
 from typing import Any, Callable, Optional, Tuple, Union
 
 from quart import render_template, request
-from utils import TemplateResolveError
+from utils.web import TemplateResolveError
 
 
 async def return_or_render(

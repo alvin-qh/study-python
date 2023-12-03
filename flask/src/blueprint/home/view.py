@@ -1,6 +1,6 @@
 from typing import Any, Dict
 
-from utils import templated
+from utils.web import templated
 
 from flask import Blueprint
 

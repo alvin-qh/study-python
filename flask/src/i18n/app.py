@@ -10,7 +10,9 @@ from typing import Any, Dict, Optional
 from flask_babel import Babel
 from flask_babel import lazy_gettext as _
 from flask_babel import refresh
-from utils import Assets, attach_logger, get_watch_files_for_develop, templated
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import Assets, templated
 
 from flask import Flask, request, session
 

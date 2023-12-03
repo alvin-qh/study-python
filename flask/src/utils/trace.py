@@ -1,6 +1,3 @@
-from typing import Union
-
-
 def is_debug() -> bool:
     """检查当前环境是否为调试环境
 
@@ -17,7 +14,7 @@ def is_debug() -> bool:
     return hasattr(sys, "gettrace") and sys.gettrace() is not None
 
 
-def attach_logger(app: Union["Flask", "Quart"]) -> Union["Flask", "Quart"]:  # type: ignore
+def attach_logger(app):  # type: ignore
     """为 Flask 或 Quart 对象附加日志功能
 
     如果通过 Gunicorn 等 Web 服务器启动应用, 则无法在控制台输出 Flask/Quart 框架本身的日志, 因此需要为应用附加日志功能,

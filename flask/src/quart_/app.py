@@ -1,17 +1,10 @@
-from utils.trace import is_debug
-
-if not is_debug():
-    from gevent import monkey
-
-    monkey.patch_all()
-
 import time
 from typing import Any, Dict, Tuple
 
 from quart import Quart, jsonify, request
 from quart.wrappers import Response
 from quart_.web import templated
-from utils import attach_logger, get_watch_files_for_develop
+from utils.paths import get_watch_files_for_develop
 
 # 实例化 Flask 对象
 app = Quart(__name__, static_folder="static", template_folder="templates")
@@ -72,16 +65,13 @@ async def use_json() -> Tuple[Response, int]:
 
 
 # 暴露给 wsgi 服务器的应用对象
-flask_app = app
+quart_app = app
 
 if __name__ == "__main__":
     # 进程启动时执行
-    flask_app.run(
+    quart_app.run(
         host="127.0.0.1",
         port=5000,
         debug=True,
         extra_files=get_watch_files_for_develop(app),
     )
-else:
-    # 调试模式下执行
-    flask_app = attach_logger(app)

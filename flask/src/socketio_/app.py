@@ -9,8 +9,9 @@ from multiprocessing import RLock
 from typing import Any, Dict, List, Tuple
 
 from flask_socketio import SocketIO, disconnect, join_room, leave_room
-from utils import Assets, get_watch_files_for_develop, templated
+from utils.paths import get_watch_files_for_develop
 from utils.trace import attach_logger
+from utils.web import Assets, templated
 
 from flask import Flask, request
 
@@ -40,6 +41,7 @@ _lock = RLock()
 sio = SocketIO(
     app,
     engineio_logger=True,
+    manage_session=False,
     cors_allowed_origins="*",
 )
 # sio.init_app(app)
@@ -145,9 +147,10 @@ flask_app = app
 
 if __name__ == "__main__":
     # 进程启动时执行
-    flask_app.run(
+    sio.run(
+        app=app,
         host="127.0.0.1",
-        port=5000,
+        port=5001,
         debug=True,
         extra_files=get_watch_files_for_develop(app),
     )

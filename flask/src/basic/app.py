@@ -9,7 +9,9 @@ import logging
 import time
 from typing import Any, Dict, Tuple
 
-from utils import attach_logger, get_watch_files_for_develop, templated
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import templated
 
 from flask import Flask, Response, jsonify
 

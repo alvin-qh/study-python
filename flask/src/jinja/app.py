@@ -7,7 +7,9 @@ if not is_debug():
 
 from typing import Any, Dict, Tuple
 
-from utils import Assets, attach_logger, get_watch_files_for_develop, templated
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import Assets, templated
 from werkzeug import Response
 
 from flask import Flask, jsonify, request

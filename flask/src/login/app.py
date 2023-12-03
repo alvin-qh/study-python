@@ -10,7 +10,9 @@ from typing import Tuple, Union
 from flask_login import LoginManager
 from login.form import LoginForm
 from login.model import UserModel
-from utils import Assets, attach_logger, get_watch_files_for_develop
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import Assets
 from werkzeug.wrappers import Response
 
 from flask import Flask, redirect, render_template, request

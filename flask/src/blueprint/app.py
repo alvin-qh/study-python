@@ -5,7 +5,9 @@ if not is_debug():
 
     monkey.patch_all()
 
-from utils import Assets, attach_logger, get_watch_files_for_develop
+from utils.paths import get_watch_files_for_develop
+from utils.trace import attach_logger
+from utils.web import Assets
 
 from flask import Flask
 
