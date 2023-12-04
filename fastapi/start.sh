@@ -15,7 +15,7 @@ function show_help() {
 
 function main() {
     app='basic'
-    port='8899'
+    port='5001'
     host='0.0.0.0'
     worker='4'
     reload=''
@@ -45,12 +45,15 @@ function main() {
             show_help
             return -1
             ;;
+        *)
+            show_help
+            return -1
         esac
 
         shift
     done
 
-    eval ".venv/bin/uvicorn --port=$port --host=$host --threads=$thread --threads=${thread} ${app}.app:flask_app"
+    eval ".venv/bin/uvicorn --port $port --host $host --workers $worker $reload $app.app:app"
 
 }
 

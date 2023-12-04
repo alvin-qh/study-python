@@ -70,6 +70,9 @@ function main() {
             show_help
             return -1
             ;;
+        *)
+            show_help
+            return -1
         esac
 
         shift

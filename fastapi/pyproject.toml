@@ -14,6 +14,7 @@ test = [
     "pytest",
     "pytest-mock",
     "pytest-asyncio",
+    "httpx>=0.25.2",
 ]
 lint = [
     "mypy",
