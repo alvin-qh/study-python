@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any, Callable, Tuple
 
 from blinker import NamedSignal, Signal, signal
@@ -43,9 +43,9 @@ class AnonymousSignals:
             Tuple[Any, Any, Any]: 第一项为回调函数调用前事件处理返回值;
             第二项为回调函数返回值; 第三项为回调函数调用后的事件处理返回值
         """
-        r1 = self.on_ready.send(self, timeit=datetime.utcnow())
+        r1 = self.on_ready.send(self, timeit=datetime.now(UTC))
         r2 = fn(r1)
-        r3 = self.on_complete.send(self, timeit=datetime.utcnow())
+        r3 = self.on_complete.send(self, timeit=datetime.now(UTC))
 
         return r1, r2, r3
 
