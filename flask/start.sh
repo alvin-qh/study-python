@@ -9,8 +9,9 @@ all_wsgi=(
 function show_help() {
     echo "Usage: $0 [options]"
     echo "Options:"
+    echo "  -a, --app     Application to run"
 
-    IFS=$', ';
+    IFS=$', '
     echo "  -w, --wsgi    WSGI server to use ${all_wsgi[*]}"
     IFS=$''
 
@@ -26,7 +27,7 @@ function show_help() {
 
 function main() {
     app='basic'
-    wsgi='gunicorn'
+    wsgi='waitress'
     port='5001'
     host='0.0.0.0'
     worker='4'
