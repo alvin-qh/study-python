@@ -1,4 +1,4 @@
-from utils import is_debug
+from utils.trace import is_debug
 
 
 def test_is_debug() -> None:

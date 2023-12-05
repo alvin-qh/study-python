@@ -47,7 +47,7 @@ def test_get_exception(client: FlaskClient) -> None:
 
     trace = nn(soup.select_one(".error pre")).string
     assert (
-        'File "/home/alvin/Workspace/Study/study-python/flask/src/error_handler/app.py"'
+        'study-python/web/flask/src/error_handler/app.py"'
         in trace
     )
     assert 'raise NothingError("Oh shit!!")' in trace

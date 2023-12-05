@@ -1,6 +1,4 @@
 [project]
-name = "study_python_flask"
-version = "1.0.0"
 authors = [
     {name = "Alvin", email = "quhao317@163.com"},
 ]
@@ -73,5 +71,5 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src"]
 addopts = "-svv"

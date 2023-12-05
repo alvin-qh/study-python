@@ -1,7 +1,7 @@
 import json
 from typing import Any, Dict
 from unittest.mock import MagicMock, patch
-from utils import templated, Assets
+from utils.web import templated, Assets
 from flask import Flask
 
 
