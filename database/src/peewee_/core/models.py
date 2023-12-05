@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any, List, Optional, cast
 
 from peewee import (
@@ -106,10 +106,10 @@ class AuditAtMixin(Model):
         """
         if not self.created_at:
             # 设置记录的创建时间
-            self.created_at = datetime.utcnow()
+            self.created_at = datetime.now(UTC)
 
         # 设置记录的更新时间
-        self.updated_at = datetime.utcnow()
+        self.updated_at = datetime.now(UTC)
         return cast(int, super().save(force_insert, only))
 
     @classmethod
@@ -123,7 +123,10 @@ class AuditAtMixin(Model):
             `Model`: 表示插入记录的模型对象
         """
         # 设置记录的审计时间字段
-        query.update(created_at=datetime.utcnow(), updated_at=datetime.utcnow())
+        query.update(
+            created_at=datetime.now(UTC),
+            updated_at=datetime.now(UTC),
+        )
 
         # 创建记录并返回模型对象
         return cast(Model, super().create(**query))
@@ -140,7 +143,7 @@ class AuditAtMixin(Model):
             `ModelUpdate`: `update` 查询对象
         """
         # 在更新数据中加入 `updated_at` 字段值
-        update.update(updated_at=datetime.utcnow())
+        update.update(updated_at=datetime.now(UTC))
         return cast(ModelUpdate, super().update(__data, **update))
 
 

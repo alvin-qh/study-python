@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, UTC
 from typing import Any, Type
 
 from mongoengine import Document, Q, QuerySet, signals
@@ -85,9 +85,9 @@ def _set_document_audited(
     if isinstance(document, AuditedMixin):
         # 加入审计属性
         if not document.created_at:
-            document.created_at = datetime.utcnow()
+            document.created_at = datetime.now(UTC)
 
-        document.updated_at = datetime.utcnow()
+        document.updated_at = datetime.now(UTC)
 
 
 def _set_document_tenant(
