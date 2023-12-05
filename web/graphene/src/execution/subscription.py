@@ -1,6 +1,6 @@
 # Every schema requires a query.
 import asyncio
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, UTC
 from typing import AsyncGenerator, Literal
 
 from graphene import ObjectType, ResolveInfo, Schema, String
@@ -47,11 +47,11 @@ class Subscription(ObjectType):
         Yields:
             str: 每次发送给订阅方的内容
         """
-        start = datetime.utcnow()
+        start = datetime.now(UTC)
         # 循环 5 秒钟
-        while (datetime.utcnow() - start) < timedelta(seconds=5):
+        while (datetime.now(UTC) - start) < timedelta(seconds=5):
             # 发送当前时间作为订阅值
-            yield datetime.utcnow().isoformat()
+            yield datetime.now(UTC).isoformat()
             # 协程休眠 1 秒
             await asyncio.sleep(1)
 

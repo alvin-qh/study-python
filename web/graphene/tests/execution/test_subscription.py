@@ -12,7 +12,7 @@ async def test_subscription() -> None:
     测试产生一个订阅对象
     """
     # 判断结果格式的正则表达式
-    p = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+$")
+    p = re.compile(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d+")
 
     # 使用 graphql 语法, 产生一个订阅字符串
     # timeOfDay 表示订阅 time_of_day 字段的值

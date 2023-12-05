@@ -1,6 +1,4 @@
 [project]
-name = "study_python_graphene"
-version = "1.0.0"
 authors = [
     {name = "Alvin", email = "quhao317@163.com"},
 ]
@@ -12,7 +10,7 @@ dependencies = [
     "bson",
     "mypy-extensions",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 readme = "README.md"
 license = {text = "MIT"}
 
@@ -32,12 +30,8 @@ demo = [
     "blinker",
     "factory-boy",
     "peewee",
-    "psycopg2",
+    "psycopg2-binary",
 ]
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
 
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
@@ -70,5 +64,6 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["."]
+pythonpath = ["src"]
 addopts = "-svv"
+filterwarnings = ['ignore::DeprecationWarning']
