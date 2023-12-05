@@ -1,6 +1,4 @@
 [project]
-name = "study_python_click"
-version = "1.0.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = ["click", "colorama"]
 requires-python = ">=3.11"
@@ -10,10 +8,6 @@ license = { text = "MIT" }
 [project.optional-dependencies]
 lint = ["mypy", "autopep8"]
 test = ["pytest"]
-
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
 
 [tool.pdm.scripts]
 cli = { call = "run:main" }
@@ -47,5 +41,5 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 testpaths = ['tests']
-pythonpath = ['.']
+pythonpath = ['src']
 addopts = '-vs'
