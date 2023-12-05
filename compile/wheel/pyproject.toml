@@ -32,9 +32,11 @@ start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
 clean = { composite = [
+    "rm -rf .pdm-build",
     "rm -rf .mypy_cache",
     "rm -rf .pytest_cache",
     "rm -rf .wheelhouse",
+    "rm -rf dist",
     'find src -type d -name "__pycache__" -exec rm -rf {} +',
     'find tests -type d -name "__pycache__" -exec rm -rf {} +',
 ] }

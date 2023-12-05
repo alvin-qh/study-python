@@ -3,10 +3,9 @@
 
 [metadata]
 groups = ["default", "lint", "test"]
-cross_platform = true
-static_urls = false
-lock_version = "4.3"
-content_hash = "sha256:f98e54c366c84ccc7b540f45c3a771c33a91b51a6f4783674784680c33d11e29"
+strategy = ["cross_platform"]
+lock_version = "4.4"
+content_hash = "sha256:edc5055a84720197193bec6c4bd6f016ded2f0816f011227cea8bc7ea55a42e3"
 
 [[package]]
 name = "atomics"

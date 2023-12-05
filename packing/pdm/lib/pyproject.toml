@@ -22,10 +22,10 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [tool.pdm.scripts]
-cli = { call = "run:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
 clean = { composite = [
+    "rm -rf .pdm-build",
     "rm -rf .mypy_cache",
     "rm -rf .pytest_cache",
     "rm -rf dist",
