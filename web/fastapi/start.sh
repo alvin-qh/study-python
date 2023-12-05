@@ -53,7 +53,7 @@ function main() {
         shift
     done
 
-    eval ".venv/bin/uvicorn --port $port --host $host --workers $worker $reload $app.app:app"
+    eval ".venv/bin/uvicorn --port $port --host $host --workers $worker $reload $app.app:app --app-dir src"
 
 }
 
