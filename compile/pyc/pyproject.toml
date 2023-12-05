@@ -1,12 +1,10 @@
 [project]
-name = "study_python_compile"
-version = "1.0.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
     "Flask",
     "xxhash",
 ]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -19,10 +17,6 @@ lint = [
     "mypy",
 ]
 
-[build-system]
-requires = ["pdm-backend"]
-build-backend = "pdm.backend"
-
 [tool.pdm.scripts]
 start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
@@ -30,6 +24,7 @@ test = "pytest -v -s tests"
 clean = { composite = [
     "rm -rf .mypy_cache",
     "rm -rf .pytest_cache",
+    "rm -rf .pdm-build",
     "rm -rf dist",
     'find src -type d -name "__pycache__" -exec rm -rf {} +',
     'find tests -type d -name "__pycache__" -exec rm -rf {} +',
@@ -57,4 +52,4 @@ aggressive = 3
 [tool.pytest.ini_options]
 testpaths = ['tests']
 pythonpath = ['.']
-addopts = '-vs'
+addopts = '-vvs'
