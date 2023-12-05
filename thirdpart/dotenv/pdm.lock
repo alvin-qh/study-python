@@ -5,7 +5,7 @@
 groups = ["default", "test", "lint"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:13a8c38512c89576c5c60299771be3dbea5a6840ac9f3285566d53e0a1a9cbcb"
+content_hash = "sha256:1cb17117b6304b4621f2ea801b0df6e6ec1d57cf7b79795e1151559c650367a7"
 
 [[package]]
 name = "autopep8"

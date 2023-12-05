@@ -15,7 +15,7 @@ lint = [
 ]
 
 [tool.pdm.scripts]
-start = { call = "run:main" }
+start = "src/app.py"
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
 clean = { composite = [
