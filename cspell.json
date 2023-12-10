@@ -109,6 +109,7 @@
         "poolclass",
         "psycopg",
         "pybabel",
+        "pydantic",
         "pyenv",
         "pyfile",
         "pymongo",

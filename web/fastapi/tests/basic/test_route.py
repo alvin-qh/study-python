@@ -1,15 +1,6 @@
 from urllib.parse import quote
 
-import pytest
 from fastapi.testclient import TestClient
-
-from basic import app
-
-
-@pytest.fixture(scope="module")
-def client() -> TestClient:
-    client = TestClient(app)
-    return client
 
 
 def test_hello_api_with_query_args(client: TestClient) -> None:
