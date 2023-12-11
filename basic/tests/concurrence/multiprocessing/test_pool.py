@@ -2,35 +2,11 @@ from concurrent.futures import ProcessPoolExecutor, wait
 from functools import partial
 from itertools import repeat
 from multiprocessing import Pool
+from multiprocessing.pool import AsyncResult
 from typing import List, Tuple
 
 from concurrence.multiprocessing import N_PROCESSES
-
-
-def _is_prime(n: int, name: str) -> Tuple[int, bool]:
-    """
-    测试进程池的进程入口函数
-
-    判断一个数是否质数, 当使用进程池的时候, 由于进程池不共享上下文内存, 所以无法使用闭包函数
-    作为进程入口函数
-
-    必须是全局函数或者类方法
-
-    Args:
-        n (int): 待判断的数字
-        name (str): 仅用于测试传多个参的无用参数
-
-    Returns:
-        Tuple[int, bool]: 返回数字是否质数
-    """
-    if n <= 1:
-        return n, False
-
-    for i in range(2, n):
-        if n % i == 0:
-            return n, False
-
-    return n, True
+from concurrence.multiprocessing.prime import is_prime
 
 
 def test_pool_apply() -> None:
@@ -46,7 +22,7 @@ def test_pool_apply() -> None:
     """
 
     # 保存结果的数组
-    rs: List = []
+    results: List[AsyncResult[Tuple[int, bool]]] = []
 
     # 实例化进程池对象, 共有 n_threads 个进程
     # with 的使用可以简化进程池对象的 close 函数调用
@@ -56,11 +32,11 @@ def test_pool_apply() -> None:
             # 异步起动任务, 防止循环被阻塞
             # args 参数为一个元组, 即为传递给 is_prime 函数的参数
             # 返回一个句柄, 表示一个异步结果, 通过 get 方法可以获得结果
-            h = pool.apply_async(_is_prime, args=(i, "test"))
-            rs.append(h)
+            h = pool.apply_async(is_prime, args=(i, "test"))
+            results.append(h)
 
         # 通过执行 get 方法获取进程执行结果
-        rs = [r.get() for r in rs]
+        rs = [r.get() for r in results]
 
     rs.sort(key=lambda x: x[0])
 
@@ -103,7 +79,7 @@ def test_pool_map() -> None:
         # 由于 map 不直接支持多参数传递, 所以需要通过 partial 函数预设一个参数,
         # 将两个参数的函数变为一个参数
         r = pool.map(
-            partial(_is_prime, name="test"),  # 预设 name 参数
+            partial(is_prime, _useless="test"),  # 预设 name 参数
             range(10),
         )
 
@@ -136,7 +112,7 @@ def test_pool_imap() -> None:
     另一个 `imap_unordered` 返回的 `IMapIterator` 迭代器中的执行结果不会严格按照参数顺序,
     那个进程先执行完毕就在迭代器中排在前面
     """
-    rs: List
+    rs: List[Tuple[int, bool]]
 
     # 实例化进程池对象, 共有 n_processes 个进程
     # with 的使用可以简化进程池对象的 close 函数调用
@@ -147,7 +123,7 @@ def test_pool_imap() -> None:
         # 由于 imap 不直接支持多参数传递, 所以需要通过 partial 函数预设一个参数,
         # 将两个参数的函数变为一个参数
         rs = pool.imap_unordered(  # type: ignore
-            partial(_is_prime, name="test"),
+            partial(is_prime, _useless="test"),
             range(10),
         )
         # 从迭代器中获取每个执行结果
@@ -194,8 +170,8 @@ def test_pool_starmap() -> None:
 
     with Pool(processes=N_PROCESSES) as pool:
         r = pool.starmap(
-            _is_prime,
-            zip(range(10), repeat("test", 10)),
+            is_prime,
+            zip(range(10), repeat("test")),
         )
 
     r.sort(key=lambda x: x[0])
@@ -240,9 +216,7 @@ def test_pool_executor_submit() -> None:
         # 向执行器提交 10 个任务
         # submit 方法向执行器提交一个任务, 后续的参数表示传递给 is_prime 函数的参数
         # 返回一个 Future 对象, 表示正在执行的任务
-        futures = [
-            executor.submit(_is_prime, n, "test") for n in range(10)
-        ]
+        futures = [executor.submit(is_prime, n, "test") for n in range(10)]
 
         # 通过 concurrent.futures 包下的 wait 函数, 等待一系列异步任务执行完毕
         # 本次最长等待 1 秒, 一秒后无论是否还有任务为执行完毕, wait 函数都结束阻塞
@@ -287,7 +261,7 @@ def test_pool_executor_map() -> None:
         - `repeat("test", 10)` 表示所有传递给 `is_prime` 函数的第二个参数
     `map` 方法内部会通过 `zip(...)` 将所有单个参数的集合转为一组参数 `tuple` 的集合
     """
-    r: List
+    r: List[Tuple[int, bool]]
 
     # 实例化一个进程池执行器对象
     # 通过 with 可以简化对执行器对象的 shutdown 方法调用
@@ -295,10 +269,10 @@ def test_pool_executor_map() -> None:
         # range(10) 集合的每一项会作为传递给 is_prime 函数的第一个参数
         # repeat("test", 10) 集合的每一项会作为传递给 is_prime 函数的第二个参数
         r = executor.map(  # type: ignore
-            _is_prime,
+            is_prime,
             range(10),
-            repeat("test", 10),
-            timeout=1
+            repeat("test"),
+            timeout=1,
         )
 
         # 返回结果转为 list

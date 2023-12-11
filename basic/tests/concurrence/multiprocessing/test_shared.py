@@ -1,7 +1,13 @@
-from ctypes import c_bool, c_int
-from multiprocessing import Pipe, Process, Queue, Value
+from ctypes import c_bool
+from itertools import repeat
+from multiprocessing import Array, Pipe, Process, Queue
+from typing import Tuple
 
-from concurrence.multiprocessing import ProcessGroup
+from concurrence.multiprocessing.group import ProcessGroup
+from concurrence.multiprocessing.prime import (
+    is_prime_as_synchronized_array,
+    is_prime_as_synchronized_queue,
+)
 
 
 def test_shared_value() -> None:
@@ -14,49 +20,17 @@ def test_shared_value() -> None:
     # 定义一组保存进程函数输出结果元组的 List 集合
     # 该集合对象会被复制到每个子进程内存空间中, 但在进程中相互独立 (隔离)
     # 该集合中的 Value 对象可以在进程间共享, 但 List 对象不会
-    nvs = [(Value(c_int), Value(c_bool)) for _ in range(10)]
-
-    def is_prime(n: int) -> None:
-        """
-        进程入口函数
-
-        计算参数 n 是否为质数
-
-        Args:
-            n (int): 带判断的整数
-        """
-        # 从集合中
-        nv = nvs[n]
-        # 在子进程中将 nvs 集合清空, 但这个操作不会影响任何其它进程
-        nvs.clear()
-
-        # 设置第一个 Value 对象, 表示数字
-        nv[0].value = n  # type: ignore
-
-        if n <= 1:
-            # 设置第二个 Value 对象, 表示数字是否是质数
-            nv[1].value = False  # type: ignore
-            return
-
-        for i in range(2, n):
-            if n % i == 0:
-                # 设置第二个 Value 对象, 表示数字是否是质数
-                nv[1].value = False  # type: ignore
-                return
-
-        # 设置第二个 Value 对象, 表示数字是否是质数
-        nv[1].value = True  # type: ignore
+    results = Array(c_bool, [0] * 10)
 
     # 启动一组进程
-    group = ProcessGroup(target=is_prime, arglist=zip(range(len(nvs)),))
+    group = ProcessGroup(
+        target=is_prime_as_synchronized_array,
+        arglist=zip(range(10), repeat(results)),
+    )
     group.start_and_join()
 
     # 结果转换为普通值
-    r = [(n.value, v.value) for n, v in nvs]  # type: ignore
-    r.sort(key=lambda x: x[0])
-
-    # 确保结果符合预期
-    assert r == [
+    assert list(enumerate(results.get_obj())) == [
         (0, False),
         (1, False),
         (2, True),
@@ -78,37 +52,16 @@ def test_shared_queue() -> None:
     """
 
     # 定义传入数据的队列 (入参队列)
-    in_que: Queue = Queue()
+    in_que: Queue[int] = Queue()
+
     # 定义传出结果的队列 (出参队列)
-    out_que: Queue = Queue()
-
-    def is_prime() -> None:
-        """
-        进程入口函数
-
-        从一个消息队列中获取整数, 判断其是否为质数, 并将结果写入另一个消息队列
-        """
-        # 从入参队列中获取一个整数
-        n = in_que.get(timeout=1)
-
-        if n <= 1:
-            # 将结果写入出参队列中
-            out_que.put((n, False))
-            return
-
-        for i in range(2, n):
-            if n % i == 0:
-                # 将结果写入出参队列中
-                out_que.put((n, False))
-                return
-
-        # 将结果写入出参队列中
-        out_que.put((n, True))
+    out_que: Queue[Tuple[int, bool]] = Queue()
 
     # 定义一组进程
     group = ProcessGroup(
-        target=is_prime,
+        target=is_prime_as_synchronized_queue,
         count=10,
+        arglist=zip(repeat(in_que, 10), repeat(out_que)),
     )
     # 启动进程
     group.start()

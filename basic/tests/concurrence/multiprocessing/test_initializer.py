@@ -1,27 +1,31 @@
+from __future__ import annotations
+
 from ctypes import c_bool, c_int
 from multiprocessing import Pool, Value
 from multiprocessing.sharedctypes import Synchronized
-from typing import List, Tuple
+from typing import List, Optional, Tuple
+
+ValueListType = List[Tuple[Synchronized[], Synchronized[]]]
 
 # 全局变量, 每个进程的内存空间都会具备
-_values: List[Tuple[Synchronized, Synchronized]] | None = None
+global_values: Optional[ValueListType] = None
 
 
-def _initializer(values: List[Tuple[Synchronized, Synchronized]]) -> None:
+def initializer(values: ValueListType) -> None:
     """
     进程池初始化函数
 
     Args:
-        values (List[Tuple[Value, Value]]): 进程池初始化参数, Value 对象列表
+        - `values` (`ValueListType`): 进程池初始化参数, `Value` 对象列表
     """
-    global _values
+    global global_values
 
-    # 这个赋值操作相当于为每个进程的 _values 全局变量进行复制
+    # 这个赋值操作相当于为每个进程的 values 全局变量进行复制
     # 此时每个子进程的内存空间中都会存在一个 Value 列表对象的副本
-    _values = values
+    global_values = values
 
 
-def _is_prime(n: int) -> None:
+def is_prime(n: int) -> None:
     """
     进程池入口函数
 
@@ -31,13 +35,13 @@ def _is_prime(n: int) -> None:
     类型对象, 对其进行的操作会在各个进程中共享
 
     Args:
-        n (int): 要判断是否为质数的数
+        - `n` (`int`): 要判断是否为质数的数
     """
 
-    if not _values:
+    if not global_values:
         raise ValueError("No values")
 
-    num, val = _values[n]
+    num, val = global_values[n]
     # 由于每个进程只会进行一次初始化操作
     # 且因为进程池会复用进程, 所以这里对某个进程的公共变量操作, 可能会在复用该进程时影响到
     # 对公共变量的访问
@@ -76,11 +80,11 @@ def test_pool_initializer() -> None:
     values = [(Value(c_int), Value(c_bool)) for _ in range(10)]
 
     # 实例化进程池, 执行 _pooled_initializer 方法为每个子进程进行初始化, 传递初始化参数
-    with Pool(initializer=_initializer, initargs=(values,)) as pool:
-        pool.starmap(_is_prime, zip(range(10)))
+    with Pool(initializer=initializer, initargs=(values,)) as pool:
+        pool.starmap(is_prime, zip(range(10)))
 
     # 结果转换为普通值
-    results = [(v[0].value, v[1].value) for v in values]  # type: ignore
+    results = [(v[0].value, v[1].value) for v in values]
     results.sort(key=lambda x: x[0])
 
     # 确保结果符合预期

@@ -17,9 +17,13 @@ from multiprocessing import Manager, Pool
 from multiprocessing.managers import BaseManager
 from typing import Dict, List, Tuple
 
-from concurrence.multiprocessing import (N_PROCESSES, PrimeResult,
-                                         prime_to_dict, prime_to_list,
-                                         prime_to_result)
+from concurrence.multiprocessing import N_PROCESSES
+from concurrence.multiprocessing.prime import (
+    PrimeResult,
+    is_prime_as_dict,
+    is_prime_as_list,
+    is_prime_as_result_object,
+)
 
 
 def test_manager_list() -> None:
@@ -37,14 +41,15 @@ def test_manager_list() -> None:
         with Pool(processes=N_PROCESSES) as pool:
             # 启动进程, 将共享 List 代理对象作为参数传入
             pool.starmap(
-                prime_to_list,
+                is_prime_as_list,
                 zip(range(10), repeat(r)),
             )
 
         # 将结果存放到本地的列表对象中
         # 共享的列表对象只能在 manager 的上下文中使用, 这里将共享列表的元素复制到本地列表对象中
         r = [*r]
-        r.sort(key=lambda x: x[0])
+
+    r.sort(key=lambda x: x[0])
 
     # 确认进程执行结果
     assert r == [
@@ -77,7 +82,7 @@ def test_manager_dict() -> None:
         with Pool(processes=N_PROCESSES) as pool:
             # 启动进程, 将共享 Dict 代理对象作为参数传入
             pool.starmap(
-                prime_to_dict,
+                is_prime_as_dict,
                 zip(range(10), repeat(kv)),
             )
 
@@ -115,6 +120,7 @@ def test_manager_register() -> None:
     # 产生一个 BaseManager 类型的对象
     # Manager 类型即是从 BaseManager 类型继承的, 内置注册了一系列常用类型
     manager = BaseManager()
+
     # 通过 prime_result 为名称, 注册 PrimeResult 类型
     manager.register("prime_result", PrimeResult)
 
@@ -126,17 +132,15 @@ def test_manager_register() -> None:
         with Pool(processes=N_PROCESSES) as pool:
             # 启动进程, 将共享 PrimeResult 代理对象作为参数传入
             pool.starmap(
-                prime_to_result,
+                is_prime_as_result_object,
                 zip(range(10), repeat(pr)),
             )
 
-        # 将共享对象结果复制到本地列表中
-        r = [*pr.iterator()]
-
-    r.sort(key=lambda x: x[0])
+            results = pr.get_values()
+            results.sort(key=lambda x: x[0])
 
     # 确认进程执行结果
-    assert r == [
+    assert results == [
         (0, False),
         (1, False),
         (2, True),

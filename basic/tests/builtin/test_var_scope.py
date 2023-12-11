@@ -43,7 +43,7 @@ def test_local_keyword_in_closure() -> None:
         不使用 `nonlocal` 关键字, 无法修改局部变量
         """
         # 闭包函数中可以读取外部定义的局部变量
-        assert a == 1  # noqa
+        assert a == 1  # type: ignore # noqa
 
         # 闭包函数中无法直接修改外部定义的局部变量, 会抛出 UnboundLocalError 异常
         a = 2  # noqa
@@ -85,7 +85,7 @@ def func() -> None:
     不使用 `global` 关键字, 无法修改全局变量
     """
     # 读取全局变量
-    assert g_a == 1  # noqa
+    assert g_a == 1  # type: ignore # noqa
 
     # 修改全局变量, 因为未使用 global 关键字, 抛出 UnboundLocalError 异常
     g_a = 2  # noqa

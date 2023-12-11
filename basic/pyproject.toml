@@ -64,7 +64,7 @@ clean = { composite = [
 
 [tool.mypy]
 # 定义 mypy 配置
-python_version = '3.11'
+python_version = '3.12'
 strict = true
 warn_return_any = true
 warn_unused_configs = true
