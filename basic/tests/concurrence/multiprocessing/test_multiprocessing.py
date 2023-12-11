@@ -1,69 +1,32 @@
-import time
+from __future__ import annotations
+
 import timeit
+from ctypes import c_bool
+from itertools import repeat
+from multiprocessing import Array
+from typing import List
 
-from concurrence.multiprocessing import ProcessGroup
-
-# 10 以内的质数结果
-# 该集合对象会被拷贝到所有子进程内存空间中, 但相互独立
-results = [
-    False,
-    False,
-    True,
-    True,
-    False,
-    True,
-    False,
-    True,
-    False,
-    False,
-]
-
-
-def is_prime(n: int) -> None:
-    """
-    进程入口函数
-
-    计算参数 n 是否为质数
-
-    Args:
-        - `n` (`int`): 带判断的整数
-    """
-    # 休眠, 表示当前函数至少需执行 1 秒
-    time.sleep(0.1)
-
-    # 是否为质数的结果
-    expected = results[n]
-
-    # 在子进程中清空列表, 但不会影响其它进程
-    results.clear()
-
-    r = True
-    if n > 1:
-        for i in range(2, n):
-            if n % i == 0:
-                # 设置结果为真, 表示是质数
-                r = False
-                break
-    else:
-        r = False
-
-    # 判断结果值是否符合预期
-    assert r == expected
+from concurrence.multiprocessing.group import ProcessGroup
+from concurrence.multiprocessing.prime import is_prime
 
 
 def test_multiple_processes() -> None:
+    """测试进程入口函数
+
+    `multiprocessing` 包的 `Process` 类表示一个进程, 通过一个进程入口函数和入口函数的参数列表即可产生一个进程对象:
+
+    - 通过 `start` 方法启动一个进程
+    - 通过 `join` 方法可以等待一个进程执行完毕
     """
-    `multiprocessing` 包的 `Process` 类表示一个进程, 通过一个进程入口函数和入口函数的参数列表
-    即可产生一个进程对象
-        - 通过 `start` 方法启动一个进程
-        - 通过 `join` 方法可以等待一个进程执行完毕
-    """
+
+    results = Array(c_bool, [False] * 10)
 
     # 实例化一组进程对象, 数量和 results 集合相同
     group = ProcessGroup(
         target=is_prime,
         arglist=zip(
             range(len(results)),
+            repeat(results),
         ),
     )
 
@@ -75,3 +38,15 @@ def test_multiple_processes() -> None:
 
     # 所有进程执行时间少于 1 秒, 表示都是并发执行
     assert 0 < timeit.default_timer() - start < 1
+    assert [bool(r) for r in results.get_obj()] == [
+        False,
+        False,
+        True,
+        True,
+        False,
+        True,
+        False,
+        True,
+        False,
+        False,
+    ]

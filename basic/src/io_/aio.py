@@ -63,12 +63,12 @@ class AIOTicker:
         return num
 
 
-async def ticker(delay: int, to: int) -> AsyncGenerator[int, None]:
+async def async_ticker(delay: float, to: int) -> AsyncGenerator[int, None]:
     """
     异步生成器函数, 返回一个 `AsyncGenerator` 类型的对象, 表示异步生成器对象
 
     Args:
-        delay (int): 每次迭代的间隔时间
+        delay (`float`): 每次迭代的间隔时间
         to (int): 最大的迭代上限值
 
     Returns:
@@ -82,12 +82,12 @@ async def ticker(delay: int, to: int) -> AsyncGenerator[int, None]:
         await asyncio.sleep(delay)
 
 
-async def async_echo(delay: int, to: int) -> AsyncGenerator[int, int]:
+async def async_echo(delay: float, to: int) -> AsyncGenerator[int, int]:
     """
     返回一个可交互的 `Generator` 对象
 
     Args:
-        delay (int): 每次迭代间隔时间
+        delay (`float`): 每次迭代间隔时间
         to (int): 最大迭代值
 
     Returns:

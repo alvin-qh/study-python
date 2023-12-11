@@ -3,9 +3,7 @@ from typing import Tuple
 
 
 def test_start_thread() -> None:
-    """
-    演示如何指定线程入口函数并启动一个线程
-    """
+    """演示如何指定线程入口函数并启动一个线程"""
     total = 0
 
     def func(times: int) -> None:
@@ -26,6 +24,7 @@ def test_start_thread() -> None:
     # target 线程入口函数
     # kwargs 线程入口函数参数
     t = threading.Thread(target=func, kwargs={"times": 10})
+
     # 启动线程
     t.start()
 
@@ -36,11 +35,11 @@ def test_start_thread() -> None:
 
 
 def test_thread_class() -> None:
-    """
-    演示通过继承的方式使用线程
+    """演示通过继承的方式使用线程
 
     从 `Thread` 类继承, 并重写其 `run` 方法
     """
+
     class MyThread(threading.Thread):
         """
         继承线程类
@@ -72,9 +71,7 @@ def test_thread_class() -> None:
             """
             return (self._id, self._value)
 
-        def run(self):
-            """_summary_
-            """
+        def run(self) -> None:
             for _ in range(self._times):
                 self._value += 1
 

@@ -1,18 +1,19 @@
 from ctypes import c_bool
 from itertools import repeat
 from multiprocessing import Array, Pipe, Process, Queue
-from typing import Tuple
+from typing import Optional, Tuple
 
 from concurrence.multiprocessing.group import ProcessGroup
 from concurrence.multiprocessing.prime import (
-    is_prime_as_synchronized_array,
-    is_prime_as_synchronized_queue,
+    is_prime_by_event_queue,
+    is_prime_by_pipe,
+    is_prime_into_synchronized_array,
+    is_prime_into_synchronized_queue,
 )
 
 
 def test_shared_value() -> None:
-    """
-    测试 `multiprocessing` 包的 `Value` 类型
+    """测试 `multiprocessing` 包的 `Value` 类型
 
     `Value` 类型可以在进程中共享简单类型, 并可以在不同进程中反应共享值的变化
     """
@@ -24,7 +25,7 @@ def test_shared_value() -> None:
 
     # 启动一组进程
     group = ProcessGroup(
-        target=is_prime_as_synchronized_array,
+        target=is_prime_into_synchronized_array,
         arglist=zip(range(10), repeat(results)),
     )
     group.start_and_join()
@@ -45,8 +46,7 @@ def test_shared_value() -> None:
 
 
 def test_shared_queue() -> None:
-    """
-    测试 `multiprocessing` 包的 `Queue` 类型
+    """测试 `multiprocessing` 包的 `Queue` 类型
 
     `Queue` 类型定义了一个消息队列, 可以在一个进程中入队, 在另一个进程中出队
     """
@@ -59,8 +59,7 @@ def test_shared_queue() -> None:
 
     # 定义一组进程
     group = ProcessGroup(
-        target=is_prime_as_synchronized_queue,
-        count=10,
+        target=is_prime_into_synchronized_queue,
         arglist=zip(repeat(in_que, 10), repeat(out_que)),
     )
     # 启动进程
@@ -90,50 +89,21 @@ def test_shared_queue() -> None:
 
 
 def test_event_queue() -> None:
-    """
-    测试消息队列
+    """测试消息队列
 
-    将进程队列用作消息队列. 可以在一个进程中向队列中写入消息, 并在另一个进程中从该队列中
-    读取消息, 整个过程是原子方式的
+    将进程队列用作消息队列. 可以在一个进程中向队列中写入消息, 并在另一个进程中从该队列中读取消息, 整个过程是原子方式的
 
-    当队列为空时, 通过 `get` 方法读取消息可以被阻塞, 直到有消息写入或超时 (抛出 `Empty`
-    异常); 也可以通过 `get_nowait` 方法进行不阻塞读取, 如果队列为空则抛出 `Empty` 异常
+    当队列为空时, 通过 `get` 方法读取消息可以被阻塞, 直到有消息写入或超时 (抛出 `Empty` 异常);
+    也可以通过 `get_nowait` 方法进行不阻塞读取, 如果队列为空则抛出 `Empty` 异常
     """
     # 定义传入数据的队列 (入参队列)
-    in_que: Queue = Queue()
+    in_que: Queue[int] = Queue()
+
     # 定义传出结果的队列 (出参队列)
-    out_que: Queue = Queue()
-
-    def is_prime() -> None:
-        """
-        进程入口函数
-
-        从一个消息队列中获取整数, 判断其是否为质数, 并将结果写入另一个消息队列
-        """
-        n: int = 0
-        # 持续循环, 直到传递 0 或超时
-        while True:
-            # 从入参消息队列获取一个整数
-            n = in_que.get(timeout=1)
-            if n <= 0:
-                break
-
-            r = True
-            if n > 1:
-                for i in range(2, n):
-                    if n % i == 0:
-                        r = False
-            else:
-                r = False
-
-            # 将结果写入结果消息队列中
-            out_que.put((n, r))
-
-        # 在消息队列中写入表示结束的消息
-        out_que.put((n, None))
+    out_que: Queue[Tuple[int, Optional[bool]]] = Queue()
 
     # 启动进程, 传入两个消息队列作为参数
-    p = Process(target=is_prime)
+    p = Process(target=is_prime_by_event_queue, args=(in_que, out_que))
     p.start()
 
     # 向消息队列中写入三个数字
@@ -152,8 +122,7 @@ def test_event_queue() -> None:
 
 
 def test_pipe() -> None:
-    """
-    测试管道
+    """测试管道
 
     管道是借助共享内存在进程间通信的一种方式, 管道有一对, 在其中一个写入, 则可以在另一个
     进行读取, 读取为阻塞方式; 反之亦然
@@ -163,36 +132,8 @@ def test_pipe() -> None:
     # parent_conn 用于父进程, child_conn 用于子进程
     parent_conn, child_conn = Pipe()
 
-    def is_prime() -> None:
-        """
-        进程入口函数
-
-        从子进程管道中获取整数, 判断其是否为质数, 并将结果写入管道中
-        """
-        # 持续循环, 直到传递 0 或超时
-        n: int = 0
-        while True:
-            # 从管道中读取一个数, 判断其是否为质数
-            n = child_conn.recv()
-            if n <= 0:
-                break
-
-            r = True
-            if n > 1:
-                for i in range(2, n):
-                    if n % i == 0:
-                        r = False
-            else:
-                r = False
-
-            # 将结果写入管道
-            child_conn.send((n, r))
-
-        # 将结束消息写入管道
-        child_conn.send((n, None))
-
     # 启动进程
-    p = Process(target=is_prime)
+    p = Process(target=is_prime_by_pipe, args=(child_conn,))
     p.start()
 
     # 向管道中写入数字, 并从管道中读取结果

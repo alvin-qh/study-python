@@ -4,28 +4,25 @@ import timeit
 from threading import Thread
 from typing import Any, Coroutine, Dict, List, Optional, Tuple, Type
 
-from io_ import AIOTicker, async_echo, ticker
+from io_ import AIOTicker, async_echo
+from io_.aio import async_ticker
 from pytest import mark, raises
 
 
 async def worker(
-        wait_time=1,
-        exception: Optional[Type[Exception]] = None,
-        id_: Optional[int] = None,
+    wait_time: float = 1.0,
+    exception: Optional[Type[Exception]] = None,
+    id_: Optional[int] = None,
 ) -> str:
-    """
-    通过 `async` 关键字定义的异步调用函数
+    """通过 `async` 关键字定义的异步调用函数
 
     Args:
-        wait_time (int, optional): 等待时间. Defaults to 1.
-        raises (Type[Exception], optional): 要抛出的异常, None 表示不抛出.
-        Defaults to None.
-
-    Raises:
-        raises: 抛出所给的异常
+        - `wait_time` (`float`, optional): 等待时间. Defaults to `1.0`.
+        - `raises` (`Type[Exception]`, optional): 要抛出的异常, None 表示不抛出. Defaults to `None`.
+        - `id_` (`int`, optional): 任务 ID. Defaults to `None`.
 
     Returns:
-        str: 返回结果字符串
+        `str`: 返回结果字符串
     """
     if exception:
         # 如果 raises 不为 None, 则抛出异常
@@ -64,7 +61,7 @@ def test_async_coroutine() -> None:
         协程入口函数, 通过 `asyncio.run(main())` 方式调用
         """
         # 执行异步函数
-        r = await worker(1)
+        r = await worker(0.1)
 
         # 判断异步函数的返回值
         assert r == "OK"
@@ -73,8 +70,7 @@ def test_async_coroutine() -> None:
 
 
 def test_async_task() -> None:
-    """
-    异步任务
+    """异步任务
 
     - 可以通过 `asyncio.create_task(coroutine)` 函数创建异步任务
     - 该函数的参数是一个 `coroutine` 对象, 返回一个 `Task` 对象
@@ -83,13 +79,12 @@ def test_async_task() -> None:
         - `cancelled()` 异步任务是否被取消
         - `exception()` 异步任务抛出的异常
     """
+
     async def main() -> None:
-        """
-        协程入口函数
-        """
+        """协程入口函数"""
 
         # 通过异步函数创建任务对象
-        task = asyncio.create_task(worker(1))
+        task = asyncio.create_task(worker(0.1))
 
         # 此时任务尚未结束和取消
         assert task.done() is False
@@ -293,6 +288,7 @@ def test_multiple_coroutines() -> None:
     - 当多个异步调用同时进行时, `IO` 操作将会并发执行, 耗费的总时间是这些调用中 `IO` 耗时最长的那个时间
     - 另外 `asyncio.gather(...coroutines)` 函数也可用于一组 `Task` 的同时调用
     """
+
     async def main() -> None:
         """
         协程入口函数
@@ -701,7 +697,7 @@ def test_async_lock() -> None:
 
         return {
             "id": id_,  # ID 值
-            "finish_time": int(timeit.default_timer() - start_time)  # 执行时间
+            "finish_time": int(timeit.default_timer() - start_time),  # 执行时间
         }
 
     async def main() -> None:
@@ -754,7 +750,7 @@ def test_async_event() -> None:
 
         return {
             "id": id_,  # ID 值
-            "finish_time": int(timeit.default_timer() - start_time)  # 执行时间
+            "finish_time": int(timeit.default_timer() - start_time),  # 执行时间
         }
 
     async def main() -> None:
@@ -832,7 +828,7 @@ def test_condition_lock() -> None:
 
         return {
             "id": id_,  # ID 值
-            "finish_time": int(timeit.default_timer() - start_time)  # 执行时间
+            "finish_time": int(timeit.default_timer() - start_time),  # 执行时间
         }
 
     async def main() -> None:
@@ -923,7 +919,7 @@ def test_semaphore() -> None:
 
         return {
             "id": id_,  # ID 值
-            "finish_time": int(timeit.default_timer() - start_time)  # 执行时间
+            "finish_time": int(timeit.default_timer() - start_time),  # 执行时间
         }
 
     async def main() -> None:
@@ -1037,11 +1033,12 @@ async def test_aio_iterator() -> None:
 
 @mark.asyncio
 async def test_aio_generator() -> None:
-    """
-    测试 `ticker` 函数, 该函数返回一个生成器 (`AsyncGenerator`) 对象, 可以作为迭代器对象使用
+    """测试 `ticker` 函数
+
+    该函数返回一个生成器 (`AsyncGenerator`) 对象, 可以作为迭代器对象使用
     """
     # 返回生成器对象
-    gen = ticker(1, 5)
+    gen = async_ticker(0.1, 5)
 
     # 记录整个迭代的时间
     start = timeit.default_timer()
@@ -1065,7 +1062,7 @@ async def test_aio_generator() -> None:
 @mark.asyncio
 async def test_async_echo() -> None:
     # 调用函数, 返回生成器对象
-    g = async_echo(1, 5)
+    g = async_echo(0.1, 5)
 
     # 第一个值为 0, 对应 yield 0 语句
     assert await g.__anext__() == 0

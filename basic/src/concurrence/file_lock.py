@@ -1,7 +1,10 @@
 import fcntl
 import os
+import timeit
+from multiprocessing import cpu_count
+from multiprocessing.pool import ThreadPool
 from types import TracebackType
-from typing import Optional, Type
+from typing import Any, Callable, Iterator, Optional, Type
 
 
 class FileLock:
@@ -12,6 +15,7 @@ class FileLock:
     文件锁可以用于跨进程甚至跨程序的锁. 原理是在磁盘上建立一个文件, 并通过操作系统对文件进行
     锁定的功能
     """
+
     # 锁文件名模板
     _lock_file_template = ".{}.lock"
 
@@ -88,9 +92,26 @@ class FileLock:
             pass
 
     def __exit__(
-            self,
-            exc_type: Optional[Type[Exception]],
-            exc_value: Optional[Exception],
-            exc_tb: Optional[TracebackType],
+        self,
+        exc_type: Optional[Type[Exception]],
+        exc_value: Optional[Exception],
+        exc_tb: Optional[TracebackType],
     ) -> None:
         self.release()
+
+
+def run_worker_by_pool(worker: Callable[[Any], None], args: Iterator[Any]) -> float:
+    """通过线程池执行异步函数
+
+    Args:
+        - `worker`` (Callable[[Iterator[Any]], None]`): 异步函数对象
+        - `args` (`Iterator[Any]`): 异步函数参数, 参数个数为执行异步函数的线程数
+
+    Returns:
+        `float`: 整体耗时数
+    """
+    start = timeit.default_timer()
+    with ThreadPool(cpu_count() * 2) as pool:
+        pool.map(worker, args)
+
+    return round(timeit.default_timer() - start, 1)

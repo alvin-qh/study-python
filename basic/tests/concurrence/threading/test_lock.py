@@ -4,11 +4,11 @@ import timeit
 from typing import Dict, Optional
 
 import atomics
+from atomics._impl.atomic.int import AtomicInt
 
 
 def test_lock() -> None:
-    """
-    测试线程加锁 Lock 类型
+    """测试线程加锁 Lock 类型
 
     - `acquire` 函数进入锁
     - `release` 函数释放锁
@@ -31,8 +31,8 @@ def test_lock() -> None:
     ```
 
     `acquire` 函数的 `blocking` 参数表示当锁被占用时, 是否阻塞
-        - `True` 表示阻塞, 此时线程会被挂起, 直到占用的锁被释放, 当前线程占用该锁
-        - `False` 表示非阻塞, 此时函数返回是否成功的占用了锁
+    - `True` 表示阻塞, 此时线程会被挂起, 直到占用的锁被释放, 当前线程占用该锁
+    - `False` 表示非阻塞, 此时函数返回是否成功的占用了锁
     """
     # 定义一给锁对象
     lock = threading.Lock()
@@ -41,9 +41,7 @@ def test_lock() -> None:
     name: Optional[str] = None
 
     def func() -> None:
-        """
-        线程入口函数
-        """
+        """线程入口函数"""
         nonlocal name
 
         # 加锁后修改公共资源
@@ -68,8 +66,7 @@ def test_lock() -> None:
 
 
 def test_rlock() -> None:
-    """
-    测试 `RLock` 类型
+    """测试线程锁
 
     `RLock` 的用法和 `Lock` 类似, 但 `RLock` 会和线程绑定, 即 `RLock` 不会阻塞同一个线程中的占用
     """
@@ -93,7 +90,8 @@ def test_rlock() -> None:
 
 
 def test_condition() -> None:
-    """
+    """测试线程条件锁
+
     `Condition` 对象是一个带条件判断的锁
 
     当线程进入锁后, 需要等待另一个线程对锁进行通知操作
@@ -136,13 +134,7 @@ def test_condition() -> None:
     cond = threading.Condition()
 
     def func(id_: str, result: Dict[str, bool]) -> None:
-        """
-        线程入口函数
-
-        Args:
-            id_ (str): 线程 ID
-            result (Dict[str, bool]): 保存结果的字典对象
-        """
+        """线程入口函数"""
         # 进入锁
         with cond:
             # 等待锁通知并记录通知结果
@@ -198,8 +190,7 @@ def test_condition() -> None:
 
 
 def test_semaphore() -> None:
-    """
-    信号量
+    """测试信号量
 
     信号量是一个带计数器的条件锁, 即可设置信号量的总数, 每个进入信号量的线程会占用一个数字,
     离开信号量时归还
@@ -224,54 +215,33 @@ def test_semaphore() -> None:
     """
 
     class Resource:
-        """
-        定义资源类
-
-        资源类的作用是在资源总量的基础上, 记录使用和释放的数量
-        """
+        """定义资源类"""
 
         def __init__(self, count: int) -> None:
-            """
-            初始化资源
-
-            Args:
-                count (int): 资源数量
-            """
+            """初始化资源"""
             self._count = count
-            self._in_use = atomics.atomic(width=4, atype=atomics.INT)
+            self._in_use: AtomicInt = atomics.atomic(width=4, atype=atomics.INT)
 
         @property
         def total(self) -> int:
-            """
-            获取资源总数
-
-            Returns:
-                int: 资源总数
-            """
+            """获取资源总数"""
             return self._count
 
         @property
         def left(self) -> int:
-            """
-            获取剩余资源数量
-
-            Returns:
-                int: 剩余资源数量
-            """
-            return self._count - self._in_use.load()
+            """获取剩余资源数量"""
+            n: int = self._in_use.load()
+            return self._count - n
 
         def use(self) -> None:
-            """
-            占用一个资源
-            """
+            """占用一个资源"""
             self._in_use.inc()
+
             # 确保资源不会被超用
             assert self.left >= 0
 
         def release(self) -> None:
-            """
-            释放一个资源
-            """
+            """释放一个资源"""
             self._in_use.dec()
 
     # 定义一个具备 10 个资源的对象
@@ -287,11 +257,10 @@ def test_semaphore() -> None:
     records: Dict[str, int] = {}
 
     def func(id_: str) -> None:
-        """
-        线程入口函数
+        """线程入口函数
 
         Args:
-            id_ (str): 线程 ID
+            - `id_` (`str`): 线程 ID
         """
         # 进入信号量
         with semp:
@@ -313,7 +282,8 @@ def test_semaphore() -> None:
     # 所以后 5 个线程只能在 1 秒后获取到信号量
     threads = [
         threading.Thread(
-            target=func, args=(chr(ord("A") + n),),
+            target=func,
+            args=(chr(ord("A") + n),),
         )
         for n in range(res.total + 5)
     ]

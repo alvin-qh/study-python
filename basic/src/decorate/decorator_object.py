@@ -8,8 +8,7 @@ F = TypeVar("F", bound=Callable[..., Any])
 
 
 class App:
-    """
-    定义一个包含装饰器方法的类
+    """定义一个包含装饰器方法的类
 
     类中的装饰器方法可以通过 `@类对象.方法` 来使用
     """
@@ -20,25 +19,23 @@ class App:
         self._func_map = {}
 
     def register(self, url: str) -> Callable[..., Any]:
-        """
-        该方法返回一个装饰器函数, 用于为某个 URL 注册执行函数
+        """该方法返回一个装饰器函数, 用于为某个 URL 注册执行函数
 
         Args:
-            url (str): 用于注册执行函数的 URL
+            - `url` (`str`): 用于注册执行函数的 URL
 
         Returns:
-            Callable: 执行函数
+            `Callable[..., Any]`: 执行函数
         """
 
         def wrapper(func: F) -> F:
-            """
-            装饰器方法, 将传入的执行函数进行注册
+            """装饰器方法, 将传入的执行函数进行注册
 
             Args:
-                func (F): 执行函数
+                - `func` (`F`): 执行函数
 
             Returns:
-                F: 执行函数, 和参数 func 相同
+                `F`: 执行函数, 和参数 func 相同
             """
             # 通过定义的 URL 对执行函数进行注册
             self._func_map[url] = func
@@ -47,52 +44,48 @@ class App:
         return wrapper
 
     def execute(self, url: str) -> Any:
-        """
-        根据给定的 URL 获取执行函数并执行
+        """根据给定的 URL 获取执行函数并执行
 
         Args:
-            url (str): URL
+            - `url` (`str`): URL
 
         Raises:
-            KeyError: URL 未注册执行函数
+            `KeyError`: URL 未注册执行函数
 
         Returns:
-            Any: 执行函数
+            `Any`: 执行函数的结果
         """
         # 根据 URL 获取执行函数
         func = self._func_map.get(url)
         if not func:
-            raise KeyError(f"\"{url}\" not register")
+            raise KeyError(f'"{url}" not register')
 
         # 执行该函数并返回结果
         return func()
 
 
 class Logger:
-    """
-    用于记录日志的类
+    """用于记录日志的类
 
     该类具备一个 `__call__` 魔法函数, 其对象可以被用作仿函数, 且定义为装饰器函数
     """
 
     def __init__(self) -> None:
-        """
-        初始化缓冲区存放字符串
-        """
+        """初始化缓冲区存放字符串"""
         self._buf = io.StringIO()
 
     def __call__(self, fn: Callable[..., Any]) -> Callable[..., Any]:
-        """
-        仿函数调用, 将当前对象作为一个装饰器
+        """仿函数调用, 将当前对象作为一个装饰器
 
         该装饰器在函数调用后记录一条日志到缓冲区
 
         Args:
-            fn (Callable): 被代理函数
+            - `fn` (`Callable[..., Any]`): 被代理函数
 
         Returns:
-            Callable: 代理函数,
+            `Callable[..., Any]`: 代理函数,
         """
+
         @wraps(fn)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             start_time = timeit.default_timer()
@@ -124,16 +117,13 @@ class Logger:
         return wrapper
 
     def reset(self) -> None:
-        """
-        重置缓存
-        """
+        """重置缓存"""
         self._buf.seek(0)
 
     def __str__(self) -> str:
-        """
-        缓存内容转为字符串, 输出日志内容
+        """缓存内容转为字符串, 输出日志内容
 
         Returns:
-            str: 日志内容
+            `str`: 日志内容
         """
         return self._buf.getvalue()

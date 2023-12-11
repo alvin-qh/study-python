@@ -1,38 +1,13 @@
 import time
-import timeit
 from itertools import repeat
-from multiprocessing import cpu_count
-from multiprocessing.pool import ThreadPool
-from typing import Any, Callable, Iterator, Optional
+from typing import Optional
 
 from concurrence import FileLock
-
-
-def run_worker_by_pool(
-    worker: Callable[[Any], None],
-    args: Iterator[Any]
-) -> float:
-    """
-    通过线程池执行异步函数
-
-    Args:
-        worker (Callable[[Iterator[Any]], None]): 异步函数对象
-        args (Iterator[Any]): 异步函数参数, 参数个数为执行异步函数的线程数
-
-    Returns:
-        float: 整体耗时数
-    """
-    start = timeit.default_timer()
-    with ThreadPool(cpu_count() * 2) as pool:
-        pool.map(worker, args)
-
-    return round(timeit.default_timer() - start, 1)
+from concurrence.file_lock import run_worker_by_pool
 
 
 def test_file_lock_blocked() -> None:
-    """
-    测试阻塞方式的文件锁
-    """
+    """测试阻塞方式的文件锁"""
 
     def worker(lock_name: Optional[str]) -> None:
         """
@@ -59,9 +34,7 @@ def test_file_lock_blocked() -> None:
 
 
 def test_file_lock_non_blocked() -> None:
-    """
-    测试非阻塞方式加锁
-    """
+    """测试非阻塞方式加锁"""
 
     def worker(lock_name: Optional[str]) -> None:
         """

@@ -1,13 +1,39 @@
 from __future__ import annotations
 
+import time
 from ctypes import c_bool
-from dataclasses import dataclass
 from multiprocessing import Queue
-from multiprocessing.sharedctypes import SynchronizedArray
-from typing import Dict, List, Tuple
+from multiprocessing.connection import Connection
+from multiprocessing.sharedctypes import Synchronized, SynchronizedArray
+from typing import Dict, List, Optional, Tuple
 
 
-def is_prime(n: int, _useless: str = "") -> Tuple[int, bool]:
+def is_prime(n: int, results: List[bool]) -> None:
+    """
+    进程入口函数
+
+    计算参数 n 是否为质数
+
+    Args:
+        - `n` (`int`): 带判断的整数
+    """
+    # 休眠, 表示当前函数至少需执行 1 秒
+    time.sleep(0.1)
+
+    r = True
+    if n > 1:
+        for i in range(2, n):
+            if n % i == 0:
+                # 设置结果为真, 表示是质数
+                r = False
+                break
+    else:
+        r = False
+
+    results[n] = r
+
+
+def is_prime_with_extra_arg(n: int, _useless: str = "") -> Tuple[int, bool]:
     """
     测试进程池的进程入口函数
 
@@ -33,7 +59,63 @@ def is_prime(n: int, _useless: str = "") -> Tuple[int, bool]:
     return n, True
 
 
-def is_prime_as_list(n: int, result: List[Tuple[int, bool]]) -> None:
+# 全局变量, 每个进程的内存空间都会具备
+global_values: Optional[List[Tuple[Synchronized[int], Synchronized[bool]]]] = None
+
+
+def initializer(values: List[Tuple[Synchronized[int], Synchronized[bool]]]) -> None:
+    """进程池初始化函数
+
+    当实例化 `multiprocessing.Pool` 对象时, 可以传入一个函数作为线程池的初始化函数, 这个函数会在每个进程中执行一次,
+    并且在进程池中每个进程之间共享内存空间, 且在进程池中每个进程之间共享内存空间的操作都是原子操作,
+    且在进程池中每个进程之间共享内存空间的操作都是原子操作
+
+    Args:
+        - `values` (`List[Tuple[Synchronized[int], Synchronized[bool]]]`): 进程池初始化参数, `Value` 对象列表
+    """
+    global global_values
+
+    # 这个赋值操作相当于为每个进程的 values 全局变量进行复制
+    # 此时每个子进程的内存空间中都会存在一个 Value 列表对象的副本
+    global_values = values
+
+
+def is_prime_by_global_variable(n: int) -> None:
+    """进程池入口函数
+
+    该函数将计算结果存入 `global_values` 全局变量中, 该变量通过 `initializer` 函数在实例化进程池时为每个进程进行初始化
+
+    Args:
+        - `n` (`int`): 要判断是否为质数的数
+    """
+
+    if not global_values:
+        raise ValueError("No values")
+
+    num, val = global_values[n]
+    # 由于每个进程只会进行一次初始化操作
+    # 且因为进程池会复用进程, 所以这里对某个进程的公共变量操作, 可能会在复用该进程时影响到
+    # 对公共变量的访问
+    # values.clear()
+
+    num.value = n
+
+    if n <= 1:
+        # 设置结果值
+        val.value = False
+        return
+
+    for i in range(2, n):
+        if n % i == 0:
+            # 设置结果值
+            val.value = False
+            return
+
+    # 设置结果值
+    val.value = True
+
+
+def is_prime_into_list(n: int, result: List[Tuple[int, bool]]) -> None:
     """计算 `n` 以内的所有质数
 
     本函数用于演示将各个进程的结果统一写入 `Manager` 类型的 `list` 方法产生的列表对象
@@ -57,7 +139,7 @@ def is_prime_as_list(n: int, result: List[Tuple[int, bool]]) -> None:
     result.append((n, True))
 
 
-def is_prime_as_dict(n: int, result: Dict[int, bool]) -> None:
+def is_prime_into_dict(n: int, result: Dict[int, bool]) -> None:
     """进程入口函数
 
     本函数用于演示将各个进程的结果统一写入 `Manager` 类型的 `dict` 方法产生的列表对象
@@ -81,7 +163,6 @@ def is_prime_as_dict(n: int, result: Dict[int, bool]) -> None:
     result[n] = True
 
 
-@dataclass
 class PrimeResult(List[Tuple[int, bool]]):
     """进程入口函数
 
@@ -101,7 +182,7 @@ class PrimeResult(List[Tuple[int, bool]]):
         return self
 
 
-def is_prime_as_result_object(n: int, result: PrimeResult) -> None:
+def is_prime_into_result_object(n: int, result: PrimeResult) -> None:
     """进程入口函数
 
     本函数用于演示将各个进程的结果统一写入 `BaseManager` 类型的 `register` 方法注册的类型
@@ -125,7 +206,9 @@ def is_prime_as_result_object(n: int, result: PrimeResult) -> None:
     result.append((n, True))
 
 
-def is_prime_as_synchronized_array(n: int, results: SynchronizedArray[c_bool]) -> None:
+def is_prime_into_synchronized_array(
+    n: int, results: SynchronizedArray[c_bool]
+) -> None:
     """
     进程入口函数
 
@@ -147,16 +230,19 @@ def is_prime_as_synchronized_array(n: int, results: SynchronizedArray[c_bool]) -
             return
 
     # 设置第二个 Value 对象, 表示数字是否是质数
-    results[n] = True
+    results[n] = c_bool(True)
 
 
-def is_prime_as_synchronized_queue(
+def is_prime_into_synchronized_queue(
     in_que: Queue[int], out_que: Queue[Tuple[int, bool]]
 ) -> None:
-    """
-    进程入口函数
+    """进程入口函数
 
-    从一个消息队列中获取整数, 判断其是否为质数, 并将结果写入另一个消息队列
+    本函数通过 `multiprocessing.Queue` 对象进行数据传递, 并将结果写入 `multiprocessing.Queue` 对象中
+
+    Args:
+        - `in_que` (`Queue[int]`): 输入队列, 用于输入参数
+        - `out_que` (`Queue[Tuple[int, bool]]`): 结果队列, 用于输出结果
     """
     # 从入参队列中获取一个整数
     n = in_que.get(timeout=1)
@@ -174,3 +260,63 @@ def is_prime_as_synchronized_queue(
 
     # 将结果写入出参队列中
     out_que.put((n, True))
+
+
+def is_prime_by_event_queue(
+    in_que: Queue[int], out_que: Queue[Tuple[int, Optional[bool]]]
+) -> None:
+    """进程入口函数
+
+    本函数通过消息队列, 从一个消息队列中获取整数, 判断其是否为质数, 并将结果写入另一个消息队列
+    """
+    n: int = 0
+
+    # 持续循环, 直到传递 0 或超时
+    while True:
+        # 从入参消息队列获取一个整数
+        n = in_que.get(timeout=1)
+        if n <= 0:
+            break
+
+        r = True
+        if n > 1:
+            for i in range(2, n):
+                if n % i == 0:
+                    r = False
+        else:
+            r = False
+
+        # 将结果写入结果消息队列中
+        out_que.put((n, r))
+
+    # 在消息队列中写入表示结束的消息
+    out_que.put((n, None))
+
+
+def is_prime_by_pipe(conn: Connection) -> None:
+    """
+    进程入口函数
+
+    从子进程管道中获取整数, 判断其是否为质数, 并将结果写入管道中
+    """
+    # 持续循环, 直到传递 0 或超时
+    n: int = 0
+    while True:
+        # 从管道中读取一个数, 判断其是否为质数
+        n = conn.recv()
+        if n <= 0:
+            break
+
+        r = True
+        if n > 1:
+            for i in range(2, n):
+                if n % i == 0:
+                    r = False
+        else:
+            r = False
+
+        # 将结果写入管道
+        conn.send((n, r))
+
+    # 将结束消息写入管道
+    conn.send((n, None))

@@ -1,5 +1,4 @@
-"""
-演示 `multiprocessing` 包的 `Manager` 类型
+"""演示 `multiprocessing` 包的 `Manager` 类型
 
 如果使用 `Pool` 通过进程池使用进程, 则因为无法共享内存上下文, 所以`Value`, `Queue`
 等内存共享方式无法直接使用 (需要通过 `initializer` 方法对共享变量进行初始化)
@@ -20,15 +19,14 @@ from typing import Dict, List, Tuple
 from concurrence.multiprocessing import N_PROCESSES
 from concurrence.multiprocessing.prime import (
     PrimeResult,
-    is_prime_as_dict,
-    is_prime_as_list,
-    is_prime_as_result_object,
+    is_prime_into_dict,
+    is_prime_into_list,
+    is_prime_into_result_object,
 )
 
 
 def test_manager_list() -> None:
-    """
-    演示 `Manager` 类型的 `list` 方法
+    """演示 `Manager` 类型的 `list` 方法
 
     `list` 方法返回一个 `List` 类型的代理对象, 可以在进程间共享这个列表对象
     """
@@ -41,7 +39,7 @@ def test_manager_list() -> None:
         with Pool(processes=N_PROCESSES) as pool:
             # 启动进程, 将共享 List 代理对象作为参数传入
             pool.starmap(
-                is_prime_as_list,
+                is_prime_into_list,
                 zip(range(10), repeat(r)),
             )
 
@@ -82,7 +80,7 @@ def test_manager_dict() -> None:
         with Pool(processes=N_PROCESSES) as pool:
             # 启动进程, 将共享 Dict 代理对象作为参数传入
             pool.starmap(
-                is_prime_as_dict,
+                is_prime_into_dict,
                 zip(range(10), repeat(kv)),
             )
 
@@ -132,12 +130,13 @@ def test_manager_register() -> None:
         with Pool(processes=N_PROCESSES) as pool:
             # 启动进程, 将共享 PrimeResult 代理对象作为参数传入
             pool.starmap(
-                is_prime_as_result_object,
+                is_prime_into_result_object,
                 zip(range(10), repeat(pr)),
             )
 
             results = pr.get_values()
-            results.sort(key=lambda x: x[0])
+
+    results.sort(key=lambda x: x[0])
 
     # 确认进程执行结果
     assert results == [
