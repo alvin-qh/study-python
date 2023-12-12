@@ -6,12 +6,13 @@ from hypothesis.strategies._internal.core import DataObject
 from testing.hypothesis import list_and_index
 
 
-@given(t=list_and_index(
-    # elements=st.integers()  # 该参数在 list_and_index 函数中已默认定义
-))
+@given(
+    t=list_and_index(
+        # elements=st.integers()  # 该参数在 list_and_index 函数中已默认定义
+    )
+)
 def test_composite(t: Tuple[List[int], int]) -> None:
-    """
-    利用假设函数产生用例并传递给测试参数
+    """利用假设函数产生用例并传递给测试参数
 
     调用 `list_and_index` 函数, 需传递除 `draw` 参数外的所有其它参数
     """
@@ -32,12 +33,9 @@ def test_composite(t: Tuple[List[int], int]) -> None:
 @settings(verbosity=Verbosity.verbose)  # 设置在日志中输出更多信息
 @given(data=st.data())
 def test_drawing_interactively(data: DataObject) -> None:
-    """
-    `data()` 策略是一种交互的策略方法, 无需在 `@given` 装饰器中直接定义假设规则, 而是在
-    测试函数代码中设置策略
+    """`data()` 策略是一种交互的策略方法, 无需在 `@given` 装饰器中直接定义假设规则, 而是在测试函数代码中设置策略
 
-    类似于 `@composite` 装饰器, 但功能更为强大. 缺点是 `@example` 装饰器不在起作用, 而
-    且当测试出现问题时, 比较难以回放错误, 调试错误
+    类似于 `@composite` 装饰器, 但功能更为强大. 缺点是 `@example` 装饰器不在起作用, 而且当测试出现问题时, 比较难以回放错误, 调试错误
     """
     # 获取一个整数用例并设置 label
     x = data.draw(st.integers(), label="first number")

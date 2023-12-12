@@ -7,8 +7,7 @@ from pytest import fail
 
 
 def test_run_schedule_blocked() -> None:
-    """
-    计划任务
+    """计划任务
 
     - `sched` 包的 `scheduler` 函数用于创建一个计划任务对象
         - `time_func` 指定用于计算时间的函数, 该函数应返回秒数
@@ -40,11 +39,10 @@ def test_run_schedule_blocked() -> None:
     run_records: Dict[int, int] = {}
 
     def perform_command(id_: int) -> None:
-        """
-        计划执行函数, 当 schedule 计划到达时执行一次
+        """计划执行函数, 当 schedule 计划到达时执行一次
 
         Args:
-            id_ (int): 计划 id
+            - `id_` (`int`): 计划 id
         """
         run_records[id_] = int(timeit.default_timer() - start)
 
@@ -63,34 +61,33 @@ def test_run_schedule_blocked() -> None:
 
 
 def test_cancel_schedule() -> None:
-    """
-    撤销计划任务
+    """撤销计划任务
 
     `schedule` 类的 `cancel(event)` 函数用于撤销一个计划. 注意, 只有尚未履行的计划任务可以撤销
     """
 
     def perform_command() -> None:
-        """
-        该任务会被取消, 所以不应当运行
-        """
+        """该任务会被取消, 所以不应当运行"""
+
         fail()
 
     # 实例化第一个计划对象
     schedule1 = sched.scheduler()
+
     # 2 秒后执行 perform_command 函数 (但实际会被取消, 不会执行)
     event = schedule1.enter(2, 0, perform_command)
 
     def cancel_schedule_event(event_: sched.Event) -> None:
-        """
-        用来取消已有任务的任务
+        """用来取消已有任务的任务
 
         Args:
-            event_ (sched.Event): 需要被取消的任务
+            - `event_` (`sched.Event`): 需要被取消的任务
         """
         schedule1.cancel(event_)
 
     # 实例化第二个计划对象
     schedule2 = sched.scheduler()
+
     # 1 秒后执行 cancel_schedule_event 函数, 取消前一个任务
     schedule2.enter(1, 0, cancel_schedule_event, kwargs={"event_": event})
 
@@ -98,6 +95,7 @@ def test_cancel_schedule() -> None:
     while True:
         # 非阻塞执行, 返回下一个对象执行的时间
         next_ev = schedule2.run(blocking=False)
+
         # 返回 None 表示任务列表中已经无可执行任务
         if not next_ev:
             break

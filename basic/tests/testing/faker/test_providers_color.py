@@ -15,10 +15,11 @@ fake = Faker()
 
 
 def test_provider_color() -> None:
-    """
-    产生一组色值相关的测试用例, 其定义如下:
+    """产生一组色值相关的测试用例
 
-    ```
+    其定义如下:
+
+    ```python
     color(
         hue: Optional[HueType] = None,
         luminosity: Optional[str] = None,
@@ -26,20 +27,15 @@ def test_provider_color() -> None:
     ) -> str
     ```
 
-    `color(...)` 函数先产生一个 `HSV` 色彩空间的色值, 之后转化为 `color_format` 参数定
-    义的色值
+    `color(...)` 函数先产生一个 `HSV` 色彩空间的色值, 之后转化为 `color_format` 参数定义的色值
 
     其中:
-    - `hue` 参数, 定义 `HSV` 色彩空间的 `H` 值, 可以为 `str` 类型, `int` 类型或者
-      `Tuple[int, int]` 类型
-        - `str` 类型, 为一个颜色名 (例如 `"red"`, `"blue"` 等), 将在指定的颜色范围内
-          随机选择一个值作为 `H` 值
+    - `hue` 参数, 定义 `HSV` 色彩空间的 `H` 值, 可以为 `str` 类型, `int` 类型或者 `Tuple[int, int]` 类型
+        - `str` 类型, 为一个颜色名 (例如 `"red"`, `"blue"` 等), 将在指定的颜色范围内随机选择一个值作为 `H` 值
         - `int` 类型, 表示 `H` 值的角度, 取值为 `0°`~`360°`
         - `Tuple[int, int]` 类型, 表示一个角度的范围, `H` 值将在此范围内随机选择
-    - `luminosity` 参数用于控制 `S` 和 `V` 值选取的情况, 可以取值为: `"bright"`,
-      `"dark"`, `"light"` 和 `"random"`
-    - `color_format` 参数指定返回数据的类型, 可以取值为: `"hsv"`, `"hsl"`, `"rgb"`
-      和 `"hex"` (默认值)
+    - `luminosity` 参数用于控制 `S` 和 `V` 值选取的情况, 可以取值为: `"bright"`, `"dark"`, `"light"` 和 `"random"`
+    - `color_format` 参数指定返回数据的类型, 可以取值为: `"hsv"`, `"hsl"`, `"rgb"` 和 `"hex"` (默认值)
     """
     # 产生一个随机的红色系颜色, 结果以 16 进制格式返回
     value = fake.color(hue="red")
@@ -68,15 +64,15 @@ def test_provider_color() -> None:
 
 
 def test_provider_color_name() -> None:
-    """
-    产生一个颜色名称, 其定义如下:
+    """产生一个颜色名称
 
-    ```
+    其定义如下:
+
+    ```python
     color_name() -> str
     ```
 
-    颜色名是一组英文单词, 用来描述颜色, 并不特指计算机系统的颜色名称, 例如: BlueViolet,
-    Chocolate, Snow 等
+    颜色名是一组英文单词, 用来描述颜色, 并不特指计算机系统的颜色名称, 例如: BlueViolet, Chocolate, Snow 等
     """
     value = fake.color_name()
     # 确认生成的颜色名称长度
@@ -84,10 +80,11 @@ def test_provider_color_name() -> None:
 
 
 def test_provider_hex_color() -> None:
-    """
-    产生一个 16 进制格式的色值, 其定义如下:
+    """产生一个 16 进制格式的色值
 
-    ```
+    其定义如下:
+
+    ```python
     hex_color() -> str
     ```
 
@@ -99,10 +96,11 @@ def test_provider_hex_color() -> None:
 
 
 def test_provider_rgb_color() -> None:
-    """
-    产生一个 rgb 格式的色值, 其定义如下:
+    """产生一个 rgb 格式的色值
 
-    ```
+    其定义如下:
+
+    ```python
     rgb_color() -> str
     ```
 
@@ -114,10 +112,11 @@ def test_provider_rgb_color() -> None:
 
 
 def test_provider_rgb_css_color() -> None:
-    """
-    产生一个 css rgb 格式的色值, 其定义如下:
+    """产生一个 css rgb 格式的色值
 
-    ```
+    其定义如下:
+
+    ```python
     rgb_css_color() -> str
     ```
 
@@ -129,10 +128,11 @@ def test_provider_rgb_css_color() -> None:
 
 
 def test_provider_safe_color_name() -> None:
-    """
-    产生一个 web-safe 的颜色名, 其定义如下:
+    """产生一个 web-safe 的颜色名
 
-    ```
+    其定义如下:
+
+    ```python
     safe_color_name(
         min_length: Optional[int] = None,
         max_length: Optional[int] = None
@@ -149,10 +149,11 @@ def test_provider_safe_color_name() -> None:
 
 
 def test_provider_safe_hex_color() -> None:
-    """
-    产生一个 web-safe 的 16 进制色值, 其定义如下:
+    """产生一个 web-safe 的 16 进制色值
 
-    ```
+    其定义如下:
+
+    ```python
     safe_hex_color() -> str
     ```
     """

@@ -5,8 +5,8 @@ from log.conf import load_log_config
 
 
 def test_log_adapter() -> None:
-    """
-    配置日志 `Adapter`.
+    """测试配置日志 `Adapter`
+
     `Adapter` 可以理解为一个 `Logger` 对象的代理, 可以为日志设置扩展变量
     """
     conf = load_log_config(handlers=("console",))
@@ -14,10 +14,7 @@ def test_log_adapter() -> None:
     # 配置 root 日志
     config.dictConfig(conf)
 
-    extra_dict = {
-        "s_name": "Alvin",
-        "s_org": "alvin.study"
-    }
+    extra_dict = {"s_name": "Alvin", "s_org": "alvin.study"}
 
     # 获取初始 log
     init_log = logging.getLogger()

@@ -1,4 +1,5 @@
 # 演示时间日期相关的测试用例提供者
+import math
 import re
 from datetime import date, datetime, time, timedelta
 from typing import Iterable
@@ -13,10 +14,11 @@ fake = Faker()
 
 
 def test_provider_am_pm() -> None:
-    """
-    随机产生 AM 或 PM 的标记, 其定义如下:
+    """随机产生 AM 或 PM 的标记
 
-    ```
+    其定义如下:
+
+    ```python
     am_pm() -> str
     ```
     """
@@ -26,10 +28,11 @@ def test_provider_am_pm() -> None:
 
 
 def test_provider_century() -> None:
-    """
-    产生 `1`~`12` 的罗马数字, 其定义如下:
+    """产生 `1`~`12` 的罗马数字
 
-    ```
+    其定义如下:
+
+    ```python
     century(
         min_length: Optional[int] = None,
         max_length: Optional[int] = None
@@ -46,10 +49,11 @@ def test_provider_century() -> None:
 
 
 def test_provider_date() -> None:
-    """
-    产生一个从 1970-01-01 到当前时间的随机日期字符串, 其定义如下:
+    """产生一个从 1970-01-01 到当前时间的随机日期字符串
 
-    ```
+    其定义如下:
+
+    ```python
     date(
         pattern: str = "%Y-%m-%d",
         end_datetime: Union[
@@ -73,10 +77,9 @@ def test_provider_date() -> None:
 
 
 def test_provider_date_between() -> None:
-    """
-    产生一个在指定时间范围内的日期字符串
+    """产生一个在指定时间范围内的日期字符串
 
-    ```
+    ```python
     date_between(
         start_date: Union[
             datetime.date,
@@ -112,11 +115,11 @@ def test_provider_date_between() -> None:
 
 
 def test_provider_date_between_dates() -> None:
-    """
-    产生一个在指定时间范围内的日期字符串, 类似于 `date_between` 方法, 但 `date_start`
-    或 `date_end` 参数可以非必填, 表示不设上限或下限
+    """产生一个在指定时间范围内的日期字符串
 
-    ```
+    产生类似于 `date_between` 方法, 但 `date_start` 或 `date_end` 参数可以非必填, 表示不设上限或下限
+
+    ```python
     date_between_dates(
         date_start: Union[
             datetime.date,
@@ -154,10 +157,11 @@ def test_provider_date_between_dates() -> None:
 
 
 def test_provider_date_object() -> None:
-    """
-    产生一个从 1970-01-01 到当前时间的随机日期对象, 其定义如下:
+    """产生一个从 1970-01-01 到当前时间的随机日期对象
 
-    ```
+    其定义如下:
+
+    ```python
     date_object(
         end_datetime: datetime.datetime = None
     ) -> datetime.date
@@ -167,17 +171,14 @@ def test_provider_date_object() -> None:
     - `end_datetime` 参数, 最大的时间, 产生的日期不会超过这个时间
     """
     # 产生一个 2000-01-01 之前的日期
-    value = fake.date_object(
-        end_datetime=datetime.fromisoformat("2000-01-01T12:00:00")
-    )
+    value = fake.date_object(end_datetime=datetime.fromisoformat("2000-01-01T12:00:00"))
     assert value <= datetime.fromisoformat("2000-01-01T12:00:00").date()
 
 
 def test_provider_date_of_birth() -> None:
-    """
-    产生一个指定年龄范围内的随机生日
+    """产生一个指定年龄范围内的随机生日
 
-    ```
+    ```python
     date_of_birth(
         tzinfo: Optional[datetime.tzinfo] = None,
         minimum_age: int = 0,
@@ -203,10 +204,11 @@ def test_provider_date_of_birth() -> None:
 
 
 def test_provider_date_this_century() -> None:
-    """
-    产生近一个世纪 (100 年) 内的随机日期, 其定义如下:
+    """产生近一个世纪 (100 年) 内的随机日期
 
-    ```
+    其定义如下:
+
+    ```python
     date_this_century(
         before_today: bool = True,
         after_today: bool = False
@@ -231,10 +233,11 @@ def test_provider_date_this_century() -> None:
 
 
 def test_provider_date_this_decade() -> None:
-    """
-    产生近 10 年内的随机日期, 其定义如下:
+    """产生近 10 年内的随机日期
 
-    ```
+    其定义如下:
+
+    ```python
     date_this_decade(
         before_today: bool = True,
         after_today: bool = False
@@ -259,10 +262,11 @@ def test_provider_date_this_decade() -> None:
 
 
 def test_provider_date_this_month() -> None:
-    """
-    产生近 1 个月内的随机日期, 其定义如下:
+    """产生近 1 个月内的随机日期
 
-    ```
+    其定义如下:
+
+    ```python
     date_this_month(
         before_today: bool = True,
         after_today: bool = False
@@ -293,10 +297,11 @@ def test_provider_date_this_month() -> None:
 
 
 def test_provider_date_this_year() -> None:
-    """
-    产生近 1 年内的随机日期, 其定义如下:
+    """产生近 1 年内的随机日期
 
-    ```
+    其定义如下:
+
+    ```python
     date_this_year(
         before_today: bool = True,
         after_today: bool = False
@@ -323,10 +328,9 @@ def test_provider_date_this_year() -> None:
 
 
 def test_provider_date_time() -> None:
-    """
-    获取一个从 1970-01-01 00:00 到当前时间的随机时间对象
+    """获取一个从 1970-01-01 00:00 到当前时间的随机时间对象
 
-    ```
+    ```python
     date_time(
         tzinfo: Optional[datetime.tzinfo] = None,
         end_datetime: Union[
@@ -363,10 +367,9 @@ def test_provider_date_time() -> None:
 
 
 def test_provider_date_time_ad() -> None:
-    """
-    获取一个从公元后 (0001-01-01 00:00:00) 到当前时间的随机时间对象
+    """获取一个从公元后 (0001-01-01 00:00:00) 到当前时间的随机时间对象
 
-    ```
+    ```python
     date_time_ad(
         tzinfo: Optional[datetime.tzinfo] = None,
         end_datetime: Union[
@@ -418,10 +421,11 @@ def test_provider_date_time_ad() -> None:
 
 
 def test_provider_date_time_between() -> None:
-    """
-    获取指定两个时间之间的随机时间, 其定义如下:
+    """获取指定两个时间之间的随机时间
 
-    ```
+    其定义如下:
+
+    ```python
     date_time_between(
         start_date: Union[
             datetime.date,
@@ -472,11 +476,11 @@ def test_provider_date_time_between() -> None:
 
 
 def test_provider_date_time_between_dates() -> None:
-    """
-    获取指定两个时间之间的随机时间, 和 `date_time_between` 方法类似, 但
-    `datetime_start` 和 `datetime_end` 参数可以为 `None`, 表示不设限制:
+    """获取指定两个时间之间的随机时间
 
-    ```
+    和 `date_time_between` 方法类似, 但 `datetime_start` 和 `datetime_end` 参数可以为 `None`, 表示不设限制:
+
+    ```python
     date_time_between_dates(
         datetime_start: Union[
             datetime.date,
@@ -528,10 +532,11 @@ def test_provider_date_time_between_dates() -> None:
 
 
 def test_provider_date_time_this_century() -> None:
-    """
-    产生近一个世纪 (100 年) 内的随机时间, 其定义如下:
+    """产生近一个世纪 (100 年) 内的随机时间
 
-    ```
+    其定义如下:
+
+    ```python
     date_time_this_century(
         before_now: bool = True,
         after_now: bool = False,
@@ -563,10 +568,11 @@ def test_provider_date_time_this_century() -> None:
 
 
 def test_provider_date_time_this_decade() -> None:
-    """
-    产生近 10 年内的随机时间, 其定义如下:
+    """产生近 10 年内的随机时间
 
-    ```
+    其定义如下:
+
+    ```python
     date_time_this_decade(
         before_now: bool = True,
         after_now: bool = False,
@@ -598,10 +604,11 @@ def test_provider_date_time_this_decade() -> None:
 
 
 def test_provider_date_time_this_month() -> None:
-    """
-    产生当前月内的随机时间, 其定义如下:
+    """产生当前月内的随机时间
 
-    ```
+    其定义如下:
+
+    ```python
     date_time_this_month(
         before_now: bool = True,
         after_now: bool = False,
@@ -617,7 +624,7 @@ def test_provider_date_time_this_month() -> None:
     zone = pytz.timezone("Asia/Shanghai")
 
     # 获取一个不小于当前时间的当月的随机时间
-    value = fake.date_time_this_month(
+    value: datetime = fake.date_time_this_month(
         before_now=False,
         after_now=True,
         tzinfo=zone,
@@ -626,19 +633,25 @@ def test_provider_date_time_this_month() -> None:
     today = date.today()
 
     # 计算下个月 1 号 0 点的时间
-    end_of_month = zone.localize(
-        datetime(today.year, today.month + 1, 1, 0, 0, 0),
-    )
+    if today.month < 12:
+        end_of_month = zone.localize(
+            datetime(today.year, today.month + 1, 1, 0, 0, 0),
+        )
+    else:
+        end_of_month = zone.localize(
+            datetime(today.year + 1, 1, 1, 0, 0, 0),
+        )
 
     assert value >= zone.localize(datetime.now())
     assert value < end_of_month
 
 
 def test_provider_date_time_this_year() -> None:
-    """
-    产生今年内的随机时间, 其定义如下:
+    """产生今年内的随机时间
 
-    ```
+    其定义如下:
+
+    ```python
     date_time_this_year(
         before_now: bool = True,
         after_now: bool = False,
@@ -672,10 +685,9 @@ def test_provider_date_time_this_year() -> None:
 
 
 def test_provider_day_of_month() -> None:
-    """
-    获取一个随机日期, 取值从 `1`~`31`
+    """获取一个随机日期, 取值从 `1`~`31`
 
-    ```
+    ```python
     day_of_month() -> str
     ```
     """
@@ -686,11 +698,11 @@ def test_provider_day_of_month() -> None:
 
 
 def test_provider_day_of_week() -> None:
-    """
-    获取一个随机星期, 取值包括: "Monday", "Tuesday", "Wednesday", "Thursday",
-    "Friday", "Saturday", "Sunday"
+    """获取一个随机星期
 
-    ```
+    取值包括: "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+
+    ```python
     day_of_week() -> str
     ```
     """
@@ -711,10 +723,11 @@ def test_provider_day_of_week() -> None:
 
 
 def test_provider_future_date() -> None:
-    """
-    获取从当天到 `end_date` 之间的随机日期, 其定义如下:
+    """获取从当天到 `end_date` 之间的随机日期
 
-    ```
+    其定义如下:
+
+    ```python
     future_date(
         end_date: Union[
             datetime.date,
@@ -744,10 +757,11 @@ def test_provider_future_date() -> None:
 
 
 def test_provider_future_datetime() -> None:
-    """
-    获取当前到 `end_date` 之间的随机时间, 其定义如下:
+    """获取当前到 `end_date` 之间的随机时间
 
-    ```
+    其定义如下:
+
+    ```python
     future_datetime(
         end_date: Union[
             datetime.date,
@@ -777,10 +791,11 @@ def test_provider_future_datetime() -> None:
 
 
 def test_provider_iso8601() -> None:
-    """
-    获取一个符合 iso8601 规范的时间字符串, 其定义如下:
+    """获取一个符合 iso8601 规范的时间字符串
 
-    ```
+    其定义如下:
+
+    ```python
     iso8601(
         tzinfo: Optional[datetime.tzinfo] = None,
         end_datetime: Union[
@@ -818,16 +833,15 @@ def test_provider_iso8601() -> None:
     assert isinstance(value, str)
 
     # 确认获取的字符串符合 iso8601 格式
-    assert re.match(
-        r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$", value
-    )
+    assert re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$", value)
 
 
 def test_provider_month() -> None:
-    """
-    产生随机的月份, 取值 `01`~`12`, 其定义如下:
+    """产生随机的月份, 取值 `01`~`12`
 
-    ```
+    其定义如下:
+
+    ```python
     month() -> str
     ```
     """
@@ -840,10 +854,11 @@ def test_provider_month() -> None:
 
 
 def test_provider_month_name() -> None:
-    """
-    返回随机月份的名称, 其定义如下:
+    """返回随机月份的名称
 
-    ```
+    其定义如下:
+
+    ```python
     month_name() -> str
     ```
     """
@@ -870,10 +885,11 @@ def test_provider_month_name() -> None:
 
 
 def test_provider_past_date() -> None:
-    """
-    获取从 `start_date` 到当前日期之间的随机日期, 其定义如下:
+    """获取从 `start_date` 到当前日期之间的随机日期
 
-    ```
+    其定义如下:
+
+    ```python
     past_date(
         start_date : Union[
             datetime.date,
@@ -903,10 +919,11 @@ def test_provider_past_date() -> None:
 
 
 def test_provider_past_datetime() -> None:
-    """
-    获取从 `start_date` 到当前之间的随机时间, 其定义如下:
+    """获取从 `start_date` 到当前之间的随机时间
 
-    ```
+    其定义如下:
+
+    ```python
     past_datetime(
         start_date: Union[
             datetime.date,
@@ -936,11 +953,11 @@ def test_provider_past_datetime() -> None:
 
 
 def test_provider_pytimezone() -> None:
-    """
-    产生一个随机的 timezone 对象, 可作为 `tzinfo` 参数用于 `datetime.datetime` 函数
-    或其它 fakers
+    """产生一个随机的 timezone 对象
 
-    ```
+    可作为 `tzinfo` 参数用于 `datetime.datetime` 函数或其它 fakers
+
+    ```python
     pytimezone(*args, **kwargs) -> Optional[datetime.tzinfo]
     ```
     """
@@ -951,10 +968,11 @@ def test_provider_pytimezone() -> None:
 
 
 def test_provider_time() -> None:
-    """
-    产生一个随机时间字符串 (默认为 24 小时制), 其定义如下:
+    """产生一个随机时间字符串 (默认为 24 小时制)
 
-    ```
+    其定义如下:
+
+    ```python
     time(
         pattern: str = "%H:%M:%S",
         end_datetime: Union[
@@ -982,10 +1000,9 @@ def test_provider_time() -> None:
 
 
 def test_provider_time_delta() -> None:
-    """
-    获取一个随机的 `datetime.timedelta` 对象
+    """获取一个随机的 `datetime.timedelta` 对象
 
-    ```
+    ```python
     time_delta(
         end_datetime: Union[
             datetime.date,
@@ -999,8 +1016,7 @@ def test_provider_time_delta() -> None:
     ```
 
     其中:
-    - `end_datetime` 参数, 定义时间的下限, 即获取的 `timedelta` 加上当前时间不能大于这个
-      参数值
+    - `end_datetime` 参数, 定义时间的下限, 即获取的 `timedelta` 加上当前时间不能大于这个参数值
     """
     end_time = datetime.now() + timedelta(days=30)
 
@@ -1014,10 +1030,11 @@ def test_provider_time_delta() -> None:
 
 
 def test_provider_time_object() -> None:
-    """
-    获取一个随机时间对象, 其定义如下:
+    """获取一个随机时间对象
 
-    ```
+    其定义如下:
+
+    ```python
     time_object(
         end_datetime: Union[
             datetime.date,
@@ -1031,8 +1048,7 @@ def test_provider_time_object() -> None:
     ```
 
     其中:
-    - `end_datetime` 参数, 获取的随机时间不会大于这个时间. 但注意, 这个范围是一个时间日期的
-      上限, 但返回的结果是一个时间对象.
+    - `end_datetime` 参数, 获取的随机时间不会大于这个时间. 但注意, 这个范围是一个时间日期的上限, 但返回的结果是一个时间对象.
     """
     # 获取一个不小于当前时间 2 小时范围的时间对象
     value = fake.time_object(
@@ -1050,11 +1066,11 @@ def test_provider_time_object() -> None:
 
 
 def test_provider_time_series() -> None:
-    """
-    产生一个序列, 元素为 `(datetime, value)`, `datetime` 取值在 `start_date` 和
-    `end_date` 参数指定的时间范围内, `value` 是一个回调函数返回的值, 其定义如下:
+    """产生一个序列, 元素为 `(datetime, value)`
 
-    ```
+    `datetime` 取值在 `start_date` 和 `end_date` 参数指定的时间范围内, `value` 是一个回调函数返回的值, 其定义如下:
+
+    ```python
     time_series(
         start_date: Union[
             datetime.date,
@@ -1087,17 +1103,13 @@ def test_provider_time_series() -> None:
 
     # 设定时间序列的起始时间
     # 需要将毫秒部分去掉
-    start_date = (
-        zone.localize(datetime.now() - timedelta(days=30))
-        .replace(microsecond=0)
+    start_date = zone.localize(datetime.now() - timedelta(days=30)).replace(
+        microsecond=0
     )
 
     # 设定时间序列的结束时间
     # 需要将毫秒部分去掉
-    end_date = (
-        zone.localize(datetime.now() + timedelta(days=10))
-        .replace(microsecond=0)
-    )
+    end_date = zone.localize(datetime.now() + timedelta(days=10)).replace(microsecond=0)
 
     now = zone.localize(datetime.now())
 
@@ -1106,7 +1118,7 @@ def test_provider_time_series() -> None:
         start_date=start_date,
         end_date=end_date,
         distrib=lambda d: (now - d).total_seconds(),  # tuple 第二项为当前时间和产
-                                                      # 生时间相差的秒数
+        # 生时间相差的秒数
         tzinfo=zone,
     )
     assert isinstance(value, Iterable)
@@ -1123,11 +1135,11 @@ def test_provider_time_series() -> None:
 
 
 def test_provider_timezone() -> None:
-    """
-    获取一个随机的时区字符串, 例如: `"Indian/Maldives"`, `"America/Barbados"` 这样的
-    格式, 其定义如下:
+    """获取一个随机的时区字符串
 
-    ```
+    例如: `"Indian/Maldives"`, `"America/Barbados"` 这样的格式, 其定义如下:
+
+    ```python
     timezone() -> str
     ```
     """
@@ -1138,10 +1150,11 @@ def test_provider_timezone() -> None:
 
 
 def test_provider_unix_time() -> None:
-    """
-    产生一个随机的 unix 时间戳, 其定义如下:
+    """产生一个随机的 unix 时间戳
 
-    ```
+    其定义如下:
+
+    ```python
     unix_time(
         end_datetime: Union[
             datetime.date,
@@ -1186,10 +1199,11 @@ def test_provider_unix_time() -> None:
 
 
 def test_provider_year() -> None:
-    """
-    产生一个随机的年份, 其定义如下:
+    """产生一个随机的年份
 
-    ```
+    其定义如下:
+
+    ```python
     year() -> str
     ```
     """

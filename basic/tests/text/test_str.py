@@ -1,12 +1,11 @@
 from itertools import repeat
 from string import Template
-from typing import Any
+from typing import Any, Callable, Optional
 
 
 def test_ascii_convert() -> None:
-    """
-    测试将字符和 ASCII 码之间的互相转换
-    """
+    """测试将字符和 ASCII 码之间的互相转换"""
+
     # 字符转为 ASCII 码
     assert ord("A") == 65
     # ASCII 码转为字符
@@ -21,9 +20,8 @@ def test_ascii_convert() -> None:
 
 
 def test_str_slice() -> None:
-    """
-    字符串切片操作
-    """
+    """字符串切片操作"""
+
     s = "一二三四五六七八九零"
 
     # 通过下标获取指定位置嗯字符
@@ -40,7 +38,7 @@ def test_str_slice() -> None:
     assert s[1:-1:2] == "二四六八"
 
     # 利用 LC 切片发获取每字符串两个字符的集合
-    fivers = [s[k:k + 2] for k in range(0, len(s), 2)]
+    fivers = [s[k : k + 2] for k in range(0, len(s), 2)]
     assert fivers == ["一二", "三四", "五六", "七八", "九零"]
 
     cuts = [2, 5, 9]
@@ -54,20 +52,16 @@ def test_str_slice() -> None:
 
 
 def test_str_multiplication() -> None:
-    """
-    字符串的乘法操作, 相当于将字符串内容重复多次后形成新的字符串
+    """字符串的乘法操作, 相当于将字符串内容重复多次后形成新的字符串"""
 
-    cspell: disable
-    """
     s = "xo"
     # 验证重复 3 次的结果
     assert s * 3 == "xoxoxo"
-    # cspell: enable
 
 
 def test_character_filter() -> None:
-    """
-    `str` 用于字符过滤判断的函数包括:
+    """`str` 用于字符过滤判断的函数包括:
+
     - `isdigit` 返回字符串是否全部由数字字符组成
     - `isalpha` 返回字符串是否全部由字母 (或汉字) 字符组成
     - `isalnum` 结果相当于 `isalpha` 和 `isdigit` 两个函数的组合
@@ -89,11 +83,8 @@ def test_character_filter() -> None:
 
 
 def test_counter() -> None:
-    """
-    `count` 方法用于计算字符串中子字符串出现的次数
+    """`count` 方法用于计算字符串中子字符串出现的次数"""
 
-    cspell: disable
-    """
     s = "abcdabcdabc"
 
     # 计算字符串中字符个数
@@ -105,12 +96,9 @@ def test_counter() -> None:
     # 查找 "bcd" 子字符串出现的次数, 并指定查找的起始位置和结束位置
     assert s.count("bcd", 2, -1) == 1
 
-    # cspell: enable
-
 
 def test_split() -> None:
-    """
-    字符串分割
+    """字符串分割
 
     `split` 方法和 `splitlines` 方法可以对字符串进行不同方式的分割
     """
@@ -130,12 +118,9 @@ e"""
 
 
 def test_reversed() -> None:
-    """
-    反转字符串
+    """反转字符串
 
     字符串本质上是一个字符的列表集合, 所以可以通过 "切片运算" 和 "`reversed` 函数" 两种方式进行反转
-
-    cspell: disable
     """
     s = "abc def"
 
@@ -148,15 +133,12 @@ def test_reversed() -> None:
     r = " ".join([e[::-1] for e in s.split(" ")])
     assert r == "cba fed"
 
-    # cspell: enable
-
 
 def test_translate() -> None:
-    """
-    可以通过一个字符编码的字典对象, 对字符串中的指定字符进行转换
+    """可以通过一个字符编码的字典对象, 对字符串中的指定字符进行转换
 
-    `maketrans` 方法用于通过简单方法形成转换字典
-    `translate` 方法用于执行转换
+    - `maketrans` 方法用于通过简单方法形成转换字典
+    - `translate` 方法用于执行转换
     """
     # 形成转换表, 将两个参数进行逐字符对应, 形成一个字典对象
     tab = str.maketrans("ABC", "abc")
@@ -175,8 +157,7 @@ def test_translate() -> None:
 
 
 def test_format_by_c_like_style() -> None:
-    """
-    在 Python 2 中, 定义了一种类似 C 语言的字符串格式化语法
+    """在 Python 2 中, 定义了一种类似 C 语言的字符串格式化语法
 
     格式化字符串和格式化参数通过 `%` 运算符分隔
     """
@@ -185,13 +166,10 @@ def test_format_by_c_like_style() -> None:
 
 
 def test_format_by_method() -> None:
-    """
-    通过字符串对象的 `format` 方法进行字符串格式化
+    """通过字符串对象的 `format` 方法进行字符串格式化
 
-    `format` 方法通过一个模板字符串, 将字符串对象本身进行格式化, 返回格式化后的新字符串
-    模板字符串中, `{}` 表示一个占位符, 格式化时会用实际参数替换占位符
-
-    cspell: disable
+    `format` 方法通过一个模板字符串, 将字符串对象本身进行格式化, 返回格式化后的新字符串模板字符串中, `{}` 表示一个占位符,
+    格式化时会用实际参数替换占位符
     """
     # 通过模板字符串进行格式化, 占位符会安装参数顺序依次被替换
     s = "{}, {}, {}".format("a", "b", "c")
@@ -210,26 +188,22 @@ def test_format_by_method() -> None:
     s = "{0}{1}{0}".format("abra", "cad")
     assert s == "abracadabra"
 
-    # cspell: enable
-
 
 def test_format_by_method_with_named_args() -> None:
-    """
-    可以通过命名参数的名称作为占位符的标识
+    """可以通过命名参数的名称作为占位符的标识
 
     这种方式比使用位置占位符更加明确一些
     """
     # 占位符使用 latitude 和 longitude 两个命名参数
     # 在 format 方法中传入对应的命名参数即可进行格式化
-    s = "{latitude}, {longitude}".format(
-        latitude="37.24N", longitude="-115.81W"
-    )
+    s = "{latitude}, {longitude}".format(latitude="37.24N", longitude="-115.81W")
     assert s == "37.24N, -115.81W"
 
 
 def test_format_by_method_for_numbers() -> None:
-    """
-    在占位符中通过 `:<l>` 可以指定数字格式化的参数, 可用的参数包括:
+    """在占位符中通过 `:<l>` 可以指定数字格式化的参数
+
+    可用的参数包括:
     - `b` 数字格式化为二进制
     - `o` 数字格式化为 8 进制
     - `x` 数字格式化为 16 进制
@@ -248,7 +222,6 @@ def test_format_by_method_for_numbers() -> None:
     复数
     - `real` 实部
     - `imag` 虚部
-
     """
     # 格式化为二进制
     s = "{:b}".format(3)
@@ -303,9 +276,8 @@ def test_format_by_method_for_numbers() -> None:
 
 
 def test_format_by_method_for_list_index() -> None:
-    """
-    在模板字符串中, 可以在占位符中使用下标, 来输出一个列表集合 (List, Tuple) 的指定元素
-    """
+    """在模板字符串中, 可以在占位符中使用下标, 来输出一个列表集合 (List, Tuple) 的指定元素"""
+
     coord = [(3, 5), (6, 8)]
 
     # 参数 *coord 表示将 coord 变量拆为 2 个参数, 0 = (3, 5) 和 1 = (6, 8)
@@ -325,26 +297,22 @@ def test_format_by_method_for_list_index() -> None:
 
 
 class Value:
-    """
-    用于测试模板字符串中访问对象属性的类
-    """
+    """用于测试模板字符串中访问对象属性的类"""
 
     def __init__(self, id_: str, name: str) -> None:
-        """
-        初始化对象
+        """初始化对象
 
         Args:
-            id_ (str): 对象属性
-            name (str): 对象属性
+            - `id_` (`str`): 对象属性
+            - `name` (`str`): 对象属性
         """
         self.id = id_
         self.name = name
 
 
 def test_format_by_method_for_object_attributes() -> None:
-    """
-    可以在占位符中通过 `.<attribute name>` 访问对象的属性
-    """
+    """可以在占位符中通过 `.<attribute name>` 访问对象的属性"""
+
     # 产生一个对象
     v = Value("001", "Alvin")
 
@@ -358,13 +326,9 @@ def test_format_by_method_for_object_attributes() -> None:
 
 
 def test_format_by_method_for_dict_keys() -> None:
-    """
-    可以在占位符中通过 `[key]` 通过键访问字典的值
-    """
-    data = {
-        "id": "001",
-        "name": "Alvin"
-    }
+    """可以在占位符中通过 `[key]` 通过键访问字典的值"""
+
+    data = {"id": "001", "name": "Alvin"}
 
     # 在占位符中通过位置访问字典的值
     s = "id={0[id]}, name={0[name]}".format(data)
@@ -376,8 +340,7 @@ def test_format_by_method_for_dict_keys() -> None:
 
 
 def test_padding_align_and_fill() -> None:
-    """
-    在占位符中指定对齐方式和填充方式
+    """在占位符中指定对齐方式和填充方式
 
     对齐方式可以指定为
     - `<n` 居左对齐, 内容居左, 右侧由填充符补齐
@@ -411,8 +374,7 @@ def test_padding_align_and_fill() -> None:
 
 
 def test_use_str_templates() -> None:
-    """
-    `string` 包的 `Template` 类用于产生一个字符串模板对象
+    """`string` 包的 `Template` 类用于产生一个字符串模板对象
 
     通过字符串模板可以将一组参数格式化为字符串
     """
@@ -429,16 +391,14 @@ def test_use_str_templates() -> None:
 
 
 def test_format_magic_method() -> None:
-    """
-    一个类型的 `__format__` 魔法方法用于对该类的对象进行格式化
+    """一个类型的 `__format__` 魔法方法用于对该类的对象进行格式化
 
-    当进行字符串格式化操作时 (`format`, `f""` 等), 如果参数对象具备 `__format__` 魔法方法,
-    则会调用该方法将对象格式化为字符串
+    当进行字符串格式化操作时 (`format`, `f""` 等), 如果参数对象具备 `__format__` 魔法方法, 则会调用该方法将对象格式化为字符串
     """
+
     class C:
-        """
-        测试对象格式化的类型
-        """
+        """测试对象格式化的类型"""
+
         # 格式化规则和格式化函数的对应关系
         _format = {
             "m": lambda v: "m" + str(v),
@@ -446,26 +406,24 @@ def test_format_magic_method() -> None:
         }
 
         def __init__(self, value: Any) -> None:
-            """
-            初始化当前对象
+            """初始化当前对象
 
             Args:
-                value (Any): 任意值
+                - `value` (`Any`): 任意值
             """
             self._value = value
 
         def __format__(self, format_spec: str) -> str:
-            """
-            根据一个格式化规则格式化字符串
+            """根据一个格式化规则格式化字符串
 
             Args:
-                format_spec (str): 格式化规则
+                - `format_spec` (`str`): 格式化规则
 
             Returns:
-                str: 格式化结果
+                `str`: 格式化结果
             """
             # 根据格式化规则获取格式化函数
-            formatter = self._format.get(format_spec)
+            formatter: Optional[Callable[..., str]] = self._format.get(format_spec)
             # 对于无效的格式化规则, 返回当前值
             if not formatter:
                 return str(self._value)

@@ -1,3 +1,4 @@
+import copy
 from typing import Any, Dict, List, Literal, Tuple, Union, cast
 
 _LOG_CONF = {
@@ -10,9 +11,7 @@ _LOG_CONF = {
                 "[%(lineno)s]: %(message)s"
             ),
         },
-        "short": {
-            "format": "%(message)s"
-        }
+        "short": {"format": "%(message)s"},
     },
     # 日志处理器, 将输出的日志进行处理 (写入文件或控制台等)
     "handlers": {
@@ -21,38 +20,43 @@ _LOG_CONF = {
             "class": "logging.handlers.RotatingFileHandler",
             "filename": None,
             "maxBytes": 5000000,
-            "backupCount": 10
+            "backupCount": 10,
         },
         "console": {
             "class": "logging.StreamHandler",
             "formatter": "standard",
-            "level": "WARN"  # Special level for 'console' handle
-        }
+            "level": "WARN",  # Special level for 'console' handle
+        },
     },
     # 日志定义
     "loggers": {
         "default": {  # 日志名称
             "level": "DEBUG",  # 日志等级
             "handlers": ["file", "console"],  # 日志处理器
-            "propagate": True  # 是否传播
+            "propagate": True,  # 是否传播
         },
-        "debug": {
-            "level": "DEBUG",
-            "handlers": ["console"],
-            "propagate": False
-        }
+        "debug": {"level": "DEBUG", "handlers": ["console"], "propagate": False},
     },
-    "root": {
-        "level": "DEBUG",
-        "handlers": ["console"]
-    }
+    "root": {"level": "DEBUG", "handlers": ["console"]},
 }
 
-Handlers = Union[Literal["file"], Literal["console"]]
+# 日志处理器类型
+LogHandler = Union[Literal["file"], Literal["console"]]
 
 
-def load_log_config(format: str = "", handlers: Tuple[Handlers, ...] = ("file", "console")) -> Dict[str, Any]:
-    conf = _LOG_CONF.copy()
+def load_log_config(
+    format: str = "", handlers: Tuple[LogHandler, ...] = ("file", "console")
+) -> Dict[str, Any]:
+    """读取日志配置
+
+    Args:
+        - `format` (`str`, optional): 日志格式化模式字符串. Defaults to `""`.
+        - `handlers` (`Tuple[Handlers, ...]`, optional): 日志处理器列表. Defaults to (`"file"`, `"console"`).
+
+    Returns:
+        `Dict[str, Any]`: 日志配置字典对象
+    """
+    conf = copy.deepcopy(_LOG_CONF)
     if format:
         conf["formatters"]["standard"]["format"] = format  # type: ignore
 

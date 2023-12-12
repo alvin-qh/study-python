@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import asyncio as aio
 import time
 import timeit
@@ -434,21 +436,20 @@ def test_event_loop() -> None:
 
 
 def test_event_loop_on_other_thread() -> None:
-    """
-    在另一个线程中创建事件循环
+    """在另一个线程中创建事件循环
 
     - 事件循环总是和一个线程相关, 所以可以在任意线程上创建事件循环
     - 如果一个线程没有绑定正在运行的事件循环, 则可以为该线程创建一个新的事件循环
 
-    ```python
-    event_loop = asyncio.new_event_loop()
-    ```
+        ```python
+        event_loop = asyncio.new_event_loop()
+        ```
 
     - 可以为事件循环载入一个 `coroutines` 对象作为主函数, 并在主函数结束后结束事件循环
 
-    ```python
-    event_loop.run_until_complete(coroutines)
-    ```
+        ```python
+        event_loop.run_until_complete(coroutines)
+        ```
     """
 
     # 创建一个新的事件循环对象
@@ -473,6 +474,7 @@ def test_event_loop_on_other_thread() -> None:
 
     # 创建线程对象
     thread = Thread(target=thread_run)
+
     # 启动线程
     thread.start()
     # 等待线程函数执行结束
@@ -535,10 +537,12 @@ def test_none_async_call_in_event_loop() -> None:
     async def main(loop: aio.AbstractEventLoop) -> None:
         # 立即执行 id=1
         loop.call_soon(sync_func, 1)
+
         # 立即执行 id=2
         loop.call_soon(sync_func, 2)
 
         # 设置 100 毫秒后执行 id=3, 由于 200 毫秒后 id=4 会执行, 耗时 100 毫秒, 所以 id=3 会在 id=4 后执行实际在 300 毫秒后执行
+
         loop.call_later(0.2, sync_func, 3)
         # 设置 200 毫秒后执行 id=4, 由于 id=1 和 id=2 一共会执行 200 毫秒, 所以 id=4 会在 id=2 之后被执行
         loop.call_later(0.1, sync_func, 4)
@@ -556,7 +560,7 @@ def test_none_async_call_in_event_loop() -> None:
     # 记录程序开始时间
     start = timeit.default_timer()
 
-    loop = aio.get_event_loop()
+    loop = aio.new_event_loop()
     loop.run_until_complete(main(loop))
     loop.close()
 
@@ -673,9 +677,8 @@ def test_async_event() -> None:
         }
 
     async def main() -> None:
-        """
-        协程入口函数
-        """
+        """协程入口函数"""
+
         # 同时启动两个协程函数
         group = aio.gather(event_job(1), event_job(2))
 
@@ -699,8 +702,7 @@ def test_async_event() -> None:
 
 
 def test_condition_lock() -> None:
-    """
-    带状态的协程锁
+    """带状态的协程锁
 
     - `Condition lock` 相当于一个带状态的锁
     - 对于有多个协程在锁对象上进行等待的情况, `Condition lock` 允许设定解锁多少个协程
@@ -709,36 +711,35 @@ def test_condition_lock() -> None:
 
     - 在协程上进行等待:
 
-    ```python
-    await cond.acquire()
-    try:
-        pass
-    finally:
-        cond.release()
-    ```
+        ```python
+        await cond.acquire()
+        try:
+            pass
+        finally:
+            cond.release()
+        ```
 
-    或
+        或
 
-    ```python
-    async with cond:
-        pass
-    ```
+        ```python
+        async with cond:
+            pass
+        ```
     """
     # 生成锁对象
-    cond = asyncio.Condition()
+    cond = aio.Condition()
 
     # 生成开始时间
     start_time = timeit.default_timer()
 
     async def cond_job(id_: int) -> Dict[str, Any]:
-        """
-        测试带状态的协程锁对象
+        """测试带状态的协程锁对象
 
         Args:
-            id_ (int): ID 标识符
+            - `id_` (`int`): ID 标识符
 
         Returns:
-            Dict[str, Any]: 返回 ID 标识符和执行时间组成的字典
+            `Dict[str, Any]`: 返回 ID 标识符和执行时间组成的字典
         """
         # 进入锁
         async with cond:
@@ -747,25 +748,25 @@ def test_condition_lock() -> None:
 
         return {
             "id": id_,  # ID 值
-            "finish_time": int(timeit.default_timer() - start_time),  # 执行时间
+            "finish_time": round(timeit.default_timer() - start_time, 1),  # 执行时间
         }
 
     async def main() -> None:
-        group = asyncio.gather(
+        group = aio.gather(
             cond_job(1),
             cond_job(2),
             cond_job(3),
         )
 
         # 等待 1 秒后
-        await asyncio.sleep(2)
+        await aio.sleep(0.2)
 
         # 通知 2 个锁
         async with cond:
             cond.notify(2)
 
         # 再等待 2 秒后
-        await asyncio.sleep(2)
+        await aio.sleep(0.2)
 
         # 通知所有锁
         async with cond:
@@ -776,73 +777,71 @@ def test_condition_lock() -> None:
 
         # 第一个结果为 ID=1 函数返回, 为第一次通知解锁
         assert r[0]["id"] == 1
-        assert r[0]["finish_time"] == 2  # 整体执行 2 秒
+        assert r[0]["finish_time"] == 0.2  # 整体执行 2 秒
 
         # 第二个结果为 ID=2 函数返回, 为第一次通知解锁
         assert r[1]["id"] == 2
-        assert r[1]["finish_time"] == 2  # 整体执行 2 秒
+        assert r[1]["finish_time"] == 0.2  # 整体执行 2 秒
 
         # 第三个结果为 ID=3 函数返回, 为第二次通知解锁
         assert r[2]["id"] == 3
-        assert r[2]["finish_time"] == 4  # 整体执行 4 秒
+        assert r[2]["finish_time"] == 0.4  # 整体执行 4 秒
 
-    asyncio.run(main())
+    aio.run(main())
 
 
 def test_semaphore() -> None:
-    """
-    信号量
+    """信号量
 
-    - 信号量可以指定一个数量, 表示多少个信号可以使用, 每个协程可以占用一个信号并在稍后释放它,
-    当所有的信号被占用后，后续的协程会进入等待, 直到之后有一个信号被释放
+    - 信号量可以指定一个数量, 表示多少个信号可以使用, 每个协程可以占用一个信号并在稍后释放它, 当所有的信号被占用后，后续的协程会进入等待,
+    直到之后有一个信号被释放
     - 占用信号: `semaphore.acquire()`
     - 释放信号: `semaphore.release()`
     - 检测是否可以占用信号: `semaphore.locked()`
     - 仍可以用 `async with` 方式来简化信号量的使用:
 
-    ```python
-    semaphore.acquire()
-    try:
-        pass
-    finally:
-        semaphore.release()
-    ```
+        ```python
+        semaphore.acquire()
+        try:
+            pass
+        finally:
+            semaphore.release()
+        ```
 
-    或
+        或
 
-    ```python
-    async with semaphore:
-        pass
-    ```
+        ```python
+        async with semaphore:
+            pass
+        ```
     """
     # 生成信号量对象, 具备两个信号
-    sem = asyncio.Semaphore(2)
+    sem = aio.Semaphore(2)
 
     # 生成开始时间
     start_time = timeit.default_timer()
 
     async def sem_job(id_: int) -> Dict[str, Any]:
-        """
-        测试信号量对象
+        """测试信号量对象
 
         Args:
-            id_ (int): ID 标识符
+            - `id_` (`int`): ID 标识符
 
         Returns:
-            Dict[str, Any]: 返回 ID 标识符和执行时间组成的字典
+            `Dict[str, Any]`: 返回 ID 标识符和执行时间组成的字典
         """
         # 进入信号量
         async with sem:
             # 协程等待 2 秒钟后退出信号量
-            await asyncio.sleep(2)
+            await aio.sleep(0.2)
 
         return {
             "id": id_,  # ID 值
-            "finish_time": int(timeit.default_timer() - start_time),  # 执行时间
+            "finish_time": round(timeit.default_timer() - start_time, 1),  # 执行时间
         }
 
     async def main() -> None:
-        r = await asyncio.gather(
+        r = await aio.gather(
             sem_job(1),
             sem_job(2),
             sem_job(3),
@@ -850,40 +849,41 @@ def test_semaphore() -> None:
 
         # 第一个结果为 ID=1 函数返回, 对应前两个信号
         assert r[0]["id"] == 1
-        assert r[0]["finish_time"] == 2  # 整体执行 2 秒
+        assert r[0]["finish_time"] == 0.2  # 整体执行 2 秒
 
         # 第二个结果为 ID=2 函数返回, 对应前两个信号
         assert r[1]["id"] == 2
-        assert r[1]["finish_time"] == 2  # 整体执行 4 秒
+        assert r[1]["finish_time"] == 0.2  # 整体执行 4 秒
 
         # 第三个结果为 ID=3 函数返回, 对应后两个信号
         assert r[2]["id"] == 3
-        assert r[2]["finish_time"] == 4  # 整体执行 2 秒
+        assert r[2]["finish_time"] == 0.4  # 整体执行 2 秒
 
-    asyncio.run(main())
+    aio.run(main())
 
 
 def test_queue() -> None:
-    """
-    协程队列
+    """协程队列
 
     - 协程队列用于在协程中同步的 put 和 get 资源
     """
-    # 定义队列对象, 最多可放置 5 个元素
-    queue: asyncio.Queue = asyncio.Queue(5)
 
-    async def queue_job() -> List[Coroutine]:
+    # 定义队列对象, 最多可放置 5 个元素
+    queue: aio.Queue[int] = aio.Queue(5)
+
+    async def queue_job() -> List[int]:
         """
         测试协程队列
         """
-        rs = []
+        rs: List[int] = []
         # 循环直到队列被取空
         while queue.qsize():
             # 协程休眠 1 秒
-            await asyncio.sleep(1)
+            await aio.sleep(0.1)
 
             # 从队列中获取资源, 阻塞模式
             rs.append(await queue.get())
+
             # 通知队列任务完成
             # 在消费者一侧, 每次处理完一个元素, 都需要调用一次 task_done 函数, 表示处理完毕
             # 此时若另一个协程在队列上执行 join 等待, 则可以结束等待
@@ -900,7 +900,7 @@ def test_queue() -> None:
         await queue.put(100)
 
         # 启动协程
-        future = asyncio.ensure_future(queue_job())
+        future = aio.ensure_future(queue_job())
 
         # 向队列中存入第二个元素
         await queue.put(200)
@@ -915,27 +915,29 @@ def test_queue() -> None:
         # 等待协程执行完毕, 确认队列内容
         assert await future == [100, 200, 300]
 
-    asyncio.run(main())
+    aio.run(main())
 
 
 @mark.asyncio
 async def test_aio_iterator() -> None:
-    """
-    测试 `AIOTicker` 类型, 该类型是一个协程异步迭代器对象, 可以进行异步迭代操作
+    """测试 `AIOTicker` 类型
 
-    `@mark.asyncio` 使用了 `pytest-asyncio` 插件, 可以以协程异步方式执行测试而无需编码
+    `AIOTicker` 类型相当于一个协程异步迭代器对象, 可以进行异步迭代操作
+
+    `@mark.asyncio` 使用了 `pytest-asyncio` 插件, 可以以协程异步方式执行测试而无需专门编码
 
     参考 `conftest.py` 的 `event_loop` 函数, 提供了一个 `fixture` 用于管理协程事件队列的生命周期
     """
     # 实例化异步迭代器对象
     # 每次迭代间隔 1 秒, 最大迭代值为 5
-    ticker = AIOTicker(1, 5)
+    ticker = AIOTicker(0.1, 5)
 
     # 记录整个迭代的时间
     start = timeit.default_timer()
 
     # 确认第一次迭代值
     assert await ticker.__anext__() == 0
+
     # 确认第二次迭代值
     assert await ticker.__anext__() == 1
 
@@ -946,8 +948,9 @@ async def test_aio_iterator() -> None:
 
     # 判断迭代结果
     assert vals == [2, 3, 4]
+
     # 确认所有迭代执行的总时间
-    assert 5 <= timeit.default_timer() - start <= 5.1
+    assert 0.5 <= timeit.default_timer() - start <= 0.51
 
 
 @mark.asyncio
@@ -964,6 +967,7 @@ async def test_aio_generator() -> None:
 
     # 确认生成器对象第一次迭代对象
     assert await gen.__anext__() == 0
+
     # 确认生成器对象第二次迭代对象
     assert await gen.__anext__() == 1
 
@@ -974,8 +978,9 @@ async def test_aio_generator() -> None:
 
     # 判断迭代结果
     assert vals == [2, 3, 4]
+
     # 确认所有迭代执行的总时间
-    assert 5 <= timeit.default_timer() - start <= 5.1
+    assert 0.5 <= timeit.default_timer() - start <= 0.51
 
 
 @mark.asyncio
@@ -988,11 +993,13 @@ async def test_async_echo() -> None:
 
     # 设置一个值, 对应 v = yield 0, 接收一个输入, 此时 v 的值为 10
     await g.asend(10)
+
     # 获取下一个值为 100, 对应 v *= 10; yield v 两条语句
     assert await g.__anext__() == 100
 
     # 处理下一个循环
     await g.asend(20)
+
     assert await g.__anext__() == 200
 
     # 发送 0 值, 导致迭代结束

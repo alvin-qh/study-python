@@ -16,8 +16,18 @@ _CUR_DIR = os.path.dirname(__file__)
 
 
 def make_log_conf_path() -> str:
+    """创建日志配置文件路径
+
+    Returns:
+        `str`: 配置文件路径名
+    """
     return os.path.join(_CUR_DIR, "conf.ini")
 
 
-def make_log_file_path() -> str:
-    return os.path.join(_CUR_DIR, "demo.log")
+def make_log_file_path(filename: str) -> str:
+    """创建日志文件路径
+
+    Returns:
+        `str`: 日志文件路径
+    """
+    return os.path.join(_CUR_DIR, filename)

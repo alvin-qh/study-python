@@ -11,7 +11,6 @@ authors = [{ name = 'Alvin', email = 'quhao317@163.com' }]
 # 依赖包
 dependencies = [
     'pytz',
-    'types-pytz',
     'atomics',
     'werkzeug',
     'wrapt',
@@ -48,6 +47,10 @@ test = [
 # # 定义打包工具链
 # requires = ['pdm-backend']
 # build-backend = 'pdm.backend'
+type = [
+    "types-python-dateutil>=2.8.19.14",
+    "types-pytz>=2023.3.1.1",
+]
 
 [tool.pdm.scripts]
 # 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行

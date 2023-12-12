@@ -9,10 +9,8 @@ step = Step()
 
 @fixture(autouse=True)
 def autouse_fixture() -> Generator[None, None, None]:
-    """
-    使用 `autouse = True` 表示该 `fixture` 会被自动调用,
-    无需通过参数引用
-    """
+    """使用 `autouse = True` 表示该 `fixture` 会被自动调用, 无需通过参数引用"""
+
     assert step.state == "ready"
 
     # 先将状态设置为 running
@@ -26,18 +24,14 @@ def autouse_fixture() -> Generator[None, None, None]:
 
 
 def test_autouse_fixture() -> None:
-    """
-    `autouse_fixture` 函数会被在每个测试中自动调用
-    """
+    """`autouse_fixture` 函数会被在每个测试中自动调用"""
 
     # 确认此时的状态
     assert step.state == "started"
 
 
 def teardown_module() -> None:
-    """
-    当前模块中所有测试执行结束后执行
-    """
+    """当前模块中所有测试执行结束后执行"""
 
     # 所有测试执行结束后的状态
     assert step.state == "finished"

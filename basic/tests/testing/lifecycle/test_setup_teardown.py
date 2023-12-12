@@ -15,22 +15,20 @@ module_step = Step()
 
 
 def setup_module(module: ModuleType) -> None:
-    """
-    函数在模块开始前执行一次
+    """函数在模块开始前执行一次
 
     Args:
-        module (ModuleType): 当前测试的模块对象
+        - `module` (`ModuleType`): 当前测试的模块对象
     """
     assert module == sys.modules[__name__]
     module_step.start()
 
 
 def teardown_module(module: ModuleType) -> None:
-    """
-    函数在模块结束后执行一次
+    """函数在模块结束后执行一次
 
     Args:
-        module (ModuleType): 当前测试的模块对象
+        - `module` (`ModuleType`): 当前测试的模块对象
     """
     # 验证 module 为当前模块的对象
     assert module == sys.modules[__name__]
@@ -45,12 +43,11 @@ def teardown_module(module: ModuleType) -> None:
     assert setup_function_counter.value == teardown_function_counter.value == 2
 
 
-def setup_function(func: Callable) -> None:
-    """
-    在每个测试函数执行开始前执行一次
+def setup_function(func: Callable[..., None]) -> None:
+    """在每个测试函数执行开始前执行一次
 
     Args:
-        func (Callable): 执行的测试函数
+        - `func` (`Callable[..., None]`): 执行的测试函数
     """
     # 验证传入的测试函数对象
     assert func in {test_one, test_two}
@@ -59,12 +56,11 @@ def setup_function(func: Callable) -> None:
     setup_function_counter.increase()
 
 
-def teardown_function(func: Callable) -> None:
-    """
-    在每个测试函数执行结束后执行一次
+def teardown_function(func: Callable[..., None]) -> None:
+    """在每个测试函数执行结束后执行一次
 
     Args:
-        func (Callable): 执行的测试函数
+        - `func` (`Callable[..., None]`): 执行的测试函数
     """
     # 验证传入的测试函数对象
     assert func in {test_one, test_two}
@@ -77,21 +73,15 @@ def teardown_function(func: Callable) -> None:
 
 
 def test_one() -> None:
-    """
-    执行第一个测试函数
-    """
+    """执行第一个测试函数"""
 
 
 def test_two() -> None:
-    """
-    执行第二个测试函数
-    """
+    """执行第二个测试函数"""
 
 
 class TestCase:
-    """
-    测试类
-    """
+    """测试类"""
 
     # 记录 setup_class 方法调用次数
     setup_class_counter = Counter()
@@ -123,9 +113,8 @@ class TestCase:
 
     @classmethod
     def teardown_class(cls) -> None:
-        """
-        测试类结束后执行一次
-        """
+        """测试类结束后执行一次"""
+
         # 验证测试类执行步骤为 start
         assert cls.class_step.state == "started"
 
@@ -134,27 +123,20 @@ class TestCase:
 
         # 验证 teardown_class 方法比 setup_class 此时少调用一次
         assert (
-            cls.teardown_class_counter.value
-            ==
-            cls.setup_class_counter.value - 1 == 0
+            cls.teardown_class_counter.value == cls.setup_class_counter.value - 1 == 0
         )
 
         # 验证 setup_method 和 teardown_method 此时均调用两次
-        assert (
-            cls.setup_method_counter.value
-            ==
-            cls.teardown_method_counter.value == 2
-        )
+        assert cls.setup_method_counter.value == cls.teardown_method_counter.value == 2
 
         # 记录 teardown_class 调用次数加 1
         cls.teardown_class_counter.increase()
 
-    def setup_method(self, method: Callable) -> None:
-        """
-        类中每个测试方法执行前执行一次
+    def setup_method(self, method: Callable[..., None]) -> None:
+        """类中每个测试方法执行前执行一次
 
         Args:
-            method (Callable): 要执行的测试方法对象
+            - `method` (`Callable[..., None]`): 要执行的测试方法对象
         """
         # 验证传入的测试方法对象
         assert method in {self.test_three, self.test_four}
@@ -165,12 +147,11 @@ class TestCase:
         # 设置 setup_method 方法调用次数加 1
         self.setup_method_counter.increase()
 
-    def teardown_method(self, method: Callable) -> None:
-        """
-        类中每个测试方法结束后执行一次
+    def teardown_method(self, method: Callable[..., None]) -> None:
+        """类中每个测试方法结束后执行一次
 
         Args:
-            method (Callable): 要执行的测试方法对象
+            - `method` (`Callable[..., None]`): 要执行的测试方法对象
         """
 
         # 验证传入的测试方法对象
@@ -183,21 +164,13 @@ class TestCase:
         self.method_step.finish()
 
         # 验证 teardown_method 方法比 setup_method 此时少调用一次
-        assert (
-            self.teardown_method_counter.value
-            ==
-            self.setup_method_counter.value - 1
-        )
+        assert self.teardown_method_counter.value == self.setup_method_counter.value - 1
 
         # 标记 teardown_method 方法执行次数加 1
         self.teardown_method_counter.increase()
 
     def test_three(self) -> None:
-        """
-        第一个测试方法
-        """
+        """第一个测试方法"""
 
     def test_four(self) -> None:
-        """
-        第二个测试方法
-        """
+        """第二个测试方法"""

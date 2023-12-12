@@ -1,11 +1,12 @@
 import io
 import pickle
 
-from io_ import PersonModel
+from io_.model import PersonModel
 
 
 def test_dump_load_function() -> None:
-    """
+    """测试 `pickle` 包的 `dump` 函数
+
     测试通过 `pickle` 包的 `dump` 函数可以将一个对象进行序列化并存储到 IO 对象中
     """
     # 字典对象序列化
@@ -52,7 +53,8 @@ def test_dump_load_function() -> None:
 
 
 def test_dumps_loads_function() -> None:
-    """
+    """测试 `pickle` 包的 `dumps` 函数
+
     测试通过 `pickle` 包的 `dumps` 函数可以将一个对象进行序列化
     """
     # 字典对象序列化

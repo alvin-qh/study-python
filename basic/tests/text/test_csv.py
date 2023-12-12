@@ -5,9 +5,8 @@ FILE_NAME = "demo.csv"
 
 
 def test_create_csv_file() -> None:
-    """
-    测试创建一个 csv 文件
-    """
+    """测试创建一个 csv 文件"""
+
     # 表头字段
     cols = ["Id", "Name", "Position"]
 
@@ -32,29 +31,33 @@ def test_create_csv_file() -> None:
         # 读取 csv 文件验证写入成功
         with open(FILE_NAME, "r") as fp:
             # 读取内容为写入的 csv 格式内容
-            assert fp.read() == """Id,Name,Position
+            assert (
+                fp.read()
+                == """Id,Name,Position
 1,Alvin,DEV
 2,Author,BA
 3,Emma,QA
 4,Tom,PM
 """
+            )
     finally:
         os.remove(FILE_NAME)
 
 
 def test_read_csv_file() -> None:
-    """
-    测试读取 csv 文件
-    """
+    """测试读取 csv 文件"""
+
     try:
         # 将 csv 内容写入文件 (字符串形式)
         with open(FILE_NAME, "w") as fp:
-            fp.write("""Id,Name,Position
+            fp.write(
+                """Id,Name,Position
 1,Alvin,DEV
 2,Author,BA
 3,Emma,QA
 4,Tom,PM
-""")
+"""
+            )
         # 读取方式打开文件, 用于读取 csv 内容
         with open(FILE_NAME, "r") as fp:
             # 创建一个 reader 对象用于读取 csv 内容
@@ -78,11 +81,9 @@ def test_read_csv_file() -> None:
 
 
 def test_write_csv_as_dict() -> None:
-    """
-    以字典形式的数据写入 csv
+    """以字典形式的数据写入 csv
 
-    字典数据比上例中的列表数据更加直观, 通过 `DictWriter` 对象, 指定表头字段后, 即可以以表头字段为 Key
-    的字典数据写入内容
+    字典数据比上例中的列表数据更加直观, 通过 `DictWriter` 对象, 指定表头字段后, 即可以以表头字段为 Key 的字典数据写入内容
     """
     # 表头集合
     cols = ["Id", "Name", "Position"]
@@ -110,11 +111,14 @@ def test_write_csv_as_dict() -> None:
         # 读取 csv 文件验证写入成功
         with open(FILE_NAME, "r") as fp:
             # 读取内容为写入的 csv 格式内容
-            assert fp.read() == """Id,Name,Position
+            assert (
+                fp.read()
+                == """Id,Name,Position
 1,Alvin,DEV
 2,Author,BA
 3,Emma,QA
 4,Tom,PM
 """
+            )
     finally:
         os.remove(FILE_NAME)

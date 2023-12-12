@@ -5,8 +5,7 @@ from dateutil import rrule as rr
 
 
 def test_create_date_sequence_by_rule() -> None:
-    """
-    基于规则产生日期
+    """基于规则产生日期
 
     `dateutil.rrule` 包下的 `rrule` 函数用于产生一个 `rrule` 对象, 可以根据规则产生所需的日期时间, 参数包括:
         - `freq` 单位值，包含如下值：
@@ -14,17 +13,15 @@ def test_create_date_sequence_by_rule() -> None:
             - `MONTHLY` 按月为间隔产生序列
             - `WEEKLY` 按周为间隔产生序列
             - `DAILY` 按天为间隔产生序列
-        - `cache` 布尔值, 默认为 `False`, 表示是否缓冲计算结果. 如果调用同一个 `rrule` 对象多次,
-        应该将该参数设为 `True` 以提高性能
+        - `cache` 布尔值, 默认为 `False`, 表示是否缓冲计算结果. 如果调用同一个 `rrule` 对象多次, 应该将该参数设为 `True` 以提高性能
         - `dtstart` `datetime` 对象, 表示序列日期时间的起始值
         - `until` `datetime` 对象, 表示序列日期时间的终止值
         - `interval` 整数值, 默认为 `1`, 表示序列中值的间隔
         - `wkst` 可以为 `MO`, `TU`, `WE` 等常量值或者整数值, 默认为 `None` (周日), 表示每一周起始的星期数
         - `count` 整数值, 默认为 `None` (不限制), 表示序列中产生结果的数量
-        - `bysetpos` 整数序列或整数值, 默认为 `None`, 表示序列中每个 `datetime` 对象的偏移量, 例如
-        `rrule` 的结果为 `[2012-01-01, 2012-02-01]`, 且 `freq=MONTHLY`, 如果设置
-        `bysetpos=1`, 则结果变为 `[2012-01-01]` (取第一个), 如果设置为 `-1`, 则结果变为
-        `[2012-02-01]` (取最后一个)
+        - `bysetpos` 整数序列或整数值, 默认为 `None`, 表示序列中每个 `datetime` 对象的偏移量, 例如 `rrule` 的结果为
+          `[2012-01-01, 2012-02-01]`, 且 `freq=MONTHLY`, 如果设置 `bysetpos=1`, 则结果变为 `[2012-01-01]` (取第一个),
+          如果设置为 `-1`, 则结果变为 `[2012-02-01]` (取最后一个)
         - `bymonth` 整数序列或整数值, 默认为 `None`, 表示在结果中包含指定的月份
         - `bymonthday` 整数序列或整数值, 默认为 `None`, 表示在结果中包含指定的月天数 (一月的第几天)
         - `byyearday` 整数序列或整数值, 默认为 `None`, 表示在结果中包含指定的天数 (一年的第几天)
@@ -104,7 +101,7 @@ def test_create_date_sequence_by_rule() -> None:
         freq=rr.MONTHLY,
         dtstart=start,
         until=date(2022, 10, 1),
-        byweekday=(rr.TU, rr.WE, rr.TH),    # 取值范围为周二, 周三或周四
+        byweekday=(rr.TU, rr.WE, rr.TH),  # 取值范围为周二, 周三或周四
         bysetpos=1,  # 取第一个值
     )
     dates = [(r.date(), rr.weekday(r.weekday())) for r in rules]
@@ -119,24 +116,21 @@ def test_create_date_sequence_by_rule() -> None:
 
 
 def test_create_datetime_sequence_by_rule() -> None:
-    """
-    基于规则产生时间
+    """基于规则产生时间
 
     `dateutil.rrule` 包下的 `rrule` 函数用于产生一个 `rrule` 对象, 可以根据规则产生所需的日期时间, 参数包括:
     - `freq` 单位值, 包含如下值:
         - `HOURLY` 按小时为间隔产生序列
         - `MINUTELY` 按分钟为间隔产生序列
         - `SECONDLY` 按秒为间隔产生序列
-    - `cache` 布尔值, 默认为 `False`, 表示是否缓冲计算结果. 如果调用同一个 `rrule`
-    对象多次, 应该将该参数设为 `True` 以提高性能
+    - `cache` 布尔值, 默认为 `False`, 表示是否缓冲计算结果. 如果调用同一个 `rrule`对象多次, 应该将该参数设为 `True` 以提高性能
     - `dtstart` `datetime` 对象, 表示序列日期时间的起始值
     - `until` `datetime` 对象, 表示序列日期时间的终止值
     - `interval` 整数值, 默认为 `1`, 表示序列中值的间隔
     - `count` 整数值, 默认为 `None` (不限制), 表示序列中产生结果的数量
-    - `bysetpos` 整数序列或整数值, 默认为 `None`, 表示序列中每个 `datetime` 对象的偏移量,
-    例如 `rrule` 的结果为 `[2012-01-01, 2012-02-01]`, 且 `freq=MONTHLY`, 如果设置
-    `bysetpos=1`, 则结果变为 `[2012-01-03]` (取第一个), 如果设置为 `-1`, 则结果变为
-    `[2012-02-01]` (取最后一个)
+    - `bysetpos` 整数序列或整数值, 默认为 `None`, 表示序列中每个 `datetime` 对象的偏移量, 例如:
+      `rrule` 的结果为 `[2012-01-01, 2012-02-01]`, 且 `freq=MONTHLY`, 如果设置`bysetpos=1`, 则结果变为 `[2012-01-03]`
+      (取第一个), 如果设置为 `-1`, 则结果变为 `[2012-02-01]` (取最后一个)
     - `byhour` 整数序列或整数值, 默认为 `None`, 表示在结果中包含指定的小时数
     - `byminute` 整数序列或整数值, 默认为 `None`, 表示在结果中包含指定的分钟数
     - `bysecond` 整数序列或整数值，默认为 `None`, 表示在结果中包含指定的秒数
@@ -217,9 +211,8 @@ def test_create_datetime_sequence_by_rule() -> None:
 
 
 def test_datetime_calculate() -> None:
-    """
-    计算时间间隔
-    """
+    """计算时间间隔"""
+
     # 起始时间
     start = date(2022, 4, 1)
     # 结束时间

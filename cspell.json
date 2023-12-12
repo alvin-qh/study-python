@@ -43,6 +43,7 @@
         "cursorclass",
         "cython",
         "darcs",
+        "datamaker",
         "dateutil",
         "dayfirst",
         "dbutils",

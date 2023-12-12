@@ -2,10 +2,10 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default", "lint", "test"]
+groups = ["default", "lint", "test", "type"]
 strategy = ["cross_platform"]
 lock_version = "4.4"
-content_hash = "sha256:edc5055a84720197193bec6c4bd6f016ded2f0816f011227cea8bc7ea55a42e3"
+content_hash = "sha256:9c965eb24df262f1bbbdeaa9bc5488d80c66d0e223138296d234ca464ea3db57"
 
 [[package]]
 name = "atomics"
@@ -371,6 +371,15 @@ summary = "Sorted Containers -- Sorted List, Sorted Dict, Sorted Set"
 files = [
     {file = "sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0"},
     {file = "sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88"},
+]
+
+[[package]]
+name = "types-python-dateutil"
+version = "2.8.19.14"
+summary = "Typing stubs for python-dateutil"
+files = [
+    {file = "types-python-dateutil-2.8.19.14.tar.gz", hash = "sha256:1f4f10ac98bb8b16ade9dbee3518d9ace017821d94b057a425b069f834737f4b"},
+    {file = "types_python_dateutil-2.8.19.14-py3-none-any.whl", hash = "sha256:f977b8de27787639986b4e28963263fd0e5158942b3ecef91b9335c130cb1ce9"},
 ]
 
 [[package]]

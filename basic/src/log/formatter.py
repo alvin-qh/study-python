@@ -5,37 +5,34 @@ FormatStyle: TypeAlias = Literal["%", "{", "$"]
 
 
 class RequestFormatter(Formatter):
-    """
-    自定义 `log` 内容格式化器
-    """
+    """自定义日志格式化器"""
 
     def __init__(
-            self,
-            fmt: Optional[str] = None,
-            datefmt: Optional[str] = None,
-            style: FormatStyle = "%",
-            extra: Optional[Dict[str, str]] = None) -> None:
-        """
-        初始化格式化器
+        self,
+        fmt: Optional[str] = None,
+        datefmt: Optional[str] = None,
+        style: FormatStyle = "%",
+        extra: Optional[Dict[str, str]] = None,
+    ) -> None:
+        """初始化格式化器
 
         Args:
-            fmt (Optional[str], optional): 日志格式化模板. Defaults to None.
-            datefmt (Optional[str], optional): 日期格式化模板. Defaults to None.
-            style (str, optional): 日志模板中变量的前缀字符串. Defaults to "%".
-            extra (Optional[Dict[str, str]], optional): 扩展参数. Defaults to None.
+            - `fmt` (`Optional[str]`, optional): 日志格式化模板. Defaults to `None`.
+            - `datefmt` (`Optional[str]`, optional): 日期格式化模板. Defaults to `None`.
+            - `style` (`str`, optional): 日志模板中变量的前缀字符串. Defaults to `"%"`.
+            - `extra` (`Optional[Dict[str, str]]`, optional): 扩展参数. Defaults to `None`.
         """
         super().__init__(fmt, datefmt, style)
         self._extra = extra
 
     def format(self, record: LogRecord) -> str:
-        """
-        格式化 `log` 内容
+        """格式化日志内容
 
         Args:
-            record (LogRecord): log 内容对象, 表示一条日志
+            - `record` (`LogRecord`): 日志内容对象, 表示一条日志
 
         Returns:
-            str: 格式化后的日志字符串
+            `str`: 格式化后的日志字符串
         """
         # 可以为 record 对象增加自定义变量的值
         # 自定义变量可以通过日志模板中的 %(<变量名>)s 进行替换输出

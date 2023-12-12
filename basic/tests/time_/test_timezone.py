@@ -5,9 +5,8 @@ from dateutil import tz
 
 
 def test_locale_and_utc() -> None:
-    """
-    本地时间和 UTC 时间
-    """
+    """本地时间和 UTC 时间"""
+
     # 获取本地时区的当前时间, 不包含时区信息
     t_loc = datetime.now()
     # 获取 UTC 时区的当前时间, 然后去除时区信息
@@ -28,11 +27,11 @@ ZONE = "Asia/Shanghai"
 
 
 def test_pytz() -> None:
-    """
-    测试 pytz 库的时区
+    """测试 pytz 库的时区
 
-    注意, pytz 的时区使用的时 LMT (Local Mean Time), 例如 Asia/Shanghai 这个时区并不是
-    中国标准时区, 具体的值为 UTC+08:06, 即比标准中国时区多 6 分钟
+    注意, pytz 的时区使用的时 LMT (Local Mean Time), 例如 Asia/Shanghai 这个时区并不是中国标准时区, 具体的值为 UTC+08:06,
+    即比标准中国时区多 6 分钟
+
     ! Asia/Shanghai 时区用于时区转换的结果是正确的, 但如果直接用其来设置时区则会出多 6 分钟的问题
     """
     # 获取内置的所有时区
@@ -69,8 +68,7 @@ def test_pytz() -> None:
 
 
 def test_change_timezone() -> None:
-    """
-    通过 `datetime` 对象的 `astimezone` 方法可以改变当前时间的时区
+    """通过 `datetime` 对象的 `astimezone` 方法可以改变当前时间的时区
 
     该操作会将时间改为符合所给时区的值
     """
@@ -109,8 +107,7 @@ def test_change_timezone() -> None:
 
 
 def test_replace_timezone() -> None:
-    """
-    强行替换时区
+    """强行替换时区
 
     `datetime` 对象的 `replace(tz=...)` 可以在不改变时间值的前提下, 更换一个新时区
     """
@@ -131,8 +128,7 @@ def test_replace_timezone() -> None:
 
 
 def test_create_timezone() -> None:
-    """
-    通过字符串定义时区信息
+    """通过字符串定义时区信息
 
     POSIX1003.1 timezone string format:
 
@@ -272,7 +268,7 @@ def test_create_timezone() -> None:
     # 定义一个时区, 正常时间为 东 8 区 时间, 夏令时为 东 9 区 时间, 夏令时开始时间为 6 月
     # 第一个星期天到 9 月最后一个星期天
     # M6.1.0 即 6 月第一周第 0 天 (周日), M9.5.0 即 9 月 第 5 周 (最后一周) 第 0 天 (周日)
-    tzinfo = tz.tzstr('RPC-8CRPC-9,M6.1.0/02:00,M9.5.0/10:00')
+    tzinfo = tz.tzstr("RPC-8CRPC-9,M6.1.0/02:00,M9.5.0/10:00")
 
     # 测试正常时间区间
     t_rpc = datetime(2022, 4, 1, 20, 22, 22, tzinfo=tzinfo)

@@ -9,18 +9,16 @@ def find_all_files(
     single_level: bool = False,
     yield_folders: bool = False,
 ) -> Iterator[str]:
-    """
-    查找指定路径下的所有内容
+    """查找指定路径下的所有内容
 
     Args:
-        path_ (str): 要访问的路径 (相对路径/绝对路径)
-        pattern (str, optional): 要匹配的模式, 可包含通配符. 多个模式使用 `;` 隔开.
-        Defaults to "*".
-        single_level (bool, optional): 是否只遍历第一层. Defaults to False.
-        yield_folders (bool, optional): 在遍历结果中是否包含文件夹. Defaults to False.
+        - `path_` (`str`): 要访问的路径 (相对路径/绝对路径)
+        - `pattern` (`str`, optional): 要匹配的模式, 可包含通配符. 多个模式使用 `;` 隔开. Defaults to `*`.
+        - `single_level` (`bool`, optional): 是否只遍历第一层. Defaults to False.
+        - `yield_folders` (`bool`, optional): 在遍历结果中是否包含文件夹. Defaults to False.
 
     Yields:
-        Iterator[str]: _description_
+        `Iterator[str]`: 文件内容迭代
     """
     patterns = pattern.split(";")
 

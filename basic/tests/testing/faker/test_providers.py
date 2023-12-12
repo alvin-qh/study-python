@@ -15,9 +15,8 @@ fake.add_provider(MedicalProfessionsProvider)
 
 
 def test_static_custom_provider() -> None:
-    """
-    测试静态自定义测试用例生成器
-    """
+    """测试静态自定义测试用例生成器"""
+
     # 调用 CustomProvider 类型的 number 方法, 产生一个随机整数值
     value = fake.number(1, 100)
 
@@ -28,9 +27,8 @@ def test_static_custom_provider() -> None:
 
 
 def test_dynamic_custom_provider() -> None:
-    """
-    测试动态用例生成器
-    """
+    """测试动态用例生成器"""
+
     # 调用 medical_professions_provider 产生测试用例值
     value = fake.medical_profession()
 
@@ -39,10 +37,11 @@ def test_dynamic_custom_provider() -> None:
 
 
 def test_provider_bothify() -> None:
-    """
-    通过 `bothify` 方法产生任意数字和字母组合的字符串, 其定义如下:
+    """通过 `bothify` 方法产生任意数字和字母组合的字符串
 
-    ```
+    其定义如下:
+
+    ```python
     bothify(
         text: str = "## ??",
         letters: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -60,10 +59,11 @@ def test_provider_bothify() -> None:
 
 
 def test_provider_hexify() -> None:
-    """
-    产生任意一位 16 进制数字, 其定义如下:
+    """产生任意一位 16 进制数字
 
-    ```
+    其定义如下:
+
+    ```python
     hexify(
         text: str = "^^^^",
         upper: bool = False
@@ -80,10 +80,11 @@ def test_provider_hexify() -> None:
 
 
 def test_provider_language_code() -> None:
-    """
-    产生一个随机的 i18n 语言代码 (例如: `en`, `zh`), 其定义如下:
+    """产生一个随机的 i18n 语言代码 (例如: `en`, `zh`)
 
-    ```
+    其定义如下:
+
+    ```python
     language_code(
         min_length: Optional[int] = None,
         min_length: Optional[int] = None
@@ -102,10 +103,11 @@ def test_provider_language_code() -> None:
 
 
 def test_provider_lexify() -> None:
-    """
-    生成任意字符, 其定义如下:
+    """生成任意字符
 
-    ```
+    其定义如下:
+
+    ```python
     lexify(
         text: str = "????",
         letters: str = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
@@ -125,10 +127,11 @@ def test_provider_lexify() -> None:
 
 
 def test_provider_locale() -> None:
-    """
-    生成随机的 i18n 本地化地区代码, 其定义如下:
+    """生成随机的 i18n 本地化地区代码
 
-    ```
+    其定义如下:
+
+    ```python
     locale() -> str
     ```
 
@@ -142,10 +145,11 @@ def test_provider_locale() -> None:
 
 
 def test_provider_numerify() -> None:
-    """
-    产生随机数字, 其定义如下:
+    """产生随机数字
 
-    ```
+    其定义如下:
+
+    ```python
     numerify(text: str = "###") -> str
     ```
 
@@ -164,10 +168,11 @@ def test_provider_numerify() -> None:
 
 
 def test_provider_random_choices() -> None:
-    """
-    从已知集合中挑选指定个数的任意元素组成新的集合, 其定义如下:
+    """从已知集合中挑选指定个数的任意元素组成新的集合
 
-    ```
+    其定义如下:
+
+    ```python
     random_choices(
         elements: Collection[T] = ("a", "b", "c"),
         length: Optional[int] = None
@@ -181,9 +186,7 @@ def test_provider_random_choices() -> None:
     elements = ["a", "b", "c", "d"]
 
     # 在已知集合中随机挑选元素组成新集合
-    value = fake.random_choices(
-        elements=elements
-    )
+    value = fake.random_choices(elements=elements)
 
     # 确认结果是已知集合的子集
     assert len(value) <= len(elements)
@@ -191,10 +194,11 @@ def test_provider_random_choices() -> None:
 
 
 def test_provider_random_digit() -> None:
-    """
-    产生 `0`~`9` 之间的随机数字, 其定义如下:
+    """产生 `0`~`9` 之间的随机数字
 
-    ```
+    其定义如下:
+
+    ```python
     random_digit() -> int
     ```
     """
@@ -203,10 +207,11 @@ def test_provider_random_digit() -> None:
 
 
 def test_provider_random_digit_not_null() -> None:
-    """
-    产生 `1`~`9` 之间的随机数字, 其定义如下:
+    """产生 `1`~`9` 之间的随机数字
 
-    ```
+    其定义如下:
+
+    ```python
     random_digit_not_null() -> int
     ```
     """
@@ -215,10 +220,11 @@ def test_provider_random_digit_not_null() -> None:
 
 
 def test_provider_random_digit_not_null_or_empty() -> None:
-    """
-     产生 `1`~`9` 之间的随机数字或一个空字符串, 其定义如下:
+    """产生 `1`~`9` 之间的随机数字或一个空字符串
 
-    ```
+    其定义如下:
+
+    ```python
     random_digit_not_null_or_empty() -> Union[int, str]
     ```
     """
@@ -230,10 +236,11 @@ def test_provider_random_digit_not_null_or_empty() -> None:
 
 
 def test_provider_random_digit_or_empty() -> None:
-    """
-     产生 `0`~`9` 之间的随机数字或一个空字符串, 其定义如下:
+    """产生 `0`~`9` 之间的随机数字或一个空字符串
 
-    ```
+    其定义如下:
+
+    ```python
     random_digit_or_empty() -> Union[int, str]
     ```
     """
@@ -245,10 +252,11 @@ def test_provider_random_digit_or_empty() -> None:
 
 
 def test_provider_random_element() -> None:
-    """
-    从集合中随机选取一个元素, 其定义如下:
+    """从集合中随机选取一个元素
 
-    ```
+    其定义如下:
+
+    ```python
     random_element(
         elements: Collection[T] = ("a", "b", "c"),
         min_element_length: Optional[int] = None,
@@ -268,10 +276,11 @@ def test_provider_random_element() -> None:
 
 
 def test_provider_random_elements() -> None:
-    """
-    从集合中随机选取任意若干元素并组成新的集合, 其定义如下:
+    """从集合中随机选取任意若干元素并组成新的集合
 
-    ```
+    其定义如下:
+
+    ```python
     random_elements(
         elements: Collection[T] = ("a", "b", "c"),
         length: Optional[int] = None,
@@ -301,10 +310,11 @@ def test_provider_random_elements() -> None:
 
 
 def test_provider_random_int() -> None:
-    """
-    产生一个随机数字, 其定义如下:
+    """产生一个随机数字
 
-    ```
+    其定义如下:
+
+    ```python
     random_int(
         min: int = 0,
         max: int = 9999,
@@ -326,10 +336,11 @@ def test_provider_random_int() -> None:
 
 
 def test_provider_random_letter() -> None:
-    """
-    产生一个随机字母, 包含大小写, 其定义如下:
+    """产生一个随机字母, 包含大小写
 
-    ```
+    其定义如下:
+
+    ```python
     random_letter() -> str
     ```
     """
@@ -341,10 +352,11 @@ def test_provider_random_letter() -> None:
 
 
 def test_provider_random_letters() -> None:
-    """
-    产生一组指定长度的随机字母集合, 包含大小写, 其定义如下:
+    """产生一组指定长度的随机字母集合, 包含大小写
 
-    ```
+    其定义如下:
+
+    ```python
     random_letters(length: int = 16) -> Sequence[str]
     ```
     """
@@ -357,10 +369,11 @@ def test_provider_random_letters() -> None:
 
 
 def test_provider_random_lowercase_letter() -> None:
-    """
-    产生一个随机小写字母, 其定义如下:
+    """产生一个随机小写字母
 
-    ```
+    其定义如下:
+
+    ```python
     random_lowercase_letter() -> str
     ```
     """
@@ -372,10 +385,11 @@ def test_provider_random_lowercase_letter() -> None:
 
 
 def test_provider_random_number() -> None:
-    """
-    产生一个随机整数, 其定义如下:
+    """产生一个随机整数
 
-    ```
+    其定义如下:
+
+    ```python
     random_number(
         digits: Optional[int] = None,
         fix_len: bool = False
@@ -383,10 +397,8 @@ def test_provider_random_number() -> None:
     ```
 
     其中:
-    - `digits` 参数, 如果为 `None` (默认值), 则生成任意随机整数; 如果为其它整数值 `n`,
-      则生成 `n` 位整数
-    - `fix_len` 参数, 如果为 `False`, 则生成不超过 `digits` 位数的随机整数; 如果为
-      `True` 则生成等于 `digits` 位数的随机整数
+    - `digits` 参数, 如果为 `None` (默认值), 则生成任意随机整数; 如果为其它整数值 `n`, 则生成 `n` 位整数
+    - `fix_len` 参数, 如果为 `False`, 则生成不超过 `digits` 位数的随机整数; 如果为 `True` 则生成等于 `digits` 位数的随机整数
     """
     value = fake.random_number(digits=3, fix_len=True)
     assert isinstance(value, int)
@@ -394,9 +406,8 @@ def test_provider_random_number() -> None:
 
 
 def test_provider_random_sample() -> None:
-    """
-    依据一个集合, 随机生成其子集合
-    """
+    """依据一个集合, 随机生成其子集合"""
+
     elements = ["a", "b", "c", "d", "e", "f"]
 
     # 从 elements 集合中随机产生长度为 4 的子集合
@@ -413,10 +424,11 @@ def test_provider_random_sample() -> None:
 
 
 def test_provider_random_uppercase_letter() -> None:
-    """
-    产生一个随机的大写字母, 其定义如下:
+    """产生一个随机的大写字母
 
-    ```
+    其定义如下:
+
+    ```python
     random_uppercase_letter() -> str
     ```
     """
@@ -428,10 +440,9 @@ def test_provider_random_uppercase_letter() -> None:
 
 
 def test_provider_randomize_nb_elements() -> None:
-    """
-    产生一个在指定值附近的随机数
+    """产生一个在指定值附近的随机数
 
-    ```
+    ```python
     randomize_nb_elements(
         number: int = 10,
         le: bool = False,
@@ -442,15 +453,12 @@ def test_provider_randomize_nb_elements() -> None:
     ```
 
     其中:
-    - `le` 参数: 如果为 `False` (默认值), 允许生成最多为 `number` 的 `140%`; 如果为
-      `True`, 则生成的上限为 `100%`
-    - `ge` 参数: 如果为 `False` (默认值), 则允许生成数量减少到 `60%`; 如果为
-      `True`, 则下限生成上限为 `100%`
-    - `min` 参数: 如果提供了 `min` 的数值, 则生成小于 `min` 的值不小于 `min`
-      值; 如果提供了 `max` 的数值, 则生成大于 `max` 的值不大于 `max`
+    - `le` 参数: 如果为 `False` (默认值), 允许生成最多为 `number` 的 `140%`; 如果为 `True`, 则生成的上限为 `100%`
+    - `ge` 参数: 如果为 `False` (默认值), 则允许生成数量减少到 `60%`; 如果为 `True`, 则下限生成上限为 `100%`
+    - `min` 参数: 如果提供了 `min` 的数值, 则生成小于 `min` 的值不小于 `min` 值; 如果提供了 `max` 的数值,
+    则生成大于 `max` 的值不大于 `max`
 
-    如果 `le` 和 `ge` 都为 `True`, 则 `number` 的值将自动返回, 而不管 `min` 和
-    `max` 的值是多少
+    如果 `le` 和 `ge` 都为 `True`, 则 `number` 的值将自动返回, 而不管 `min` 和 `max` 的值是多少
     """
     base = 100
 

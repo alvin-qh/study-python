@@ -1,13 +1,14 @@
 import binascii
 
-from io_ import crc64_long
+from io_.crc64 import crc64_long
 
 
 def test_bytes_and_bytearray() -> None:
+    """测试字节串
+
+    `bytes` 对象表示一个无法修改的字节串, `bytearray` 表示一个可以修改的字节串
     """
-    `bytes` 对象表示一个无法修改的字节串.
-    `bytearray` 表示一个可以修改的字节串
-    """
+
     # 定义一个 bytes 类型的串
     bs = b"Hello Python"
     assert isinstance(bs, bytes)
@@ -37,9 +38,7 @@ def test_bytes_and_bytearray() -> None:
 
 
 def test_encode_and_decode() -> None:
-    """
-    测试字符串的编码和解码
-    """
+    """测试字符串的编码和解码"""
 
     s = "大家好"
 
@@ -57,29 +56,25 @@ def test_encode_and_decode() -> None:
 
 
 def test_crc_32() -> None:
-    """
-    测试生成 crc32 校验码
-    """
+    """测试生成 crc32 校验码"""
 
     # 生成 10 字节数据
     data = bytearray(range(1, 10))
     # 生成校验码
-    crc = binascii.crc32(data) & 0xffffffff
+    crc = binascii.crc32(data) & 0xFFFFFFFF
     # 确认校验码
     assert crc == 1089448862
 
     # 修改 1 字节数据
     data[3] = 11
     # 生成校验码
-    crc = binascii.crc32(data) & 0xffffffff
+    crc = binascii.crc32(data) & 0xFFFFFFFF
     # 生成不同的校验码
     assert crc == 2981697867
 
 
 def test_crc_64() -> None:
-    """
-    测试生成 crc64 校验码
-    """
+    """测试生成 crc64 校验码"""
 
     # 生成 10 字节数据
     data = bytearray(range(1, 10))

@@ -99,6 +99,7 @@ class Cache:
 
     def clear(self) -> None:
         """清空缓存内容"""
+
         self._data = {}
 
 
@@ -187,11 +188,11 @@ def _interpolate_str(
     通过获取 `func` 的参数名列表, 参数值列表和默认参数值列表, 组成 {参数名, 参数值} 的字典对象. 以该字典对象对 `fmt` 参数进行字符串格式化,
     得到一个作为缓存 key 的字符串.
 
-    例如, 对于函数 `def demo(a: int, b: Optional[str]=None)` 来说
-    - Key 为 `demo_{a}_{b}`, 若参数 `a` 为 `1`, 则返回 `demo_1_None`
+    例如, 对于函数 `def demo(a: int, b: Optional[str]=None)` 来说, Key 为 `demo_{a}_{b}`, 若参数 `a` 为 `1`,
+    则返回 `demo_1_None`
 
-    对于方法 `def demo(self, a: int, b: Optional[str]=None)` 来说
-    - Key 为 `demo_{self.id}_{a}_{b}`, 若 `self.id` 为 `100`, 参数 `a` 为 1, 则返回 `demo_100_1_None`
+    对于方法 `def demo(self, a: int, b: Optional[str]=None)` 来说, Key 为 `demo_{self.id}_{a}_{b}`, 若 `self.id` 为 `100`,
+    参数 `a` 为 1, 则返回 `demo_100_1_None`
 
     Args:
         - `fmt` (`str`): 格式化字符串

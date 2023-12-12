@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 
 def init_crc64_tables(
@@ -7,14 +7,15 @@ def init_crc64_tables(
     poly64_rev_h: int,
     bit_toggle: int,
 ) -> None:
-    """
-    生成 crc64 计算辅助表, 该表分为 高位表 和 低位表
+    """生成 crc64 计算辅助表
+
+    该表分为 高位表 和 低位表
 
     Args:
-        crc_table_h (List[int]): 保存计算表高位数据
-        crc_table_l (List[int]): 保存计算表低位数据
-        poly64_rev_h (int): 生成多项式 (假设低 `32` 位为 `0`)
-        bit_toggle (int): 掩码
+        - `crc_table_h` (`List[int]`): 保存计算表高位数据
+        - `crc_table_l` (`List[int]`): 保存计算表低位数据
+        - `poly64_rev_h` (`int`): 生成多项式 (假设低 `32` 位为 `0`)
+        - `bit_toggle` (in`t): 掩码
     """
     for i in range(256):
         part_l = i
@@ -38,25 +39,27 @@ def init_crc64_tables(
 CRC64_TABLE_H = [0] * 256
 CRC64_TABLE_L = [0] * 256
 
+# 创建 crc64 速查表
 init_crc64_tables(
     crc_table_h=CRC64_TABLE_H,
     crc_table_l=CRC64_TABLE_L,
-    poly64_rev_h=0xd8000000,
+    poly64_rev_h=0xD8000000,
     bit_toggle=1 << 31,
 )
 
 
-def crc64(data: bytes | bytearray, crc_h: int = 0, crc_l: int = 0) -> Tuple[int, int]:
-    """
-    计算 crc64
+def crc64(
+    data: Union[bytes, bytearray], crc_h: int = 0, crc_l: int = 0
+) -> Tuple[int, int]:
+    """计算 crc64
 
     Args:
-        data (bytes | bytearray): 用来计算 CRC 的数据
-        crc_h (int, optional): 高位初始值. Defaults to `0`.
-        crc_l (int, optional): 低位初始值. Defaults to `0`.
+        - `data` (`Union[bytes, bytearray]`): 用来计算 CRC 的数据
+        - `crc_h` (`int`, optional): 高位初始值. Defaults to `0`.
+        - `crc_l` (`int`, optional): 低位初始值. Defaults to `0`.
 
     Returns:
-        Tuple[int, int]: 返回 crc64 结果的高低位
+        `Tuple[int, int]`: 返回 crc64 结果的高低位
     """
 
     if isinstance(data, bytearray):
@@ -73,16 +76,15 @@ def crc64(data: bytes | bytearray, crc_h: int = 0, crc_l: int = 0) -> Tuple[int,
     return crc_h, crc_l
 
 
-def crc64_long(data: bytes | bytearray, crc_val: int = 0) -> int:
-    """
-    计算 CRC64 值, 并返回 `long` 类型结果
+def crc64_long(data: Union[bytes, bytearray], crc_val: int = 0) -> int:
+    """计算 CRC64 值
 
     Args:
-        data (bytes | bytearray): 用来计算 CRC64 的数据
-        crc_val (int, optional): CRC64 初始值. Defaults to `0`.
+        `data` (`Union[bytes, bytearray]`): 用来计算 CRC64 的数据
+        `crc_val` (`int`, optional): CRC64 初始值. Defaults to `0`.
 
     Returns:
-        int: crc64 值
+        `int`: crc64 值
     """
     crc_h, crc_l = crc64(
         data,

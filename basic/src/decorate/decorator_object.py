@@ -118,6 +118,7 @@ class Logger:
 
     def reset(self) -> None:
         """重置缓存"""
+
         self._buf.seek(0)
 
     def __str__(self) -> str:

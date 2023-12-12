@@ -13,8 +13,7 @@ _FORMAT = (
 
 
 def test_log_format() -> None:
-    """
-    测试为日志设置格式化器
+    """测试为日志设置格式化器
 
     格式化器可以输出特殊格式的日志字符串, 也可以为日志对象 (LogRecord) 增加额外的参数
     """
@@ -26,7 +25,7 @@ def test_log_format() -> None:
     # 扩展参数
     extra_dict = {
         "s_name": "Alvin",
-        "s_org": "alvin.study"
+        "s_org": "alvin.study",
     }
 
     # 获取 root 日志对象

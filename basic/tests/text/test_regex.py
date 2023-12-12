@@ -3,20 +3,16 @@ from typing import Any
 
 
 def test_match_pattern() -> None:
-    """
-    `re` 包的 `match` 函数用于通过一个模式对字符串进行匹配
+    """`re` 包的 `match` 函数用于通过一个模式对字符串进行匹配
 
-    `match(pattern, str, flags=0) -> bool` 函数通过 `pattern` 模式字符串对 `str` 进行匹配.
-    其中 `flags` 参数取值如下:
+    `match(pattern, str, flags=0) -> bool` 函数通过 `pattern` 模式字符串对 `str` 进行匹配.其中 `flags` 参数取值如下:
 
     - `re.A` (或 `re.ASCII`): 令 `\\w`, `\\W`, `\\b`, `\\B` 模式只对 ASCII 字符有效
     - `re.DEBUG`: 显示调试日志
     - `re.I` (或 `re.IGNORECASE`): 匹配时忽略大小写
-    - `re.L` (或 `re.LOCALE`): 令 `\\w`, `\\W`, `\\b`, `\\B` 模式以及忽略大小写标记通过
-    本地语言进行处理
+    - `re.L` (或 `re.LOCALE`): 令 `\\w`, `\\W`, `\\b`, `\\B` 模式以及忽略大小写标记通过本地语言进行处理
     - `re.M` (或 `re.MULTILINE`): 允许处理多行文本
-    - `re.S` (或 `re.DOTALL`): 令 `.` 模式匹配所有字符, 包括换行符; 否则 `.` 模式不匹配换行符. 对应的内联标
-    记为 (`?s`).
+    - `re.S` (或 `re.DOTALL`): 令 `.` 模式匹配所有字符, 包括换行符; 否则 `.` 模式不匹配换行符. 对应的内联标记为 (`?s`).
     - `re.X` (或 `re.VERBOSE`): 该模式下可以支持可读性更好的正则表达式, 即允许模块化和添加注释
     """
     # 定义电话号码的模式
@@ -73,11 +69,10 @@ def test_match_pattern() -> None:
 
 
 def test_find_all_matched_part() -> None:
-    """
-    查找所有和模式匹配的部分, 返回这些匹配结果组成的集合
+    """查找所有和模式匹配的部分, 返回这些匹配结果组成的集合
 
-    `findall` 函数返回所有匹配的结果组成的集合
-    `finditer` 函数返回所有匹配结果 Match 对象的迭代器
+    - `findall` 函数返回所有匹配的结果组成的集合
+    - `finditer` 函数返回所有匹配结果 Match 对象的迭代器
     """
     r: Any
 
@@ -96,9 +91,8 @@ def test_find_all_matched_part() -> None:
 
 
 def test_split() -> None:
-    """
-    通过正则表达式切分一个字符串, 返回切分结果的列表集合对象
-    """
+    """通过正则表达式切分一个字符串, 返回切分结果的列表集合对象"""
+
     # 用于切分字符串的正则表达式
     pattern = r"\s+"
 
@@ -112,13 +106,10 @@ def test_split() -> None:
     # 验证切分结果, 最后一部分因为限制未进行切分
     assert r == ["abc", "def", "ghi\tjkl"]
 
-    # cspell: enable
-
 
 def test_substring() -> None:
-    """
-    通过正则获取子字符串
-    """
+    """通过正则获取子字符串"""
+
     # 子字符串获取正则表达式
     pattern = r"\d+"
 
@@ -136,14 +127,13 @@ def test_substring() -> None:
     index = 0
 
     def repl(m: re.Match) -> str:
-        """
-        过程中回调函数, 传入每次计算出的子字符串, 返回将该字符串替换为的新字符串
+        """过程中回调函数, 传入每次计算出的子字符串, 返回将该字符串替换为的新字符串
 
         Args:
-            m (re.Match): 每次切分的部分
+            - `m` (`re.Match`): 每次切分的部分
 
         Returns:
-            str: 要将切分部分替换为的字符串
+            `str`: 要将切分部分替换为的字符串
         """
         nonlocal index
 
@@ -161,9 +151,8 @@ def test_substring() -> None:
 
 
 def test_search_and_grouping() -> None:
-    """
-    对所给的正则表达式进行完整匹配, 并获取分组结果
-    """
+    """对所给的正则表达式进行完整匹配, 并获取分组结果"""
+
     # 正则表达式会匹配 4 个分组, 均为整数, 用 "," 分隔
     # "?P<n1>" 是分组的名称
     pattern = r"(?P<n1>\d+),(\d+),(?P<n2>\d+),(\d+)"
@@ -194,8 +183,7 @@ def test_search_and_grouping() -> None:
 
 
 def test_compile_pattern() -> None:
-    """
-    编译正则表达式
+    """编译正则表达式
 
     对于需要重复使用的正则表达式, 可以将其进行编译, 加快使用效率
     """
@@ -243,11 +231,9 @@ def test_compile_pattern() -> None:
 
 
 def test_escape1() -> None:
-    """
-    将正则表达式里的特殊字符进行转义
+    """将正则表达式里的特殊字符进行转义
 
-    一些特殊字符是正则表达式的保留字符, 如果要表达字符的原义则需要进行转义. 例如:
-    反斜杠字符, 如果要表达 "反斜杠" 字符的原义, 则需要写为 `\\`
+    一些特殊字符是正则表达式的保留字符, 如果要表达字符的原义则需要进行转义. 例如: 反斜杠字符, 如果要表达 "反斜杠" 字符的原义, 则需要写为 `\\`
     """
     # 对特殊字符 [, ], -, \ 进行转义
     esp = re.escape(r"[-\]")
@@ -260,14 +246,12 @@ def test_escape1() -> None:
     # 使用转义后的正则字符串
     r = rx.findall(r"-\]a[")
     # 验证结果
-    assert r == ['-', '\\', ']', '[']
+    assert r == ["-", "\\", "]", "["]
 
 
 def test_escape2() -> None:
-    """
-    对于用传入的字符串作为正则一部分来进行匹配时, 最优方式是对内容进行一次转义操作, 保证
-    不会受到特殊字符的影响
-    """
+    """对于用传入的字符串作为正则一部分来进行匹配时, 最优方式是对内容进行一次转义操作, 保证不会受到特殊字符的影响"""
+
     characters = {
         "a": "A",
         "b": "B",
@@ -283,14 +267,13 @@ def test_escape2() -> None:
     rx = re.compile(pattern)
 
     def replace(mo: re.Match) -> str:
-        """
-        对正则匹配结果进行替换的回调方法
+        """对正则匹配结果进行替换的回调方法
 
         Args:
-            mo (re.Match): 匹配成功的 Match 对象
+            - `mo` (`re.Match`): 匹配成功的 Match 对象
 
         Returns:
-            str: 要替换为的字符串
+            `str`: 要替换为的字符串
         """
         return characters[mo.group(0)]
 

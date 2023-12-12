@@ -3,16 +3,15 @@ import shutil
 from fnmatch import fnmatch
 from typing import Iterator, List, Optional, Union
 
-from io_ import find_all_files
+from io_.finder import find_all_files
 from pytest import raises
 
 _CUR_DIR = os.path.dirname(__file__)
 
 
 def test_join_function() -> None:
-    """
-    将多个路径拼合成一个完整路径
-    """
+    """将多个路径拼合成一个完整路径"""
+
     p1 = "a/b/c/d"
     p2 = "x/y"
     p3 = "test.txt"
@@ -23,9 +22,8 @@ def test_join_function() -> None:
 
 
 def test_split_function() -> None:
-    """
-    将路径分割为 目录 和 文件名
-    """
+    """将路径分割为 目录 和 文件名"""
+
     p = os.path.split("/usr/local/bin/vim")
 
     # 返回结果第 1 项为目录, 第 2 项为文件名
@@ -33,9 +31,8 @@ def test_split_function() -> None:
 
 
 def test_abspath_function() -> None:
-    """
-    获取相对路径对应的绝对路径
-    """
+    """获取相对路径对应的绝对路径"""
+
     # 获取指定相对路径的绝对路径
     p = os.path.abspath("./io_/test_path.py")
 
@@ -44,9 +41,8 @@ def test_abspath_function() -> None:
 
 
 def test_listdir_function() -> None:
-    """
-    列举目录下面的内容, 包含文件和子路径
-    """
+    """列举目录下面的内容, 包含文件和子路径"""
+
     # 列举 io_ 目录下的所有内容
     items = os.listdir(_CUR_DIR)
 
@@ -56,14 +52,13 @@ def test_listdir_function() -> None:
 
 
 def test_isdir_isfile_function() -> None:
-    """
-    判断指定的路径表示 目录 还是 文件
-    """
+    """判断指定的路径表示 目录 还是 文件"""
+
     # 当前路径下的 io_ 是一个子路径
     assert os.path.isdir(_CUR_DIR) is True
 
     # 当前路径下的 requirements.txt 是一个文件
-    assert os.path.isfile("requirements.txt") is True
+    assert os.path.isfile("README.md") is True
 
 
 PATH_1 = "a"
@@ -72,17 +67,15 @@ PATHS = "a/b/c"
 
 
 def teardown_function() -> None:
-    """
-    当每个测试结束后执行
-    """
+    """当每个测试结束后执行"""
+
     for dir in [PATH_1, PATH_2]:
         shutil.rmtree(dir, ignore_errors=True)
 
 
 def test_dir_operates() -> None:
-    """
-    创建和删除路径
-    """
+    """创建和删除路径"""
+
     # 创建路径
     os.mkdir(PATH_1)
     # 判断指定路径已存在
@@ -97,9 +90,8 @@ def test_dir_operates() -> None:
 
 
 def test_dirs_operates() -> None:
-    """
-    创建和删除深层次路径
-    """
+    """创建和删除深层次路径"""
+
     # 创建路径
     os.makedirs(PATHS, mode=0o777, exist_ok=True)
     # 判断指定路径已存在
@@ -114,9 +106,8 @@ def test_dirs_operates() -> None:
 
 
 def test_splitext_function() -> None:
-    """
-    将一个文件名分为两部分: (文件名, 扩展名)
-    """
+    """将一个文件名分为两部分: (文件名, 扩展名)"""
+
     r = os.path.splitext("~/Music/Hello.mp3")
 
     # 获取文件名部分
@@ -126,8 +117,7 @@ def test_splitext_function() -> None:
 
 
 def test_fnmatch_function() -> None:
-    """
-    判断一个文件名是否和所给的相符
+    """判断一个文件名是否和所给的相符
 
     可以使用通配符匹配文件名
     """
@@ -142,9 +132,8 @@ def test_fnmatch_function() -> None:
 
 
 def test_find_all_files() -> None:
-    """
-    测试 find_all_files 函数
-    """
+    """测试 `find_all_files` 函数"""
+
     # 获取当前路径下匹配 *.py 的文件
     files: Union[List[str], Iterator[str]] = find_all_files(_CUR_DIR, "*.py")
     files = sorted(map(lambda n: os.path.relpath(n, _CUR_DIR), files))
@@ -161,12 +150,11 @@ def test_find_all_files() -> None:
 
 
 def touch(path_: str, filenames: Iterator[str]) -> None:
-    """
-    创建一个空文件
+    """创建指定路径下的若干空文件
 
     Args:
-        path (_type_): _description_
-        file_names (_type_): _description_
+        - `path` (`str`): 路径
+        - `file_names` (`Iterator[str]`): 文件名列表
     """
     for name in filenames:
         with open(os.path.join(path_, name), "w"):
@@ -174,14 +162,13 @@ def touch(path_: str, filenames: Iterator[str]) -> None:
 
 
 def test_remove_no_empty_folder() -> None:
-    """
-    删除一个非空目录
+    """删除一个非空目录
 
-    如果目录下仅包含空目录, 则可以通过 os.removedirs 函数删除顶层目录
-    但如果有任意子目录包含文件, 则都无法删除上层目录
+    如果目录下仅包含空目录, 则可以通过 os.removedirs 函数删除顶层目录, 但如果有任意子目录包含文件, 则都无法删除上层目录
 
-    可以通过 shutil.rmtree 函数删除目录以及其下所有子目录和文件
+    可以通过 `shutil.rmtree` 函数删除目录以及其下所有子目录和文件
     """
+
     sub_path = "b/c"
 
     full_path = os.path.join(PATH_1, sub_path)
@@ -206,25 +193,24 @@ def test_remove_no_empty_folder() -> None:
 
 
 def test_rename_file_or_dir() -> None:
-    """
-    对文件 (或路径进行重命名)
+    """对文件 (或路径进行重命名)
 
-    所谓重命名, 即将一个文件名称改为另一个文件名称, 或将一个路径名称改为另一个路径名称
-    在此过程中, 文件或路径的内容和属性不变
+    所谓重命名, 即将一个文件名称改为另一个文件名称, 或将一个路径名称改为另一个路径名称, 在此过程中, 文件或路径的内容和属性不变
     """
-    def make_file_in_dir(dir=PATH_1, filename: Optional[str] = None) -> str:
-        """
-        在指定路径下创建一个空文件
+
+    def make_file_in_dir(dir: str = PATH_1, filename: Optional[str] = None) -> str:
+        """在指定路径下创建一个空文件
 
         Args:
-            dir (str, optional): 文件路径. Defaults to PATH_1.
-            filename (str, optional): 文件名. Defaults to None.
+            - `dir` (`str`, optional): 文件路径. Defaults to `PATH_1`.
+            - `filename` (`str`, optional): 文件名. Defaults to `None`.
 
         Returns:
-            str: 完整的文件路径名称
+            `str`: 完整的文件路径名称
         """
         # 创建目标路径
         os.mkdir(dir)
+
         # 是否进一步创建文件
         if not filename:
             return dir

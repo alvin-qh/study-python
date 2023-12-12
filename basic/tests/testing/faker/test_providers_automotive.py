@@ -7,10 +7,11 @@ fake = Faker()
 
 
 def test_provider_license_plate() -> None:
-    """
-    产生一组随机的车牌号码, 其定义如下:
+    """产生一组随机的车牌号码
 
-    ```
+    其定义如下:
+
+    ```python
     license_plate() -> str
     ```
     """

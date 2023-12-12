@@ -12,10 +12,11 @@ _examples = []
 @settings(max_examples=50)
 @given(n=st.integers(min_value=1, max_value=10))
 def test_hypothesis_settings(n: int) -> None:
-    """
-    设置假设用例的配置, 不同的配置会对假设的测试用例数量, 范围以及测试本身产生不同的影响
+    """设置假设用例的配置
 
-    ```
+    不同的配置会对假设的测试用例数量, 范围以及测试本身产生不同的影响
+
+    ```python
     class hypothesis.settings(
         parent=None,
         *,
@@ -48,12 +49,11 @@ def test_hypothesis_settings(n: int) -> None:
 
 
 @settings(verbosity=Verbosity.verbose)
-@given(lst=st.lists(
-    elements=st.integers(min_value=1, max_value=10), min_size=1),
+@given(
+    lst=st.lists(elements=st.integers(min_value=1, max_value=10), min_size=1),
 )
 def test_intermediate_result(lst: List[int]) -> None:
-    """
-    输出更为详细的测试用例执行情况
+    """输出更为详细的测试用例执行情况
 
     `@settings(verbosity=Verbosity.verbose)` 输出测试函数和每个假设的参数值
     """
@@ -65,32 +65,28 @@ def test_intermediate_result(lst: List[int]) -> None:
 @given(v=st.floats())
 # @reproduce_failure('6.54.2', b'ACABAP/4AAAAAAAA')  # cspell: disable-line
 def test_print_blob(v: float) -> None:
-    """
-    输出数据库中记录的失败记录索引, 并重新执行相同的用例
+    """输出数据库中记录的失败记录索引, 并重新执行相同的用例
 
-    通过标记 `@settings(print_blob=True)`, 当测试失败后, 输出对应测试用例的记录索引,
-    根据提示, 通过类似 `@reproduce_failure('6.54.2', b'ACABAP/4AAAAAAAA')` 的标记,
-    即可重新执行一次失败用例
+    通过标记 `@settings(print_blob=True)`, 当测试失败后, 输出对应测试用例的记录索引, 根据提示, 通过类似
+    `@reproduce_failure('6.54.2', b'ACABAP/4AAAAAAAA')` 的标记, 即可重新执行一次失败用例
     """
     # 当 v = nan 时引发断言, nan 无法进行比较
     assert v == v
 
 
-@settings(phases=[
-    Phase.generate,
-    Phase.reuse,
-    Phase.shrink,
-    Phase.target,
-    Phase.explain,
-])
+@settings(
+    phases=[
+        Phase.generate,
+        Phase.reuse,
+        Phase.shrink,
+        Phase.target,
+        Phase.explain,
+    ]
+)
 @example(n=0)  # 由于没有 Phase.explicit 阶段, 所以该代码无效
-@given(n=(
-    st.integers(min_value=1)
-    .filter(lambda n: n % 2 == 0)
-))
+@given(n=(st.integers(min_value=1).filter(lambda n: n % 2 == 0)))
 def test_control_testing_running(n: int) -> None:
-    """
-    配置假设值生成的阶段
+    """配置假设值生成的阶段
 
     假设的测试用例生成遵循如下几个阶段:
     - 执行 `@example` 装饰器定义的显式用例;
@@ -108,10 +104,9 @@ def test_control_testing_running(n: int) -> None:
     - shrink: 是否对测试用例进行收缩操作
     - explain: 是否对失败代码进行解释并产生对应的测试用例
 
-    可以在测试测试启动命令行中加入 `--hypothesis-show-statistics` 参数, 将在终端中生成
-    各个阶段的假设生成的具体信息, 输出下列内容:
+    可以在测试测试启动命令行中加入 `--hypothesis-show-statistics` 参数, 将在终端中生成各个阶段的假设生成的具体信息, 输出下列内容:
 
-    ```plaintext # noqa
+    ```plaintext
     - during generate phase (0.11 seconds):
       - Typical runtimes: < 1ms, ~ 56% in data generation
       - 100 passing examples, 0 failing examples, 20 invalid examples
@@ -133,40 +128,35 @@ def test_control_testing_running(n: int) -> None:
     max_examples=3,
     suppress_health_check=[HealthCheck.too_slow],
 )
-@given(ss=st.builds(  # 通过 builds 方法假设用例, 即用例通过 _data_generator 函数产生
-    delay_data_generator,
-    count=st.integers(  # 传递给 _data_generator 函数的 count 参数
-        min_value=1,
-        max_value=5,
-    ),
-))
+@given(
+    ss=st.builds(  # 通过 builds 方法假设用例, 即用例通过 _data_generator 函数产生
+        delay_data_generator,
+        count=st.integers(  # 传递给 _data_generator 函数的 count 参数
+            min_value=1,
+            max_value=5,
+        ),
+    )
+)
 def test_disable_health_check(ss: Sequence[str]) -> None:
-    """
-    Health Check (健康检查) 是一套检查假设执行是否正确的机制, 如果健康检查失败, 则测试会
-    因为抛出 `FailedHealthCheck` 异常而被打断
+    """Health Check (健康检查) 是一套检查假设执行是否正确的机制, 如果健康检查失败, 则测试会因为抛出 `FailedHealthCheck` 异常而被打断
 
-    `@settings` 装饰器的 `suppress_health_check` 参数可以设置禁用那些健康检查的项目,
-    以保证在特殊情况下, 测试得以正常执行
+    `@settings` 装饰器的 `suppress_health_check` 参数可以设置禁用那些健康检查的项目, 以保证在特殊情况下, 测试得以正常执行
 
     可以禁用的健康检查项在 `hypothesis.HealthCheck` 枚举中定义, 定义的检查项包括:
 
     - `data_too_large`: 检查是否因为假设产生的数据过大, 从而阻碍了太多的测试用例无法执行.
-                        这个检查项不是依据假设值对象大小来计算的, 例如在已生成的对象中选
-                        中一个 `100MB` 的对象和从头开始生成一个 `10KB` 的对象两种情况,
-                        后者才会引发检查失败
+                        这个检查项不是依据假设值对象大小来计算的, 例如在已生成的对象中选中一个 `100MB` 的对象和从头开始生成一个 `10KB`
+                        的对象两种情况, 后者才会引发检查失败
     - `filter_too_much`: 检查在产生假设用例时, 是否过滤掉了太多的用例
     - `too_slow`: 产生假设用例时消耗了过多时间
     - `return_value`: 检查测试函数是否返回了非 `None` 值, 通常这是没有必要的
-    - `large_base_example`: 检查执行 shrink 操作的原始测试用例是否过大, 这通常意味着产
-                            生原始假设用例的策略不对
+    - `large_base_example`: 检查执行 shrink 操作的原始测试用例是否过大, 这通常意味着产生原始假设用例的策略不对
     - `not_a_test_method`: 检查 `@given` 装饰器是否用在了非测试函数上
-    - `function_scoped_fixture`: 检查 `@given` 注解是否用在了具备 `@fixture` 注解
-                                 (scope 为 `function` 的情况下) 的函数上, 这样会导
-                                 致 `fixture` 为每个假设用例执行一次, 这通常不符合预
-                                 期
+    - `function_scoped_fixture`: 检查 `@given` 注解是否用在了具备 `@fixture` 注解 (scope 为 `function` 的情况下) 的函数上,
+                                 这样会导致 `fixture` 为每个假设用例执行一次, 这通常不符合预期
 
-    本例中演示了一个产生测试用例非常缓慢的场景, 如果不通过 `suppress_health_check` 禁止
-    掉 `HealthCheck.too_slow` 项, 则会引发健康检查失败, 从而结束测试
+    本例中演示了一个产生测试用例非常缓慢的场景, 如果不通过 `suppress_health_check` 禁止掉 `HealthCheck.too_slow` 项,
+    则会引发健康检查失败, 从而结束测试
     """
     # 确认参数为列表集合类型
     assert isinstance(ss, List)
@@ -177,8 +167,7 @@ def test_disable_health_check(ss: Sequence[str]) -> None:
 
 
 def test_settings_object() -> None:
-    """
-    如何创建各类 `settings` 对象
+    """如何创建各类 `settings` 对象
 
     - 默认的 `settings` 对象, 即不使用 `@settings` 装饰器时默认使用的 `settings` 对象
     - 可以通过 `settings` 类型创建自定义的对象, 通过 `@settings` 装饰器设置
@@ -206,8 +195,8 @@ def test_settings_object() -> None:
 
 
 def test_use_profile() -> None:
-    """
-    `settings.register_profile` 方法可以注册一个命名的配置信息, 并在之后进行获取和使用,
+    """`settings.register_profile` 方法可以注册一个命名的配置信息, 并在之后进行获取和使用
+
     其定义如下:
 
     ```python
@@ -219,14 +208,11 @@ def test_use_profile() -> None:
     ```
 
     获取配置文件的方式有两种:
-    - `settings.get_profile(name)` 获取之前注册的配置文件, 返回一个 `settings` 对象,
-      为之前注册的配置信息
-    - `settings.load_profile(name)` 读取之前注册的配置文件, 将会覆盖默认的配置信息, 之
-      后通过 `settings()` 实例化的对象, 其内容为注册的配置信息
+    - `settings.get_profile(name)` 获取之前注册的配置文件, 返回一个 `settings` 对象, 为之前注册的配置信息
+    - `settings.load_profile(name)` 读取之前注册的配置文件, 将会覆盖默认的配置信息, 之后通过 `settings()` 实例化的对象,
+       其内容为注册的配置信息
 
-    另外的使用方式包括:
-    在测试命令行中指定要使用的配置文件名称, 当前需要提前注册对应的配置文件 (例如在
-    `conftest.py` 文件中进行注册)
+    另外的使用方式包括: 在测试命令行中指定要使用的配置文件名称, 当前需要提前注册对应的配置文件 (例如在 `conftest.py` 文件中进行注册)
 
     ```bash
     pytest tests --hypothesis-profile <profile-name>
@@ -257,10 +243,8 @@ def test_use_profile() -> None:
     assert s.max_examples == 1000
 
 
-def teardown_function(fn: Callable) -> None:
-    """
-    测试结束后, 验证最终结果
-    """
+def teardown_function(fn: Callable[..., None]) -> None:
+    """测试结束后, 验证最终结果"""
     if fn == test_hypothesis_settings:
         # 检测 max_examples 设置是否生效, 确认用例被执行的次数
         assert 1 <= len(_examples) <= 50

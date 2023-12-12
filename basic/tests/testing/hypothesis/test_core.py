@@ -14,25 +14,24 @@ from hypothesis import target
 
 @given(x=st.integers(), y=st.integers())
 def test_given(x: int, y: int) -> None:
-    """
-    本例演示了如何使用 `@given` 装饰器, 该装饰器定义如下:
+    """本例演示了如何使用 `@given` 装饰器
 
-    ```
+    该装饰器定义如下:
+
+    ```python
     hypothesis.given(
         *_given_arguments,  # 要假设的参数, 按测试函数的参数位置设置
         **_given_kwargs     # 要假设的参数, 按测试函数的参数名称设置
     )
     ```
 
-    `@given` 装饰器用于提供一组 "假设", 该组假设中包含了指定类型的随机数据 (包括边界数据),
-    以这组数据为驱动, 驱动测试执行
+    `@given` 装饰器用于提供一组 "假设", 该组假设中包含了指定类型的随机数据 (包括边界数据), 以这组数据为驱动, 驱动测试执行
 
-    `@given(x=st.integers(), y=st.integers())` 表示会给测试函数 `x`, `y` 两个参数,
-    整数类型
+    `@given(x=st.integers(), y=st.integers())` 表示会给测试函数 `x`, `y` 两个参数, 整数类型
 
     本例中还是用到了 `note` 函数, 定义如下:
 
-    ```
+    ```python
     hypothesis.note(value)
     ```
 
@@ -49,18 +48,18 @@ expected_str = set()
 @example(s="alvin")
 @example(s="emma")
 def test_example_decorator(s: str) -> None:
-    """
-    本例演示了 `@example` 装饰器, 定义如下:
+    """本例演示了 `@example` 装饰器
 
-    ```
+    定义如下:
+
+    ```python
     hypothesis.example(
         *args,      # 要确定的参数, 按测试函数的参数位置设置
         **kwargs    # 要确定的参数, 按测试函数的参数名称设置
     )
     ```
 
-    `@example` 装饰器用于指定必须产生的测试参数值, 无论设置的
-    参数值是否已被假设, 其都必然通过参数传递给测试
+    `@example` 装饰器用于指定必须产生的测试参数值, 无论设置的参数值是否已被假设, 其都必然通过参数传递给测试
     """
     # 当测试失败时, 在标准输出打印指定内容
     note(f"given s={s}")
@@ -71,7 +70,7 @@ def test_example_decorator(s: str) -> None:
         note(f"filtered s={s}")
 
         # 确认字符串的所有字符都有 ASCII 字符组成
-        for c in cast(str, s):
+        for c in s:
             assert 0 < ord(c) < 128
 
     if s in {"alvin", "emma"}:
@@ -80,31 +79,27 @@ def test_example_decorator(s: str) -> None:
 
 
 def test_example_output() -> None:
-    """
-    通过 `example()` 方法获取测试用例
+    """通过 `example()` 方法获取测试用例
 
     本例中获取 `10` 个测试用例
     """
-    examples = [
-        st.integers(min_value=0, max_value=10).example()
-        for _ in range(10)
-    ]
+    examples = [st.integers(min_value=0, max_value=10).example() for _ in range(10)]
     assert len(examples) == 10
     assert all(0 <= n <= 10 for n in examples)
 
 
-@given(s=st.text(
-    alphabet=(  # 字符串由 A-Za-z 字符组成
-        [chr(c) for c in range(ord("a"), ord("z"))] +
-        [chr(c) for c in range(ord("A"), ord("Z"))]
+@given(
+    s=st.text(
+        alphabet=(  # 字符串由 A-Za-z 字符组成
+            [chr(c) for c in range(ord("a"), ord("z"))]
+            + [chr(c) for c in range(ord("A"), ord("Z"))]
+        )
     )
-))
+)
 def test_assume(s: str) -> None:
-    """
-    排除无效的参数
+    """排除无效的参数
 
-    `assume(condition)` 函数会在当条件为 `False` 时, 跳过当前测试, 这样可以忽略
-    一些不满足要求的假设, 让测试可以按最初的设计正常执行
+    `assume(condition)` 函数会在当条件为 `False` 时, 跳过当前测试, 这样可以忽略一些不满足要求的假设, 让测试可以按最初的设计正常执行
     """
     # 跳过 s 为 None 或 空字符串 的情况
     assume(s)
@@ -116,13 +111,11 @@ def test_assume(s: str) -> None:
 
 @given(n=st.integers().filter(lambda x: x % 2 == 0))
 def test_event_output(n: int) -> None:
-    """
-    输出事件信息, 以便对假设用例的产生做更进一步的说明.
-    要查看详细的测试用例产生日志, 需要在测试启动命令行上加入
-    `--hypothesis-show-statistics` 参数
+    """输出事件信息, 以便对假设用例的产生做更进一步的说明
 
-    本例中执行 `pytest testing/hypothesis/test_core.py::test_event --hypothesis-show-statistics`
-    命令行后, 可以看到如下输出:
+    要查看详细的测试用例产生日志, 需要在测试启动命令行上加入 `--hypothesis-show-statistics` 参数
+
+    本例中执行 `pytest testing/hypothesis/test_core.py::test_event --hypothesis-show-statistics` 命令行后, 可以看到如下输出:
 
     ``` # noqa
     testing/hypothesis/test_core.py::test_event:
@@ -149,22 +142,19 @@ def test_event_output(n: int) -> None:
 
 @given(n=st.integers(min_value=-100, max_value=100))
 def test_hypothesis_target(n: int) -> None:
-    """ # noqa
-    target 方法可以对一个目标结果进行观察, 目标结果是一个 `int` 或 `float` 类型值, 可以
-    表示任意指标
+    """target 方法可以对一个目标结果进行观察, 目标结果是一个 `int` 或 `float` 类型值, 可以表示任意指标
 
-    指标值可以为
+    指标值可以为:
     — 集合中的元素或队列中的任务数
     - 任务的平均运行时间或最大运行时间 (如果使用 `label` 参数，则两者皆可)
     - 数据的压缩比 (可能是每个算法或每个级别)
     - 状态机执行的步骤数
 
-    可选的 `label` 参数可以用来区分. 因此分别优化不同的观察结果，比如:
-    数据集的平均值和标准差
+    可选的 `label` 参数可以用来区分. 因此分别优化不同的观察结果，比如: 数据集的平均值和标准差
 
     通过如下命令执行测试, 可以看到指标的统计结果
 
-    ```
+    ```python
     pytest testing/hypothesis/test_core.py::test_hypothesis_target --hypothesis-show-statistics
     ```
     """
@@ -174,10 +164,9 @@ def test_hypothesis_target(n: int) -> None:
         target(n, label="positive")
 
 
-def teardown_function(fn: Callable) -> None:
-    """
-    测试结束后验证整体结果
-    """
+def teardown_function(fn: Callable[[str], None]) -> None:
+    """测试结束后验证整体结果"""
+
     if fn == test_example_decorator:
         # 确认 test_example 中指定的测试用例被执行
         assert expected_str == {"alvin", "emma"}

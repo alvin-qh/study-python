@@ -1,27 +1,11 @@
 import gzip
 import os
 import shutil
-import struct
 import zipfile
 from datetime import datetime
 
-
-def make_data() -> bytes:
-    """
-    产生一组数据用于测试
-
-    Returns:
-        bytes: 产生的数据集合
-    """
-    data = bytearray()
-
-    # 遍历 1000 个整数
-    for n in range(0, 1000):
-        # 将整数逐个写入 byte 集合
-        data += struct.pack("i", n)
-
-    return bytes(data)
-
+from io_.datamaker import make_bytes_data_from_nums
+from io_.utils import compare_file
 
 # 压缩文件名
 ZIP_FILE = "demo.zip"
@@ -35,9 +19,8 @@ UNZIP_TARGET_PATH = "_unzip"
 
 
 def teardown_function() -> None:
-    """
-    每个测试结束后执行
-    """
+    """每个测试结束后执行"""
+
     # 删除测试文件
     if os.path.exists(ZIP_FILE):
         os.remove(ZIP_FILE)
@@ -48,11 +31,12 @@ def teardown_function() -> None:
 
 
 def test_zip_unzip_data() -> None:
-    """
+    """测试文件的压缩和解压
+
     `zipfile` 包下 `ZipFile` 类对象表示一个压缩文件对象
     """
     # 产生一组数据
-    data = make_data()
+    data = make_bytes_data_from_nums()
     now = datetime.now().timetuple()[:6]
 
     # 创建一个可写入的压缩文件对象, 使用 DEFLATED 算法
@@ -100,26 +84,8 @@ def test_zip_unzip_data() -> None:
             assert zf.read(zi) == data
 
 
-def compare_file(file_a: str, file_b: str) -> bool:
-    """
-    比较两个文件是否相同
-
-    Args:
-        file_a (str): 第一个文件名
-        file_b (str): 第二个文件名
-
-    Returns:
-        bool: 是否相同
-    """
-    with open(file_a, "rb") as fa:
-        with open(file_b, "rb") as fb:
-            return fa.read() == fb.read()
-
-
 def test_compress_and_decompress_files() -> None:
-    """
-    测试压缩文件和解压缩文件
-    """
+    """测试压缩文件和解压缩文件"""
 
     # 获取当前路径
     curdir = os.path.dirname(__file__)
@@ -190,11 +156,10 @@ def test_compress_and_decompress_files() -> None:
 
 
 def test_gzip() -> None:
-    """
-    测试 GZip
-    """
+    """测试 GZip"""
+
     # 产生一组数据
-    data = make_data()
+    data = make_bytes_data_from_nums()
 
     # 压缩数据, 获取被压缩数据
     z_data = gzip.compress(data)

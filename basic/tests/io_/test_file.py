@@ -1,5 +1,5 @@
-"""
-`open(file_name, open_mode[, buffering, encoding) -> file`
+"""`open(file_name, open_mode[, buffering, encoding) -> file`
+
 该函数用于打开一个文件, 参数为:
     - `file_name` 参数用于指定文件的路径和名称
     - `open_mode` 参数是一个字符串，表示打开文件的方式，所有的方式如下
@@ -30,17 +30,14 @@ FILENAME = "file_test.txt"
 
 
 def teardown_function() -> None:
-    """
-    每个测试结束后, 删除测试文件
-    """
+    """每个测试结束后, 删除测试文件"""
+
     if os.path.exists(FILENAME):
         os.remove(FILENAME)
 
 
 def test_open_file_as_text_mode() -> None:
-    """
-    测试以默认的文本方式打开文件
-    """
+    """测试以默认的文本方式打开文件"""
 
     # 以读写方式打开文件
     with open(FILENAME, "w", encoding="gbk") as fp:
@@ -96,6 +93,8 @@ def test_open_file_as_text_mode() -> None:
 
 
 def test_open_file_as_binary_mode() -> None:
+    """测试以二进制方式打开文件"""
+
     with open(FILENAME, "wb") as fp:
         # 判断打开文件的文件名
         assert fp.name == FILENAME
@@ -144,14 +143,15 @@ def test_open_file_as_binary_mode() -> None:
 
 
 def test_line_cache() -> None:
-    """
+    """测试文件行缓存
+
     按文件名按行对文件内容进行缓存, 并在读取的时候从缓存中进行
 
     仅对于需要频繁读取的文件操作需要
     """
     # 产生 5 行数据并写入文件
     lines = ["{}\n".format(n) for n in range(1, 6)]
-    with open(FILENAME, "w", encoding='utf8') as fp:
+    with open(FILENAME, "w", encoding="utf8") as fp:
         fp.writelines(lines)
 
     # 从 cache 中读取第 1 行数据
@@ -167,9 +167,8 @@ def test_line_cache() -> None:
 
 
 def test_temp_file() -> None:
-    """
-    操作临时文件
-    """
+    """测试操作临时文件"""
+
     # 创建临时文件
     h, fn = tempfile.mkstemp(".zip")
     # 关闭文件句柄

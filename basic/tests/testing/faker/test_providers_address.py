@@ -8,10 +8,9 @@ fake = Faker("en_US")  # 设置 Faker 产生数据的地区范围, en_US 为默�
 
 
 def test_provider() -> None:
-    """
-    产生一个随机的地址, 其定义如下:
+    """产生一个随机的地址, 其定义如下:
 
-    ```
+    ```python
     address() -> str
     ```
     """
@@ -20,10 +19,11 @@ def test_provider() -> None:
 
 
 def test_provider_building_number() -> None:
-    """
-    产生一个随机的楼号, 其定义如下:
+    """产生一个随机的楼号
 
-    ```
+    其定义如下:
+
+    ```python
     building_number() -> str
     ```
     """
@@ -35,10 +35,11 @@ def test_provider_building_number() -> None:
 
 
 def test_provider_city() -> None:
-    """
-    产生一个随机的城市名称, 其定义如下:
+    """产生一个随机的城市名称
 
-    ```
+    其定义如下:
+
+    ```python
     city() -> str
     ```
     """
@@ -80,24 +81,23 @@ def test_provider_country_code() -> None:
     ```
 
     其中:
-    - `representation` 参数表示国家代码的标准, 默认为 ISO 3166-1 alpha-2,
-      ISO 3166-1 为国际标准, alpha-2 表示用 2 个字母表示
+    - `representation` 参数表示国家代码的标准, 默认为 ISO 3166-1 alpha-2, ISO 3166-1 为国际标准, alpha-2 表示用 2 个字母表示
     """
     value = fake.country_code()
     assert len(value) == 2
 
 
 def test_provider_current_country() -> None:
-    """
-    获取当前国家名称, 其定义如下:
+    """获取当前国家名称
 
-    ```
+    其定义如下:
+
+    ```python
     current_country_code() -> str
     ```
 
-    注意: `Faker` 类型的默认构造器传递的本地化代码为 `"en_US"`, 所以
-    `current_country` 返回的值为 "United States", 如果改为 `"zh_CN"`, 则
-    `current_country` 返回的值为 "People's Republic of China"
+    注意: `Faker` 类型的默认构造器传递的本地化代码为 `"en_US"`, 所以 `current_country` 返回的值为 "United States",
+    如果改为 `"zh_CN"`, 则 `current_country` 返回的值为 "People's Republic of China"
     """
     value = fake.current_country()
     assert value == "United States"
@@ -107,7 +107,7 @@ def test_provider_postcode() -> None:
     """
     获取一个随机的邮政编码
 
-    ```
+    ```python
     postcode() -> str
     ```
     """
@@ -119,9 +119,11 @@ def test_provider_postcode() -> None:
 
 def test_provider_street_address() -> None:
     """
-    随机产生一个精确到街道的地址数据, 定义如下:
+    随机产生一个精确到街道的地址数据
 
-    ```
+    定义如下:
+
+    ```python
     street_address() -> str
     ```
     """
@@ -134,9 +136,11 @@ def test_provider_street_address() -> None:
 
 def test_provider_street_name() -> None:
     """
-    随机产生一个街道名称, 其定义如下:
+    随机产生一个街道名称
 
-    ```
+    其定义如下:
+
+    ```python
     street_name() -> str
     ```
     """
@@ -147,10 +151,11 @@ def test_provider_street_name() -> None:
 
 
 def test_provider_street_suffix() -> None:
-    """
-    随机产生一个街道名称的后缀, 其定义如下:
+    """随机产生一个街道名称的后缀
 
-    ```
+    其定义如下:
+
+    ```python
     street_suffix() -> str
     ```
     """

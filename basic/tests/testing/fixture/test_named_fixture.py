@@ -8,11 +8,10 @@ fixture_name = FixtureName()
 
 @fixture
 def default_name_fixture() -> Generator[str, None, None]:
-    """
-    `@fixture` 装饰器在默认情况下, 以其修饰的函数名为 `fixture` 名称
+    """`@fixture` 装饰器在默认情况下, 以其修饰的函数名为 `fixture` 名称
 
     Yields:
-        Generator[None, None, None]: 返回传入测试函数的参数值
+        `Generator[None, None, None]`: 返回传入测试函数的参数值
     """
 
     # 存储当前 fixture 的名称
@@ -27,11 +26,10 @@ def default_name_fixture() -> Generator[str, None, None]:
 
 @fixture(name="specify_named_fixture")
 def specify_named_fixture() -> Generator[str, None, None]:
-    """
-    @fixture 装饰器的 name 参数可以设定该 fixture 的名称
+    """`@fixture` 装饰器的 name 参数可以设定该 fixture 的名称
 
     Yields:
-        Generator[str, None, None]: 返回传入测试函数的参数值
+        `Generator[str, None, None]`: 返回传入测试函数的参数值
     """
 
     # 存储当前 fixture 的名称
@@ -46,8 +44,7 @@ def specify_named_fixture() -> Generator[str, None, None]:
 
 @mark.usefixtures("default_name_fixture")
 def test_default_name_fixture() -> None:
-    """
-    测试名称为 `default_name_fixture` 的 `fixture`
+    """测试名称为 `default_name_fixture` 的 `fixture`
 
     `usefixtures` 装饰器表示该测试要使用的 `fixture` 名称
     """
@@ -55,11 +52,10 @@ def test_default_name_fixture() -> None:
 
 
 def test_specify_named_fixture(specify_named_fixture: str) -> None:
-    """
-    测试名称为 `specify_named_fixture` 的 `fixture`
+    """测试名称为 `specify_named_fixture` 的 `fixture`
 
     Args:
-        specify_named_fixture (str): `specify_named_fixture` 函数的返回值
+        `specify_named_fixture` (`str`): `specify_named_fixture` 函数的返回值
     """
     assert specify_named_fixture == "specify_named_fixture"
     assert fixture_name.value == "specify_named_fixture"

@@ -25,6 +25,7 @@ def test_rerun() -> None:
     """
     # 增加调用次数记录
     counter.increase()
+
     # 验证一共调用 5 次
     assert counter.value == 6
 
