@@ -58,6 +58,7 @@
         "extera",
         "fastapi",
         "fdel",
+        "filelock",
         "finalizer",
         "firstweekday",
         "flatmap",

@@ -2,9 +2,8 @@ from typing import Any
 
 
 def test_copy_dict() -> None:
-    """
-    测试拷贝一个字典对象
-    """
+    """测试拷贝一个字典对象"""
+
     dict_src = {"a": 100, "b": 200}
 
     # 通过 copy 函数进行拷贝
@@ -17,32 +16,26 @@ def test_copy_dict() -> None:
 
 
 class Foo:
-    """
-    定义一个类
-    """
+    """定义一个类"""
 
     def __init__(self, a: Any, b: Any) -> None:
-        """
-        构造器, 设置对象字段
+        """构造器, 设置对象字段
 
         Args:
-            a (Any): a 字段的值
-            b (Any): b 字段的值
+            - `a` (`Any`): `a` 字段的值
+            - `b` (`Any`): `b` 字段的值
         """
         self.a = a
         self.b = b
 
-    def update(self, **kwargs) -> None:
-        """
-        更新对象 __dict__ 内置字典的值
-        """
+    def update(self, **kwargs: Any) -> None:
+        """更新对象 __dict__ 内置字典的值"""
         self.__dict__.update(**kwargs)
 
 
 def test_dict_of_objects() -> None:
-    """
-    测试对象的内置字典
-    """
+    """测试对象的内置字典"""
+
     # 为对象设置字段 a 和 b
     foo = Foo(a=10, b="A")
     # 通过 __dict__ 获取对象的内置字典
@@ -58,9 +51,8 @@ def test_dict_of_objects() -> None:
 
 
 def test_generate_dict_by_for() -> None:
-    """
-    测试通过 for 语句遍历集合并产生字典
-    """
+    """测试通过 `for` 语句遍历集合并产生字典"""
+
     a = [1, 2, 3, 4]
     b = ["A", "B", "C", "D"]
 

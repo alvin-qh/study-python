@@ -9,10 +9,11 @@ from typing import Dict, List, Optional, Tuple
 
 
 def is_prime(n: int, results: List[bool]) -> None:
-    """
-    进程入口函数
+    """进程入口函数
 
-    计算参数 n 是否为质数
+    判断一个数是否质数, 当使用进程池的时候, 由于进程池不共享上下文内存, 所以无法使用闭包函数作为进程入口函数
+
+    必须是全局函数或者类方法
 
     Args:
         - `n` (`int`): 带判断的整数
@@ -34,13 +35,9 @@ def is_prime(n: int, results: List[bool]) -> None:
 
 
 def is_prime_with_extra_arg(n: int, _useless: str = "") -> Tuple[int, bool]:
-    """
-    测试进程池的进程入口函数
+    """进程入口函数
 
-    判断一个数是否质数, 当使用进程池的时候, 由于进程池不共享上下文内存, 所以无法使用闭包函数
-    作为进程入口函数
-
-    必须是全局函数或者类方法
+    本函数具备多个参数, 用于测试多参数情况下进程的启动
 
     Args:
         - `n` (`int`): 待判断的数字
@@ -209,10 +206,9 @@ def is_prime_into_result_object(n: int, result: PrimeResult) -> None:
 def is_prime_into_synchronized_array(
     n: int, results: SynchronizedArray[c_bool]
 ) -> None:
-    """
-    进程入口函数
+    """进程入口函数
 
-    计算参数 `n` 是否为质数, 并将结果写入 `results` 参数, 该参数为一个进程间共享的 `SynchronizedArray` 类型对象
+    本函数会将将结果写入 `results` 参数, 该参数为一个进程间共享的 `SynchronizedArray` 类型对象
 
     Args:
         - `n` (`int`): 带判断的整数
@@ -294,10 +290,9 @@ def is_prime_by_event_queue(
 
 
 def is_prime_by_pipe(conn: Connection) -> None:
-    """
-    进程入口函数
+    """进程入口函数
 
-    从子进程管道中获取整数, 判断其是否为质数, 并将结果写入管道中
+    本函数从子进程管道中获取整数, 判断其是否为质数, 并将结果写入管道中
     """
     # 持续循环, 直到传递 0 或超时
     n: int = 0

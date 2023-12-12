@@ -192,7 +192,8 @@ def test_pool_starmap() -> None:
 
 
 def test_pool_executor_submit() -> None:
-    """
+    """通过进程池执行器启动进程
+
     `concurrent.futures` 包下的 `ProcessPoolExecutor` 类表示一个进程池执行器和进程池 `Pool` 类相比, 使用更灵活. 构造器参数为:
     - `max_workers` workers 的数量
     - `mp_context` 进程上下文
@@ -243,7 +244,8 @@ def test_pool_executor_submit() -> None:
 
 
 def test_pool_executor_map() -> None:
-    """
+    """通过进程池执行器批量启动进程
+
     `concurrent.futures` 包下的 `ProcessPoolExecutor` 类表示一个进程池执行器, 和进程池 `Pool` 类相比, 使用更灵活. 构造器参数为:
     - `max_workers` workers 的数量
     - `mp_context` 进程上下文
@@ -266,15 +268,14 @@ def test_pool_executor_map() -> None:
     with ProcessPoolExecutor(N_PROCESSES) as executor:
         # range(10) 集合的每一项会作为传递给 is_prime 函数的第一个参数
         # repeat("test", 10) 集合的每一项会作为传递给 is_prime 函数的第二个参数
-        r = executor.map(  # type: ignore
-            is_prime_with_extra_arg,
-            range(10),
-            repeat("test"),
-            timeout=1,
+        r = list(
+            executor.map(
+                is_prime_with_extra_arg,
+                range(10),
+                repeat("test"),
+                timeout=1,
+            )
         )
-
-        # 返回结果转为 list
-        r = list(r)
 
     r.sort(key=lambda x: x[0])
 

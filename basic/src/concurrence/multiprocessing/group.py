@@ -34,15 +34,19 @@ class ProcessGroup:
 
     def start(self) -> None:
         """启动所有进程"""
-        # 启动所以进程
         for p in self._ps:
+            # 启动所有进程
             p.start()
 
     def join(self) -> None:
         """等待所有进程结束"""
-        # 等待进程执行完毕
-        for p in self._ps:
-            p.join()
+        ps = [*self._ps]
+
+        while len(ps) > 0:
+            p = ps.pop()
+            p.join(0.05)
+            if p.is_alive():
+                ps.append(p)
 
     def start_and_join(self) -> None:
         """启动所有进程并等待所有进程结束"""

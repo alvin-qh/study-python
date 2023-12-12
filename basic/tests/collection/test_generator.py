@@ -2,21 +2,21 @@ from typing import Generator, Iterator
 
 
 def test_yield_to_create_generator() -> None:
+    """测试 `yield` 关键字
+
+    `yield` 用于返回一个 `Generator` 类型的对象, 接收方可以通过该对象获取函数内生成的结果
     """
-    测试 yield 关键字
-    yield 用于返回一个 Generator 类型的对象, 接收方可以通过该对象获取函数内生成的结果
-    """
-    def xrange(min_: int, max_: int, step=1) -> Iterator[int]:
-        """
-        产生一个从最小值到 (最大值 - 1) 范围内的结果序列
+
+    def xrange(min_: int, max_: int, step: int = 1) -> Iterator[int]:
+        """产生一个从最小值到 (最大值 - 1) 范围内的结果序列
 
         Args:
-            min_ (int): 最小值
-            max_ (int): 最大值
-            step (int, optional): 增长的步长. Defaults to 1.
+            - `min_` (`int`): 最小值
+            - `max_` (`int`): 最大值
+            - `step` (`int`, optional): 增长的步长. Defaults to `1`.
 
         Yields:
-            Iterator[int]: 生成器对象, 相当于 Generator[int, None, None] 类型
+            `Iterator[int]`: 生成器对象, 相当于 `Generator[int, None, None]` 类型
         """
         while min_ < max_:
             yield min_
@@ -30,26 +30,25 @@ def test_yield_to_create_generator() -> None:
 
 
 def test_echo_round() -> None:
-    """
-    测试带回复交互的 Generator 对象
-    """
+    """测试带回复交互的 `Generator` 对象"""
+
     def echo_round() -> Generator[int, float, str]:
-        """
-        返回一个 Generator 对象, 包含三个部分的值
+        """返回一个 `Generator` 对象, 包含三个部分的值
 
         Returns:
-            str: _description_
+            - `str`: 返回生成器对象
 
         Yields:
-            Generator[int, float, str]: 完整的 Generator 对象定义, 包含三部分的值, 分别为：
-                1. Iterate Type: int 类型, 即返回的迭代器包含的值类型
-                2. Send Type: float 类型, 即要发送调用方的值类型
-                3. Return Type: str 类型, 即调用方结束数据生成后返回的值
+            `Generator[int, float, str]`: 完整的 `Generator` 对象定义, 包含三部分的值, 分别为：
+            - Iterate Type: `int` 类型, 即返回的迭代器包含的值类型
+            - Send Type: `float` 类型, 即要发送调用方的值类型
+            - Return Type: `str` 类型, 即调用方结束数据生成后返回的值
         """
         # 获取 send 值, 即外部通过 Generator 对象发送的值
         # yield 0 表示对 Generator 的第一个值是 0
         # 也可以不关注该值, 例如 send = yield 即可
         sent = yield 0
+
         # 判断通过 Generator 对象发送的值不为负数
         while sent >= 0:
             # 对发送回来的值进行四舍五入

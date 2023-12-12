@@ -2,9 +2,8 @@ from pytest import raises
 
 
 def test_set_operators() -> None:
-    """
-    测试 set 对象的运算符
-    """
+    """测试 `set` 对象的运算符"""
+
     s1 = {1, 2, 3}
     s2 = {3, 4, 5}
 
@@ -26,9 +25,8 @@ def test_set_operators() -> None:
 
 
 def test_isdisjoint_method() -> None:
-    """
-    判断两个集合是否具备交集
-    """
+    """判断两个集合是否具备交集"""
+
     s1 = {1, 2, 3}
     s2 = {3, 4, 5}
 
@@ -42,9 +40,8 @@ def test_isdisjoint_method() -> None:
 
 
 def test_superset_subset_method() -> None:
-    """
-    计算两个集合相互包含关系
-    """
+    """计算两个集合相互包含关系"""
+
     s1 = {1, 2, 3}
     s2 = {2, 3, 4}
 
@@ -69,8 +66,9 @@ def test_superset_subset_method() -> None:
 
 
 def test_frozenset() -> None:
-    """
-    frozenset 用于创建一个只读的 set 对象
+    """创建只读集合
+
+    `frozenset` 用于创建一个只读的 set 对象
     """
     s = frozenset([1, 2, 3])
 

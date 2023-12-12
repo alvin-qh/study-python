@@ -12,7 +12,6 @@ with ThreadPool(processes=n_threads) as pool:
 from concurrent.futures import ThreadPoolExecutor, wait
 from functools import partial
 from itertools import repeat
-from multiprocessing import cpu_count
 from multiprocessing.pool import AsyncResult, ThreadPool
 from typing import List, Tuple
 
@@ -207,7 +206,8 @@ def test_pool_starmap() -> None:
 
 
 def test_pool_executor_submit() -> None:
-    """
+    """通过线程池执行器启动线程
+
     `concurrent.futures` 包下的 `ThreadPoolExecutor` 类表示一个线程池执行器和线程池 `ThreadPool` 类相比, 使用更灵活
 
     通过 `submit` 方法可以为执行器提交一个任务, 任务包含一个入口函数和对应的参数, 参数的传递方式为 `*args` 和 `**kwargs`; `submit`
@@ -253,7 +253,8 @@ def test_pool_executor_submit() -> None:
 
 
 def test_executor_map() -> None:
-    """
+    """通过线程池执行器批量启动线程
+
     `concurrent.futures` 包下的 `ThreadPoolExecutor` 类表示一个线程池执行器, 和线程池 `ThreadPool` 类相比, 使用更灵活
 
     `map` 方法相当于 `submit` 方法的一个批处理简化, 内部调用的仍是 `submit` 方法, 并对返回的 `Future` 对象进行等待,

@@ -2,13 +2,9 @@ from typing import Tuple
 
 
 def is_prime_with_extra_arg(n: int, _useless: str = "") -> Tuple[int, bool]:
-    """
-    测试进程池的进程入口函数
+    """线程入口函数
 
-    判断一个数是否质数, 当使用进程池的时候, 由于进程池不共享上下文内存, 所以无法使用闭包函数
-    作为进程入口函数
-
-    必须是全局函数或者类方法
+    本函数作为线程池每个线程的入口函数
 
     Args:
         - `n` (`int`): 待判断的数字

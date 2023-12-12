@@ -2,8 +2,7 @@ from pytest import raises
 
 
 def test_as_stack() -> None:
-    """
-    列表集合的 LIFO (后进先出) 方式操作
+    """列表集合的 LIFO (后进先出) 方式操作
 
     列表集合可以当作栈使用
     """
@@ -31,11 +30,11 @@ def test_as_stack() -> None:
 
 
 def test_slice_function() -> None:
-    """
-    slice(a, b, c) 函数返回一个切片对象
-    切片对象可以将数组按指定要求进行切割
+    """测试切片对象
 
-    Python 中, 可以通过 x[a:b:c] 语法直接对列表对象进行切片, 结果和通过切片对象一致
+    `slice(a, b, c)` 函数返回一个切片对象, 切片对象可以将数组按指定要求进行切割
+
+    Python 中, 可以通过 `x[a:b:c]` 语法直接对列表对象进行切片, 结果和通过切片对象一致
     """
     c = [1, 2, 3, 4, 5]
 
@@ -61,9 +60,11 @@ def test_slice_function() -> None:
 
 
 def test_extend_function() -> None:
-    """
+    """测试集合内容扩展
+
     对列表集合的扩展, 相当于在列表的末尾连接新的列表
-    注意: extend 方法会改变列表对象本身, 相当于列表的 += 运算符
+
+    注意: `extend` 方法会改变列表对象本身, 相当于列表的 `+=` 运算符
     """
     c = ["a", "b", "c"]
     c.extend(["x", "y", "z"])
@@ -75,9 +76,8 @@ def test_extend_function() -> None:
 
 
 def test_2_dimensional_list() -> None:
-    """
-    测试二阶数组
-    """
+    """测试二阶数组"""
+
     # 定义一个二阶数组
     m = [
         [1, 2, 3],

@@ -2,14 +2,13 @@ from functools import cmp_to_key
 
 from sortedcontainers import SortedList
 
-# 参考: https://grantjenks.com/docs/sortedcontainers/
+"""参考: https://grantjenks.com/docs/sortedcontainers/"""
 
 
 def test_sorted_list() -> None:
-    """
-    测试 SortedList 类
-    该类是一个自动排序的 list 类型, 具备 list 类型的所有行为
-    和 list 不同的是, SortedList 会对存入的元素自动进行排序
+    """测试 SortedList 类
+
+    该类是一个自动排序的 list 类型, 具备 list 类型的所有行为, 和 list 不同的是, SortedList 会对存入的元素自动进行排序
     """
 
     # 定义一个 SortedList 对象
