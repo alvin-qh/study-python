@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
     "Flask @ file:///${PROJECT_ROOT}/.wheelhouse/flask-3.0.0-py3-none-any.whl",
-    "xxhash @ file:///${PROJECT_ROOT}/.wheelhouse/xxhash-3.4.1-cp311-cp311-macosx_10_9_x86_64.whl",
+    "xxhash @ file:///${PROJECT_ROOT}/.wheelhouse/xxhash-3.4.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
     "Werkzeug @ file:///${PROJECT_ROOT}/.wheelhouse/werkzeug-3.0.1-py3-none-any.whl",
 ]
 requires-python = ">=3.11"
@@ -41,8 +41,8 @@ clean = { composite = [
     'find tests -type d -name "__pycache__" -exec rm -rf {} +',
 ] }
 export = "pdm export -f requirements -o requirements.txt --without-hash"
-build-wheel = "pip wheel -r requirements.txt -w ./wheelhouse"
-restore-wheel = "pip install --no-index --find-links=./wheelhouse -r requirements.txt"
+build-wheel = "pip wheel -r requirements.txt -w ./.wheelhouse"
+restore-wheel = "pip install --no-index --find-links=./.wheelhouse -r requirements.txt"
 
 [tool.mypy]
 python_version = "3.11"
