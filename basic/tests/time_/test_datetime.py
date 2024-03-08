@@ -62,7 +62,7 @@ class TestTime:
         assert tl.tm_wday == 4  # 周五
         assert tl.tm_yday == 91  # 全年第 91 天
         assert tl.tm_isdst == 0  # 非夏令时
-        assert tl.tm_zone == "CST"  # 中国标准时间
+        assert tl.tm_zone in ("CST", "中国标准时间")  # 中国标准时间
 
         # 将一个时间日期对象转化为字符串
         s = time.strftime("%Y-%m-%dT%H:%M:%S", tl)

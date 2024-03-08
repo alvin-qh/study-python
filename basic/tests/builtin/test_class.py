@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 from functools import partialmethod
-from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar
+from typing import Any, Dict, List, Optional, Self, Tuple, TypeVar
 
 from builtin import Automate, Delegate
 from pytest import raises
@@ -64,6 +64,7 @@ def test_property_function() -> None:
     - `fset` 指向一个单一参数 (除 `self` 外), 无返回值的类方法, 表示如何设置类属性
     - `fdel` 指向一个无参 (除 `self` 外) 且无返回值的方法, 表示如何删除类属性
     """
+
     class C:
         """
         演示 `property` 函数使用的类
@@ -104,7 +105,9 @@ def test_property_function() -> None:
 
         # 定义名为 value 的属性, 将所需方法进行对应
         value = property(
-            fget=_get, fset=_set, fdel=_del,
+            fget=_get,
+            fset=_set,
+            fdel=_del,
             doc="get/set/delete value property",
         )
 
@@ -134,6 +137,7 @@ def test_property_decorator() -> None:
 
     同一个属性相关的方法名称必须相同
     """
+
     class C:
         """
         演示 `@property` 装饰器使用的类
@@ -253,6 +257,7 @@ def test_dynamic_class() -> None:
         """
         动态类型, 可以设置和获取任意名称的属性
         """
+
         # 存储属性名和属性值的字典对象
         _props: Dict[str, Any]
 
@@ -334,10 +339,12 @@ def test_delegate_class() -> None:
     """
     测试代理类型
     """
+
     class B(ABC):
         """
         接口类型
         """
+
         @abstractmethod
         def run(self, a: T, b: T) -> T:
             """
@@ -410,7 +417,7 @@ def test_create_dynamic_class() -> None:
     - 参数 3 为类型的属性和方法
     """
 
-    def A__init__(self, value: int) -> None:
+    def A__init__(self: Any, value: int) -> None:
         """
         类型 `A` 的构造方法
 
@@ -427,7 +434,7 @@ def test_create_dynamic_class() -> None:
             "__init__": A__init__,  # 类型的构造方法
             "value": 0,  # 类型的属性
             "work": lambda self, x: self.value + x,  # 类型的方法
-        }
+        },
     )
 
     # 通过类型
@@ -450,6 +457,7 @@ def test_class_slot() -> None:
     `__slots__` 字段用于声明一个类型规定的字段集合, 设置了 `__slots__` 字段后, 对象能使用的
     属性就会约束在其定义范围内, 且不再通过 `__dict__` 字段存储对象属性
     """
+
     class C1:
         pass
 
@@ -473,12 +481,13 @@ def test_class_slot() -> None:
 
         定义了 `__slots__` 字段后, 相当于为类型提供了属性约束, 类型能用的属性必须在 `__slots__` 定义的列表中
         """
+
         # 定义可访问属性列表
         __slots__ = ("name", "age")
 
     c2 = C2()
 
-    c2.name = "Alvin"
+    c2.name = "Alvin"  # type: ignore
     assert c2.name == "Alvin"  # type: ignore
 
     c2.age = 41  # type: ignore
@@ -509,10 +518,7 @@ def test_automate_class() -> None:
         members: List[Member]
 
     # 实例化自动装配类型的对象
-    group = Group(1, "G-1", [
-        Member(1, "S-1", 12.5),
-        Member(2, "S-2", 22)
-    ])
+    group = Group(1, "G-1", [Member(1, "S-1", 12.5), Member(2, "S-2", 22)])
 
     # 验证对象属性值
     assert group.id == 1
@@ -530,7 +536,9 @@ def test_automate_class() -> None:
     assert member.price == 22
 
     # 验证对象转为 json
-    assert json.dumps(group, indent=2) == """{
+    assert (
+        json.dumps(group, indent=2)
+        == """{
   "id": 1,
   "name": "G-1",
   "members": [
@@ -546,20 +554,19 @@ def test_automate_class() -> None:
     }
   ]
 }"""
+    )
 
     # 测试通过 Dict 对象作为入参
-    group = Group(**{
-        "id": 1,
-        "name": "G-1",
-        "members": [{
+    group = Group(
+        **{
             "id": 1,
-            "name": "S-1",
-            "price": 12.5
-        }, {
-            "id": 2,
-            "name": "S-2",
-            "price": 22}]
-    })
+            "name": "G-1",
+            "members": [
+                {"id": 1, "name": "S-1", "price": 12.5},
+                {"id": 2, "name": "S-2", "price": 22},
+            ],
+        }
+    )
 
     # 验证对象属性值
     assert group.id == 1
@@ -610,9 +617,9 @@ def test_metaclass_by_function() -> None:
 
     def metaclass(
         class_name: str,
-        parents: Tuple[Type],
+        parents: Any,
         attrs: Dict[str, Any],
-    ) -> Type:
+    ) -> Any:
         """
         元类型函数, 返回一个 `Type` 对象, 用于设置目标类型的名称, 父类以及属性值
 
@@ -663,14 +670,16 @@ def test_metaclass_by_class() -> None:
     目标类的 `metaclass` 既可以为函数, 也可以为一个类, 如果是一个类的话, 必须通过 `__new__` 方法
     给目标类型返回类型定义
     """
+
     class MetaClass(type):
         """
         元类型, 用于创建一个描述类型的对象
         """
+
         def __new__(
             cls,
             class_name: str,
-            parents: Tuple[Type],
+            parents: Tuple[Any],
             attrs: Dict[str, Any],
         ) -> Any:
             """
@@ -699,6 +708,7 @@ def test_metaclass_by_class() -> None:
 
         此时, `C` 类的类型定义由 `MetaClass` 类型产生的对象来定义
         """
+
         @property
         def value(self) -> int:
             """
@@ -723,15 +733,16 @@ def test_singleton_class() -> None:
 
     Python 可以通过 `__new__` 魔法方法完成单例, 即让一个类型只能实例化一个对象
     """
+
     class C:
         """
         单例类型
         """
-        # 保持单例的类字段
-        _inst: Optional["C"] = None  # noqa
 
-        @classmethod
-        def __new__(cls: type["C"], *args, **kwargs) -> "C":  # noqa
+        # 保持单例的类字段
+        _inst: Optional[Self] = None  # noqa
+
+        def __new__(cls: type[Self], *args: Any, **kwargs: Any) -> "C":  # noqa
             """
             创建实例
 
@@ -777,6 +788,7 @@ def test_currying_method() -> None:
 
     `partialmethod` 可以为类型增加一个方法, 该方法是将类中的另一个方法进行转换得到
     """
+
     class C:
         """
         测试类方法的 "柯里化" 操作

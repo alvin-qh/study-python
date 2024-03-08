@@ -11,6 +11,7 @@
 
 可以通过 `Manager` 类型的 `register` 函数将任意类型挂载到 `Manager` 类型
 """
+
 from itertools import repeat
 from multiprocessing import Manager, Pool
 from multiprocessing.managers import BaseManager
@@ -65,8 +66,7 @@ def test_manager_list() -> None:
 
 
 def test_manager_dict() -> None:
-    """
-    演示 `Manager` 类型的 `dict` 方法
+    """演示 `Manager` 类型的 `dict` 方法
 
     `dict` 方法返回一个 `Dict` 类型的代理对象, 可以在进程间共享这个字典对象
     """
@@ -106,8 +106,7 @@ def test_manager_dict() -> None:
 
 
 def test_manager_register() -> None:
-    """
-    演示 `BaseManager` 类型的 `register` 方法
+    """演示 `BaseManager` 类型的 `register` 方法
 
     `register` 方法用于注册任意类型, 并可通过注册类型的名称获取其代理对象
     获取的代理对象可以在多进程间共享

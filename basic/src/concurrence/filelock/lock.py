@@ -1,7 +1,12 @@
-import fcntl
 import os
+import time
+import timeit
 from types import TracebackType
-from typing import Optional, Type
+from typing import IO, Optional, Type
+
+from portalocker import LockFlags, LockException
+from portalocker import lock as file_lock
+from portalocker import unlock as file_unlock
 
 
 class FileLock:
@@ -9,6 +14,8 @@ class FileLock:
 
     本类型演示如何使用文件锁. 文件锁可以用于跨进程甚至跨程序的锁. 原理是在磁盘上建立一个文件, 并通过操作系统对文件进行锁定的功能
     """
+
+    _DEFAULT_CHECK_INTERVAL = 0.25
 
     # 锁文件名模板
     _lock_file_template = ".{}.lock"
@@ -28,11 +35,11 @@ class FileLock:
         # 格式化锁文件名
         self._filename = self._lock_file_template.format(name)
         # 文件描述符
-        self._fd: int | None = None
+        self._fd: IO[bytes] | None = None
         # 是否锁定
         self._locked = False
 
-    def acquire(self, blocking: bool = True) -> bool:
+    def acquire(self, timeout: float = 5.0) -> bool:
         """加锁
 
         如果锁已经被占用则进入阻塞等待, 直到锁被释放
@@ -44,34 +51,30 @@ class FileLock:
             `bool`: 加锁成功返回 `True`
         """
         # 创建锁文件, 得到文件描述符
-        fd = os.open(self._filename, os.O_RDONLY | os.O_CREAT)
+        fd = open(self._filename, "+wb")
+        start = timeit.default_timer()
+        while True:
+            try:
+                # 对文件进行加锁操作
+                file_lock(fd, LockFlags.EXCLUSIVE | LockFlags.NON_BLOCKING)
+                self._fd = fd
+                break
+            except LockException:
+                if timeit.default_timer() - start > timeout:
+                    return False
 
-        # 文件锁标识
-        opt = fcntl.LOCK_EX
-        if not blocking:
-            # 非阻塞标识
-            opt |= fcntl.LOCK_NB
+                time.sleep(self._DEFAULT_CHECK_INTERVAL)
 
-        try:
-            # 对文件进行加锁操作
-            fcntl.flock(fd, opt)
-            # 保存文件描述符
-            self._fd = fd
-
-            # 返回加锁成功
-            return True
-        except Exception:
-            # 返回加锁失败
-            return False
+        return True
 
     def release(self) -> None:
         """解锁"""
-        fd = self._fd
-        if fd:
-            fcntl.flock(fd, fcntl.LOCK_UN)
-            os.close(fd)
-
+        if self._fd:
+            fd = self._fd
             self._fd = None
+            if fd:
+                file_unlock(fd)
+                fd.close()
 
         try:
             os.remove(self._filename)

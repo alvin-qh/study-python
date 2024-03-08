@@ -1,20 +1,15 @@
 [project]
 # 项目名称 (必填项)
-# name = 'study_python_basic'
+name = 'study_python_basic'
 
 # 项目版本号
-# version = '1.0'
+version = '1.0'
 
 # 项目作者 (可选)
 authors = [{ name = 'Alvin', email = 'quhao317@163.com' }]
 
 # 依赖包
-dependencies = [
-    'pytz',
-    'atomics',
-    'werkzeug',
-    'wrapt',
-]
+dependencies = ['pytz', 'atomics', 'werkzeug', 'wrapt', "portalocker"]
 
 # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
 requires-python = '>=3.12'
@@ -25,7 +20,7 @@ readme = 'README.md'
 # 指定软件许可协议
 license = { text = 'MIT' }
 
-# [tool.pdm.dev-dependencies]
+[tool.pdm.dev-dependencies]
 # PDM 工具提供的 dev 模式依赖包组, 通过 pdm update -d / pdm install -d 进行安装
 # dev = ["pytest", "mypy", "autopep8"]
 
@@ -43,19 +38,14 @@ test = [
     "faker",
 ]
 
-# [build-system]
-# # 定义打包工具链
-# requires = ['pdm-backend']
-# build-backend = 'pdm.backend'
-type = [
-    "types-python-dateutil>=2.8.19.14",
-    "types-pytz>=2023.3.1.1",
-]
+type = ["types-python-dateutil", "types-pytz"]
 
 [tool.pdm.scripts]
 # 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
 check = { composite = ["mypy src", "autopep8 src tests"] }
+check-win = { composite = ["mypy.exe src", "autopep8.exe src tests"] }
 test = "pytest -v -s tests"
+test-win = "pytest.exe -v -s tests"
 clean = { composite = [
     "rm -rf .pdm-build",
     "rm -rf .mypy_cache",

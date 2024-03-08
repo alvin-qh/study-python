@@ -7,6 +7,7 @@ def test_tag_decorator() -> None:
 
     通过 `tag` 函数对 `demo` 函数进行装饰
     """
+
     @tag
     def demo() -> str:
         """
@@ -32,7 +33,7 @@ def test_html_tag_decorator() -> None:
         return ""
 
     assert demo1() == '<div class="col-md-2" style="display:block">Hello</div>'
-    assert demo2() == '<div click="alter(\'ok\')"/>'
+    assert demo2() == "<div click=\"alter('ok')\"/>"
 
 
 def test_html_tag_class_decorator() -> None:
@@ -44,12 +45,12 @@ def test_html_tag_class_decorator() -> None:
     """
 
     @HtmlTag(tag_name="div", style="display:block", clazz="col-md-2")
-    def demo1():
+    def demo1() -> str:
         return "Hello"
 
     @HtmlTag(tag_name="div", click="alter('ok')")
-    def demo2():
+    def demo2() -> str:
         return ""
 
     assert demo1() == '<div class="col-md-2" style="display:block">Hello</div>'
-    assert demo2() == '<div click="alter(\'ok\')"/>'
+    assert demo2() == "<div click=\"alter('ok')\"/>"

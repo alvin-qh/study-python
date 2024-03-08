@@ -43,7 +43,7 @@ class AIOTicker:
     - `__anext__` 异步返回下一个迭代值, 方法必须声明为 `async`, 可被用于 `async for ... in ...` 形式的循环中
     """
 
-    def __init__(self, delay: int, to: int) -> None:
+    def __init__(self, delay: float, to: int) -> None:
         """初始化对象
 
         Args:

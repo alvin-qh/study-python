@@ -2,6 +2,7 @@
 
 线程本地对象即可为每个线程保存一组值, 且这组值只在当前线程生效
 """
+
 import threading
 from typing import Any, cast
 

@@ -20,7 +20,7 @@ def main_page() -> str:
 
 
 @app.register("/next")
-def next_page():
+def next_page() -> str:
     """
     注册函数
 
@@ -40,7 +40,7 @@ def test_find_executor_by_url() -> None:
         app.execute("/unknown")
 
         # 确认返回的异常
-        assert str(err.value) == '\'"/unknown" not register\''
+        assert str(err.value) == "'\"/unknown\" not register'"
 
 
 # 定义日志对象
@@ -81,7 +81,6 @@ def test_logger(mocked_default_timer: MagicMock) -> None:
     assert str(logger) == (
         "\tlog function 'multiply' is call: \n\t  function=multiply\n\t  "
         "arguments=(10, 20) \n\t  return=200\n\t  time=0.000000 sec\n"
-
         "\tlog function 'multiply' is call: \n\t  function=multiply\n\t  "
         "arguments=(30, 40) \n\t  return=1200\n\t  time=0.000000 sec\n"
     )

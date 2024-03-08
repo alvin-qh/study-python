@@ -13,6 +13,14 @@ PATTERN = re.compile(r"(\[.+?\])|(:[\s\w]+)")
 CUR_DIR = os.path.dirname(__file__)
 
 
+def close_logger_handlers(*log_names: str) -> None:
+    """关闭指定名称日志的 Handlers"""
+    for log_name in log_names:
+        log = logging.getLogger(log_name)
+        for h in log.handlers:
+            h.close()
+
+
 def test_conf_by_dict() -> None:
     """测试通过 `Dict` 对象配置日志
 
@@ -47,6 +55,8 @@ def test_conf_by_dict() -> None:
         assert r[2][0] == "[DEBUG]"
         assert r[3][0] == "[test_conf.py]"
         assert r[5][1] == ": Log demo"
+
+        close_logger_handlers("default")
 
         # 删除日志文件
         os.remove(log_file)
@@ -83,6 +93,8 @@ def test_conf_by_ini() -> None:
         assert r[2][0] == "[DEBUG]"
         assert r[3][0] == "[test_conf.py]"
         assert r[5][1] == ": Log demo"
+
+        close_logger_handlers("default")
 
         # 删除日志文件
         os.remove(log_file)

@@ -12,13 +12,13 @@ _CUR_DIR = os.path.dirname(__file__)
 def test_join_function() -> None:
     """将多个路径拼合成一个完整路径"""
 
-    p1 = "a/b/c/d"
-    p2 = "x/y"
+    p1 = os.path.join("a", "b", "c", "d")
+    p2 = os.path.join("x", "y")
     p3 = "test.txt"
 
     # 拼合路径
     p = os.path.join(p1, p2, p3)
-    assert p == "a/b/c/d/x/y/test.txt"
+    assert p == "a/b/c/d/x/y/test.txt".replace("/", os.sep)
 
 
 def test_split_function() -> None:
@@ -37,7 +37,7 @@ def test_abspath_function() -> None:
     p = os.path.abspath("./io_/test_path.py")
 
     # 判断绝对路径是否正确
-    assert p.endswith("/basic/io_/test_path.py")
+    assert p.endswith("/basic/io_/test_path.py".replace("/", os.sep))
 
 
 def test_listdir_function() -> None:

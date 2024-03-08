@@ -49,7 +49,7 @@ def non_blocked_filelock_worker(lock_name: Optional[str]) -> None:
         # 加锁
         fl = FileLock(lock_name)
         # 非阻塞方式加锁
-        if fl.acquire(blocking=False):
+        if fl.acquire():
             try:
                 time.sleep(0.1)
             finally:

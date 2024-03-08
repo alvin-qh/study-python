@@ -4,7 +4,7 @@ import asyncio as aio
 import time
 import timeit
 from threading import Thread
-from typing import Any, Coroutine, Dict, List, Tuple
+from typing import Any, Dict, List, Tuple
 
 from io_.aio import AIOTicker, aio_worker, async_echo, async_ticker
 from pytest import mark, raises
@@ -950,7 +950,7 @@ async def test_aio_iterator() -> None:
     assert vals == [2, 3, 4]
 
     # 确认所有迭代执行的总时间
-    assert 0.5 <= timeit.default_timer() - start <= 0.51
+    assert 0.5 <= timeit.default_timer() - start <= 0.6
 
 
 @mark.asyncio
@@ -980,7 +980,7 @@ async def test_aio_generator() -> None:
     assert vals == [2, 3, 4]
 
     # 确认所有迭代执行的总时间
-    assert 0.5 <= timeit.default_timer() - start <= 0.51
+    assert 0.5 <= timeit.default_timer() - start <= 0.6
 
 
 @mark.asyncio

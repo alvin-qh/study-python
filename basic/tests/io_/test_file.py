@@ -40,7 +40,7 @@ def test_open_file_as_text_mode() -> None:
     """测试以默认的文本方式打开文件"""
 
     # 以读写方式打开文件
-    with open(FILENAME, "w", encoding="gbk") as fp:
+    with open(FILENAME, "w", encoding="gbk", newline="\n") as fp:
         # 判断打开文件的文件名
         assert fp.name == FILENAME
         # 判断打开的文件是否可写
@@ -61,7 +61,7 @@ def test_open_file_as_text_mode() -> None:
     assert n == 20
 
     # 以只读方式打开文件
-    with open(FILENAME, "r", encoding="gbk") as fp:
+    with open(FILENAME, "r", encoding="gbk", newline="\n") as fp:
         # 判断打开文件的文件名
         assert fp.name == FILENAME
         # 判断打开的文件是否可写
@@ -191,7 +191,8 @@ def func():
         sys.path.insert(0, fn)
 
         # 导入压缩文件中的 tmp/test_temp 模块
-        module = __import__("tmp/test_temp")
+        # 使用 `os.sep` 处理跨系统路径分隔符, 在 Win 下为 `\\`, Linux 下为 `/`
+        module = __import__(f"tmp{os.sep}test_temp")
         # 执行模块中定义的函数
         assert module.func() == "test"
     finally:

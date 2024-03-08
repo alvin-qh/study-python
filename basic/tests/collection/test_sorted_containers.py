@@ -68,7 +68,7 @@ def test_sorted_list() -> None:
     # bisect_key_left   , bisect_key_right 方法, 查找指定元素插入后的位置.
     # 如果指定元素已存在, 则前者返回已存在元素左侧的索引, 后者返回右侧的索引
 
-    K = cmp_to_key(lambda a, b: ord(b) - ord(a))
+    K = cmp_to_key(lambda a, b: ord(b) - ord(a))  # type: ignore
     # 通过 Key 对象的比较规则定义 SortedList 对象
     c = SortedList("abce", key=K)
 

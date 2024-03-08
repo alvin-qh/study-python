@@ -7,7 +7,7 @@ def test_function_like() -> None:
     测试 Python 中的仿函数 (`Callable` 类型)
     """
 
-    def do(cb: Callable, a: int, b: int) -> int:
+    def do(cb: Callable[[int, int], int], a: int, b: int) -> int:
         """
         定义一个测试函数
 
@@ -81,7 +81,7 @@ def test_function_like() -> None:
     # 将一个类作为参数传递, 在 do 函数内部会以函数调用形式
     # 使用这个类, 相当于调用类的构造器方法, 得到类对象.
     # 通过 __int__ 方法, 类对象会转为 int 类型, 得到结果
-    call_obj = do(CallClass, 1, 2)
+    call_obj = do(CallClass, 1, 2)  # type: ignore
     assert call_obj == 3
 
 
@@ -93,7 +93,8 @@ def test_override_function() -> None:
 
     所以, 可以根据不同的情况, 选择不同的函数, 然后通过 `*args, **kwargs` 方式统一传参调用
     """
-    def run(*args, **kwargs) -> int:
+
+    def run(*args: int, **kwargs: int) -> int:
         """
         根据不同的参数, 执行不同的函数
 
@@ -128,7 +129,7 @@ def test_override_function() -> None:
             """
             return x + y + z
 
-        fn: Callable = add2
+        fn: Callable[..., int] = add2
 
         # 根据参数情况, 从 add1 和 add2 中选择要执行的函数
         if len(args) + len(kwargs) == 2:

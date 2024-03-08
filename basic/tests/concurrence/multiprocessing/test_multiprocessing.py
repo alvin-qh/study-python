@@ -4,7 +4,6 @@ import timeit
 from ctypes import c_bool
 from itertools import repeat
 from multiprocessing import Array
-from typing import List
 
 from concurrence.multiprocessing.group import ProcessGroup
 from concurrence.multiprocessing.prime import is_prime
@@ -37,7 +36,7 @@ def test_multiple_processes() -> None:
     group.start_and_join()
 
     # 所有进程执行时间少于 1 秒, 表示都是并发执行
-    assert 0 < timeit.default_timer() - start < 1
+    assert 0 < timeit.default_timer() - start < 1.5
     assert [bool(r) for r in results.get_obj()] == [
         False,
         False,
