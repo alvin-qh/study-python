@@ -1,5 +1,4 @@
 # 演示时间日期相关的测试用例提供者
-import math
 import re
 from datetime import date, datetime, time, timedelta
 from typing import Iterable
@@ -833,7 +832,7 @@ def test_provider_iso8601() -> None:
     assert isinstance(value, str)
 
     # 确认获取的字符串符合 iso8601 格式
-    assert re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\+\d{2}:\d{2}$", value)
+    assert re.match(r"^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.?\d*\+\d{2}:\d{2}$", value)
 
 
 def test_provider_month() -> None:

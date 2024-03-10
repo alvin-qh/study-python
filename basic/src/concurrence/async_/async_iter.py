@@ -1,33 +1,5 @@
-import asyncio
-from typing import AsyncGenerator, Optional, Type
-
-
-async def aio_worker(
-    wait_time: float = 1.0,
-    exception: Optional[Type[Exception]] = None,
-    id_: Optional[int] = None,
-) -> str:
-    """异步协程入口函数
-
-    Args:
-        - `wait_time` (`float`, optional): 等待时间. Defaults to `1.0`.
-        - `raises` (`Type[Exception]`, optional): 要抛出的异常, None 表示不抛出. Defaults to `None`.
-        - `id_` (`int`, optional): 任务 ID. Defaults to `None`.
-
-    Returns:
-        `str`: 返回结果字符串
-    """
-    if exception:
-        # 如果 raises 不为 None, 则抛出异常
-        raise exception
-    else:
-        # 异步等待
-        await asyncio.sleep(wait_time)
-
-    if id_ is None:
-        return "OK"
-
-    return f"OK By Task-{id_}"
+import asyncio as aio
+from typing import AsyncGenerator
 
 
 class AIOTicker:
@@ -80,7 +52,7 @@ class AIOTicker:
         self._from += 1
         if self._from:
             # 除第一次外, 每次迭代间隔指定时间
-            await asyncio.sleep(self._delay)
+            await aio.sleep(self._delay)
 
         return num
 
@@ -102,7 +74,7 @@ async def async_ticker(delay: float, to: int) -> AsyncGenerator[int, None]:
     """
     for i in range(to):
         yield i
-        await asyncio.sleep(delay)
+        await aio.sleep(delay)
 
 
 async def async_echo(delay: float, to: int) -> AsyncGenerator[int, int]:
@@ -129,7 +101,7 @@ async def async_echo(delay: float, to: int) -> AsyncGenerator[int, int]:
         yield v
 
         # 休眠指定的间隔时间
-        await asyncio.sleep(delay)
+        await aio.sleep(delay)
 
         # 接收新值
         v = yield v
