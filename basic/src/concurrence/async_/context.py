@@ -1,13 +1,13 @@
+from contextlib import asynccontextmanager
 import random
 from types import TracebackType
-from typing import Any, Dict, Generator, Optional, Tuple, Type
-from contextlib import contextmanager
+from typing import Any, AsyncIterator, Dict, Optional, Self, Tuple, Type
 
 
-class Context:
-    """上下文管理类
+class AsyncContext:
+    """异步上下文管理类
 
-    具备 `__enter__` 和 `__exit__` 方法的类对象为上下文对象
+    具备 `__aenter__` 和 `__aexit__` 方法的类对象为上下文对象
 
     可以通过 `with` 关键字定义上下文对象的有效范围
     """
@@ -42,17 +42,17 @@ class Context:
             `key` (`str`): Key 值
 
         Returns:
-            Any: Value 值
+            `Any`: Value 值
         """
         return self._kv[key]
 
-    def close(self) -> None:
-        """关闭上下文对象"""
+    async def close(self) -> None:
+        """关闭上下文对象 (异步)"""
         # 清理 Key/Value 字典
         self._kv = {}
 
-    def __enter__(self) -> "Context":
-        """进入上下文范围时执行的方法, 返回上下文对象
+    async def __aenter__(self) -> Self:
+        """进入上下文范围时执行的方法, 返回上下文对象 (异步)
 
         返回的上下文对象必须具备 `__exit__` 方法, 可以为其它对象,
         也可以是当前对象
@@ -62,14 +62,13 @@ class Context:
         """
         return self
 
-    def __exit__(
+    async def __aexit__(
         self,
         exc_type: Optional[Type[Exception]],
         exc_value: Optional[Exception],
         exc_tb: Optional[TracebackType],
     ) -> bool:
-        """
-        退出上下文范围时执行的方法
+        """退出上下文范围时执行的方法 (异步)
 
         Args:
             `exc_type` (`Optional[Type[Exception]]`): 在上下文范围中抛出异常类型, 无异常则为 `None`
@@ -79,7 +78,7 @@ class Context:
         Returns:
             `bool`: `True` 表示异常不会抛出到上下文范围之外
         """
-        self.close()
+        await self.close()
         self.exception = (exc_type, exc_value)
 
         return self._suppress_exception
@@ -88,18 +87,18 @@ class Context:
 _CONTEXT_NUMS = [1, 2, 3, 4, 5, 6, 7]
 
 
-@contextmanager
-def random_number_context() -> Generator[int, None, None]:
-    """生成随机数上下文
+@asynccontextmanager
+async def async_random_number_context() -> AsyncIterator[int]:
+    """生成随机数上下文 (异步)
 
-    被 `@contextmanager` 装饰器修饰的函数可以管理上下文, 该方法返回 `_GeneratorContextManager[T]` 类型对象,
-    (在本例中为 `_GeneratorContextManager[int]` 类型), 相当于一个实现了 `__enter__` 以及 `__exit__` 方法
-    的类型实例
+    被 `@asynccontextmanager` 装饰器修饰的函数可以管理异步上下文, 该方法返回 `_AsyncGeneratorContextManager[T]` 类型对象,
+    (在本例中为 `_AsyncGeneratorContextManager[int]` 类型), 相当于一个实现了 `__aenter__` 以及 `__aexit__` 方法的类型实
+    例, 表示一个异步环境中使用的上下文管理器对象
 
-    `@contextmanager` 装饰器可以简化上下文类型的定义, 而使用则完全类似普通的上下文类型实例, 即:
+    `@asynccontextmanager` 装饰器可以简化异步上下文类型的定义, 而使用则完全类似普通的异步上下文类型实例, 即:
 
     ```python
-    with random_number_context() as n:
+    with async_random_number_context() as n:
         ...
 
     ```
