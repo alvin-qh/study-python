@@ -1,24 +1,31 @@
 [project]
 # 项目名称 (必填项)
 name = 'study_python_basic'
-
 # 项目版本号
 version = '1.0'
-
 # 项目作者 (可选)
 authors = [{ name = 'Alvin', email = 'quhao317@163.com' }]
-
 # 依赖包
-dependencies = ['pytz', 'atomics', 'werkzeug', 'wrapt', "portalocker"]
-
+dependencies = [
+    'pytz',
+    'atomics',
+    'werkzeug',
+    'wrapt',
+    "portalocker",
+    "tzdata",
+]
 # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
 requires-python = '>=3.12'
-
 # 指定说明文件
 readme = 'README.md'
-
 # 指定软件许可协议
 license = { text = 'MIT' }
+# 分类信息
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
 
 [tool.pdm.dev-dependencies]
 # PDM 工具提供的 dev 模式依赖包组, 通过 pdm update -d / pdm install -d 进行安装
@@ -37,7 +44,6 @@ test = [
     "hypothesis",
     "faker",
 ]
-
 type = ["types-python-dateutil", "types-pytz"]
 
 [tool.pdm.scripts]
@@ -54,6 +60,9 @@ clean = { composite = [
     'find src -type d -name "__pycache__" -exec rm -rf {} +',
     'find tests -type d -name "__pycache__" -exec rm -rf {} +',
 ] }
+
+[tool.pycln]
+all = true
 
 [tool.mypy]
 # 定义 mypy 配置
@@ -75,21 +84,24 @@ recursive = true
 jobs = -1
 aggressive = 3
 
-# 定义 pytest 配置
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
 [tool.pytest.ini_options]
 # 测试所在路径
 testpaths = ['tests']
-
 # 指定 Python 路径
 pythonpath = ['src']
-
 # 自定义测试标识, 取消则对应标识的测试不执行
 markers = [
     'webtest', # 测试标记
 ]
-
 # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
 addopts = '-vvs'
-
 # 忽略指定的警告信息
 filterwarnings = ['ignore::hypothesis.errors.NonInteractiveExampleWarning']
