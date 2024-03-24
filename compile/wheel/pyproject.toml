@@ -12,18 +12,19 @@ readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
-basic = ["pip", "setuptools"]
-build = [
+basic = [
+    "pip @ file:///${PROJECT_ROOT}/.wheelhouse/pip-23.3.1-py3-none-any.whl",
+    "setuptools @ file:///${PROJECT_ROOT}/.wheelhouse/setuptools-68.2.2-py3-none-any.whl",
 ]
 test = [
     "pytest @ file:///${PROJECT_ROOT}/.wheelhouse/pytest-7.4.3-py3-none-any.whl",
 ]
 lint = [
     "autopep8 @ file:///${PROJECT_ROOT}/.wheelhouse/autopep8-2.0.4-py2.py3-none-any.whl",
-    "mypy @ file:///${PROJECT_ROOT}/.wheelhouse/mypy-1.6.1-cp311-cp311-macosx_10_9_x86_64.whl",
+    "mypy @ file:///${PROJECT_ROOT}/.wheelhouse/mypy-1.6.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
 ]
 
-[build-system]
+# [build-system]
 # requires = ["pdm-backend"]
 # build-backend = "pdm.backend"
 
