@@ -43,6 +43,6 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-testpaths = ['tests']
-pythonpath = ['src']
+# testpaths = ['tests']
+# pythonpath = ['src']
 addopts = '-vs'

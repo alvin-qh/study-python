@@ -1,4 +1,6 @@
 [project]
+name = "dotenv_demo"
+version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = ["python-dotenv"]
 requires-python = ">=3.12"
@@ -6,16 +8,11 @@ readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
-test = [
-    "pytest",
-]
-lint = [
-    "mypy",
-    "autopep8",
-]
+test = ["pytest"]
+lint = ["mypy", "autopep8"]
 
 [tool.pdm.scripts]
-start = "src/app.py"
+start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
 clean = { composite = [
@@ -46,6 +43,6 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-testpaths = ['tests']
-pythonpath = ['src']
+# testpaths = ['tests']
+# pythonpath = ['src']
 addopts = '-vvs'

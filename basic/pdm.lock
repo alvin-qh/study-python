@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test", "type"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:6560ad94daccc8b18d7507b7be5b90ab66aee8ffda41c9d6a429755f9ee3b3bc"
+content_hash = "sha256:9d505b6ac2b5e4f9e76efefa7e26225bea6149e36daf016e12b5f0e9baebba09"
 
 [[package]]
 name = "atomics"
