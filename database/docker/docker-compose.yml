@@ -1,7 +1,6 @@
-version: "3.9"
 services:
   percona:
-    image: percona/percona-server
+    image: percona/percona-server:8.0
     container_name: percona
     restart: always
     privileged: true
@@ -17,7 +16,7 @@ services:
     networks:
       - database_network
   mongo:
-    image: mongo
+    image: mongo:7.0
     container_name: mongo
     restart: always
     privileged: true
