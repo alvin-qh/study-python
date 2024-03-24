@@ -24,5 +24,5 @@ ModuleNotFoundError: No module named '_tkinter'
 ## 使用 pyOpenGL
 
 ```bash
-$ sudo apt install freeglut2 freeglut3-dev
+sudo apt install freeglut2 freeglut3-dev
 ```

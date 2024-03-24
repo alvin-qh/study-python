@@ -106,7 +106,7 @@ def triangulate(poly: Sequence[Vector3D]) -> Generator[Triangle, None, None]:
         poly (Sequence[Vector3D]): 一组由四个三维向量组成的集合
 
     Yields:
-        Generator[Triangle, None, None]: 返回一个生成器, 产生相关的两个三角形向量集合 
+        Generator[Triangle, None, None]: 返回一个生成器, 产生相关的两个三角形向量集合
     """
     # 确认每个多面体都有三个向量组成
     if len(poly) < 3:
