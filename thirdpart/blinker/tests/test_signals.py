@@ -1,16 +1,16 @@
 from typing import Any, List
 
-from subscript.events import (handle_complete_event,
-                              handle_initialized_again_event,
-                              handle_initialized_event, handle_ready_event)
-from subscript.signals import (anonymous_signals, create_named_signal,
-                               on_initialized)
+from subscript.events import (
+    handle_complete_event,
+    handle_initialized_again_event,
+    handle_initialized_event,
+    handle_ready_event,
+)
+from subscript.signals import anonymous_signals, create_named_signal, on_initialized
 
 
 def test_named_signals() -> None:
-    """
-    测试命名信号
-    """
+    """测试命名信号"""
 
     # 同一个名称创建的信号对象是单例, 多次创建返回同一个对象
     assert on_initialized is create_named_signal("initialized")
@@ -20,9 +20,7 @@ def test_named_signals() -> None:
 
 
 def test_subscript() -> None:
-    """
-    测试发送命名信号
-    """
+    """测试发送命名信号"""
 
     # 通过 "on_initialized" 信号对象发送信号, 此时 "handle_initialized_event" 函数会被调用, 并返回结果
     # 返回结果格式类似于 [(subscript_func1, return_value1), ..., (subscript_funcN, return_valueN)]
@@ -33,17 +31,15 @@ def test_subscript() -> None:
 
     # 第一个结果由 handle_initialized_event 处理函数返回
     assert received[0][0] == handle_initialized_event
-    assert received[0][1] == "The sender \"Alvin\" send a message: \"Hello\""
+    assert received[0][1] == 'The sender "Alvin" send a message: "Hello"'
 
     # 第一个结果由 handle_initialized_again_event 处理函数返回
     assert received[1][0] == handle_initialized_again_event
-    assert received[1][1] == "The message \"Hello\" was sent from \"Alvin\""
+    assert received[1][1] == 'The message "Hello" was sent from "Alvin"'
 
 
 def test_anonymous_signals() -> None:
-    """
-    测试发送匿名信号
-    """
+    """测试发送匿名信号"""
 
     def callback_fn(received: List[Any]) -> str:
         """

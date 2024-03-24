@@ -1,7 +1,9 @@
 [project]
+name = "blinker_demo"
+version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = ["blinker"]
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -22,7 +24,7 @@ clean = { composite = [
 ] }
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -41,6 +43,6 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
+# testpaths = ["tests"]
+# pythonpath = ["src"]
 addopts = "-vvs"
