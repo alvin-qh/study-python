@@ -1,14 +1,20 @@
 [project]
-version = "1.0.0"
+name = "fastapi_demo"
+version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
-dependencies = ["fastapi[all]"]
+dependencies = ["fastapi[all]>=0.110.0"]
 requires-python = ">=3.12"
 readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
-test = ["pytest", "pytest-mock", "pytest-asyncio", "httpx"]
-lint = ["mypy", "autopep8"]
+test = [
+    "pytest>=8.1.1",
+    "pytest-mock>=3.14.0",
+    "pytest-asyncio>=0.23.6",
+    "httpx>=0.27.0",
+]
+lint = ["mypy>=1.9.0", "autopep8>=2.1.0"]
 
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
@@ -24,7 +30,7 @@ clean = { composite = [
 type_install = "mypy --install-types"
 
 [tool.mypy]
-python_version = '3.11'
+python_version = '3.12'
 strict = true
 warn_return_any = true
 warn_unused_configs = true

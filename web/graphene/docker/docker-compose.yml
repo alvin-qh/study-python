@@ -1,7 +1,6 @@
-version: "3.9"
 services:
   mongo:
-    image: mongo
+    image: mongo:7.0
     container_name: mongo
     restart: always
     privileged: true
@@ -24,7 +23,7 @@ services:
   #   networks:
   #     - graphene_network
   postgres:
-    image: postgres
+    image: postgres:16-alpine
     container_name: postgres
     restart: always
     privileged: true
