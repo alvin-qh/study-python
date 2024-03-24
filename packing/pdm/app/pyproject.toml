@@ -1,24 +1,17 @@
 [project]
-dependencies = [
-    "study-python-pdm-lib @ file:///${PROJECT_ROOT}/../lib",
-]
+name = "pdm_demo_app"
+version = "0.1.0"
+dependencies = ["pdm-demo-lib @ file:///${PROJECT_ROOT}/../lib"]
 requires-python = ">=3.12"
-authors = [
-    {name = "Alvin", email = "quhao317@163.com"},
-]
-license = {text = "MIT"}
+authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+license = { text = "MIT" }
 
 [project.optional-dependencies]
-lint = [
-    "mypy",
-    "autopep8",
-]
-test = [
-    "pytest",
-]
+lint = ["mypy>=1.9.0", "autopep8>=2.1.0"]
+test = ["pytest>=8.1.1"]
 
 [tool.pdm.scripts]
-start = { call = "pdm_app:main" }
+start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
 clean = { composite = [
@@ -31,7 +24,7 @@ clean = { composite = [
 ] }
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -49,6 +42,6 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-testpaths = ['tests']
-pythonpath = ['src']
+# testpaths = ['tests']
+# pythonpath = ['src']
 addopts = '-vvs'

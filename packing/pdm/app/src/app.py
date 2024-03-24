@@ -21,7 +21,7 @@ def main() -> None:
             result = add(int(i1), int(i2))
         case "s":
             result = add(i1, i2)
-        case (_):
+        case _:
             print("Invalid value type")
             exit(1)
 

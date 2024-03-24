@@ -1,7 +1,7 @@
 import io
 import sys
 
-from pdm_app.app import main
+from app import main
 
 
 def test_main() -> None:
