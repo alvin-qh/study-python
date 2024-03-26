@@ -5,10 +5,10 @@
 import sys
 from typing import cast
 
-import camera
-from draw_model import draw_model
+import camera.camera as camera
+from draw.model import draw_model
 from teapot import load_triangles
-from vectors import Polygons, add, scale
+from draw.vectors import Polygons, add, scale
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig4.6_scale_translate", [0])

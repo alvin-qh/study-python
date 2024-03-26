@@ -5,10 +5,10 @@
 import sys
 from typing import cast
 
-import camera
-from draw_model import draw_model
+import camera.camera as camera
+from draw.model import draw_model
 from teapot import load_triangles
-from vectors import Polygons, add
+from draw.vectors import Polygons, add
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("ex_translate_teapot_down_z", [0])

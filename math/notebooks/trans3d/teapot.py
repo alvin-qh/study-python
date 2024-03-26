@@ -7,8 +7,8 @@ from math import pi
 from os import path
 from typing import Generator, List, Sequence, cast
 
-from transforms import rotate_x
-from vectors import Polygons, Triangle, Vector3D, add, scale
+from draw.transforms import rotate_x
+from draw.vectors import Polygons, Triangle, Vector3D, add, scale
 
 # 打开模型文件
 with open(path.join(path.dirname(__file__), "models/teapot.off")) as f:

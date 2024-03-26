@@ -6,11 +6,11 @@ import sys
 from math import pi
 from typing import cast
 
-import camera
-from draw_model import draw_model
+import camera.camera as camera
+from draw.model import draw_model
 from teapot import load_triangles
-from transforms import rotate_z
-from vectors import Polygons
+from draw.transforms import rotate_z
+from draw.vectors import Polygons
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.12_rotate_teapot_z", [0])

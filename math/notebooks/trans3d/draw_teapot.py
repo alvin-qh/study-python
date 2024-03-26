@@ -4,8 +4,8 @@
 # to run it, run this script with command line arg --snapshot
 import sys
 
-import camera
-from draw_model import draw_model
+import camera.camera as camera
+from draw.model import draw_model
 from teapot import load_triangles
 
 if "--snapshot" in sys.argv:

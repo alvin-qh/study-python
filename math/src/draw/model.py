@@ -1,25 +1,24 @@
-from typing import Callable, Optional, Tuple, Type, cast
+from typing import Any, Callable, Optional, Tuple, cast
 
-import camera
-import matplotlib.cm
+import matplotlib as mpl
 import OpenGL.GL as gl
 import OpenGL.GLU as glu
 import pygame as game
 from matplotlib.colors import Colormap
-from transforms import multiply_matrix_vector, polygon_map
-from vectors import (Matrix, Polygons, Triangle, Vector3D, cross, dot,
-                     subtract, unit)
+
+from .transforms import multiply_matrix_vector, polygon_map
+from .vectors import Matrix, Polygons, Triangle, Vector3D, cross, dot, subtract, unit
+from .camera import default_camera
 
 
 def normal(face: Triangle) -> Vector3D:
-    """
-    计算一个三维面的法线 (垂直面的向量)
+    """计算一个三维面的法线 (垂直面的向量)
 
     Args:
-        face (Triangle): 一个表示面的三角形
+        `face` (`Triangle`): 一个表示面的三角形
 
     Returns:
-        Vector3D: 垂直三维平面的法向量
+        `Vector3D`: 垂直三维平面的法向量
     """
     return cross(
         cast(Vector3D, subtract(face[1], face[0])),
@@ -27,17 +26,23 @@ def normal(face: Triangle) -> Vector3D:
     )
 
 
-def shade(face: Triangle, color_map: Type[Colormap], light: Vector3D) -> Colormap:
-    """
-    计算 3D 图形的阴影色板
+_blues: Colormap = mpl.colormaps["Blues"]  # type: ignore
+
+
+def shade(
+    face: Triangle,
+    color_map: Colormap = _blues,
+    light: Vector3D = (1, 2, 3),
+) -> Tuple[Any, ...] | Any:
+    """计算 3D 图形的阴影色板
 
     Args:
-        face (Triangle): 要绘制的三角形平面
-        color_map (Type[Colormap]): 色板类型
-        light (Vector3D): 入射光线向量
+        `face` (`Triangle`): 要绘制的三角形平面
+        `color_map` (`Type[Colormap]`): 色板类型
+        `light` (`Vector3D`): 入射光线向量
 
     Returns:
-        Colormap: 色板对象
+        `Tuple[Any, ...] | Any`: 颜色值
     """
     # 根据入射光线和平面法线的对齐程度, 计算颜色深浅
     return color_map(1 - dot(unit(normal(face)), unit(light)))
@@ -64,17 +69,16 @@ GlRotatefArgs = Tuple[float, float, float, float]
 
 
 def draw_model(
-        faces: Polygons,
-        color_map: Optional[Colormap] = None,
-        light: Vector3D = (1, 2, 3),
-        gl_rotatef_args: Optional[GlRotatefArgs] = None,
-        get_matrix: Callable[[int], Matrix] = None,
+    faces: Polygons,
+    color_map: Optional[Colormap] = None,
+    light: Vector3D = (1, 2, 3),
+    gl_rotatef_args: Optional[GlRotatefArgs] = None,
+    get_matrix: Optional[Callable[[int], Matrix]] = None,
 ) -> None:
-    """
-    绘制模型, 即有多面体组成的三维图形
+    """绘制模型, 即有多面体组成的三维图形
 
     Args:
-        faces (Polygons): 多面体模型
+        `faces` (`Polygons`): 多面体模型
         color_map (Optional[Colormap], optional): 绘图用的色板. Defaults to `None`.
         light (Vector3D, optional): 光线向量. Defaults to `(1, 2, 3)`.
         gl_rotatef_args (Optional[Tuple[float, float, float, float]], optional): `gl.glRotatef` 函数的参数. Defaults to `None`.
@@ -90,7 +94,7 @@ def draw_model(
     )
 
     # 获取相机
-    cam = camera.default_camera
+    cam = default_camera
     # 设置相机视窗
     cam.set_window(win)
 
@@ -110,7 +114,7 @@ def draw_model(
                 game.quit()
                 quit()
 
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)  # type: ignore
         gl_axes()
 
         gl.glBegin(gl.GL_TRIANGLES)

@@ -59,24 +59,24 @@ def add(*vs: Vector) -> Vector:
 
 
 def subtract(*vs: Vector) -> Vector:
-    """
-    将一个 N 维向量集合中所有的向量进行相减后返回结果
+    """将一个 N 维向量集合中所有的向量进行相减后返回结果
 
     Args:
-        vs (Iterable[Vector]): 向量集合
+        `vs` (`Iterable[Vector]`): 向量集合
 
     Returns:
-        Vector: 所有向量相减后的结果
+        `Vector`: 所有向量相减后的结果
     """
+
     def sub(nums: Iterable[Number]) -> Number:
         it = iter(nums)
-
         r = next(it)
         while 1:
             try:
                 r -= next(it)
             except StopIteration:
-                return r
+                break
+        return r
 
     return tuple(map(sub, zip(*vs)))
 
@@ -217,10 +217,7 @@ def perimeter(vs: List[Vector]) -> float:
     Returns:
         float: 周长
     """
-    distances = [
-        distance(vs[i], vs[(i + 1) % len(vs)])
-        for i in range(len(vs))
-    ]
+    distances = [distance(vs[i], vs[(i + 1) % len(vs)]) for i in range(len(vs))]
     return sum(distances)
 
 
@@ -288,8 +285,7 @@ def component(v: Vector, direction: Vector) -> float:
 
 
 def unit(v: Vector) -> Vector:
-    """
-    返回和输入向量方向相同, 但长度为 `1` 的向量
+    """返回和输入向量方向相同, 但长度为 `1` 的向量
 
     Args:
         v (Vector): 输入向量
@@ -300,6 +296,6 @@ def unit(v: Vector) -> Vector:
     return scale(v, 1.0 / length(v))
 
 
-def linear_combination(scalars, *vectors):
-    scaled = [scale(s, v) for s, v in zip(scalars, vectors)]
+def linear_combination(scalars: List[Number], *vectors: List[Vector]) -> Vector:
+    scaled = [scale(v, s) for s, v in zip(scalars, vectors)]
     return add(*scaled)
