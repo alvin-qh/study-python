@@ -5,10 +5,11 @@
 import sys
 from typing import cast
 
-import camera.camera as camera
+from common.typedef import Polygons
+from common.vector import scale
+from draw import camera
 from draw.model import draw_model
-from teapot import load_triangles
-from draw.vectors import Polygons, add, scale
+from draw.teapot import load_triangles
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("MINIPROJ_4.3b", [0])
@@ -16,10 +17,9 @@ if "--snapshot" in sys.argv:
 # 读取茶壶模型
 original_triangles = load_triangles()
 
-# 将模型的每个向量统一乘以 0.5, 茶壶缩小到原本的 1 / 2
+# 将模型的每个向量统一乘以 -1, 相当于三个坐标轴全部翻转
 moved_triangles = [
-    [scale(vertex, 0.5) for vertex in triangle]
-    for triangle in original_triangles
+    [scale(vertex, -1.0) for vertex in triangle] for triangle in original_triangles
 ]
 
 # 绘制茶壶模型

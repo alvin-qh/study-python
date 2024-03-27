@@ -5,10 +5,11 @@
 import sys
 from typing import cast
 
-import camera.camera as camera
+from common.typedef import Polygons
+from common.vector import scale
+from draw import camera
 from draw.model import draw_model
-from teapot import load_triangles
-from draw.vectors import Polygons, scale
+from draw.teapot import load_triangles
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.5_scale_teapot", [0])
@@ -18,8 +19,7 @@ original_triangles = load_triangles()
 
 # 将模型中的每个三角形放大 2 倍
 scaled_triangles = [
-    [scale(vertex, 2.0) for vertex in triangle]
-    for triangle in original_triangles
+    [scale(vertex, 2.0) for vertex in triangle] for triangle in original_triangles
 ]
 
 # 绘制茶壶模型

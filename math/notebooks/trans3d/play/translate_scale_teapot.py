@@ -5,13 +5,14 @@
 import sys
 from typing import cast
 
-import camera.camera as camera
+from common.typedef import Polygons
+from common.vector import add, scale
+from draw import camera
 from draw.model import draw_model
-from teapot import load_triangles
-from draw.vectors import Polygons, add, scale
+from draw.teapot import load_triangles
 
 if "--snapshot" in sys.argv:
-    camera.default_camera = camera.Camera("fig4.6_scale_translate", [0])
+    camera.default_camera = camera.Camera("ex_translate_scale", [0])
 
 # 读取茶壶模型
 original_triangles = load_triangles()
@@ -19,9 +20,9 @@ original_triangles = load_triangles()
 # 要移动的偏移向量
 offset = (-1, 0, 0)
 
-# 将模型中的每个向量放大 2 倍后沿 x 轴负方向移动 1 个单位
+# 将模型中的每个向量沿 x 轴负方向移动 1 个单位后放大 2 倍
 scaled_triangles = [
-    [add(offset, scale(vertex, 2.0)) for vertex in triangle]
+    [scale(add(offset, vertex), 2.0) for vertex in triangle]
     for triangle in original_triangles
 ]
 

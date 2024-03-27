@@ -4,9 +4,9 @@
 # to run it, run this script with command line arg --snapshot
 import sys
 
-import camera.camera as camera
 from draw.model import draw_model
-from teapot import load_triangles
+from draw.teapot import load_triangles
+from draw import camera
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.4_draw_teapot", [0])

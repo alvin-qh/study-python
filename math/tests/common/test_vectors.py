@@ -1,16 +1,13 @@
 from cmath import pi
 from math import atan2, sqrt, tan
-from typing import Callable, List
+from typing import List
 
-from common import Vector
-
-from common.vectors import (
+from common.typedef import Vector
+from common.vector import (
     add,
     angle_between,
     component,
-    compose,
     cross,
-    curry2,
     distance,
     dot,
     length,
@@ -195,6 +192,11 @@ def test_cross() -> None:
     assert r == (-3, 6, -3)
 
 
+def test_rotate2d() -> None:
+    """测试旋转 2D 向量"""
+    pass
+
+
 def test_angle_between() -> None:
     """测试计算向量夹角"""
     v1: Vector
@@ -251,41 +253,16 @@ def test_unit() -> None:
     assert angle_between(v, v_new) == 0.0
 
 
-def test_compose() -> None:
-    """测试 compose 函数, 组合多个函数一起执行"""
-
-    def prepend(s: str) -> Callable[[str], str]:
-        """指定一个字符串并返回一个函数, 该函数可以在指定字符串之前增加一个字符
-
-        Args:
-            `s` (`str`): 指定的字符串
-
-        Returns:
-            `Callable[[str], str]`: 返回在指定字符串增加字符的函数
-        """
-        return lambda input: s + input
-
-    # 逆向执行三个 prepend 函数, 为指定的字符串添加三个字符
-    fn = compose(
-        prepend("P"),  # 在原字符串前添加 P 字符
-        prepend("y"),  # 在原字符串前添加 y 字符
-        prepend("t"),  # 在原字符串前添加 t 字符
-    )
-
-    # 确认结果正确
-    assert fn("hon") == "Python"
+def test_normal() -> None:
+    """测试计算三维向量的法向量"""
+    pass
 
 
-def test_curry2() -> None:
-    """测试函数柯里化
+def test_linear_combination() -> None:
+    """测试计算向量的线性组合"""
+    pass
 
-    将一个两个参数的函数包装为一个函数, 该函数接受第一个参数, 并返回另一个函数, 后者接收第二个参数, 返回原函数的执行结果
-    """
 
-    def add(x: int, y: int) -> int:
-        return x + y
-
-    # 返回第一个函数
-    fn = curry2(add)
-    # 执行第一个函数和第一个函数返回的函数
-    assert fn(100)(200) == 300
+def test_multiply_matrix_vector() -> None:
+    """测试矩阵向量乘法"""
+    pass

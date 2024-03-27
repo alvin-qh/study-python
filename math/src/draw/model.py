@@ -6,8 +6,15 @@ import OpenGL.GLU as glu
 import pygame as game
 from matplotlib.colors import Colormap
 
-from .transforms import multiply_matrix_vector, polygon_map
-from .vectors import Matrix, Polygons, Triangle, Vector3D, cross, dot, subtract, unit
+from common.transform import polygon_map
+from common.typedef import Matrix, Polygons, Triangle, Vector3D
+from common.vector import (
+    cross,
+    dot,
+    subtract,
+    unit,
+    multiply_matrix_vector,
+)
 from .camera import default_camera
 
 
@@ -70,7 +77,7 @@ GlRotatefArgs = Tuple[float, float, float, float]
 
 def draw_model(
     faces: Polygons,
-    color_map: Optional[Colormap] = None,
+    color_map: Colormap = _blues,
     light: Vector3D = (1, 2, 3),
     gl_rotatef_args: Optional[GlRotatefArgs] = None,
     get_matrix: Optional[Callable[[int], Matrix]] = None,
@@ -108,6 +115,13 @@ def draw_model(
     gl.glEnable(gl.GL_DEPTH_TEST)
     gl.glCullFace(gl.GL_BACK)
 
+    def do_matrix_transform(v: Vector3D) -> Vector3D:
+        if get_matrix:
+            m = get_matrix(game.time.get_ticks())
+            return multiply_matrix_vector(m, v)  # type: ignore
+
+        return v
+
     while cam.is_shooting():
         for event in game.event.get():
             if event.type == game.QUIT:
@@ -118,13 +132,6 @@ def draw_model(
         gl_axes()
 
         gl.glBegin(gl.GL_TRIANGLES)
-
-        def do_matrix_transform(v: Vector3D) -> Vector3D:
-            if get_matrix:
-                m = get_matrix(game.time.get_ticks())
-                return multiply_matrix_vector(m, v)  # type: ignore
-
-            return v
 
         transformed_faces = polygon_map(do_matrix_transform, faces)
 

@@ -5,11 +5,11 @@
 import sys
 from typing import cast
 
-import camera.camera as camera
+from common.typedef import Polygons
 from draw.model import draw_model
-from teapot import load_triangles
-from draw.vectors import Polygons
-from draw.transforms import cube_stretch
+from draw.teapot import load_triangles
+from draw import camera
+from common.transform import cube_stretch
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.15_cube_teapot_y", [0])

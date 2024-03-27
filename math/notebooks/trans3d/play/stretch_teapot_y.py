@@ -5,22 +5,22 @@
 import sys
 from typing import cast
 
-import camera.camera as camera
+from common.transform import stretch
+from common.typedef import Polygons
+from draw import camera
 from draw.model import draw_model
-from teapot import load_triangles
-from draw.vectors import Polygons, add
+from draw.teapot import load_triangles
 
 if "--snapshot" in sys.argv:
-    camera.default_camera = camera.Camera("ex_translate_teapot_down_z", [0])
+    camera.default_camera = camera.Camera("fig_4.13_stretch_teapot_x", [0])
 
 # 读取茶壶模型
 original_triangles = load_triangles()
 
-# 将向量的 z 轴坐标减小 20 个单位, 绘制一个远离的茶壶
-moved_triangles = [
-    [add(vertex, (0, 0, -20)) for vertex in triangle]
-    for triangle in original_triangles
+# 将每个向量的 y 轴分量拉伸 4 倍
+stretched_triangles = [
+    [stretch(vertex, sy=4.0) for vertex in triangle] for triangle in original_triangles
 ]
 
 # 绘制茶壶模型
-draw_model(cast(Polygons, moved_triangles))
+draw_model(cast(Polygons, stretched_triangles))

@@ -13,6 +13,7 @@
         "argvalues",
         "arrayconnection",
         "arrowprops",
+        "arrowstyle",
         "asend",
         "astimezone",
         "atype",
@@ -79,6 +80,7 @@
         "firstweekday",
         "flatmap",
         "followlinks",
+        "fontsize",
         "freeglut",
         "fromlist",
         "froms",
@@ -110,6 +112,7 @@
         "levelname",
         "lexify",
         "linebreak",
+        "linestyle",
         "loadtxt",
         "localeselector",
         "looponfail",
@@ -201,6 +204,7 @@
         "uvicorn",
         "venv",
         "verticalalignment",
+        "verts",
         "virtualenv",
         "wday",
         "websockt",
@@ -225,7 +229,8 @@
         "zinfo",
         "ziped",
         "zlabel",
-        "zlim"
+        "zlim",
+        "zorder"
     ],
     "flagWords": []
 }
