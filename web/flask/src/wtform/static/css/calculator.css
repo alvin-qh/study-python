@@ -1,0 +1,81 @@
+@charset "UTF-8";
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif;
+  box-sizing : border-box;
+  padding    : 0;
+  margin     : 0;
+  font-size  : 14px;
+}
+
+input,
+button,
+select {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif;
+  font-size  : 14px;
+  outline    : none;
+}
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance   : none;
+  appearance        : none;
+  background        : #fff;
+  border-radius     : 0;
+  outline           : none;
+}
+
+.main {
+  width : 90%;
+  margin: 0 auto;
+}
+
+.main>.calculator>.expression {
+  margin-top: 10px;
+}
+
+.main>.calculator>.expression .inline-input {
+  margin-bottom: 10px;
+}
+
+.main>.calculator>.expression .inline-input>label {
+  font-weight: bold;
+  display    : inline-block;
+  width      : 2em;
+  text-align : right;
+}
+
+.main>.calculator>.expression .inline-input>div {
+  display: inline-block;
+}
+
+.main>.calculator>.expression .inline-input>div input,
+select {
+  width  : 10em;
+  padding: 5px 10px;
+}
+
+.main>.calculator>.expression .inline-input>.error {
+  font-size  : 12px;
+  font-weight: bold;
+  color      : #a52a2a;
+  margin-left: 5px;
+}
+
+.main>.calculator>.expression hr {
+  margin: 20px 0;
+  width : 220px;
+}
+
+.main>.calculator>.operate {
+  width     : 200px;
+  text-align: right;
+  margin-top: 20px;
+}
+
+.main>.calculator>.operate button {
+  padding    : 5px 8px;
+  background : #3583ff;
+  color      : #ccc;
+  font-weight: bold;
+}

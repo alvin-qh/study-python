@@ -1,0 +1,31 @@
+{% extends 'lib/layout.html' %}
+
+{% block title %}
+Jinja Demo
+{% endblock %}
+
+{% block header %}
+<link rel="stylesheet" href="{{ assets.css('index.css') }}" />
+{% endblock %}
+
+{% block footer %}
+<script type="text/javascript" src="{{ assets.script('index.js') }}"></script>
+{% endblock %}
+
+{% block content %}
+<div class="title text-center">
+  <img src="{{ assets.image('logo.png') }}" class="logo" alt="logo" />
+  <h2><a href="{{ url('') }}">Jinja2 Demo</a></h2>
+  <p>This demo is for flask with jinja2</p>
+</div>
+<div class="content text-center">
+  <div class="timer">${ currentTime }</div>
+
+  <div class="search-box">
+    <input type="text" />
+    <button type="button">Search</button>
+  </div>
+
+  <div class="search-result"></div>
+</div>
+{% endblock %}

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="content-type" content="text/html" charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="renderer" content="webkit" />
+  <link rel="stylesheet" type="text/css" href="{{ assets.css('calculator.css') }}" />
+  <title>WTForm Demo</title>
+</head>
+
+<body>
+  <div class="main">
+    <form class="calculator" method="post" action="/">
+      <div class="expression">
+        <div class="inline-input">
+          <label class="label">{{ form.a.label }}: </label>
+          <div class="field">{{ form.a }}</div>
+          {% if 'a' in form.errors %}
+          <div class="error">{{ form.errors['a'][0] }}</div>
+          {% endif %}
+        </div>
+        <div class="inline-input">
+          <label class="label">{{ form.op.label }}: </label>
+          <div class="field">{{ form.op }}</div>
+          {% if 'op' in form.errors %}
+          <div class="error">{{ form.errors['op'][0] }}</div>
+          {% endif %}
+        </div>
+        <div class="inline-input">
+          <label class="label">{{ form.b.label }}: </label>
+          <div class="field">{{ form.b }}</div>
+          {% if 'b' in form.errors %}
+          <div class="error">{{ form.errors['b'][0] }}</div>
+          {% endif %}
+        </div>
+        <hr />
+        <div class="inline-input">
+          <label class="label">ans: </label>
+          <div class="field"><input value="{{ ans }}" /></div>
+        </div>
+      </div>
+      <div class="operate">
+        <button type="submit">Calculate</button>
+      </div>
+    </form>
+  </div>
+</body>
+
+</html>

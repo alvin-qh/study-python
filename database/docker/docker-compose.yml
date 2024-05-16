@@ -1,0 +1,47 @@
+services:
+  percona:
+    image: percona/percona-server:8.0
+    container_name: percona
+    restart: always
+    privileged: true
+    env_file:
+      - ./env/percona.env
+    ports:
+      - 3306:3306
+    volumes:
+      - ./conf/percona.cnf:/etc/my.cnf.d/default.cnf:ro
+      - ./sql/initialize.sql:/docker-entrypoint-initdb.d/initialize.sql:ro
+      - ./log:/var/log/mysql
+      - percona_data:/var/lib/mysql
+    networks:
+      - database_network
+  mongo:
+    image: mongo:7.0
+    container_name: mongo
+    restart: always
+    privileged: true
+    env_file:
+      - ./env/mongo.env
+    command: --replSet rs0  # 为命令行添加参数以启动集群, 集群名称 rs0 (单机集群)
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data_db:/data/db
+      - mongo_data_config:/data/configdb
+    networks:
+      - database_network
+# mongo-express:
+#   image: mongo-express
+#   restart: always
+#   ports:
+#     - 8081:8081
+#   env_file:
+#     - env/express.env
+#   networks:
+#     - database_network
+networks:
+  database_network:
+volumes:
+  percona_data:
+  mongo_data_db:
+  mongo_data_config:

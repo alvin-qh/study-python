@@ -1,0 +1,103 @@
+[project]
+name = 'study_python_basic' # 项目名称 (必填项)
+version = '0.1.0' # 项目版本号 (必填项)
+authors = [{ name = 'Alvin', email = 'quhao317@163.com' }] # 项目作者 (可选)
+dependencies = [
+    # 依赖包
+    "pytz>=2024.1",
+    "atomics>=1.0.2",
+    "werkzeug>=3.0.1",
+    "wrapt>=1.16.0",
+    "portalocker>=2.8.2",
+    "tzdata>=2024.1",
+]
+requires-python = '>=3.12' # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
+readme = 'README.md' # 指定说明文件
+license = { text = 'MIT' } # 指定软件许可协议
+classifiers = [ # 分类信息
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+# [build-system]
+# 配置编译工具链
+# requires = ["pdm-backend"]
+# build-backend = "pdm.backend"
+
+[tool.pdm.dev-dependencies]
+# PDM 工具提供的 dev 模式依赖包组, 通过 pdm update -d / pdm install -d 进行安装
+# dev = ["pytest", "mypy", "autopep8"]
+
+[project.optional-dependencies]
+# PEP 517 规范提供的可选模式依赖包组, 通过 pdm update -G <group-name> / pdm install -G <group-name> 进行安装
+lint = ["mypy>=1.9.0", "autopep8>=2.1.0"]
+test = [
+    "pytest>=8.1.1",
+    "pytest-asyncio>=0.23.6",
+    "pytest-rerunfailures>=14.0",
+    "pytest-repeat>=0.9.3",
+    "pytest-assume>=2.4.3",
+    "pytest-xdist>=3.5.0",
+    "hypothesis>=6.99.12",
+    "faker>=24.3.0",
+]
+type = ["types-python-dateutil", "types-pytz"]
+
+[tool.pdm.scripts]
+# 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
+check = { composite = ["mypy src", "autopep8 src tests"] }
+check-win = { composite = ["mypy.exe src", "autopep8.exe src tests"] }
+test = "pytest -v -s tests"
+test-win = "pytest.exe -v -s tests"
+clean = { composite = [
+    "rm -rf .pdm-build",
+    "rm -rf .mypy_cache",
+    "rm -rf .pytest_cache",
+    "rm -rf dist",
+    'find src -type d -name "__pycache__" -exec rm -rf {} +',
+    'find tests -type d -name "__pycache__" -exec rm -rf {} +',
+] }
+
+[tool.pycln]
+all = true
+
+[tool.mypy]
+# mypy 配置
+python_version = '3.12'
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+# warn_unreachable = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = ['^.venv\.py$', '^.test\.py$']
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+
+[tool.isort]
+line_length = 120
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+
+[tool.pytest.ini_options]
+# pytest 配置
+# testpaths = ['tests'] # 测试所在路径
+# pythonpath = ['src'] # 指定 Python 路径
+markers = [ # 自定义测试标识, 取消则对应标识的测试不执行
+    'webtest',
+]
+addopts = '-vvs' # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
+filterwarnings = [ # 忽略指定的警告信息
+    'ignore::hypothesis.errors.NonInteractiveExampleWarning',
+]

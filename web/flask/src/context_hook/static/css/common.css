@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif;
+  font-size  : 14px;
+}
+
+input,
+button {
+  font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif;
+  font-size  : 14px;
+}
+
+.container {
+  width : 960px;
+  margin: 0 auto;
+}
+
+.row {
+  padding: 5px;
+}
+
+.row:after {
+  content   : '';
+  display   : block;
+  clear     : both;
+  visibility: hidden;
+  width     : 0;
+  height    : 0;
+}
+
+input[type=text],
+input[type=password],
+.btn {
+  padding: 5px 10px;
+}
+
+.inline-input>div {
+  display: inline-block;
+}
+
+.inline-input>label {
+  display   : inline-block;
+  width     : 90px;
+  text-align: right;
+}
+
+.login-form {
+  width : 360px;
+  margin: 20px auto;
+}
+
+.login-form .error {
+  color       : #a51819;
+  font-size   : 12px;
+  padding-left: 100px;
+}
+
+.login-form .title {
+  text-align   : center;
+  font-size    : 22px;
+  margin-bottom: 40px;
+}
+
+.login-form .buttons {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.welcome,
+.goodbye {
+  font-size  : 40px;
+  font-weight: bold;
+  text-align : center;
+  margin-top : 90px;
+}
+
+.logout {
+  text-align  : right;
+  margin-right: 50px;
+}
+
+.logout a {
+  text-decoration: none;
+}

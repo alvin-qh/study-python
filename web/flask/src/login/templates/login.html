@@ -1,0 +1,38 @@
+{% extends 'lib/layout.html' %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block header %}
+<link rel="stylesheet" href="{{ assets.css('login.css') }}" />
+{% endblock %}
+
+{% block footer %}
+{#
+<script type="text/javascript" src="{{ assets.script('index.js') }}"></script> #}
+{% endblock %}
+
+{% block content %}
+<div class="wrapper">
+  <header>
+    <h1>User Login</h1>
+  </header>
+  <form class="login" method="post" action="/login">
+    <div class="form-row">
+      {{ form.username.label }}
+      <div class="field">{{ form.username }}</div>
+      {% if 'a' in form.errors %}
+      <div class="error">{{ form.errors["username"][0] }}</div>
+      {% endif %}
+    </div>
+    <div class="form-row">
+      {{ form.password.label }}
+      <div class="field">{{ form.password }}</div>
+      {% if 'a' in form.errors %}
+      <div class="error">{{ form.errors["password"][0] }}</div>
+      {% endif %}
+    </div>
+  </form>
+</div>
+{% endblock %}

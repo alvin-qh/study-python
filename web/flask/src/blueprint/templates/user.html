@@ -1,0 +1,26 @@
+{% extends 'lib/layout.html' %}
+
+{% block title %}
+Blueprint Demo
+{% endblock %}
+
+{% block header %}
+{% endblock %}
+
+{% block footer %}
+{% endblock %}
+
+{% block content %}
+<header>
+  {% if user and user.name %}
+  <h2 class="text-center">Hello {{ user.name }}</h2>
+  {% else %}
+  <h2 class="text-center text-danger">Invalid user name</h2>
+  {% endif %}
+</header>
+<main class="container">
+  <div class="text-right">
+    Goto <a href="/">Home</a>
+  </div>
+</main>
+{% endblock %}

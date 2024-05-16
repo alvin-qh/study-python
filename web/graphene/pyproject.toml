@@ -1,0 +1,64 @@
+[project]
+name = "graphene_demo"
+version = "0.1.0"
+authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+dependencies = [
+    "graphene>=3.3",
+    "aiodataloader>=0.4.0",
+    "promise>=2.3",
+    "pyhumps>=3.8.0",
+    "bson>=0.5.10",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+
+[project.optional-dependencies]
+test = ["pytest>=8.1.1", "pytest-asyncio>=0.23.6"]
+lint = ["mypy>=1.9.0", "autopep8>=2.1.0", "mypy-extensions>=1.0.0"]
+demo = [
+    "werkzeug>=3.0.1",
+    "pymongo>=4.6.2",
+    "mongoengine>=0.28.2",
+    "blinker>=1.7.0",
+    "factory-boy>=3.3.0",
+    "peewee>=3.17.1",
+    "psycopg2-binary>=2.9.9",
+]
+
+[tool.pdm.scripts]
+check = { composite = ["mypy src", "autopep8 src tests"] }
+test = "pytest -v -s tests"
+clean = { composite = [
+    "rm -rf .pdm-build",
+    "rm -rf .mypy_cache",
+    "rm -rf .pytest_cache",
+    "rm -rf dist",
+    'find src -type d -name "__pycache__" -exec rm -rf {} +',
+    'find tests -type d -name "__pycache__" -exec rm -rf {} +',
+] }
+
+[tool.mypy]
+python_version = '3.11'
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+disallow_untyped_calls = false
+disallow_subclassing_any = false
+exclude = ['migration/scripts/.+?\.py$']
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-svv"
+filterwarnings = ['ignore::DeprecationWarning']

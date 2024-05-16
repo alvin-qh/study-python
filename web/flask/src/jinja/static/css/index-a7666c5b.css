@@ -1,0 +1,56 @@
+.title {
+  margin-top: 30px;
+}
+
+.title p {
+  font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+  text-align: justify;
+  font-weight: 200;
+}
+
+.timer {
+  font-size: larger;
+  font-weight: 600;
+}
+
+.search-box {
+  display: flex;
+  margin-top: 20px;
+  justify-content: center;
+  align-items: center;
+}
+
+.search-box input[type=text] {
+  padding: 5px 10px;
+  width: 60vh;
+  margin-right: 10px;
+}
+
+.search-box button {
+  padding: 5px 20px;
+}
+
+.search-result {
+  text-align: left;
+}
+
+.search-result .title {
+  font-size: larger;
+  font-weight: 600;
+}
+
+.search-result .description {
+  margin-top: 10px;
+  color: #252323;
+}
+
+.search-result .link {
+  margin-top: 5px;
+  color: #252323;
+}
+
+.search-result .link a {
+  text-decoration: none;
+  color: cadetblue;
+}
+

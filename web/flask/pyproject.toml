@@ -1,0 +1,77 @@
+[project]
+name = "flask_demo"
+version = "0.1.0"
+authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+dependencies = [
+    "flask-babel>=4.0.0",
+    "flask-login>=0.6.3",
+    "flask-socketio>=5.3.6",
+    "flask[async]>=3.0.2",
+    "gevent-websocket>=0.10.1",
+    "gevent>=24.2.1",
+    "waitress>=3.0.0",
+    "wtforms>=3.1.2",
+    "xxhash>=3.4.1",
+    "paste>=3.8.0",
+    "quart>=0.19.4",
+]
+requires-python = ">=3.12"
+readme = "README.md"
+license = { text = "MIT" }
+
+[project.optional-dependencies]
+test = [
+    "beautifulsoup4>=4.12.3",
+    "pytest-mock>=3.14.0",
+    "pytest>=8.1.1",
+    "pytest-asyncio>=0.23.6",
+]
+lint = [
+    "autopep8>=2.1.0",
+    "mypy>=1.9.0",
+]
+http = [
+    "gunicorn>=21.2.0",
+    "tornado>=6.4",
+    "uwsgi>=2.0.24",
+    "hypercorn>=0.16.0",
+]
+
+[tool.pdm.scripts]
+dev = "python src/run.py"
+check = { composite = ["mypy src", "autopep8 src tests"] }
+i18n = "pybabel compile -d src/i18n/message"
+test = "pytest -v -s tests"
+clean = { composite = [
+    "rm -rf .pdm-build",
+    "rm -rf .mypy_cache",
+    "rm -rf .pytest_cache",
+    "rm -rf dist",
+    'find src -type d -name "__pycache__" -exec rm -rf {} +',
+    'find tests -type d -name "__pycache__" -exec rm -rf {} +',
+] }
+type_install = "mypy --install-types"
+
+[tool.mypy]
+python_version = '3.12'
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+disallow_untyped_calls = false
+disallow_subclassing_any = false
+exclude = []
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-svv"

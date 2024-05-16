@@ -1,0 +1,7 @@
+/.venv/
+.vscode
+.history
+.gitignore
+dist
+**/*.md
+**/*.pyc
