@@ -97,7 +97,7 @@ ensure_newline_before_comments = true
 markers = [ # 自定义测试标识, 取消则对应标识的测试不执行
     'webtest',
 ]
-addopts = '-vvs' # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
+addopts = "-vvs --log-cli-level INFO" # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
 filterwarnings = [ # 忽略指定的警告信息
     'ignore::hypothesis.errors.NonInteractiveExampleWarning',
 ]
