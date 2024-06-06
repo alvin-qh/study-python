@@ -18,5 +18,5 @@ pycodestyle==2.11.1
 pytest==7.4.3
 setuptools==68.2.2
 typing-extensions==4.8.0
-Werkzeug==3.0.1
+Werkzeug==3.0.3
 xxhash==3.4.1
