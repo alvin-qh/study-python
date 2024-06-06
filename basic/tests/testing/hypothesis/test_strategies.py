@@ -24,7 +24,7 @@ import pytz
 from hypothesis import assume, given, infer, note
 from hypothesis import provisional as pr
 from hypothesis import strategies as st
-from hypothesis.strategies._internal.core import RandomSeeder
+from hypothesis.strategies._internal.core import RandomSeeder  # type: ignore
 from testing.hypothesis import User, UserStrategy, element_and_index
 
 
@@ -392,7 +392,7 @@ def test_strategies_emails(e: str) -> None:
             "name": st.from_regex(r"[a-z]{3,5}", fullmatch=True),
             "gender": st.from_regex(r"M|F", fullmatch=True),
         },
-        optional={  # 设置可选的字典模板
+        optional={  # 设置可选的字典模板 # type: ignore
             "age": st.integers(min_value=20, max_value=50),
         },
     )
@@ -607,7 +607,9 @@ def test_strategies_frozensets(fs: FrozenSet[int]) -> None:
 @given(
     st.functions(
         like=lambda n: ...,  # type: ignore # 设置参数为整数类型的函数定义
-        returns=st.from_regex(r"[0-9]{3,5}", fullmatch=True),  # 设置假设函数的返回值假设
+        returns=st.from_regex(
+            r"[0-9]{3,5}", fullmatch=True
+        ),  # 设置假设函数的返回值假设
     )
 )
 def test_strategies_functions(fn: Callable[[int], str]) -> None:
@@ -664,7 +666,8 @@ def test_strategies_integers(n: int) -> None:
 
 @given(
     ip=st.ip_addresses(
-        v=4, network="192.168.1.0/24"  # 使用 IPv4 协议  # 设置子网掩码为一个 C 类 IP 子网掩码
+        v=4,
+        network="192.168.1.0/24",  # 使用 IPv4 协议  # 设置子网掩码为一个 C 类 IP 子网掩码
     )
 )
 def test_strategies_ip_addresses(ip: IPv4Address) -> None:

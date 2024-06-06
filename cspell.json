@@ -62,6 +62,7 @@
         "dbutils",
         "delayfunc",
         "derandomize",
+        "DGRAM",
         "distrib",
         "doraise",
         "dotenv",
