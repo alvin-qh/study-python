@@ -72,7 +72,10 @@ async def test_async_udp() -> None:
         # 等待服务端关闭
         await srv.wait()
     finally:
-        client.close()
-        srv.close()
+        if client:
+            client.close()
+
+        if srv:
+            srv.close()
 
     assert res_que.get() == "hello_ack"

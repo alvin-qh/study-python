@@ -201,8 +201,9 @@ class AsyncClient:
         # 发送时必须指定目标地址
         # 反之, 可以省略 `family` 参数, 且发送时无需指定目标地址
         transport, _ = await self._loop.create_datagram_endpoint(
-            lambda: ClientProtocol(("127.0.0.1", 18888), msg, res_que, on_con_lost),
+            lambda: ClientProtocol((host, port), msg, res_que, on_con_lost),
             family=so.SOCK_DGRAM,
+            proto=so.IPPROTO_UDP,
             # remote_addr=(host, port),
         )
         self._transport = transport
