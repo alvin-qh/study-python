@@ -2,7 +2,7 @@ import logging
 import socket as so
 from typing import Tuple
 
-from network.common import format_addr
+from ..common import format_addr
 
 log = logging.getLogger()
 
@@ -55,6 +55,8 @@ class _Udp:
 
 
 class SyncServer(_Udp):
+    """UDP 服务端"""
+
     __tag__ = "SERVER"
 
     def bind(self, port: int, addr: str = "") -> None:
@@ -69,6 +71,8 @@ class SyncServer(_Udp):
 
 
 class SyncClient(_Udp):
+    """UDP 客户端"""
+
     __tag__ = "CLIENT"
 
     def connect(self, addr: tuple[str, int]) -> None:

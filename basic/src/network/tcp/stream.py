@@ -1,9 +1,20 @@
 import logging
+import pickle
 import socket as so
-from typing import Optional, Tuple
+from typing import IO, Optional, Tuple, cast
 
 from ..common import format_addr
 import threading
+
+from .proto import (
+    Body,
+    ByeAckPayload,
+    ByePayload,
+    Header,
+    LoginAckPayload,
+    LoginPayload,
+    Package,
+)
 
 log = logging.getLogger()
 
@@ -16,16 +27,18 @@ class _Tcp:
         # 创建 socket 对象, 使用 TCP 协议
         self._so = so.socket(so.AF_INET, so.SOCK_STREAM)
 
+    def close(self) -> None:
+        """关闭连接"""
+        if self._so:
+            self._so.close()
 
-_suffix = b"_ack"
 
-
-class SyncServer(_Tcp):
+class StreamServer(_Tcp):
     """TCP 服务端"""
 
     def __init__(self) -> None:
         """初始化对象"""
-        super().__init__()
+        self._so = so.socket(so.AF_INET, so.SOCK_STREAM)
         self._accept_td: Optional[threading.Thread] = None
 
     def bind(self, port: int, addr: str = "") -> None:
@@ -36,34 +49,63 @@ class SyncServer(_Tcp):
             `addr` (`str`, optional): 要绑定的本机地址. Defaults to "".
         """
         # 绑定本地端口
-        self._so.bind((addr, port))
-        log.info(f"[SERVER] Bind to {format_addr((addr, port))!r}")
+        local_addr = (addr, port)
+        self._so.bind(local_addr)
+        log.info(f"[SERVER] Bind to {format_addr(local_addr)!r}")
 
     def _handle_recv(self, client_so: so.socket, client_addr: Tuple[str, int]) -> None:
         """处理数据接收"""
-        buf = bytearray(1024)
-
         with client_so:
-            while True:
-                # 接收客户端数据
-                n = client_so.recv_into(buf, len(buf))
-                if n == 0:
-                    # 接收数据长度为 0, 表示服务端连接已断开
-                    log.info(
-                        f"[SERVER] Connection closed from {format_addr(client_addr)!r}"
-                    )
-                    break
+            with client_so.makefile("rb") as f:
+                while True:
+                    try:
+                        # 接收客户端数据
+                        pack = cast(Package, pickle.load(f))
+                        log.info(
+                            f"[SERVER] Receive {pack!r} from {format_addr(client_addr)!r}"
+                        )
 
-                log.info(
-                    f"[SERVER] Received {buf[:n]!r} from {format_addr(client_addr)!r}"
-                )
+                        match pack.header.cmd:
+                            case "login":
+                                self._handle_login(f, client_addr, pack)
+                            case "bye":
+                                self._handle_bye(f, client_addr, pack)
+                            case _:
+                                log.info(
+                                    f"[SERVER] Unrecognized cmd: {pack.header.cmd}"
+                                )
+                                break
+                    except Exception:
+                        log.info("[SERVER] Stop listening")
+                        break
 
-                # 给接收数据增加后缀后发送回客户端
-                buf[n:] = _suffix
-                n = client_so.send(buf[: n + len(_suffix)])
-                log.info(
-                    f"[SERVER] Send {buf[: n + len(_suffix)]!r} to {format_addr(client_addr)!r}"
-                )
+    def _handle_login(
+        self, f: IO[bytes], client_addr: Tuple[str, int], pack: Package
+    ) -> None:
+        """处理登录"""
+        p = cast(LoginPayload, pack.body.payload)
+        log.info(
+            f"[SERVER] User {p.username!r} with password {p.password!r} from {format_addr(client_addr)!r}"
+        )
+
+        pack = Package(
+            Header(cmd="login"),
+            Body(LoginAckPayload(True, "")),
+        )
+        pickle.dump(pack, f)
+
+    def _handle_bye(
+        self, f: IO[bytes], client_addr: Tuple[str, int], pack: Package
+    ) -> None:
+        """处理退出"""
+        p = cast(ByePayload, pack.body.payload)
+        log.info(f"[SERVER] Bye word {p.word!r} from {format_addr(client_addr)!r}")
+
+        pack = Package(
+            Header(cmd="bye"),
+            Body(ByeAckPayload()),
+        )
+        pickle.dump(pack, f)
 
     def _handle_accept(self) -> None:
         """处理 Accept"""
@@ -82,7 +124,6 @@ class SyncServer(_Tcp):
                     ).start()
                 except Exception:
                     log.info("[SERVER] Stop listening")
-                    break
 
     def start_accept(self, backlog: int = 1) -> None:
         """接收客户端连接"""
@@ -104,11 +145,11 @@ class SyncServer(_Tcp):
             self._accept_td = None
 
 
-class SyncClient(_Tcp):
+class StreamClient(_Tcp):
     """TCP 客户端"""
 
     def __init__(self) -> None:
-        super().__init__()
+        self._so = so.socket(so.AF_INET, so.SOCK_STREAM)
         self._buf = bytearray(0)
         self._addr = ("", 0)
 
@@ -127,25 +168,16 @@ class SyncClient(_Tcp):
 
         log.info(f"[CLIENT] Connect to {format_addr(addr)!r}")
 
-    def recv(self) -> Tuple[int, bytes]:
+    def recv(self) -> Package:
         """接收数据
 
         Returns:
             `Tuple[int, bytes]`: 接收数据的结果, 为一个三元组, 分别为 `(数据长度, 远端地址, 数据内容)`
         """
-        n = self._so.recv_into(self._buf, len(self._buf))
+        with self._so.makefile("rb") as f:
+            return cast(Package, pickle.load(f))
 
-        if n == 0:
-            log.info(f"[CLIENT] Connection closed from {format_addr(self._addr)!r}")
-            self.close()
-        else:
-            log.info(
-                f"[CLIENT] Received {self._buf[:n].decode()!r} from {format_addr(self._addr)!r}"
-            )
-
-        return n, bytes(self._buf)
-
-    def send(self, data: bytes) -> int:
+    def send(self, pack: Package) -> None:
         """发送数据
 
         Args:
@@ -155,11 +187,5 @@ class SyncClient(_Tcp):
         Returns:
             `int`: 发送数据的长度
         """
-        n = self._so.send(data)
-        log.info(f"[CLIENT] Data {data[:n]!r} send to {format_addr(self._addr)!r}")
-        return n
-
-    def close(self) -> None:
-        """关闭连接"""
-        self._so.close()
-        log.info(f"[CLIENT] Close connection to {format_addr(self._addr)!r}")
+        with self._so.makefile("wb") as f:
+            pickle.dump(pack, f)
