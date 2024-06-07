@@ -3,11 +3,12 @@ import socket as so
 from typing import Tuple
 
 from network.common import format_addr
+import socket
 
 log = logging.getLogger()
 
 
-class _Udp:
+class _Tcp:
     """客户端和服务端的父类"""
 
     # 表示服务端或客户端的标志
@@ -15,24 +16,20 @@ class _Udp:
 
     def __init__(self) -> None:
         """实例化对象"""
-        # 创建 socket 对象, 使用 UDP 协议
-        self._so = so.socket(so.AF_INET, so.SOCK_DGRAM)
+        # 创建 socket 对象, 使用 TCP 协议
+        self._so = so.socket(so.AF_INET, so.SOCK_STREAM)
 
         # 创建数据接收缓冲区
         self._buf = bytearray(1024)
 
-    def recv(self) -> Tuple[int, Tuple[str, int], bytes]:
+    def recv(self) -> Tuple[int, bytes]:
         """接收数据
 
         Returns:
-            `Tuple[int, Tuple[str, int], bytes]`: 接收数据的结果, 为一个三元组, 分别为 `(数据长度, 远端地址, 数据内容)`
+            `Tuple[int, bytes]`: 接收数据的结果, 为一个三元组, 分别为 `(数据长度, 远端地址, 数据内容)`
         """
-        # 接收数据, 并放入缓冲区中, 返回数据长度和远端地址
-        n, addr = self._so.recvfrom_into(self._buf, len(self._buf))
-        log.info(
-            f"[{self.__tag__}] Data {self._buf[:n].decode()!r} received from {addr!r}"
-        )
-        return n, addr, bytes(self._buf)
+        n = self._so.recv_into(self._buf, len(self._buf))
+        return n, bytes(self._buf)
 
     def sendto(self, data: bytes, addr: Tuple[str, int]) -> int:
         """发送数据
@@ -54,7 +51,7 @@ class _Udp:
             self._so.close()
 
 
-class SyncServer(_Udp):
+class SyncServer(_Tcp):
     __tag__ = "SERVER"
 
     def bind(self, port: int, addr: str = "") -> None:
@@ -66,6 +63,10 @@ class SyncServer(_Udp):
         """
         self._so.bind((addr, port))
         log.info(f"[{self.__tag__}] Bind to {format_addr((addr, port))!r}")
+
+    def accept(self, backlog: int = 1) -> Tuple[socket.socket, tuple[str, int]]:
+        self._so.listen(backlog)
+        self._so.accept()
 
 
 class SyncClient(_Udp):

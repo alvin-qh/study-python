@@ -4,7 +4,7 @@ from queue import Queue
 import socket as so
 from typing import Optional, Tuple, cast
 
-from network.udp.common import format_addr
+from network.common import format_addr
 
 log = logging.getLogger()
 
