@@ -37,5 +37,5 @@ def test_stream_tcp() -> None:
         # client.send(pack)
         # pack = client.recv()
     finally:
-        client.close()
+        # client.close()
         srv.close()
