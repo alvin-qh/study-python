@@ -1,5 +1,6 @@
 import logging
 import socket as so
+import sys
 from typing import Optional, Tuple
 
 from ..common import format_addr
@@ -98,7 +99,11 @@ class SyncServer:
         """关闭连接"""
         # 关闭服务端监听
         if self._so:
-            self._so.close()
+            if sys.platform.startswith("win"):
+                self._so.close()
+            else:
+                self._so.shutdown(so.SHUT_RDWR)
+            self._so = None
 
         # 等待服务端 accept 线程结束
         if self._accept_td:
