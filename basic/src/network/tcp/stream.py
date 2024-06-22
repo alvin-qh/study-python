@@ -65,6 +65,7 @@ class StreamServer(_Tcp):
                             f"[SERVER] Receive {pack!r} from {format_addr(client_addr)!r}"
                         )
 
+                        # 根据客户端数据包头信息选择后续处理逻辑
                         match pack.header.cmd:
                             case "login":
                                 self._handle_login(f, client_addr, pack)
@@ -82,16 +83,20 @@ class StreamServer(_Tcp):
     def _handle_login(
         self, f: IO[bytes], client_addr: Tuple[str, int], pack: Package
     ) -> None:
-        """处理登录"""
+        """处理登录逻辑"""
+
+        # 将数据包类型转为登录包类型
         p = cast(LoginPayload, pack.body.payload)
         log.info(
             f"[SERVER] User {p.username!r} with password {p.password!r} from {format_addr(client_addr)!r}"
         )
 
+        # 生成登录确认相应包
         pack = Package(
             Header(cmd="login"),
             Body(LoginAckPayload(True, "")),
         )
+        # 将登录响应包返回
         pickle.dump(pack, f)
 
     def _handle_bye(

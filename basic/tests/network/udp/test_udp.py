@@ -1,5 +1,5 @@
 from queue import Queue
-import threading
+import threading as th
 import time
 import pytest
 from network import udp
@@ -9,7 +9,7 @@ def test_sync_udp() -> None:
     """测试同步 UDP 服务端客户端"""
 
     # 通知服务端线程退出的条件量
-    exit_cond = threading.Condition()
+    exit_cond = th.Condition()
 
     # 实例化服务端对象
     srv = udp.SyncServer()
@@ -18,7 +18,7 @@ def test_sync_udp() -> None:
     srv.bind(18888)
 
     def server_side() -> None:
-        """服务端线程"""
+        """服务端线程入口函数"""
         try:
             # 接收数据, 返回数据长度, 客户端地址和数据内容
             n, addr, data = srv.recv()
@@ -30,21 +30,33 @@ def test_sync_udp() -> None:
             with exit_cond:
                 exit_cond.notify()
 
-            srv.close()
+            if srv:
+                srv.close()
 
-    threading.Thread(target=server_side).start()
+    # 启动服务端
+    th.Thread(target=server_side).start()
 
     client = udp.SyncClient()
 
     def client_side() -> None:
-        while client.sendto(b"hello", ("127.0.0.1", 18888)) == 0:
-            time.sleep(0.1)
+        """客户端线程入口函数"""
+        try:
+            # 发送数据到服务端
+            while client.sendto(b"hello", ("127.0.0.1", 18888)) == 0:
+                # 如果发送失败, 则等待一段时间后重试
+                time.sleep(0.1)
 
-        n, addr, data = client.recv()
-        assert data[:n] == b"hello_ack"
+            # 从服务端接收数据
+            n, addr, data = client.recv()
+            assert data[:n] == b"hello_ack"
+        finally:
+            if client:
+                client.close()
 
-    threading.Thread(target=client_side).start()
+    # 启动客户端线程
+    th.Thread(target=client_side).start()
 
+    # 等待服务端结束
     with exit_cond:
         exit_cond.wait()
 
