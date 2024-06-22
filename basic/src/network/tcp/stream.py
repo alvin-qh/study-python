@@ -156,7 +156,7 @@ class StreamServer(_StreamTcp):
         """关闭连接"""
         # 关闭服务端监听
         if self._so:
-            self._so.shutdown(so.SHUT_RDWR)
+            self._so.close()
             self._so = None
 
         # 等待服务端 accept 线程结束

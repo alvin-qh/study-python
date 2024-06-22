@@ -45,7 +45,7 @@ class ServerProtocol(aio.DatagramProtocol):
         log.info(f"[SERVER] Data {msg!r} send to {format_addr(addr)!r}")
 
         # 发送完毕后, 关闭服务端
-        self._transport.close()
+        self._transport.abort()
 
     def connection_lost(self, exc: Optional[Exception] = None) -> None:
         """当链接关闭时回调

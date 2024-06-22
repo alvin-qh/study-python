@@ -7,12 +7,12 @@ def test_sync_tcp() -> None:
         # 实例化服务端对象
         srv = tcp.SyncServer()
         # 启动服务端侦听
-        srv.listen(18888)
+        srv.listen(28888)
 
         # 实例化客户端对象
         client = tcp.SyncClient()
         # 客户端连接服务端
-        client.connect("127.0.0.1", 18888)
+        client.connect("127.0.0.1", 28888)
         # 客户端发送数据
         client.send(b"hello")
         # 客户端接收数据
@@ -35,12 +35,12 @@ def test_stream_tcp() -> None:
         # 实例化服务端对象
         srv = tcp.StreamServer()
         # 启动服务端侦听
-        srv.listen(18888)
+        srv.listen(28888)
 
         # 实例化客户端对象
         client = tcp.StreamClient()
         # 客户端连接服务端
-        client.connect("127.0.0.1", 18888)
+        client.connect("127.0.0.1", 28888)
 
         # 客户端发送登录请求数据包
         pack = tcp.Package(

@@ -98,7 +98,7 @@ class SyncServer:
         """关闭连接"""
         # 关闭服务端监听
         if self._so:
-            self._so.shutdown(so.SHUT_RDWR)
+            self._so.close()
 
         # 等待服务端 accept 线程结束
         if self._accept_td:
