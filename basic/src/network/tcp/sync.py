@@ -3,41 +3,40 @@ import socket as so
 from typing import Optional, Tuple
 
 from ..common import format_addr
-import threading
+import threading as th
 
 log = logging.getLogger()
-
-
-class _Tcp:
-    """客户端和服务端的父类"""
-
-    def __init__(self) -> None:
-        """实例化对象"""
-        # 创建 socket 对象, 使用 TCP 协议
-        self._so = so.socket(so.AF_INET, so.SOCK_STREAM)
 
 
 _suffix = b"_ack"
 
 
-class SyncServer(_Tcp):
+class SyncServer:
     """TCP 服务端"""
 
     def __init__(self) -> None:
         """初始化对象"""
-        super().__init__()
-        self._accept_td: Optional[threading.Thread] = None
+        self._so: Optional[so.socket] = None
+        self._accept_td: Optional[th.Thread] = None
 
-    def bind(self, port: int, addr: str = "") -> None:
-        """服务端绑定本地端口
+    def _handle_accept(self, s: so.socket) -> None:
+        """处理 Accept"""
+        with s:
+            while True:
+                try:
+                    # 接受客户端连接
+                    client_so, client_addr = s.accept()
+                    log.info(
+                        f"[SERVER] Accept connection from {format_addr(client_addr)!r}"
+                    )
 
-        Args:
-            `port` (`int`): 本地端口号
-            `addr` (`str`, optional): 要绑定的本机地址. Defaults to "".
-        """
-        # 绑定本地端口
-        self._so.bind((addr, port))
-        log.info(f"[SERVER] Bind to {format_addr((addr, port))!r}")
+                    # 启动线程接受客户端发送数据
+                    th.Thread(
+                        target=self._handle_recv, args=(client_so, client_addr)
+                    ).start()
+                except Exception:
+                    log.info("[SERVER] Stop listening")
+                    break
 
     def _handle_recv(self, client_so: so.socket, client_addr: Tuple[str, int]) -> None:
         """处理数据接收"""
@@ -55,7 +54,7 @@ class SyncServer(_Tcp):
                     break
 
                 log.info(
-                    f"[SERVER] Received {buf[:n]!r} from {format_addr(client_addr)!r}"
+                    f"[SERVER] Received {bytes(buf[:n])!r} from {format_addr(client_addr)!r}"
                 )
 
                 # 给接收数据增加后缀后发送回客户端
@@ -65,38 +64,41 @@ class SyncServer(_Tcp):
                     f"[SERVER] Send {buf[: n + len(_suffix)]!r} to {format_addr(client_addr)!r}"
                 )
 
-    def _handle_accept(self) -> None:
-        """处理 Accept"""
-        with self._so:
-            while True:
-                try:
-                    # 接受客户端连接
-                    client_so, client_addr = self._so.accept()
-                    log.info(
-                        f"[SERVER] Accept connection from {format_addr(client_addr)!r}"
-                    )
-
-                    # 启动线程接受客户端发送数据
-                    threading.Thread(
-                        target=self._handle_recv, args=(client_so, client_addr)
-                    ).start()
-                except Exception:
-                    log.info("[SERVER] Stop listening")
-                    break
-
-    def start_accept(self, backlog: int = 1) -> None:
+    def listen(self, port: int, addr: str = "", backlog: int = 1) -> None:
         """接收客户端连接"""
+        # 创建 socket 对象
+        s = self._makesocket()
+
+        # 绑定本地端口
+        s.bind((addr, port))
+        log.info(f"[SERVER] Bind to {format_addr((addr, port))!r}")
+
         # 在本地端口启动监听, 并设置监听队列的长度
-        self._so.listen(backlog)
+        s.listen(backlog)
 
         # 启动线程用于接受客户端连接
-        self._accept_td = threading.Thread(target=self._handle_accept)
-        self._accept_td.start()
+        td = th.Thread(target=self._handle_accept, args=(s,))
+        td.start()
+
+        self._so = s
+        self._accept_td = td
+
+    @classmethod
+    def _makesocket(cls) -> so.socket:
+        """创建 socket 对象
+
+        Returns:
+            `so.socket`: 创建的 socket 对象
+        """
+        s = so.socket(so.AF_INET, so.SOCK_STREAM)
+        s.setsockopt(so.SOL_SOCKET, so.SO_REUSEADDR, 1)
+        return s
 
     def close(self) -> None:
         """关闭连接"""
         # 关闭服务端监听
-        self._so.shutdown(so.SHUT_RDWR)
+        if self._so:
+            self._so.shutdown(so.SHUT_RDWR)
 
         # 等待服务端 accept 线程结束
         if self._accept_td:
@@ -104,13 +106,14 @@ class SyncServer(_Tcp):
             self._accept_td = None
 
 
-class SyncClient(_Tcp):
+class SyncClient:
     """TCP 客户端"""
 
     def __init__(self) -> None:
-        super().__init__()
+        """初始化对象"""
         self._buf = bytearray(0)
         self._addr = ("", 0)
+        self._so = so.socket(so.AF_INET, so.SOCK_STREAM)
 
     def connect(self, host: str, port: int) -> None:
         """连接到远程服务端
@@ -119,13 +122,12 @@ class SyncClient(_Tcp):
             `addr` (`tuple[str, int]`): 远程服务端地址
         """
         addr = (host, port)
-
         self._so.connect_ex(addr)
+
+        log.info(f"[CLIENT] Connect to {format_addr(addr)!r}")
 
         self._addr = addr
         self._buf = bytearray(1024)
-
-        log.info(f"[CLIENT] Connect to {format_addr(addr)!r}")
 
     def recv(self) -> Tuple[int, bytes]:
         """接收数据
