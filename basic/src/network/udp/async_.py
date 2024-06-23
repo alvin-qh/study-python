@@ -109,7 +109,6 @@ class ClientProtocol(aio.BaseProtocol):
     def __init__(
         self,
         addr: Tuple[str, int],
-        msg: str,
         res_que: Queue[str],
         on_con_lost: aio.Future[bool],
     ) -> None:
@@ -117,12 +116,10 @@ class ClientProtocol(aio.BaseProtocol):
 
         Args:
             `addr` (`addr`): 服务端地址
-            `msg` (`str`): 第一条发送的消息内容
             `res_que` (`Queue[str]`): 服务端返回的消息队列
             `on_con_lost` (`aio.Future[bool]`): 当连接关闭时, 通知服务端结束的异步量
         """
         self._addr = addr
-        self._msg = msg
         self._res_que = res_que
         self._on_con_lost = on_con_lost
         self._transport: Optional[aio.DatagramTransport] = None
@@ -136,8 +133,9 @@ class ClientProtocol(aio.BaseProtocol):
         self._transport = cast(aio.DatagramTransport, transport)
 
         # 本例中, 连接服务端时省略了 `remote_addr` 参数, 故在此发送数据时, 需要指定服务端地址
-        self._transport.sendto(self._msg.encode(), self._addr)
-        log.info(f"[CLIENT] Data {self._msg!r} send to {format_addr(self._addr)!r}")
+        data = b"hello"
+        self._transport.sendto(data, self._addr)
+        log.info(f"[CLIENT] Data {data!r} send to {format_addr(self._addr)!r}")
 
     def datagram_received(self, data: bytes, addr: Tuple[str, int]) -> None:
         """当从服务器接收到消息后回调
@@ -201,7 +199,7 @@ class AsyncClient:
         # 发送时必须指定目标地址
         # 反之, 可以省略 `family` 参数, 且发送时无需指定目标地址
         transport, _ = await self._loop.create_datagram_endpoint(
-            lambda: ClientProtocol((host, port), msg, res_que, on_con_lost),
+            lambda: ClientProtocol((host, port), res_que, on_con_lost),
             family=so.SOCK_DGRAM,
             proto=so.IPPROTO_UDP,
             # remote_addr=(host, port),

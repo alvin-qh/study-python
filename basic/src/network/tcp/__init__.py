@@ -1,4 +1,4 @@
-# from .async_ import AsyncServer, AsyncClient
+from .async_ import AsyncClient, AsyncServer
 from .proto import (
     Body,
     ByeAckPayload,
@@ -12,8 +12,8 @@ from .stream import StreamClient, StreamServer
 from .sync import SyncClient, SyncServer
 
 __all__ = [
-    # "AsyncServer",
-    # "AsyncClient",
+    "AsyncServer",
+    "AsyncClient",
     "SyncServer",
     "SyncClient",
     "StreamServer",

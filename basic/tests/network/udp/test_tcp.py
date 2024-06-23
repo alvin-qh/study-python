@@ -1,3 +1,5 @@
+from queue import Queue
+import pytest
 from network import tcp
 
 
@@ -56,6 +58,7 @@ def test_stream_tcp() -> None:
         assert pack.body.payload.success is True  # type: ignore
         assert pack.body.payload.err == ""  # type: ignore
 
+        # 客户端发送退出请求包
         pack = tcp.Package(
             tcp.Header("bye"),
             tcp.Body(
@@ -63,9 +66,43 @@ def test_stream_tcp() -> None:
             ),
         )
         client.send(pack)
+        # 客户端接收退出响应包
         pack = client.recv()
         assert pack.header.cmd == "bye"
         assert pack.body.payload.word == "bye bye"  # type: ignore
+    finally:
+        if client:
+            client.close()
+
+        if srv:
+            srv.close()
+
+
+@pytest.mark.asyncio
+async def test_async_tcp() -> None:
+    """测试基于协程的异步 UDP 服务端和和客户端"""
+
+    # 保存服务端返回消息的队列
+    res_que: Queue[str] = Queue()
+
+    try:
+        # 实例化服务端对象
+        srv = tcp.AsyncServer()
+
+        # 服务端绑定端口号, 开始监听
+        await srv.bind(28888)
+
+        # 实例化客户端对象
+        client = tcp.AsyncClient(lambda: srv.close())
+
+        # 客户端连接到服务端
+        await client.connect("127.0.0.1", 28888, res_que)
+
+        # 等待服务端关闭
+        await srv.wait()
+
+        # 确认客户端收到服务端消息
+        assert res_que.get() == "hello_ack"
     finally:
         if client:
             client.close()
