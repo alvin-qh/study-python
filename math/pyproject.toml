@@ -10,7 +10,7 @@ dependencies = [
     "pygame>=2.6.1",
     "pyopengl>=3.1.7",
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -24,7 +24,7 @@ test = "pytest -v -s tests"
 clean = "clear.py"
 
 [tool.mypy]
-python_version = '3.12'
+python_version = '3.13'
 strict = true
 warn_return_any = true
 warn_unused_configs = true

@@ -2,29 +2,27 @@
 name = "pdm_demo_app"
 version = "0.1.0"
 dependencies = ["pdm-demo-lib @ file:///${PROJECT_ROOT}/../lib"]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 license = { text = "MIT" }
 
 [project.optional-dependencies]
-lint = ["mypy>=1.9.0", "autopep8>=2.1.0"]
-test = ["pytest>=8.1.1"]
+lint = [
+    "mypy>=1.13.0",
+    "autopep8>=2.3.1",
+]
+test = [
+    "pytest>=8.3.3",
+]
 
 [tool.pdm.scripts]
 start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
-clean = { composite = [
-    "rm -rf .pdm-build",
-    "rm -rf .mypy_cache",
-    "rm -rf .pytest_cache",
-    "rm -rf dist",
-    'find src -type d -name "__pycache__" -exec rm -rf {} +',
-    'find tests -type d -name "__pycache__" -exec rm -rf {} +',
-] }
+clean = "clear.py"
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_configs = true

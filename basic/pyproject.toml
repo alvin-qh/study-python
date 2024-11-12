@@ -31,10 +31,7 @@ classifiers = [ # 分类信息
 
 [project.optional-dependencies]
 # PEP 517 规范提供的可选模式依赖包组, 通过 pdm update -G <group-name> / pdm install -G <group-name> 进行安装
-lint = [
-    "mypy>=1.13.0",
-    "autopep8>=2.3.1",
-]
+lint = ["mypy>=1.13.0", "autopep8>=2.3.1"]
 test = [
     "pytest>=8.3.3",
     "pytest-asyncio>=0.24.0",
@@ -63,7 +60,7 @@ all = true
 
 [tool.mypy]
 # mypy 配置
-python_version = '3.12'
+python_version = '3.13'
 strict = true
 warn_return_any = true
 warn_unused_configs = true

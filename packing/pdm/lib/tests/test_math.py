@@ -1,4 +1,4 @@
-from lib.math import add
+from pdm_lib.math import add
 
 
 def test_math_add() -> None:
