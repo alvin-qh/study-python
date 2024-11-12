@@ -24,6 +24,8 @@ def test_eval_function() -> None:
 
     代码需要先通过 `compile` 函数进行编译
     """
+    _locals = {"x": None, "y": None}
+
     # 字符串, 表示一段 Python 代码
     code = "x = 1 + 1"
 
@@ -32,21 +34,24 @@ def test_eval_function() -> None:
     compiled = compile(code, filename="", mode="exec")
 
     # 执行编译的代码
-    exec(compiled)
+    exec(compiled, None, _locals)
 
     # 通过 eval 执行表达式获取变量值
-    assert eval("x") == 2
+    assert _locals["x"] == 2
 
     # 直接执行字符串代码
-    exec("""y = 1 + 2""")
+    exec("""y = 1 + 2""", None, _locals)
+
     # 通过 eval 执行表达式获取变量值
-    assert eval("y") == 3
+    assert _locals["y"] == 3
 
 
 def test_exec_function() -> None:
     """
     测试通过 `exec` 函数执行复杂 Python 代码
     """
+
+    _locals = {"x": None, "y": None}
 
     code = """
 x = 0
@@ -55,7 +60,7 @@ for i in range(10):
 y = x
     """
 
-    exec(code)
+    exec(code, None, _locals)
 
-    assert eval("x") == 10
-    assert eval("y") == 10
+    assert _locals["x"] == 10
+    assert _locals["y"] == 10
