@@ -5,10 +5,10 @@
 groups = ["default", "lint", "test", "type"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:1e766b3d01e7ebee1511bea5758309af081d0b61f72dddd8c3c1c5822e103230"
+content_hash = "sha256:e438cfc9ae241387fe11d419bfd7424323e1672caad074742a0c876cb80fcb20"
 
 [[metadata.targets]]
-requires_python = ">=3.13"
+requires_python = "==3.13.*"
 
 [[package]]
 name = "atomics"
@@ -101,7 +101,7 @@ files = [
 
 [[package]]
 name = "faker"
-version = "30.8.2"
+version = "33.3.1"
 requires_python = ">=3.8"
 summary = "Faker is a Python package that generates fake data for you."
 groups = ["test"]
@@ -110,8 +110,8 @@ dependencies = [
     "typing-extensions",
 ]
 files = [
-    {file = "Faker-30.8.2-py3-none-any.whl", hash = "sha256:4a82b2908cd19f3bba1a4da2060cc4eb18a40410ccdf9350d071d79dc92fe3ce"},
-    {file = "faker-30.8.2.tar.gz", hash = "sha256:aa31b52cdae3673d6a78b4857c7bcdc0e98f201a5cb77d7827fa9e6b5876da94"},
+    {file = "Faker-33.3.1-py3-none-any.whl", hash = "sha256:ac4cf2f967ce02c898efa50651c43180bd658a7707cfd676fcc5410ad1482c03"},
+    {file = "faker-33.3.1.tar.gz", hash = "sha256:49dde3b06a5602177bc2ad013149b6f60a290b7154539180d37b6f876ae79b20"},
 ]
 
 [[package]]
@@ -227,16 +227,16 @@ files = [
 
 [[package]]
 name = "portalocker"
-version = "2.10.1"
-requires_python = ">=3.8"
+version = "3.1.1"
+requires_python = ">=3.9"
 summary = "Wraps the portalocker recipe for easy usage"
 groups = ["default"]
 dependencies = [
     "pywin32>=226; platform_system == \"Windows\"",
 ]
 files = [
-    {file = "portalocker-2.10.1-py3-none-any.whl", hash = "sha256:53a5984ebc86a025552264b459b46a2086e269b21823cb572f8f28ee759e45bf"},
-    {file = "portalocker-2.10.1.tar.gz", hash = "sha256:ef1bf844e878ab08aee7e40184156e1151f228f103aa5c6bd0724cc330960f8f"},
+    {file = "portalocker-3.1.1-py3-none-any.whl", hash = "sha256:80e984e24de292ff258a5bea0e4f3f778fff84c0ae1275dbaebc4658de4aacb3"},
+    {file = "portalocker-3.1.1.tar.gz", hash = "sha256:ec20f6dda2ad9ce89fa399a5f31f4f1495f515958f0cb7ca6543cef7bb5a749e"},
 ]
 
 [[package]]
@@ -324,17 +324,17 @@ files = [
 
 [[package]]
 name = "pytest-rerunfailures"
-version = "14.0"
-requires_python = ">=3.8"
+version = "15.0"
+requires_python = ">=3.9"
 summary = "pytest plugin to re-run tests to eliminate flaky failures"
 groups = ["test"]
 dependencies = [
     "packaging>=17.1",
-    "pytest>=7.2",
+    "pytest!=8.2.2,>=7.4",
 ]
 files = [
-    {file = "pytest-rerunfailures-14.0.tar.gz", hash = "sha256:4a400bcbcd3c7a4ad151ab8afac123d90eca3abe27f98725dc4d9702887d2e92"},
-    {file = "pytest_rerunfailures-14.0-py3-none-any.whl", hash = "sha256:4197bdd2eaeffdbf50b5ea6e7236f47ff0e44d1def8dae08e409f536d84e7b32"},
+    {file = "pytest-rerunfailures-15.0.tar.gz", hash = "sha256:2d9ac7baf59f4c13ac730b47f6fa80e755d1ba0581da45ce30b72fb3542b4474"},
+    {file = "pytest_rerunfailures-15.0-py3-none-any.whl", hash = "sha256:dd150c4795c229ef44320adc9a0c0532c51b78bb7a6843a8c53556b9a611df1a"},
 ]
 
 [[package]]

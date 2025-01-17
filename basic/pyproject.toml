@@ -1,19 +1,21 @@
 [project]
-name = 'study_python_basic' # 项目名称 (必填项)
-version = '0.1.0' # 项目版本号 (必填项)
-authors = [{ name = 'Alvin', email = 'quhao317@163.com' }] # 项目作者 (可选)
+name = "basic" # 项目名称 (必填项)
+version = "0.1.0" # 项目版本号 (必填项)
+authors = [
+    { name = 'Alvin', email = 'quhao317@163.com' },
+] # 项目作者 (可选)
 dependencies = [
     # 依赖包
     "pytz>=2024.2",
     "atomics>=1.0.2",
     "werkzeug>=3.1.3",
     "wrapt>=1.16.0",
-    "portalocker>=2.10.1",
+    "portalocker>=3.1.1",
     "tzdata>=2024.2",
 ]
-requires-python = '>=3.13' # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
-readme = 'README.md' # 指定说明文件
-license = { text = 'MIT' } # 指定软件许可协议
+requires-python = "==3.13.*" # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
+readme = "README.md" # 指定说明文件
+license = { text = "MIT" } # 指定软件许可协议
 classifiers = [ # 分类信息
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -28,6 +30,7 @@ classifiers = [ # 分类信息
 # [tool.pdm.dev-dependencies]
 # PDM 工具提供的 dev 模式依赖包组, 通过 pdm update -d / pdm install -d 进行安装
 # dev = ["pytest", "mypy", "autopep8"]
+description = "Default template for PDM package"
 
 [project.optional-dependencies]
 # PEP 517 规范提供的可选模式依赖包组, 通过 pdm update -G <group-name> / pdm install -G <group-name> 进行安装
@@ -35,17 +38,20 @@ lint = ["mypy>=1.13.0", "autopep8>=2.3.1"]
 test = [
     "pytest>=8.3.3",
     "pytest-asyncio>=0.24.0",
-    "pytest-rerunfailures>=14.0",
+    "pytest-rerunfailures>=15.0",
     "pytest-repeat>=0.9.3",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.6.1",
     "hypothesis>=6.118.8",
-    "faker>=30.8.2",
+    "faker>=33.3.1",
 ]
 type = [
     "types-python-dateutil>=2.9.0.20241003",
     "types-pytz>=2024.2.0.20241003",
 ]
+
+[tool.pdm]
+distribution = false
 
 [tool.pdm.scripts]
 # 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
@@ -53,7 +59,7 @@ check = { composite = ["mypy src", "autopep8 src tests"] }
 check-win = { composite = ["mypy.exe src", "autopep8.exe src tests"] }
 test = "pytest -v -s tests"
 test-win = "pytest.exe -v -s tests"
-clean = "clear.py"
+clean = {call = "clear:main"}
 
 [tool.pycln]
 all = true
