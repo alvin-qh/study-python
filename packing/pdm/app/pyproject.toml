@@ -1,25 +1,30 @@
 [project]
 name = "pdm_demo_app"
 version = "0.1.0"
-dependencies = ["pdm-demo-lib @ file:///${PROJECT_ROOT}/../lib"]
+dependencies = [
+    #
+    "pdm-demo-lib @ file:///${PROJECT_ROOT}/../lib",
+]
 requires-python = ">=3.13"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 license = { text = "MIT" }
 
 [project.optional-dependencies]
 lint = [
-    "mypy>=1.13.0",
-    "autopep8>=2.3.1",
+    #
+    "mypy>=1.14.1",
+    "autopep8>=2.3.2",
 ]
 test = [
-    "pytest>=8.3.3",
+    #
+    "pytest>=8.3.4",
 ]
 
 [tool.pdm.scripts]
 start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
-clean = "clear.py"
+clean = { call = "clear:main" }
 
 [tool.mypy]
 python_version = "3.13"
