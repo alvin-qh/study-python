@@ -39,6 +39,9 @@ test = "pytest -v -s tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
+[tool.pycln]
+all = true
+
 [tool.mypy]
 python_version = '3.13'
 strict = true
@@ -59,7 +62,5 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
 addopts = "-svv"
 filterwarnings = ['ignore::DeprecationWarning']

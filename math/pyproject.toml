@@ -4,24 +4,33 @@ version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
     "ipykernel>=6.29.5",
-    "matplotlib>=3.9.2",
+    "matplotlib>=3.10.0",
     "data-science-types>=0.2.23",
-    "numpy>=1.26.4",
+    "numpy>=2.2.1",
     "pygame>=2.6.1",
     "pyopengl>=3.1.7",
 ]
-requires-python = ">=3.13"
+requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
-test = ["pytest>=8.3.3"]
-lint = ["autopep8>=2.3.1", "mypy>=1.13.0"]
+test = [
+    "pytest>=8.3.4",
+]
+lint = [
+    "autopep8>=2.3.2",
+    "mypy>=1.14.1",
+]
 
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
-clean = "clear.py"
+clean = { call = "clear:main" }
+type_install = "mypy --install-types"
+
+[tool.pycln]
+all = true
 
 [tool.mypy]
 python_version = '3.13'
