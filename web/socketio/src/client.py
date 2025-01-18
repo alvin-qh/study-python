@@ -1,23 +1,22 @@
+from typing import Any
 import socketio
 
-sio = socketio.Client(
-
-)
+sio = socketio.Client()
 
 
 @sio.event
-def connect():
+def connect() -> None:
     print("connection established")
 
 
 @sio.event
-def my_message(data):
+def my_message(data: Any) -> None:
     print("message received with ", data)
     sio.emit("my response", {"response": "my response"})
 
 
 @sio.event
-def disconnect():
+def disconnect() -> None:
     print("disconnected from server")
 
 

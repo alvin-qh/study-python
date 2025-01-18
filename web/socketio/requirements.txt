@@ -1,5 +1,0 @@
-loguru
-eventlet
-python-socketio
-python-socketio[client]
-redis

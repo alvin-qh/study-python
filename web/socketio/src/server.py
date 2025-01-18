@@ -14,7 +14,7 @@ client_mgr = socketio.RedisManager(
 # 创建服务端对象
 sio = socketio.Server(
     client_manager=client_mgr,
-    logger=logger,
+    logger=True,
     always_connect=True,
 )
 
@@ -26,26 +26,25 @@ app = socketio.WSGIApp(
 
 
 @sio.event
-def connect(sid: str, environ: Dict[str, Any]):
-    """
-    处理连接成功的事件
+def connect(sid: str, environ: Dict[str, Any]) -> None:
+    """处理连接成功的事件
 
     Args:
-        sid (str): 客户端 id
-        environ (Dict[str, Any]): 连接上下文
+        `sid` (`str`): 客户端 `id`
+        `environ` (`Dict[str, Any]`): 连接上下文
     """
     logger.info("Client '{}' connected", sid)
 
 
 @sio.event
-def my_message(sid, data):
+def my_message(sid: str, data: Any) -> None:
     print("message ", data)
 
 
 @sio.event
-def disconnect(sid):
+def disconnect(sid: str) -> None:
     print("disconnect ", sid)
 
 
 if __name__ == "__main__":
-    eventlet.wsgi.server(eventlet.listen(("", 5600)), app)
+    eventlet.wsgi.server(eventlet.listen(("", 5600)), app)  # type: ignore
