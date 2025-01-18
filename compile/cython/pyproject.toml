@@ -3,28 +3,24 @@ name = "compile_cython"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = []
-requires-python = ">=3.13"
+requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
 
 [project.optional-dependencies]
 lint = [
-    "mypy>=1.13.0",
-    "autopep8>=2.3.1",
+    "mypy>=1.14.1",
+    "autopep8>=2.3.2",
 ]
 test = [
-    "pytest>=8.3.3",
+    "pytest>=8.3.4",
 ]
 
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
-clean = "clear.py"
+clean = { call = "clear:main" }
+type_install = "mypy --install-types"
 
 [tool.mypy]
 python_version = '3.13'
@@ -45,6 +41,4 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-testpaths = ['tests']
-pythonpath = ['src']
 addopts = '-vs'
