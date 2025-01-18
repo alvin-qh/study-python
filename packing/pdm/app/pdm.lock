@@ -5,10 +5,10 @@
 groups = ["default", "lint", "test"]
 strategy = ["inherit_metadata"]
 lock_version = "4.5.0"
-content_hash = "sha256:32b108029f3a6f7992f260515fb3367f280246d7ba7acc731dbe7e3dea30f434"
+content_hash = "sha256:4d233a08788163b4856a2fc58fde40828cd346c54d985ba364253738f0a6ab27"
 
 [[metadata.targets]]
-requires_python = ">=3.13"
+requires_python = "==3.13.*"
 
 [[package]]
 name = "autopep8"

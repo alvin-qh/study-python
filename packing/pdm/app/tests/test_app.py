@@ -5,6 +5,7 @@ from app import main
 
 
 def test_main() -> None:
+    """测试 `app.main` 函数"""
     stdin_ = sys.stdin
     stdout_ = sys.stdout
 

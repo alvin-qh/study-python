@@ -2,21 +2,21 @@
 name = "pdm_demo_app"
 version = "0.1.0"
 dependencies = [
-    #
+    # 引用本地 python 库, 指向一个目录
     "pdm-demo-lib @ file:///${PROJECT_ROOT}/../lib",
 ]
-requires-python = ">=3.13"
+requires-python = "==3.13.*"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 license = { text = "MIT" }
 
 [project.optional-dependencies]
 lint = [
-    #
+    # 代码样式检测依赖
     "mypy>=1.14.1",
     "autopep8>=2.3.2",
 ]
 test = [
-    #
+    # 测试依赖
     "pytest>=8.3.4",
 ]
 
@@ -27,7 +27,7 @@ test = "pytest -v -s tests"
 clean = { call = "clear:main" }
 
 [tool.mypy]
-python_version = "3.13"
+python_version = "3.13.*"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
