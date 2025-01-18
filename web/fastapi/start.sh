@@ -54,7 +54,6 @@ function main() {
     done
 
     eval ".venv/bin/uvicorn --port $port --host $host --workers $worker $reload $app.app:app --app-dir src"
-
 }
 
 main $*

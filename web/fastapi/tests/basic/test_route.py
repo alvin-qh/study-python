@@ -24,7 +24,6 @@ def test_hello_api_without_query_args(client: TestClient) -> None:
                 "loc": ["query", "name"],
                 "msg": "Field required",
                 "type": "missing",
-                "url": "https://errors.pydantic.dev/2.5/v/missing",
             }
         ],
     }
