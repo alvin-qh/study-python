@@ -7,7 +7,7 @@ dependencies = [
     "xxhash @ file:///${PROJECT_ROOT}/.wheelhouse/xxhash-3.5.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
     "Werkzeug @ file:///${PROJECT_ROOT}/.wheelhouse/werkzeug-3.1.3-py3-none-any.whl",
 ]
-requires-python = ">=3.13"
+requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -24,18 +24,18 @@ lint = [
     "mypy @ file:///${PROJECT_ROOT}/.wheelhouse/mypy-1.13.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl",
 ]
 
-# [build-system]
-# requires = ["pdm-backend"]
-# build-backend = "pdm.backend"
-
 [tool.pdm.scripts]
 start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
-clean = "clear.py"
 export = "pdm export -f requirements -o requirements.txt --without-hash"
 build-wheel = "pip wheel -r requirements.txt -w ./.wheelhouse"
 restore-wheel = "pip install --no-index --find-links=./.wheelhouse -r requirements.txt"
+clean = { call = "clear:main" }
+type_install = "mypy --install-types"
+
+[tool.pycln]
+all = true
 
 [tool.mypy]
 python_version = "3.13"
@@ -56,6 +56,4 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-# testpaths = ['tests']
-# pythonpath = ['.']
 addopts = '-vs'
