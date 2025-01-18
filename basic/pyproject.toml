@@ -1,12 +1,10 @@
 [project]
 name = "basic" # 项目名称 (必填项)
 version = "0.1.0" # 项目版本号 (必填项)
-authors = [
-    # 项目作者 (可选)
+authors = [ # 项目作者 (可选)
     { name = 'Alvin', email = 'quhao317@163.com' },
 ]
-dependencies = [
-    # 生产环境依赖包
+dependencies = [ # 生产环境依赖包
     "pytz>=2024.2",
     "atomics>=1.0.3",
     "werkzeug>=3.1.3",
@@ -16,7 +14,7 @@ dependencies = [
 ]
 requires-python = "==3.13.*" # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
 readme = "README.md" # 指定说明文件
-license = { text = "MIT" } # 指定软件许可协议
+license = { text = "MIT" }
 classifiers = [ # 分类信息
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -34,13 +32,11 @@ classifiers = [ # 分类信息
 
 [project.optional-dependencies]
 # PEP 517 规范提供的可选模式依赖包组, 通过 pdm update -G <group-name> / pdm install -G <group-name> 进行安装
-lint = [
-    # 代码样式检测
+lint = [ # 代码样式检测依赖
     "mypy>=1.14.1",
     "autopep8>=2.3.2",
 ]
-test = [
-    # 测试
+test = [ # 测试依赖
     "pytest>=8.3.4",
     "pytest-asyncio>=0.25.2",
     "pytest-rerunfailures>=15.0",
@@ -50,17 +46,10 @@ test = [
     "hypothesis>=6.124.1",
     "faker>=33.3.1",
 ]
-type = [
-    # Mypy 类型补充
+type = [ # Mypy 补充类型依赖
     "types-python-dateutil>=2.9.0.20241206",
     "types-pytz>=2024.2.0.20241221",
 ]
-dev = [
-    "pip>=24.3.1",
-]
-
-[tool.pdm]
-distribution = false
 
 [tool.pdm.scripts]
 # 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
@@ -75,7 +64,7 @@ all = true
 
 [tool.mypy]
 # mypy 配置
-python_version = '3.13'
+python_version = '3.13.*'
 strict = true
 warn_return_any = true
 warn_unused_configs = true
