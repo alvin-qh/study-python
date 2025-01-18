@@ -3,38 +3,42 @@ name = "flask_demo"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
+    # 生产环境依赖包
     "flask-babel>=4.0.0",
     "flask-login>=0.6.3",
-    "flask-socketio>=5.3.6",
-    "flask[async]>=3.0.2",
+    "flask-socketio>=5.5.1",
+    "flask[async]>=3.1.0",
     "gevent-websocket>=0.10.1",
-    "gevent>=24.2.1",
-    "waitress>=3.0.0",
-    "wtforms>=3.1.2",
-    "xxhash>=3.4.1",
-    "paste>=3.8.0",
-    "quart>=0.19.4",
+    "gevent>=24.11.1",
+    "waitress>=3.0.2",
+    "wtforms>=3.2.1",
+    "xxhash>=3.5.0",
+    "paste>=3.10.1",
+    "quart>=0.20.0",
 ]
-requires-python = ">=3.12"
+requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
 test = [
+    # 测试依赖
     "beautifulsoup4>=4.12.3",
     "pytest-mock>=3.14.0",
-    "pytest>=8.1.1",
-    "pytest-asyncio>=0.23.6",
+    "pytest>=8.3.4",
+    "pytest-asyncio>=0.25.2",
 ]
 lint = [
-    "autopep8>=2.1.0",
-    "mypy>=1.9.0",
+    # 代码样式检测依赖
+    "autopep8>=2.3.2",
+    "mypy>=1.14.1",
 ]
 http = [
-    "gunicorn>=21.2.0",
-    "tornado>=6.4",
-    "uwsgi>=2.0.24",
-    "hypercorn>=0.16.0",
+    # HTTP 服务中间件依赖
+    "gunicorn>=23.0.0",
+    "tornado>=6.4.2",
+    "uwsgi>=2.0.28",
+    "hypercorn>=0.17.3",
 ]
 
 [tool.pdm.scripts]
@@ -42,18 +46,11 @@ dev = "python src/run.py"
 check = { composite = ["mypy src", "autopep8 src tests"] }
 i18n = "pybabel compile -d src/i18n/message"
 test = "pytest -v -s tests"
-clean = { composite = [
-    "rm -rf .pdm-build",
-    "rm -rf .mypy_cache",
-    "rm -rf .pytest_cache",
-    "rm -rf dist",
-    'find src -type d -name "__pycache__" -exec rm -rf {} +',
-    'find tests -type d -name "__pycache__" -exec rm -rf {} +',
-] }
+clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.mypy]
-python_version = '3.12'
+python_version = '3.13.*'
 strict = true
 warn_return_any = true
 warn_unused_configs = true
