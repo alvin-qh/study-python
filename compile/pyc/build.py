@@ -13,7 +13,6 @@ _CUR_DIR = path.dirname(__file__)
 _BUILD_IGNORE = ".buildignore"
 _DIST_DIR = "dist"
 
-
 class File:
     def __init__(self, filename: str) -> None:
         self._filename = filename

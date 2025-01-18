@@ -8,7 +8,7 @@ _FILE_PATTERNS = [
     "**/.hypothesis",
     "**/.mypy_cache",
     "**/.pytest_cache",
-    "dist"
+    "dist",
 ]
 
 

@@ -2,26 +2,30 @@
 name = "pyc_demo"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
-dependencies = ["flask>=3.0.3", "xxhash>=3.5.0"]
-requires-python = ">=3.13"
+dependencies = [
+    "flask>=3.1.0",
+    "xxhash>=3.5.0",
+]
+requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
-classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-]
 
 [project.optional-dependencies]
-lint = ["autopep8>=2.3.1", "mypy>=1.13.0"]
-test = ["pytest>=8.3.3"]
+lint = [
+    "autopep8>=2.3.2",
+    "mypy>=1.14.1",
+]
+test = [
+    "pytest>=8.3.4",
+]
 
 [tool.pdm.scripts]
 start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
-clean = "clear.py"
 compile = "build.py"
+clean = { call = "clear:main" }
+type_install = "mypy --install-types"
 
 [tool.mypy]
 python_version = "3.13"
@@ -42,6 +46,4 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-# testpaths = ['tests']
-# pythonpath = ['.']
-addopts = '-vvs'
+addopts = '-vs'
