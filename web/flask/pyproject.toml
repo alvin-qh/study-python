@@ -3,7 +3,6 @@ name = "flask_demo"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
-    # 生产环境依赖包
     "flask-babel>=4.0.0",
     "flask-login>=0.6.3",
     "flask-socketio>=5.5.1",
@@ -22,19 +21,16 @@ license = { text = "MIT" }
 
 [project.optional-dependencies]
 test = [
-    # 测试依赖
     "beautifulsoup4>=4.12.3",
     "pytest-mock>=3.14.0",
     "pytest>=8.3.4",
     "pytest-asyncio>=0.25.2",
 ]
 lint = [
-    # 代码样式检测依赖
     "autopep8>=2.3.2",
     "mypy>=1.14.1",
 ]
 http = [
-    # HTTP 服务中间件依赖
     "gunicorn>=23.0.0",
     "tornado>=6.4.2",
     "uwsgi>=2.0.28",
