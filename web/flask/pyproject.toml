@@ -50,7 +50,7 @@ clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.mypy]
-python_version = '3.13.*'
+python_version = '3.13'
 strict = true
 warn_return_any = true
 warn_unused_configs = true
