@@ -1,8 +1,8 @@
 [project]
-name = "pdm_demo_app"
+name = "pdm_app"
 version = "0.1.0"
 dependencies = [
-    "pdm-demo-lib @ file:///${PROJECT_ROOT}/../lib",
+    "pdm_lib @ file:///${PROJECT_ROOT}/../lib",
 ]
 requires-python = "==3.13.*"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]

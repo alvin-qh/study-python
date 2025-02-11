@@ -9,7 +9,7 @@ license = { text = "MIT" }
 
 [project.optional-dependencies]
 lint = [
-    "mypy>=1.14.1",
+    "mypy>=1.15.0",
     "autopep8>=2.3.2",
 ]
 test = [
