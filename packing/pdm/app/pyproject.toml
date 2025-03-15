@@ -2,7 +2,7 @@
 name = "pdm_app"
 version = "0.1.0"
 dependencies = [
-    "pdm_lib @ file:///${PROJECT_ROOT}/../lib",
+    "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
 ]
 requires-python = "==3.13.*"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
@@ -10,11 +10,11 @@ license = { text = "MIT" }
 
 [project.optional-dependencies]
 lint = [
-    "mypy>=1.14.1",
+    "mypy>=1.15.0",
     "autopep8>=2.3.2",
 ]
 test = [
-    "pytest>=8.3.4",
+    "pytest>=8.3.5",
 ]
 
 [tool.pdm.scripts]
