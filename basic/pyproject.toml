@@ -11,6 +11,7 @@ dependencies = [
     "wrapt>=1.17.2",
     "portalocker>=3.1.1",
     "tzdata>=2025.1",
+    "python-dateutil>=2.9.0.post0",
 ]
 requires-python = "==3.13.*" # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
 readme = "README.md" # 指定说明文件
@@ -37,14 +38,14 @@ lint = [
     "autopep8>=2.3.2",
 ]
 test = [
-    "pytest>=8.3.4",
+    "pytest>=8.3.5",
     "pytest-asyncio>=0.25.3",
     "pytest-rerunfailures>=15.0",
     "pytest-repeat>=0.9.3",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.6.1",
-    "hypothesis>=6.125.2",
-    "faker>=36.1.0",
+    "hypothesis>=6.129.2",
+    "faker>=37.0.0",
 ]
 type = [
     "types-python-dateutil>=2.9.0.20241206",
@@ -98,7 +99,11 @@ ensure_newline_before_comments = true
 markers = [ # 自定义测试标识, 取消则对应标识的测试不执行
     'webtest',
 ]
-addopts = "-vvs --log-cli-level INFO" # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
+addopts = [ # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
+    "-vvs",
+    "--log-cli-level",
+    "INFO",
+]
 filterwarnings = [ # 忽略指定的警告信息
     'ignore::hypothesis.errors.NonInteractiveExampleWarning',
 ]
