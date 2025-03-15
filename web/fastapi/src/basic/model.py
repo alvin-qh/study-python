@@ -40,7 +40,6 @@ class User(BaseModel):
     name: str = Field(
         title="Name",
         description="User's name",
-        example="Alvin",
         min_length=2,
         max_length=20,
     )
@@ -48,8 +47,8 @@ class User(BaseModel):
     gender: Gender = Field(
         title="Gender",
         description="User's gender",
-        example=Gender.MALE,
         pattern=r"^(male|female)$",
+        default=Gender.MALE,
     )
 
     birthday: Annotated[
