@@ -4,6 +4,7 @@ version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
     "fastapi[all]>=0.115.11",
+    "loguru>=0.7.3",
 ]
 requires-python = "==3.13.*"
 readme = "README.md"
@@ -20,12 +21,16 @@ lint = [
     "mypy>=1.15.0",
     "autopep8>=2.3.2",
 ]
+http = [
+    "hypercorn>=0.17.3",
+]
 
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
 test = "pytest -v -s tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
+create_cert = "openssl req -x509 -newkey rsa:4096 -keyout cert/key.pem -out cert/cert.pem -days 365 -nodes"
 
 [tool.pycln]
 all = true

@@ -1,0 +1,5 @@
+GET http://localhost:5001/api/hello?name=Alvin&gender=M
+
+###
+
+GET http://localhost:5001/api/hello/Alvin?gender=M

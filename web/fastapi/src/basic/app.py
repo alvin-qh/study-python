@@ -17,10 +17,3 @@ app = FastAPI(
     version="1.0.0",
     docs_url="/docs",
 )
-
-
-if __name__ == "__main__":
-    import uvicorn
-
-    # 启动服务器
-    uvicorn.run("app:app", host="0.0.0.0", port=5001, log_level="info", reload=True)

@@ -1,7 +1,4 @@
-from . import model as model
-from . import route as route
 from .app import app
+from . import route as _
 
-__all__ = [
-    "app",
-]
+__all__ = ["app"]

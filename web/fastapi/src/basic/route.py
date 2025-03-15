@@ -3,6 +3,8 @@ from typing import Annotated, Any, Dict
 from fastapi import Path, Query, Response, status
 
 from .app import app
+from loguru import logger
+
 
 # 定义 Name 查询参数
 QueryName = Query(
@@ -43,7 +45,6 @@ async def get_hello_by_args_in_query(
         `Dict[str, Any]`: 响应的 JSON 数据
     """
     name = name.strip()
-
     if not name:
         # 如果 name 参数无效, 则修改响应码为 400
         response.status_code = status.HTTP_400_BAD_REQUEST
@@ -56,6 +57,8 @@ async def get_hello_by_args_in_query(
 
     # 根据 gender 参数生成 title 值
     title = "Mr" if gender == "M" else "Ms"
+
+    logger.info(f"access '/api/hello' route, querystring is 'name={name}, gender={gender}")
 
     # 返回 JSON 数据
     return {
