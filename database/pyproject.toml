@@ -1,5 +1,5 @@
 [project]
-name = "database_demo"
+name = "database-demo"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
@@ -31,9 +31,12 @@ test = [
     "factory-boy>=3.3.3",
 ]
 
+[tool.pdm]
+distribution = false
+
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -v -s tests"
+test = "pytest -vvs tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
@@ -61,6 +64,6 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vs',
+    '-vvs',
     '-p no:warnings',
 ]

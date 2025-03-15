@@ -135,6 +135,7 @@
         "linestyle",
         "loadtxt",
         "localeselector",
+        "loguru",
         "looponfail",
         "manylinux",
         "Matplot",

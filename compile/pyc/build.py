@@ -13,6 +13,7 @@ _CUR_DIR = path.dirname(__file__)
 _BUILD_IGNORE = ".buildignore"
 _DIST_DIR = "dist"
 
+
 class File:
     def __init__(self, filename: str) -> None:
         self._filename = filename
@@ -85,7 +86,7 @@ def _collect_ignore_files() -> Set[str]:
         with open(_BUILD_IGNORE, encoding="utf8") as fp:
             return set(
                 filter(
-                    lambda l: len(l) > 0,
+                    lambda line_: len(line_) > 0,
                     (fix(s.strip()) for s in fp.readlines()),
                 )
             )

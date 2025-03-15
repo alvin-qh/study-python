@@ -1,12 +1,12 @@
 [project]
-name = "socketio_demo"
+name = "socketio-demo"
 version = "0.1.0"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
     "loguru>=0.7.3",
-    "eventlet>=0.38.2",
+    "eventlet>=0.39.1",
     "python-socketio>=5.12.1",
     "python-socketio[client]>=5.12.1",
     "redis>=5.2.1",
@@ -17,12 +17,12 @@ license = { text = "MIT" }
 
 [project.optional-dependencies]
 lint = [
-    "mypy>=1.14.1",
+    "mypy>=1.15.0",
     "autopep8>=2.3.2",
 ]
 test = [
-    "pytest>=8.3.4",
-    "pytest-asyncio>=0.25.2",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.25.3",
 ]
 
 [tool.pdm.scripts]
@@ -64,4 +64,6 @@ use_parentheses = true
 ensure_newline_before_comments = true
 
 [tool.pytest.ini_options]
-addopts = "-vvs"
+addopts = [
+    '-vvs',
+]

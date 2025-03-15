@@ -1,5 +1,5 @@
 [project]
-name = "wheel_package_demo"
+name = "wheel-demo"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
@@ -27,7 +27,7 @@ lint = [
 [tool.pdm.scripts]
 start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -v -s tests"
+test = "pytest -vvs tests"
 export = "pdm export -f requirements -o requirements.txt --without-hash"
 build-wheel = "pip wheel -r requirements.txt -w ./.wheelhouse"
 restore-wheel = "pip install --no-index --find-links=./.wheelhouse -r requirements.txt"
@@ -56,4 +56,6 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-addopts = '-vs'
+addopts = [
+    '-vvs',
+]

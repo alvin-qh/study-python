@@ -1,5 +1,5 @@
 [project]
-name = "flask_demo"
+name = "flask-demo"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
@@ -21,14 +21,14 @@ license = { text = "MIT" }
 
 [project.optional-dependencies]
 test = [
-    "beautifulsoup4>=4.12.3",
+    "beautifulsoup4>=4.13.3",
     "pytest-mock>=3.14.0",
-    "pytest>=8.3.4",
-    "pytest-asyncio>=0.25.2",
+    "pytest>=8.3.5",
+    "pytest-asyncio>=0.25.3",
 ]
 lint = [
     "autopep8>=2.3.2",
-    "mypy>=1.14.1",
+    "mypy>=1.15.0",
 ]
 http = [
     "gunicorn>=23.0.0",
@@ -38,10 +38,10 @@ http = [
 ]
 
 [tool.pdm.scripts]
-dev = "python src/run.py"
+dev = { call = "run:main(app_name='basic')" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
 i18n = "pybabel compile -d src/i18n/message"
-test = "pytest -v -s tests"
+test = "pytest -vvs tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
@@ -68,6 +68,6 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-testpaths = ["tests"]
-pythonpath = ["src"]
-addopts = "-svv"
+addopts = [
+    '-vvs',
+]

@@ -1,5 +1,5 @@
 [project]
-name = "pdm_app"
+name = "pdm-app"
 version = "0.1.0"
 dependencies = [
     "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
@@ -20,7 +20,7 @@ test = [
 [tool.pdm.scripts]
 start = { call = "app:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -v -s tests"
+test = "pytest -vvs tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
@@ -46,4 +46,6 @@ jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]
-addopts = '-vvs'
+addopts = [
+    '-vvs',
+]

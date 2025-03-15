@@ -52,14 +52,11 @@ type = [
     "types-pytz>=2025.1.0.20250204",
 ]
 
-[tool.pdm]
-distribution = false
-
 [tool.pdm.scripts]
 # 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
 check = { composite = ["mypy src", "autopep8 src tests"] }
 check-win = { composite = ["mypy.exe src", "autopep8.exe src tests"] }
-test = "pytest -v -s tests"
+test = "pytest -vvs tests"
 test-win = "pytest.exe -v -s tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
