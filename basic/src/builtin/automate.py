@@ -1,7 +1,12 @@
 from typing import Any, Dict, List, Set, Tuple, Union
 
 # 定义 automate 参数类型
-AutomateArgs = Union[Dict, List, Set, Tuple[Any, ...]]
+AutomateArgs = Union[
+    Dict[str, Any],
+    List[Any],
+    Set[Any],
+    Tuple[Any, ...],
+]
 
 
 class Automate(dict[str, Any]):
@@ -42,9 +47,7 @@ class Automate(dict[str, Any]):
 
         if isinstance(args, (list, set, tuple)):
             # 将参数解析为 Automate 列表类型对象
-            return [
-                Automate(**arg) if isinstance(arg, dict) else arg for arg in args
-            ]
+            return [Automate(**arg) if isinstance(arg, dict) else arg for arg in args]
 
         return args
 

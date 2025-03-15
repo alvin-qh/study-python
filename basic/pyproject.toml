@@ -52,6 +52,9 @@ type = [
     "types-pytz>=2025.1.0.20250204",
 ]
 
+[tool.pdm]
+distribution = false
+
 [tool.pdm.scripts]
 # 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
 check = { composite = ["mypy src", "autopep8 src tests"] }

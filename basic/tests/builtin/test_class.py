@@ -438,7 +438,7 @@ def test_create_dynamic_class() -> None:
     )
 
     # 通过类型
-    a = A(100)  # type: ignore
+    a = A(100)
     assert isinstance(a, A)
     assert a.value == 100  # type: ignore
 
@@ -506,11 +506,11 @@ def test_automate_class() -> None:
     测试自动装配类
     """
 
-    class Member(Automate):
+    class Member(Automate):  # type:ignore
         # 定义可用的属性名
         __slots__ = ("id", "name", "price")
 
-    class Group(Automate):
+    class Group(Automate):  # type:ignore
         # 定义可用的属性名
         __slots__ = ("id", "name", "members")
 
@@ -654,7 +654,7 @@ def test_metaclass_by_function() -> None:
 
     c = C()
     # 验证类名是否被修改
-    assert type(c).__name__ == "C_New"  # type: ignore
+    assert type(c).__name__ == "C_New"
     # 验证属性名是否为大写
     assert c.VALUE == 100  # type: ignore
 
@@ -740,9 +740,9 @@ def test_singleton_class() -> None:
         """
 
         # 保持单例的类字段
-        _inst: Optional[Self] = None  # noqa
+        _inst: Optional[Self] = None
 
-        def __new__(cls: type[Self], *args: Any, **kwargs: Any) -> "C":  # noqa
+        def __new__(cls: type[Self], *args: Any, **kwargs: Any) -> "C":
             """
             创建实例
 
@@ -759,7 +759,7 @@ def test_singleton_class() -> None:
                 cls._inst = super().__new__(cls)
 
             # 返回单例实例
-            return cls._inst
+            return cls._inst  # type:ignore
 
         def __init__(self, value: Any) -> None:
             """

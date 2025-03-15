@@ -26,7 +26,7 @@ def test_pool_initializer() -> None:
         pool.starmap(is_prime_by_global_variable, zip(range(10)))
 
     # 结果转换为普通值
-    results = [(v[0].value, v[1].value) for v in values]  # type: ignore
+    results = [(v[0].value, v[1].value) for v in values]
     results.sort(key=lambda x: x[0])
 
     # 确保结果符合预期
