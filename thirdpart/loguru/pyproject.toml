@@ -5,15 +5,12 @@ description = "Default template for PDM package"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
-dependencies = []
+dependencies = ["loguru>=0.7.3"]
 requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
-test = [
-    "pytest>=8.3.5",
-]
 lint = [
     "mypy>=1.15.0",
     "autopep8>=2.3.2",
@@ -22,7 +19,6 @@ lint = [
 [tool.pdm.scripts]
 start = { call = "main:main" }
 check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -vvs tests"
 clean = { call = "clear:main" }
 
 [tool.mypy]
@@ -42,8 +38,3 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
-
-[tool.pytest.ini_options]
-addopts = [
-    "-vvs",
-]
