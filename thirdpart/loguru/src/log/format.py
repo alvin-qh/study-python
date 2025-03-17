@@ -2,7 +2,7 @@ import sys
 from loguru import logger
 
 """
-为 `logger` 添加一个输出目标, 并自定义日志输出格式
+为 `logger` 添加一个输出目标, 输出到标准输出流, 并自定义日志输出格式
 
 如果要令日志输出支持颜色或字体样式, 则需要将 `colorize` 参数设置为 `True`, 支持的样式包括:
 
