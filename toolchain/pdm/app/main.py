@@ -18,14 +18,12 @@ def main() -> None:
     # 计算结果并输出到标准输出中
     match (t):
         case "n":
-            result = add(int(i1), int(i2))
+            print(f"Result: {add(int(i1), int(i2))}")
         case "s":
-            result = add(i1, i2)
+            print(f"Result: {add(i1, i2)}")
         case _:
             print("Invalid value type")
             exit(1)
-
-    print(f"Result: {result}")
 
 
 if __name__ == "__main__":

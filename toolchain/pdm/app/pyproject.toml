@@ -1,12 +1,16 @@
 [project]
 name = "pdm-app"
-version = "0.1.0"
+version = "1.0.0"
+description = "PDM App demo"
+authors = [
+    {name = "Alvin", email = "quhao317@163.com"},
+]
 dependencies = [
-    "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
+    "pdm-lib @ file:///${PROJECT_ROOT}/../lib"
 ]
 requires-python = "==3.13.*"
-authors = [{ name = "Alvin", email = "quhao317@163.com" }]
-license = { text = "MIT" }
+readme = "README.md"
+license = {text = "MIT"}
 
 [project.optional-dependencies]
 lint = [
@@ -17,12 +21,14 @@ test = [
     "pytest>=8.3.5",
 ]
 
+[tool.pdm]
+distribution = false
+
 [tool.pdm.scripts]
-start = { call = "app:main" }
-check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -vvs tests"
+start = "main.py"
+check = { composite = ["mypy .", "autopep8 ."] }
+test = "pytest tests"
 clean = { call = "clear:main" }
-type_install = "mypy --install-types"
 
 [tool.pycln]
 all = true
