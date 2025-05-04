@@ -21,7 +21,7 @@ build-backend = "pdm.backend"
 
 [tool.pdm.scripts]
 check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -vvs tests"
+test = "pytest tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
