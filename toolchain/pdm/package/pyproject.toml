@@ -4,7 +4,7 @@ version = "0.1.0"
 dependencies = [
     "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
 ]
-requires-python = "==3.13.*"
+requires-python = ">=3.13"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 license = { text = "MIT" }
 
@@ -12,6 +12,7 @@ license = { text = "MIT" }
 lint = [
     "mypy>=1.15.0",
     "autopep8>=2.3.2",
+    "pycln>=2.5.0",
 ]
 test = [
     "pytest>=8.3.5",
@@ -19,7 +20,7 @@ test = [
 
 [tool.pdm.scripts]
 start = { call = "app:main" }
-check = { composite = ["mypy src", "autopep8 src tests"] }
+check = { composite = ["pycln .", "mypy .", "autopep8 ."] }
 test = "pytest tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
@@ -48,4 +49,7 @@ aggressive = 3
 [tool.pytest.ini_options]
 addopts = [
     '-vvs',
+]
+testpaths = [
+    'tests',
 ]

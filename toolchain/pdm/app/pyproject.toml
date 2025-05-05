@@ -3,19 +3,20 @@ name = "pdm-app"
 version = "1.0.0"
 description = "PDM App demo"
 authors = [
-    {name = "Alvin", email = "quhao317@163.com"},
+    { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "pdm-lib @ file:///${PROJECT_ROOT}/../lib"
+    "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
 ]
-requires-python = "==3.13.*"
+requires-python = ">=3.13"
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 
 [project.optional-dependencies]
 lint = [
     "mypy>=1.15.0",
     "autopep8>=2.3.2",
+    "pycln>=2.5.0",
 ]
 test = [
     "pytest>=8.3.5",
@@ -26,7 +27,7 @@ distribution = false
 
 [tool.pdm.scripts]
 start = "main.py"
-check = { composite = ["mypy .", "autopep8 ."] }
+check = { composite = ["pycln .", "mypy .", "autopep8 ."] }
 test = "pytest tests"
 clean = { call = "clear:main" }
 
@@ -54,4 +55,7 @@ aggressive = 3
 [tool.pytest.ini_options]
 addopts = [
     '-vvs',
+]
+testpaths = [
+    'tests',
 ]

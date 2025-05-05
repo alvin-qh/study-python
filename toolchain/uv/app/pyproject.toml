@@ -1,10 +1,54 @@
 [project]
-name = "app"
+name = "uv-app"
 version = "0.1.0"
-description = "Add your description here"
+description = "UV for Python App Demo"
 readme = "README.md"
 requires-python = ">=3.13"
-dependencies = []
+dependencies = [
+    "uv-lib",
+]
 
-[project.scripts]
-app = "main:main"
+[tool.uv.sources]
+uv-lib = { path = "../lib" }
+
+[dependency-groups]
+lint = [
+    "autopep8>=2.3.2",
+    "mypy>=1.15.0",
+    "pycln>=2.5.0",
+]
+test = [
+    "pytest>=8.3.5",
+]
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[tool.pycln]
+all = true
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = ['^.venv\.py$', '^.test\.py$']
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+]
+testpaths = [
+    'tests',
+]
