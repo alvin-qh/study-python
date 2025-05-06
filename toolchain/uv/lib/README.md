@@ -237,3 +237,19 @@ uv run autopep8 .
 ```
 
 各工具执行时, 会读取各自的配置文件, 或从 `pyproject.toml` 中读取该工具的配置, 参见 [配置工具链](#123-配置工具链)
+
+## 4. 打包构建
+
+通过以下命令可以将当前项目打包为 `.whl` 文件
+
+```bash
+uv build
+```
+
+命令执行完毕后, 会在 `dist` 目录中生成 `uv_lib-0.1.0-py3-none-any.whl` 文件
+
+该文件可通过 `pip install` 命令安装到其它项目环境中
+
+```bash
+pip install uv_lib-0.1.0-py3-none-any.whl
+```

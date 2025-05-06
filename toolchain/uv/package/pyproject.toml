@@ -1,25 +1,42 @@
 [project]
-name = "app"
+name = "uv-package"
 version = "0.1.0"
-description = "Add your description here"
+description = "UV for Python Package Demo"
 readme = "README.md"
 authors = [
     { name = "AlvinQ", email = "quhao317@163.com" }
 ]
 requires-python = ">=3.13"
-dependencies = []
-
-[project.scripts]
-app = "app:main"
+dependencies = [
+    "uv-lib",
+]
 
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
 
+[project.scripts]
+uv-package = "uv_package:run"
+
 [dependency-groups]
 dev = [
     "pytest>=8.3.5",
 ]
+lint = [
+    "autopep8>=2.3.2",
+    "mypy>=1.15.0",
+    "pycln>=2.5.0",
+]
+
+[tool.uv.sources]
+uv-lib = { path = "../lib" }
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[tool.pycln]
+all = true
 
 [tool.mypy]
 strict = true
@@ -30,7 +47,18 @@ disallow_untyped_decorators = false
 check_untyped_defs = true
 exclude = ['^.venv\.py$', '^.test\.py$']
 
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+
 [tool.pytest.ini_options]
 addopts = [
     '-vvs',
+]
+testpaths = [
+    'tests',
 ]

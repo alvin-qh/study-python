@@ -22,22 +22,15 @@ uv init --name <project_name> --app
 
 ```plaintext
 .
-├── src
-│   └── <project_name>
-│       ├── __init__.py
-│       └── py.typed
 ├── tests
-│   └── __init__.py
+│   └── __init__.py
 ├── README.md
+├── main.py
 ├── pyproject.toml
 └── uv.lock
 ```
 
-uv 会在项目中创建 `src` 目录, 所有的项目源代码都应位于 `src` 目录下, 且 `src` 目录下必须具备一个和项目名相同的包 (本例中为 `uv_lib` 包), 作为当前 Python 库的根包名
-
-对于 `lib` 类型项目, `uv` 会将 `src` 目录下的内容作为 "可编辑" 依赖安装到当前的虚拟环境中 (即 `.venv` 目录)
-
-> 可编辑依赖包参见 `pip` 的 `--editable` (或 `-e`) 参数说明
+App 类型的项目没有特定的 `src` 目录, 可以按需要建立任意 `.py` 文件或任意 Python 包目录结构, 例如 用于存放单元测试代码的 `tests` 包目录
 
 项目中的 `pyproject.toml` 文件定义了项目的配置项, 包括:
 
@@ -129,24 +122,6 @@ aggressive = 3
 ```
 
 其它配置项参见: <https://github.com/hhatto/autopep8?tab=readme-ov-file#configuration>
-
-#### 1.2.4. 配置打包构建器
-
-打包构建器用于将当前项目打包为 `.whl` 文件, 可上传到 `PyPI` 仓库中供其它项目使用
-
-```toml
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-```
-
-可通过如下命令进行打包
-
-```bash
-uv build
-```
-
-打包结果存储在 `dist` 目录中
 
 ## 2. 依赖管理
 
