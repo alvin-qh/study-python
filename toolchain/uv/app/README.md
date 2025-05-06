@@ -133,19 +133,72 @@ uv 通过创建 `virtualenv` 虚拟环境来管理依赖, 每个项目都有一�
 
 可通过 `uv add` 命令添加项目依赖包
 
+#### 2.1.1. 从 PyPI 添加依赖
+
+第三方依赖包可通过包名进行安装, uv 默认从 PyPI 仓库中安装依赖包, 可通过 `--index-url/-i` 参数指定 PyPI 镜像地址
+
 ```bash
 uv add <package_name>
 ```
 
-或通过
+或
+
+```bash
+uv add <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+也可以对现有依赖进行版本更新
+
+```bash
+uv add <package_name> -U
+```
+
+如果指定的依赖包在 PyPI 仓库中不存在, 则会返回安装失败的错误
+
+依赖安装后会更新 `pyproject.toml` 文件的 `[project]` 节点下的 `dependencies` 数组项
+
+可通过 `UV_DEFAULT_INDEX` 环境变量来指定 PyPI 镜像地址
+
+```bash
+export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+#### 2.1.2. 从本地添加依赖
+
+可以通过 `uv add` 命令添加本地依赖包
+
+```bash
+uv add <package_path>
+```
+
+例如
+
+```bash
+uv add ../uv_lib
+```
+
+此时会在 `pyproject.toml` 文件的 `[project]` 节点下的 `dependencies` 数组项中添加本地依赖包, 并通过 `[tool.uv.sources]` 节点来指定该依赖包的源码路径
+
+```toml
+[project]
+...
+dependencies = [
+    "uv-lib",
+]
+
+[tool.uv.sources]
+uv-lib = { path = "../lib" }
+```
+
+#### 2.1.3. 删除依赖
+
+通过如下命令可删除已安装的依赖包
 
 ```bash
 uv remove <package_name>
 ```
 
-删除已安装的依赖包
-
-安装或删除的依赖位于 `pyproject.toml` 文件的 `[project]` 节点下的 `dependencies` 数组项中
+依赖删除后会更新 `pyproject.toml` 文件的 `[project]` 节点下的 `dependencies` 数组项
 
 ### 2.2. 添加依赖到分组
 
