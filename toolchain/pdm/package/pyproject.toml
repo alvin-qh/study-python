@@ -2,7 +2,7 @@
 name = "pdm-package"
 version = "0.1.0"
 dependencies = [
-    "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
+    "pdm-lib @ file:///${PROJECT_ROOT}/../lib"
 ]
 requires-python = ">=3.13"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
@@ -18,8 +18,15 @@ test = [
     "pytest>=8.3.5",
 ]
 
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+
+[project.scripts]
+pdm-package = "pdm_package:run"
+
 [tool.pdm.scripts]
-start = { call = "app:main" }
+start = { call = "pdm_package:run" }
 check = { composite = ["pycln .", "mypy .", "autopep8 ."] }
 test = "pytest tests"
 clean = { call = "clear:main" }
