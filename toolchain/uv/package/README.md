@@ -312,7 +312,7 @@ uv run autopep8 .
 uv build
 ```
 
-命令执行完毕后, 会在 `dist` 目录中生成 `uv_lib-0.1.0-py3-none-any.whl` 文件
+命令执行完毕后, 会在 `dist` 目录中生成 `uv_package-0.1.0-py3-none-any.whl` 文件
 
 该文件可通过 `pip install` 命令安装到其它项目环境中
 

@@ -1,6 +1,6 @@
-# PDM for Application
+# PDM for Package
 
-通过 PDM 可以创建 Python 应用项目, 这类项目一般会直接执行, 不会打包为 `.whl` 文件, 故项目结构较 `package` 或 `lib` 类型简单
+通过 PDM 可以创建 Python 可执行包项目, 用于编译一个可执行的 Python 包, 输出 `.whl` 文件并在安装后执行
 
 ## 1. 创建项目
 
@@ -25,21 +25,28 @@ Do you want to build this project for distribution(such as wheel)?
 If yes, it will be installed by default when running `pdm install`. [y/n] (n):
 ```
 
-该问题选择为 `n`, 表示当前项目不会添加构建配置, 也就是当前项目不会打包生成 `.whl` 文件
+该问题选择为 `y`, 表示当前项目具备构建配置, 可以打包生成 `.whl` 文件
 
 之后会在项目目录下生成以下文件
 
 ```plaintext
 .
+├── src
+│   └── <project_name>
+│       ├── __init__.py
+│       └── py.typed
 ├── tests
-│   └── __init__.py
+│   └── __init__.py
 ├── README.md
-├── main.py
 ├── pyproject.toml
 └── pdm.lock
 ```
 
-Application 类型的项目没有特定的 `src` 目录, 可以按需要建立任意 `.py` 文件或任意 Python 包目录结构, 例如 用于存放单元测试代码的 `tests` 包目录
+PDM 会在项目中创建 `src` 目录, 所有的项目源代码都应位于 `src` 目录下, 且 `src` 目录下必须具备一个和项目名相同的包 (本例中为 `pdm_package` 包), 作为当前 Python 库的根包名
+
+对于 `package` 类型项目, PDM 会将 `src` 目录下的内容作为 "可编辑" 依赖安装到当前的虚拟环境中 (即 `.venv` 目录)
+
+> 可编辑依赖包参见 `pip` 的 `--editable` (或 `-e`) 参数说明
 
 项目中的 `pyproject.toml` 文件定义了项目的配置项, 包括:
 
@@ -49,23 +56,21 @@ Application 类型的项目没有特定的 `src` 目录, 可以按需要建立�
 [project]
 name = "<project_name>"
 version = "0.1.0"
-description = "Project Description"
-readme = "README.md"
 authors = [
-    { name = "Alvin", email = "quhao317@163.com" },
+  { name = "Alvin", email = "quhao317@163.com" }
 ]
-requires-python = ">=3.13"
 dependencies = []
+requires-python = ">=3.13"
 license = { text = "MIT" }
 
 [tool.pdm]
-distribution = false
+distribution = true
 ```
 
 其中:
 
 - `[project]` 节点的 `dependencies` 配置项定义了项目的依赖包
-- `[tool.pdm]` 节点的 `distribution` 配置项表示当前项目是否需要进行构建 (如构建为 `.whl` 文件), `false` 表示不需要构建
+- `[tool.pdm]` 节点的 `distribution` 配置项表示当前项目是否需要进行构建 (如构建为 `.whl` 文件), `true` 表示需要构建
 
 #### 1.2.2. 可选依赖包
 
@@ -157,9 +162,43 @@ aggressive = 3
 
 其它配置项参见: <https://github.com/hhatto/autopep8?tab=readme-ov-file#configuration>
 
+#### 1.2.4. 配置打包构建器
+
+打包构建器用于将当前项目打包为 `.whl` 文件, 可上传到 `PyPI` 仓库中供其它项目使用
+
+```toml
+[build-system]
+requires = ["pdm-backend"]
+build-backend = "pdm.backend"
+```
+
+默认情况下, PDM 只打包 `src` 目录下的文件, 如果需要打包其他目录下的文件 (或排除某些文件), 可以在 `pyproject.toml` 文件中添加如下配置:
+
+```toml
+[tool.pdm.build]
+includes = ["other_package/", "clear.py"]
+excludes = ["**/__pycache__/"]
+source-includes = ["scripts/", "tests/"]
+```
+
+也可以指定非 `src` 目录作为源代码目录:
+
+```toml
+[tool.pdm.build]
+package-dir = "my_src"
+```
+
+可通过如下命令进行打包
+
+```bash
+pdm build
+```
+
+打包结果存储在 `dist` 目录中
+
 ## 2. 依赖管理
 
-PDM 通过创建 `virtualenv` 虚拟环境来管理依赖, 每个项目都有一个独立的虚拟环境, 通过 `pdm` 命令对虚拟环境进行管理
+PDM 通过创建 `virtualenv` 虚拟环境来管理依赖, 每个项目都有一个独立的虚拟环境, 通过 PDM 命令对虚拟环境进行管理
 
 另外, PDM 还会创建 `pdm.lock` 文件, 用于对当前项目的依赖进行锁定, 确保项目在不同的机器上运行时, 依赖包的版本一致
 
@@ -173,6 +212,12 @@ PDM 通过创建 `virtualenv` 虚拟环境来管理依赖, 每个项目都有一
 
 ```bash
 pdm add <package_name>
+```
+
+或
+
+```bash
+pdm add <package_name> -i https://pypi.tuna.tsinghua.edu.cn/simple
 ```
 
 也可以对现有依赖进行版本更新
@@ -332,4 +377,37 @@ pdm run start
 pdm run check
 pdm run test
 pdm run clean
+```
+
+## 4. 打包构建
+
+通过以下命令可以将当前项目打包为 `.whl` 文件, 并指定启动脚本用于启动项目
+
+相关打包构建器的配置可参见 [配置打包构建器](#124-配置打包构建器)
+
+另外需要定义项目的启动脚本, 需要在 `pyproject.toml` 文件中添加如下配置:
+
+```toml
+[project.scripts]
+pdm-package = "pdm_package:run"
+```
+
+执行如下命令可以将当前项目进行打包构建
+
+```bash
+pdm build
+```
+
+命令执行完毕后, 会在 `dist` 目录中生成 `pdm_package-0.1.0-py3-none-any.whl` 文件
+
+该文件可通过 `pip install` 命令安装到其它项目环境中
+
+```bash
+pip install pdm_package-0.1.0-py3-none-any.whl
+```
+
+安装完毕后, 即可通过启动脚本启动项目
+
+```bash
+pdm-package
 ```

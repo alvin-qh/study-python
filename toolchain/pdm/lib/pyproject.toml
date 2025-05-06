@@ -20,6 +20,9 @@ test = [
 requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
+[tool.pdm]
+distribution = true
+
 [tool.pdm.scripts]
 check = { composite = ["pycln .", "mypy .", "autopep8 ."] }
 test = "pytest tests"

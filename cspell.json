@@ -167,6 +167,7 @@
         "portalocker",
         "psycopg",
         "pybabel",
+        "pycache",
         "pycln",
         "pydantic",
         "pyenv",
