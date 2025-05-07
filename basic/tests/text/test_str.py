@@ -38,7 +38,7 @@ def test_str_slice() -> None:
     assert s[1:-1:2] == "二四六八"
 
     # 利用 LC 切片发获取每字符串两个字符的集合
-    fivers = [s[k : k + 2] for k in range(0, len(s), 2)]
+    fivers = [s[k: k + 2] for k in range(0, len(s), 2)]
     assert fivers == ["一二", "三四", "五六", "七八", "九零"]
 
     cuts = [2, 5, 9]

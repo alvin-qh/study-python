@@ -1,11 +1,10 @@
 # 演示时间日期相关的测试用例提供者
 import re
-from datetime import date, datetime, time, timedelta
+from datetime import date, datetime, time, timedelta, tzinfo
 from typing import Iterable
 
 import pytz
 from dateutil.relativedelta import relativedelta
-from dateutil.tz import tzfile
 from faker import Faker
 from testing.faker import last_day_of_month
 
@@ -962,7 +961,7 @@ def test_provider_pytimezone() -> None:
     value = fake.pytimezone()
 
     # 确认返回结果为 dateutil.tz.tzfile 类型
-    assert isinstance(value, tzfile)
+    assert isinstance(value, tzinfo)
 
 
 def test_provider_time() -> None:
@@ -1184,8 +1183,8 @@ def test_provider_unix_time() -> None:
 
     # 产生一个在指定范围内的随机 unix 时间戳
     timestamp = fake.unix_time(
-        start_datetime=start_datetime,
-        end_datetime=end_datetime,
+        start_datetime=start_datetime.astimezone(tz=pytz.utc),
+        end_datetime=end_datetime.astimezone(tz=pytz.utc),
     )
 
     # 从 unix 时间戳创建时间日期对象

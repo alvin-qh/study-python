@@ -36,12 +36,12 @@ def test_strategies_mapping_list() -> None:
     # 假设一个列表对象, 并对其假设结果进行排序
     r: List[int] = (
         st.lists(
-            st.integers(  # type: ignore # 假设一个列表, 列表元素为整数类型
+            st.integers(  # 假设一个列表, 列表元素为整数类型
                 min_value=1,
                 max_value=100,
             )
         )
-        .map(sorted)  # type: ignore # 列表转换为排序后的列表
+        .map(sorted)  # 列表转换为排序后的列表
         .example()  # 产生假设结果
     )
 
@@ -79,7 +79,7 @@ def test_strategies_filter_complex_value() -> None:
             st.integers(min_value=1, max_value=100),  # 假设其中的元素 1
             st.integers(min_value=1, max_value=100),  # 假设其中的元素 2
         )
-        .filter(  # type: ignore # 过滤假设, 条件是元素 1 的值小于元素 2
+        .filter(  # 过滤假设, 条件是元素 1 的值小于元素 2
             lambda x: x[0] < x[1],
         )
         .example()
@@ -102,8 +102,8 @@ def test_strategies_chain_together() -> None:
         st.integers(min_value=1, max_value=5)  # 假设一个整数
         # 以假设的整数为长度假设一个列表
         .flatmap(lambda n: st.lists(st.integers(), min_size=n, max_size=n))
-        .map(sorted)  # type:ignore # 列表排序
-        .map(tuple)  # type: ignore # 列表转为 Tuple
+        .map(sorted)  # 列表排序
+        .map(tuple)  # 列表转为 Tuple
         .example()
     )
 

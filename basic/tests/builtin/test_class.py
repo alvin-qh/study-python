@@ -506,11 +506,11 @@ def test_automate_class() -> None:
     测试自动装配类
     """
 
-    class Member(Automate):  # type:ignore
+    class Member(Automate):  # type: ignore[misc]
         # 定义可用的属性名
         __slots__ = ("id", "name", "price")
 
-    class Group(Automate):  # type:ignore
+    class Group(Automate):  # type: ignore[misc]
         # 定义可用的属性名
         __slots__ = ("id", "name", "members")
 

@@ -228,7 +228,7 @@ async def test_multiple_coroutines() -> None:
     rs = await futures
 
     # 查看整组协程返回的结果
-    assert rs == [
+    assert list(rs) == [
         "OK By Task-3",
         "OK By Task-2",
         "OK By Task-1",
@@ -257,7 +257,7 @@ async def test_multiple_tasks() -> None:
     rs = await tasks
 
     # 查看整组协程任务返回的结果
-    assert rs == [
+    assert list(rs) == [
         "OK By Task-3",
         "OK By Task-2",
         "OK By Task-1",
@@ -284,7 +284,7 @@ async def test_async_callback() -> None:
     # 列表每一项保存: (任务名称, 任务执行结果, 执行任务的事件循环对象)
     callbacks: List[Tuple[str, str, aio.AbstractEventLoop]] = []
 
-    def callback(task: aio.Task) -> None:
+    def callback(task: aio.Task[str]) -> None:
         """异步任务结束后回调的函数
 
         Args:
@@ -353,7 +353,7 @@ async def test_event_loop() -> None:
     # 列表每一项保存: (任务名称, 任务执行结果, 执行任务的事件循环对象)
     callbacks: List[Tuple[str, str, aio.AbstractEventLoop]] = []
 
-    def callback(task: aio.Task) -> None:
+    def callback(task: aio.Task[str]) -> None:
         """异步任务结束后回调的函数
 
         Args:
