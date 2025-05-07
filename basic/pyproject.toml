@@ -13,7 +13,7 @@ dependencies = [
     "tzdata>=2025.2",
     "python-dateutil>=2.9.0.post0",
 ]
-requires-python = "==3.13.*" # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
+requires-python = ">=3.13" # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
 readme = "README.md" # 指定说明文件
 license = { text = "MIT" }
 classifiers = [ # 分类信息
@@ -61,7 +61,7 @@ distribution = true
 check = { composite = [
     "pycln --config=pyproject.toml .",
     "mypy .",
-    "autopep8 ."
+    "autopep8 .",
 ] }
 check-win = { composite = [
     "pycln.exe --config=pyproject.toml .",

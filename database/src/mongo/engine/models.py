@@ -1,3 +1,4 @@
+from typing import cast
 from enum import Enum
 from typing import Any, Dict, Optional
 
@@ -30,7 +31,7 @@ class Org(Tenant, BaseModel, AuditedMixin):
         ]
     }
 
-    name: str = StringField(required=True)
+    name: str = cast(str, StringField(required=True))
 
 
 class Department(BaseModel, MultiTenantMixin, AuditedMixin):
@@ -49,13 +50,15 @@ class Department(BaseModel, MultiTenantMixin, AuditedMixin):
     }
 
     # 部门名称属性
-    name: str = StringField(required=True)
+    name: str = cast(str, StringField(required=True))
 
     # 部门等级属性
-    level: int = IntField(required=True, default=0)
+    level: int = cast(int, IntField(required=True, default=0))
 
     # 部门管理人员属性
-    manager: Optional["Employee"] = ReferenceField("Employee")
+    manager: Optional["Employee"] = cast(
+        Optional["Employee"], ReferenceField("Employee")
+    )
 
 
 class Role(BaseModel, MultiTenantMixin):
@@ -72,7 +75,7 @@ class Role(BaseModel, MultiTenantMixin):
     }
 
     # 角色名称属性
-    name: str = StringField(required=True)
+    name: str = cast(str, StringField(required=True))
 
 
 class Gender(Enum):
@@ -94,16 +97,20 @@ class Employee(BaseModel, MultiTenantMixin, AuditedMixin):
     }
 
     # 员工姓名属性
-    name: str = StringField(required=True)
+    name: str = cast(str, StringField(required=True))
 
     # 员工性别属性
-    gender: Gender = StringEnumField(Gender, required=True, default=Gender.male)
+    gender: Gender = cast(
+        Gender, StringEnumField(Gender, required=True, default=Gender.male)
+    )
 
     # 员工所属部门属性
-    department: Optional[Department] = ProxyLazyReferenceField(Department)
+    department: Optional[Department] = cast(
+        Optional[Department], ProxyLazyReferenceField(Department)
+    )
 
     # 员工权限属性
-    role: Optional[Role] = ProxyLazyReferenceField(Role)
+    role: Optional[Role] = cast(Optional[Role], ReferenceField(Role))
 
     def set_department(
         self, department: Department, role: Optional[Role] = None

@@ -3,7 +3,6 @@ from random import randint
 from typing import List
 
 import factory
-import factory.fuzzy
 from alchemy import Gender, Group, User, initialize_tables, session, soft_deleted_select
 from alchemy.model import UserGroup
 from factory.alchemy import SQLAlchemyModelFactory

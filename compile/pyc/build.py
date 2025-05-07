@@ -60,9 +60,7 @@ class File:
         )
 
     def build(self) -> None:
-        """
-        生成目标文件
-        """
+        """生成目标文件"""
         if self._to_compile:
             self._do_compile()
         else:

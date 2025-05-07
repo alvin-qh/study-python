@@ -1,4 +1,4 @@
-from typing import Generator, Optional
+from typing import Generator, Optional, TypeVar, cast
 
 import factory
 import factory.faker
@@ -22,6 +22,9 @@ class BaseFactory(MongoEngineFactory):
         """工厂元数据类"""
 
 
+T = TypeVar("T")
+
+
 class OrgFactory(BaseFactory):
     """组织实体工厂类"""
 
@@ -30,7 +33,7 @@ class OrgFactory(BaseFactory):
         model = Org
 
     # 组织名称属性
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, factory.faker.Faker("name"))
 
 
 class DepartmentFactory(BaseFactory):
@@ -41,7 +44,7 @@ class DepartmentFactory(BaseFactory):
         model = Department
 
     # 部门名称属性
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, factory.faker.Faker("name"))
 
 
 class RoleFactory(BaseFactory):
@@ -52,7 +55,7 @@ class RoleFactory(BaseFactory):
         model = Role
 
     # 角色名称属性
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, factory.faker.Faker("name"))
 
 
 class EmployeeFactory(BaseFactory):
@@ -63,7 +66,7 @@ class EmployeeFactory(BaseFactory):
         model = Employee
 
     # 员工姓名属性
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, factory.faker.Faker("name"))
 
 
 current_org: Optional[Org] = None
@@ -82,7 +85,7 @@ def build_test_context() -> Generator[None, None, None]:
         ensure_indexes()
 
         # 创建当前组织实体
-        current_org = OrgFactory.create()
+        current_org = cast(Org, OrgFactory.create())
 
         with context.with_tenant_context(current_org):
             # 创建角色实体

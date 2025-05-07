@@ -1,5 +1,5 @@
 from datetime import datetime, UTC
-from typing import Any, Type
+from typing import Any, Type, cast
 
 from mongoengine import Document, Q, QuerySet, signals
 from mongoengine.fields import DateTimeField
@@ -52,8 +52,8 @@ class AuditedMixin(Document):
     }
 
     # 为文档引入审计属性
-    created_at: datetime = DateTimeField()
-    updated_at: datetime = DateTimeField()
+    created_at: datetime = cast(datetime, DateTimeField())
+    updated_at: datetime = cast(datetime, DateTimeField())
 
 
 class MultiTenantMixin(Document):
