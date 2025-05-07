@@ -36,15 +36,16 @@ classifiers = [ # 分类信息
 lint = [
     "mypy>=1.15.0",
     "autopep8>=2.3.2",
+    "pycln>=2.5.0",
 ]
 test = [
     "pytest>=8.3.5",
     "pytest-asyncio>=0.26.0",
     "pytest-rerunfailures>=15.0",
-    "pytest-repeat>=0.9.3",
+    "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.6.1",
-    "hypothesis>=6.130.8",
+    "hypothesis>=6.131.14",
     "faker>=37.1.0",
 ]
 type = [
@@ -52,17 +53,29 @@ type = [
     "types-pytz>=2025.2.0.20250326",
 ]
 
+[tool.pdm]
+distribution = true
+
 [tool.pdm.scripts]
 # 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
-check = { composite = ["mypy src", "autopep8 src tests"] }
-check-win = { composite = ["mypy.exe src", "autopep8.exe src tests"] }
-test = "pytest -vvs tests"
-test-win = "pytest.exe -v -s tests"
+check = { composite = [
+    "pycln --config=pyproject.toml .",
+    "mypy .",
+    "autopep8 ."
+] }
+check-win = { composite = [
+    "pycln.exe --config=pyproject.toml .",
+    "mypy.exe src",
+    "autopep8.exe src tests",
+] }
+test = "pytest"
+test-win = "pytest.exe"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.pycln]
 all = true
+exclude = '\.history'
 
 [tool.mypy]
 # mypy 配置
@@ -74,7 +87,10 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$']
+exclude = [
+    '.venv',
+    '.history',
+]
 
 [tool.autopep8]
 max_line_length = 120
@@ -106,4 +122,7 @@ addopts = [ # -s 允许标准输出; -n auto 自动分配多进程测试; --dist
 ]
 filterwarnings = [ # 忽略指定的警告信息
     'ignore::hypothesis.errors.NonInteractiveExampleWarning',
+]
+testpaths = [
+    'tests',
 ]

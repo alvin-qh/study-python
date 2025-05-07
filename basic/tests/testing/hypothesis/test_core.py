@@ -1,5 +1,5 @@
 import re
-from typing import Callable, cast
+from typing import Callable
 
 from hypothesis import assume, event, example, given, note
 from hypothesis import strategies as st

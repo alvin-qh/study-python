@@ -743,13 +743,12 @@ def test_provider_future_date() -> None:
     - `end_date` 参数用于设置日期限制, 获取的随机日期不能大于该时间
     - `tzinfo`参数用于设置时区
     """
-    zone = pytz.timezone("Asia/Shanghai")
     today = date.today()
 
     end_date = today + timedelta(days=100)
 
     # 获取当前日期到 end_date 之间的随机日期
-    value = fake.future_date(end_date=end_date, tzinfo=zone)
+    value = fake.future_date(end_date=end_date)
 
     # 确认获取的日期在指定范围内
     assert today <= value <= end_date
@@ -1050,18 +1049,18 @@ def test_provider_time_object() -> None:
     - `end_datetime` 参数, 获取的随机时间不会大于这个时间. 但注意, 这个范围是一个时间日期的上限, 但返回的结果是一个时间对象.
     """
     # 获取一个不小于当前时间 2 小时范围的时间对象
-    value = fake.time_object(
+    date_val = fake.time_object(
         end_datetime=datetime.now() + timedelta(hours=2),
     )
 
-    assert isinstance(value, time)
+    assert isinstance(date_val, time)
 
     # 由于 +2h 是在当期时间日期上加 2 小时, 所以比较时也要将返回的时间对象合并日期才能比较
     # 将获取的时间对象加上当前日期, 合并为时间日期对象
-    value = datetime.combine(date.today(), value)
+    datetime_val = datetime.combine(date.today(), date_val)
 
     # 确认时间对象的范围
-    assert value <= datetime.now() + timedelta(hours=2)
+    assert datetime_val <= datetime.now() + timedelta(hours=2)
 
 
 def test_provider_time_series() -> None:
@@ -1184,17 +1183,17 @@ def test_provider_unix_time() -> None:
     end_datetime = now + timedelta(hours=1)
 
     # 产生一个在指定范围内的随机 unix 时间戳
-    value = fake.unix_time(
+    timestamp = fake.unix_time(
         start_datetime=start_datetime,
         end_datetime=end_datetime,
     )
 
     # 从 unix 时间戳创建时间日期对象
     # 注意: unix 时间戳是 UTC 时间
-    value = datetime.utcfromtimestamp(value)
+    datetime_val = datetime.fromtimestamp(timestamp)
 
     # 确认生成的 unix 时间戳在指定范围内
-    assert start_datetime <= value <= end_datetime
+    assert start_datetime <= datetime_val <= end_datetime
 
 
 def test_provider_year() -> None:

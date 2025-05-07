@@ -80,7 +80,7 @@ def test_sort_objects() -> None:
     # 通过 cmp_to_key 函数进行排序
     cs = sorted(
         c,
-        key=cmp_to_key(  # type:ignore
+        key=cmp_to_key(
             lambda a, b: b.name.casefold() > a.name.casefold()  # type:ignore
         ),
     )

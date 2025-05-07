@@ -137,7 +137,7 @@ def test_map_reduce() -> None:
     # reduce 将 map 的结果集合进行累加
     #   n, i: n 为上次计算的结果, i 为本次要计算的值
     n = reduce(
-        lambda n, i: n * 10 + i,  # type: ignore
+        lambda n, i: n * 10 + i,
         map(lambda c: nums[c], "12345"),
         0,
     )

@@ -61,7 +61,9 @@ def test_match_pattern() -> None:
     # 判断 11 模式的手机号码匹配清空
     r = re.match(pattern, "13991300001")
     assert r  # 不为 None 表示匹配成功
-    assert r.group(5) == "13991300001"  # 获取第 5 个分组, 为手机号模式的电话号 (11 部分)
+    assert (
+        r.group(5) == "13991300001"
+    )  # 获取第 5 个分组, 为手机号模式的电话号 (11 部分)
 
     # 匹配一个错误模式
     r = re.match(pattern, "029-8555666")
@@ -126,7 +128,7 @@ def test_substring() -> None:
     subs = ["123", "456", "789"]
     index = 0
 
-    def repl(m: re.Match) -> str:
+    def repl(m: re.Match[str]) -> str:
         """过程中回调函数, 传入每次计算出的子字符串, 返回将该字符串替换为的新字符串
 
         Args:
@@ -266,7 +268,7 @@ def test_escape2() -> None:
     # 编译正则表达式
     rx = re.compile(pattern)
 
-    def replace(mo: re.Match) -> str:
+    def replace(mo: re.Match[str]) -> str:
         """对正则匹配结果进行替换的回调方法
 
         Args:

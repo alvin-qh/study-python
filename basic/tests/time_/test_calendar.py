@@ -485,7 +485,7 @@ class TestCalendarClass:
         ca = c.Calendar(c.SUNDAY)
 
         # 获取年历, 按每 3 个月 (即一季度) 进行分隔
-        r: List[List[List[List[date]]]] = cast(
+        r: List[List[List[List[date]]]] = cast(  # type: ignore
             List[List[List[List[date]]]], ca.yeardatescalendar(2022, width=3)
         )
 
@@ -524,7 +524,7 @@ class TestCalendarClass:
         ca = c.Calendar(c.SUNDAY)
 
         # 获取年历, 按每 3 个月 (即一季度) 进行分隔
-        r: List[List[List[List[int]]]] = cast(
+        r: List[List[List[List[int]]]] = cast(  # type: ignore
             List[List[List[List[int]]]], ca.yeardayscalendar(2022, width=3)
         )
 

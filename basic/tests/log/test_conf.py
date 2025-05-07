@@ -32,7 +32,7 @@ def test_conf_by_dict() -> None:
     # 配置日志
     conf = load_log_config()
     # 设置 dict 中日志文件名
-    conf["handlers"]["file"]["filename"] = log_file  # type: ignore
+    conf["handlers"]["file"]["filename"] = log_file
     # 配置日志
     config.dictConfig(conf)
 
