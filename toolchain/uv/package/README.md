@@ -33,7 +33,7 @@ uv init --name <project_name> --package
 └── uv.lock
 ```
 
-uv 会在项目中创建 `src` 目录, 所有的项目源代码都应位于 `src` 目录下, 且 `src` 目录下必须具备一个和项目名相同的包 (本例中为 `uv_package` 包), 作为当前 Python 库的根包名
+UV 会在项目中创建 `src` 目录, 所有的项目源代码都应位于 `src` 目录下, 且 `src` 目录下必须具备一个和项目名相同的包 (本例中为 `uv_package` 包), 作为当前 Python 库的根包名
 
 对于 `package` 类型项目, `uv` 会将 `src` 目录下的内容作为 "可编辑" 依赖安装到当前的虚拟环境中 (即 `.venv` 目录)
 
@@ -50,7 +50,7 @@ version = "0.1.0"
 description = "Project Description"
 readme = "README.md"
 authors = [
-    { name = "Alvin", email = "quhao317@163.com" },
+  { name = "Alvin", email = "quhao317@163.com" },
 ]
 requires-python = ">=3.13"
 dependencies = []
@@ -66,15 +66,15 @@ dependencies = []
 [dependency-groups]
 dev = []
 lint = [
-    "autopep8>=2.3.2",
-    "mypy>=1.15.0",
+  "autopep8>=2.3.2",
+  "mypy>=1.15.0",
 ]
 test = [
-    "pytest>=8.3.5",
+  "pytest>=8.3.5",
 ]
 ```
 
-uv 有一个默认的 `dev` 分组, 表示仅在开发时用到的包, 也可以在安装依赖包的时候指定其它分组
+UV 有一个默认的 `dev` 分组, 表示仅在开发时用到的包, 也可以在安装依赖包的时候指定其它分组
 
 #### 1.2.3. 配置项目
 
@@ -85,10 +85,10 @@ uv 有一个默认的 `dev` 分组, 表示仅在开发时用到的包, 也可以
 ```toml
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+  '-vvs',
 ]
 testpaths = [
-    'tests',
+  'tests',
 ]
 ```
 
@@ -99,6 +99,7 @@ testpaths = [
 ```toml
 [tool.pycln]
 all = true
+exclude = '\.history'
 ```
 
 其它配置参见参见: <https://hadialqattan.github.io/pycln/#/?id=usage>
@@ -113,7 +114,10 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$']
+exclude = [
+  '.venv',
+  '.history',
+]
 ```
 
 其它配置参见: <https://mypy.readthedocs.io/en/stable/config_file.html>
@@ -163,9 +167,9 @@ uv-package = "uv_package:run"
 
 ## 2. 依赖管理
 
-uv 通过创建 `virtualenv` 虚拟环境来管理依赖, 每个项目都有一个独立的虚拟环境, 通过 uv 命令对虚拟环境进行管理
+UV 通过创建 `virtualenv` 虚拟环境来管理依赖, 每个项目都有一个独立的虚拟环境, 通过 uv 命令对虚拟环境进行管理
 
-另外, uv 还会创建 `uv.lock` 文件, 用于对当前项目的依赖进行锁定, 确保项目在不同的机器上运行时, 依赖包的版本一致
+另外, UV 还会创建 `uv.lock` 文件, 用于对当前项目的依赖进行锁定, 确保项目在不同的机器上运行时, 依赖包的版本一致
 
 ### 2.1. 添加依赖
 
@@ -173,7 +177,7 @@ uv 通过创建 `virtualenv` 虚拟环境来管理依赖, 每个项目都有一�
 
 #### 2.1.1. 从 PyPI 添加依赖
 
-第三方依赖包可通过包名进行安装, uv 默认从 PyPI 仓库中安装依赖包, 可通过 `--index-url/-i` 参数指定 PyPI 镜像地址
+第三方依赖包可通过包名进行安装, UV 默认从 PyPI 仓库中安装依赖包, 可通过 `--index-url/-i` 参数指定 PyPI 镜像地址
 
 ```bash
 uv add <package_name>
@@ -221,7 +225,7 @@ uv add ../uv_lib
 [project]
 ...
 dependencies = [
-    "uv-lib",
+  "uv-lib",
 ]
 
 [tool.uv.sources]
@@ -280,11 +284,11 @@ uv lock [-U -v -i https://pypi.tuna.tsinghua.edu.cn/simple]
 
 ## 3. 执行 Python 脚本
 
-uv 可以直接执行当前项目中的任意 `.py` 文件或当前项目虚拟环境下安装的任意 Python 工具包 (例如 `pytest`)
+UV 可以直接执行当前项目中的任意 `.py` 文件或当前项目虚拟环境下安装的任意 Python 工具包 (例如 `pytest`)
 
 ### 3.1. 运行指定的 `.py` 文件
 
-可以通过 uv 的 `run` 命令来运行项目中指定的 `.py` 文件, 例如:
+可以通过 UV 的 `run` 命令来运行项目中指定的 `.py` 文件, 例如:
 
 ```bash
 uv run main.py
@@ -292,12 +296,12 @@ uv run main.py
 
 ### 3.2. 运行指定 Python 工具包
 
-如果在当前项目的虚拟环境下安装了 Python 工具包, 那么可以通过 uv 的 `run` 命令来运行它, 例如:
+如果在当前项目的虚拟环境下安装了 Python 工具包, 那么可以通过 UV 的 `run` 命令来运行它, 例如:
 
 ```bash
 uv run pytest
 
-uv run pycln .
+uv run --config=pyproject.toml .
 uv run mypy .
 uv run autopep8 .
 ```

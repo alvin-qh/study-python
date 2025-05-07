@@ -89,7 +89,7 @@ PDM 支持两种可选依赖包的配置方式:
    ```toml
    [dependency-groups]
    dev = [
-       "pytest>=8.3.5",
+     "pytest>=8.3.5",
    ]
    ```
 
@@ -104,7 +104,7 @@ PDM 支持两种可选依赖包的配置方式:
    ```toml
    [project.optional-dependencies]
    test = [
-       "pytest>=8.3.5",
+     "pytest>=8.3.5",
    ]
    ```
 
@@ -115,10 +115,10 @@ PDM 支持两种可选依赖包的配置方式:
 ```toml
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+  '-vvs',
 ]
 testpaths = [
-    'tests',
+  'tests',
 ]
 ```
 
@@ -129,6 +129,7 @@ testpaths = [
 ```toml
 [tool.pycln]
 all = true
+exclude = '\.history'
 ```
 
 其它配置参见参见: <https://hadialqattan.github.io/pycln/#/?id=usage>
@@ -143,7 +144,10 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$']
+exclude = [
+  '.venv',
+  '.history',
+]
 ```
 
 其它配置参见: <https://mypy.readthedocs.io/en/stable/config_file.html>
@@ -351,7 +355,7 @@ pdm run main.py
 ```bash
 pdm run pytest
 
-pdm run pycln .
+pdm run pycln --config=pyproject.toml .
 pdm run mypy .
 pdm run autopep8 .
 ```
@@ -365,8 +369,12 @@ pdm run autopep8 .
 ```toml
 [tool.pdm.scripts]
 start = "main.py"
-check = { composite = ["pycln .", "mypy .", "autopep8 ."] }
-test = "pytest tests"
+check = { composite = [
+  "pycln --config=pyproject.toml .",
+  "mypy .",
+  "autopep8 .",
+] }
+test = "pytest"
 clean = { call = "clear:main" }
 ```
 

@@ -29,7 +29,7 @@ check = { composite = [
     "mypy .",
     "autopep8 .",
 ] }
-test = "pytest tests"
+test = "pytest"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
