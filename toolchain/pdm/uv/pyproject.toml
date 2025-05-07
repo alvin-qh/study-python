@@ -24,9 +24,6 @@ lint = [
 [tool.pdm]
 distribution = false
 
-[tool.pyright]
-include = ["src/**/*.py"]
-
 [tool.pdm.scripts]
 start = "main.py"
 check = { composite = [
@@ -49,7 +46,10 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$', '^.history\.py$']
+exclude = [
+    '.venv',
+    '.history',
+]
 
 [tool.autopep8]
 max_line_length = 120

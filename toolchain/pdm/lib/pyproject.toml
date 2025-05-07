@@ -24,13 +24,18 @@ build-backend = "pdm.backend"
 distribution = true
 
 [tool.pdm.scripts]
-check = { composite = ["pycln .", "mypy .", "autopep8 ."] }
+check = { composite = [
+    "pycln --config=pyproject.toml .",
+    "mypy .",
+    "autopep8 .",
+] }
 test = "pytest tests"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.pycln]
 all = true
+exclude = '\.history'
 
 [tool.mypy]
 python_version = "3.13"
@@ -40,7 +45,10 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$']
+exclude = [
+    '.venv',
+    '.history',
+]
 
 [tool.autopep8]
 max_line_length = 120

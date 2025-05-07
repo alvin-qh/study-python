@@ -5,10 +5,10 @@
 groups = ["default", "lint", "test"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:f1a88e221f2167f418abd70d055d5fdc6e2df263d1c67e604df6c1da83b1f182"
+content_hash = "sha256:c795aecc75444870fdd0139f123276bf302e0080ad4d84f176cb1b27975c7eba"
 
 [[metadata.targets]]
-requires_python = ">=3.13"
+requires_python = ">=3.13.0"
 
 [[package]]
 name = "autopep8"
@@ -136,11 +136,6 @@ files = [
     {file = "pathspec-0.12.1-py3-none-any.whl", hash = "sha256:a0d503e138a4c123b27490a4f7beda6a01c6f288df0e4a8b79c7eb0dc7b4cc08"},
     {file = "pathspec-0.12.1.tar.gz", hash = "sha256:a482d51503a1ab33b1c67a6c3813a26953dbdc71c31dacaef9a838c4e29f5712"},
 ]
-
-[[package]]
-name = "pdm-lib"
-version = "0.1.0"
-summary = ""
 
 [[package]]
 name = "pluggy"
