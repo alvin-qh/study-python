@@ -2,13 +2,13 @@
 # It is not intended for manual editing.
 
 [metadata]
-groups = ["default", "lint", "test"]
+groups = ["default", "lint", "test", "type"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:d31d3e09c859ba3d086a7c7601a6c2d0106a2447e372327653314ca93f3ce507"
+content_hash = "sha256:003266e97cd7d61ac2c8c5a7f500ff7aeeec56ccf690ff6b79f138135ee0ba8a"
 
 [[metadata.targets]]
-requires_python = "==3.13.*"
+requires_python = ">=3.13"
 
 [[package]]
 name = "alembic"
@@ -186,6 +186,7 @@ files = [
     {file = "greenlet-3.2.1-cp313-cp313t-manylinux_2_24_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:51a2f49da08cff79ee42eb22f1658a2aed60c72792f0a0a95f5f0ca6d101b1fb"},
     {file = "greenlet-3.2.1-cp313-cp313t-musllinux_1_1_aarch64.whl", hash = "sha256:0c68bbc639359493420282d2f34fa114e992a8724481d700da0b10d10a7611b8"},
     {file = "greenlet-3.2.1-cp313-cp313t-musllinux_1_1_x86_64.whl", hash = "sha256:e775176b5c203a1fa4be19f91da00fd3bff536868b77b237da3f4daa5971ae5d"},
+    {file = "greenlet-3.2.1-cp314-cp314-macosx_11_0_universal2.whl", hash = "sha256:d6668caf15f181c1b82fb6406f3911696975cc4c37d782e19cb7ba499e556189"},
     {file = "greenlet-3.2.1.tar.gz", hash = "sha256:9f4dd4b4946b14bb3bf038f81e1d2e535b7d94f1b2a59fdba1293cd9c1a0a4d7"},
 ]
 
@@ -500,7 +501,7 @@ name = "sqlalchemy"
 version = "2.0.40"
 summary = ""
 dependencies = [
-    "greenlet; platform_machine == \"AMD64\" or platform_machine == \"WIN32\" or platform_machine == \"aarch64\" or platform_machine == \"amd64\" or platform_machine == \"ppc64le\" or platform_machine == \"win32\" or platform_machine == \"x86_64\"",
+    "greenlet; python_full_version < \"3.14\" and (platform_machine == \"AMD64\" or platform_machine == \"WIN32\" or platform_machine == \"aarch64\" or platform_machine == \"amd64\" or platform_machine == \"ppc64le\" or platform_machine == \"win32\" or platform_machine == \"x86_64\")",
     "typing-extensions",
 ]
 files = [
@@ -538,6 +539,15 @@ dependencies = [
 files = [
     {file = "typer-0.15.3-py3-none-any.whl", hash = "sha256:c86a65ad77ca531f03de08d1b9cb67cd09ad02ddddf4b34745b5008f43b239bd"},
     {file = "typer-0.15.3.tar.gz", hash = "sha256:818873625d0569653438316567861899f7e9972f2e6e0c16dab608345ced713c"},
+]
+
+[[package]]
+name = "types-peewee"
+version = "3.18.0.20250501"
+summary = ""
+files = [
+    {file = "types_peewee-3.18.0.20250501-py3-none-any.whl", hash = "sha256:4e6dc0a85529169ce9c8035145cf1d7a2e4a436cbab60593c4e835492d15021a"},
+    {file = "types_peewee-3.18.0.20250501.tar.gz", hash = "sha256:f00dba722ace7b7b5205c7617295637cf6eef27221caa7d05cbe6ea4e6d2d471"},
 ]
 
 [[package]]

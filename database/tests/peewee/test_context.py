@@ -1,3 +1,4 @@
+from typing import cast
 from peewee_.core import Tenant, User, context
 
 
@@ -28,7 +29,7 @@ def test_tenant_context() -> None:
         mark = "Fake Tenant"
 
     with context.with_tenant_context(FakeTenant()):
-        assert context.get_current_tenant().mark == "Fake Tenant"
+        assert cast(FakeTenant, context.get_current_tenant()).mark == "Fake Tenant"
 
     assert context.get_current_tenant() is None
 
@@ -38,7 +39,7 @@ def test_current_user_context() -> None:
         mark = "Fake User"
 
     with context.with_current_user(FakeUser()):
-        user: FakeUser = context.get_current_user()
+        user: FakeUser = cast(FakeUser, context.get_current_user())
         assert user is not None
         assert user.mark == "Fake User"
 

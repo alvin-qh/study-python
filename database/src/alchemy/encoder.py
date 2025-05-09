@@ -4,13 +4,10 @@ from typing import Any, Optional
 
 
 class ObjectEncoder(json.JSONEncoder):
-    """
-    Json 序列化扩展类
-    """
+    """Json 序列化扩展类"""
 
     def default(self, o: Any) -> Optional[str]:
-        """
-        默认转换规则
+        """默认转换规则
 
         Args:
             - `obj` (`Any`): 任意对象

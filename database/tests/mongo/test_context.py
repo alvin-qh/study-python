@@ -1,3 +1,4 @@
+from typing import cast
 from mongo.engine.core import context
 from peewee_.core.context import Tenant
 
@@ -28,7 +29,7 @@ def test_tenant_context() -> None:
     class FakeTenant(Tenant):
         mark = "Fake Tenant"
 
-    with context.with_tenant_context(FakeTenant()):
-        assert context.get_current_tenant().mark == "Fake Tenant"
+    with context.with_tenant_context(FakeTenant()):  # type: ignore[arg-type, unused-ignore]
+        assert cast(FakeTenant, context.get_current_tenant()).mark == "Fake Tenant"
 
     assert context.get_current_tenant() is None

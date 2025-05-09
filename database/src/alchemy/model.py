@@ -16,9 +16,7 @@ class Gender(enum.Enum):
 
 
 class User(BaseModel, SoftDeleteMixin):
-    """
-    表示用户的实体类
-    """
+    """表示用户的实体类"""
 
     # 对应的表名称
     __tablename__ = "user"
@@ -30,7 +28,7 @@ class User(BaseModel, SoftDeleteMixin):
     name: Mapped[str] = mapped_column(String(length=50), nullable=False)
 
     # 性别字段
-    gender: Mapped[str] = mapped_column(Enum(Gender), nullable=False)
+    gender: Mapped[Gender] = mapped_column(Enum(Gender), nullable=False)
 
     # 生日字段
     birthday: Mapped[date] = mapped_column(Date, nullable=True)
@@ -38,7 +36,8 @@ class User(BaseModel, SoftDeleteMixin):
     # 连接到 `UserGroup` 类，外键 `user.id`, 在 `UserGroup` 对象添加 user 字段
     user_groups: Mapped[List["UserGroup"]] = relationship(
         "UserGroup",
-        backref="user",  # `backref` 表示在 `UserGroup` 实体中自动创建 `user` 属性
+        # backref="user",  # `backref` 表示在 `UserGroup` 实体中自动创建 `user` 属性
+        back_populates="user",
         # uselist=True,
     )
 
@@ -50,8 +49,7 @@ class User(BaseModel, SoftDeleteMixin):
     )
 
     def jsonify(self) -> Dict[str, Any]:
-        """
-        当前对象转为字段
+        """当前对象转为字段
 
         Returns:
             `Dict[str, Any]`: 返回的字典对象
@@ -66,8 +64,7 @@ class User(BaseModel, SoftDeleteMixin):
         }
 
     def __str__(self) -> str:
-        """
-        当前对象转为字符串
+        """当前对象转为字符串
 
         Returns:
             `str`: json 字符串
@@ -76,9 +73,7 @@ class User(BaseModel, SoftDeleteMixin):
 
 
 class Group(BaseModel):
-    """
-    表示用户组的实体类
-    """
+    """表示用户组的实体类"""
 
     # 对应的表名称
     __tablename__ = "`group`"
@@ -89,7 +84,8 @@ class Group(BaseModel):
     # 连接到 UserGroup 类，外键 `user.id`, 在 `UserGroup` 对象添加 `group` 字段
     user_groups: Mapped[List["UserGroup"]] = relationship(
         "UserGroup",
-        backref="group",  # `backref` 表示在 `UserGroup` 实体中自动创建 `group` 属性
+        # backref="group",  # `backref` 表示在 `UserGroup` 实体中自动创建 `group` 属性
+        back_populates="group",
         # uselist=True,
     )
 
@@ -101,8 +97,7 @@ class Group(BaseModel):
     )
 
     def jsonify(self) -> Dict[str, Any]:
-        """
-        当前对象转为字段
+        """当前对象转为字段
 
         Returns:
             `Dict[str, Any]`: 返回的字典对象
@@ -114,8 +109,7 @@ class Group(BaseModel):
         }
 
     def __str__(self) -> str:
-        """
-        当前对象转为字符串
+        """当前对象转为字符串
 
         Returns:
             `str`: json 字符串
@@ -124,9 +118,7 @@ class Group(BaseModel):
 
 
 class UserGroup(BaseModel):
-    """
-    表示用户和分组的关系类
-    """
+    """表示用户和分组的关系类"""
 
     # 对应的表名称
     __tablename__ = "user_group"
@@ -138,6 +130,9 @@ class UserGroup(BaseModel):
     group_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("`group`.id"), nullable=False
     )
+
+    user: Mapped[User] = relationship("User", back_populates="user_groups")
+    group: Mapped[Group] = relationship("Group", back_populates="user_groups")
 
     def __str__(self) -> str:
         return json.dumps(self.jsonify(), cls=ObjectEncoder, indent=2)

@@ -1,9 +1,7 @@
 from random import randint
-from typing import Any, Generator, List, Optional, Type
+from typing import Any, Generator, List, Optional, Type, cast
 
-import factory.base
-import factory.faker
-import factory.fuzzy
+from factory import base, faker, fuzzy, declarations
 from peewee import Model
 from peewee_ import (
     Department,
@@ -16,24 +14,23 @@ from peewee_ import (
     initialize_tables,
 )
 from pytest import fixture
+from misc import col, non_none
 
-from . import non_none
 
-
-class PeeweeOptions(factory.base.FactoryOptions):
+class PeeweeOptions(base.FactoryOptions):
     """定义 Peewee 工厂属性"""
 
-    def _build_default_options(self) -> List[factory.base.OptionDefault]:
+    def _build_default_options(self) -> List[base.OptionDefault]:
         """为工厂构建默认属性值
 
         Returns:
             `List[factory.base.OptionDefault]`: 返回工厂默认属性集合
         """
-        defaults: List[factory.base.OptionDefault] = super()._build_default_options()
+        defaults: List[base.OptionDefault] = super()._build_default_options()
         return defaults + []
 
 
-class PeeweeFactory(factory.base.Factory):
+class PeeweeFactory[T](base.Factory[T]):
     """定义 Peewee 工厂类型, 用于自动构建 Peewee 实体对象"""
 
     # 指定提供工厂属性的类型
@@ -61,7 +58,7 @@ class PeeweeFactory(factory.base.Factory):
         return model
 
 
-class OrgFactory(PeeweeFactory):
+class OrgFactory(PeeweeFactory[Org]):
     """组织实体对象工厂类"""
 
     class Meta:
@@ -69,10 +66,10 @@ class OrgFactory(PeeweeFactory):
         model = Org
 
     # 构建组织名称字段
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, faker.Faker("name"))
 
 
-class DepartmentFactory(PeeweeFactory):
+class DepartmentFactory(PeeweeFactory[Department]):
     """部门实体对象工厂类"""
 
     class Meta:
@@ -80,13 +77,13 @@ class DepartmentFactory(PeeweeFactory):
         model = Department
 
     # 构建部门名称字段
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, faker.Faker("name"))
 
     # 构建部门等级字段
-    level: int = factory.fuzzy.FuzzyInteger(1, 10)
+    level: int = cast(int, fuzzy.FuzzyInteger(1, 10))
 
 
-class RoleFactory(PeeweeFactory):
+class RoleFactory(PeeweeFactory[Role]):
     """角色实体对象工厂类"""
 
     class Meta:
@@ -94,10 +91,10 @@ class RoleFactory(PeeweeFactory):
         model = Role
 
     # 构建角色名称字段
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, faker.Faker("name"))
 
 
-class EmployeeFactory(PeeweeFactory):
+class EmployeeFactory(PeeweeFactory[Employee]):
     """员工实体对象工厂类"""
 
     class Meta:
@@ -105,15 +102,18 @@ class EmployeeFactory(PeeweeFactory):
         model = Employee
 
     # 构建员工名称字段
-    name: str = factory.faker.Faker("name")
+    name: str = cast(str, faker.Faker("name"))
 
     # 构建员工性别字段
-    gender: Gender = factory.LazyFunction(
-        lambda: Gender.MALE if randint(0, 1) == 0 else Gender.FEMALE
+    gender: Gender = cast(
+        Gender,
+        declarations.LazyFunction(
+            lambda: Gender.MALE if randint(0, 1) == 0 else Gender.FEMALE
+        ),
     )
 
     # 构建员工角色字段
-    role: Role = factory.LazyFunction(lambda: RoleFactory.create())
+    role: Role = cast(Role, declarations.LazyFunction(lambda: RoleFactory.create()))
 
 
 # 保存当前组织对象
@@ -138,7 +138,7 @@ def build_test_context() -> Generator[None, None, None]:
                 current_user = EmployeeFactory.create(role=role)
 
     with context.with_tenant_context(current_org):
-        with context.with_current_user(current_user):
+        with context.with_current_user(non_none(current_user)):
             yield
 
     assert current_org is not None
@@ -146,10 +146,10 @@ def build_test_context() -> Generator[None, None, None]:
 
 def test_current_org() -> None:
     """测试 `current_org` 变量是否正确赋值"""
-    assert current_org is not None
+    global current_org, current_user
 
     # 根据 id 查询 Org 对象, 确保 current_org 中的对象已被持久化
-    org = Org.get_by_id(current_org.id)
+    org = Org.get_by_id(non_none(current_org).id)
     assert org == current_org
 
     # 确认 current_org 对象已进入线程上下文中
@@ -159,14 +159,14 @@ def test_current_org() -> None:
 
 def test_current_user() -> None:
     """测试 `current_user` 变量是否正确赋值"""
-    assert current_user is not None
+    global current_org, current_user
 
     # 根据 id 查询 Employee 对象, 确保 current_user 中的对象已被持久化
-    user: Employee = Employee.get_by_id(current_user.id)
-    assert user == current_user
+    employee: Employee = Employee.get_by_id(non_none(current_user).id)
+    assert employee == current_user
 
     # 确认 current_org 对象已进入线程上下文中
-    user = context.get_current_user()
+    user = cast(Employee, context.get_current_user())
     assert user == current_user
 
     # 确认上下文用户的角色为 admin
@@ -176,16 +176,16 @@ def test_current_user() -> None:
 
 def test_create_department() -> None:
     with db.atomic():
-        employee: Employee = EmployeeFactory.create()
-        department: Department = DepartmentFactory.create(manager=employee)
+        created_emp: Employee = EmployeeFactory.create()
+        created_dep: Department = DepartmentFactory.create(manager=created_emp)
 
-    department = non_none(
-        Department.select().where(Department.id == department.id).get_or_none()
+    department: Department = non_none(
+        Department.select().where(Department.id == created_dep.id).get_or_none()
     )
 
-    assert department.org_id == context.get_current_tenant().id
-    assert department.created_by == context.get_current_user().id
-    assert department.manager == employee
+    assert department.org_id == cast(Org, context.get_current_tenant()).id
+    assert department.created_by == cast(Employee, context.get_current_user()).id
+    assert department.manager == created_emp
 
 
 def test_join() -> None:
@@ -212,14 +212,14 @@ def test_join() -> None:
         (
             alias_d.select()
             .join(alias_e, on=(alias_d.manager == alias_e.id))
-            .where(alias_e.id == employee.id)  # type:ignore
+            .where(alias_e.id == employee.id)
         ).get_or_none()
     )
 
     # 确认查询结果
     assert department is not None
-    assert department.org_id == context.get_current_tenant().id
-    assert department.created_by == context.get_current_user().id
+    assert department.org_id == cast(Org, context.get_current_tenant()).id
+    assert department.created_by == cast(Employee, context.get_current_user()).id
     assert department.manager == employee
 
 
@@ -238,16 +238,20 @@ def test_sub_query() -> None:
     """
 
     with db.atomic():
-        employee: Employee = EmployeeFactory.create()
-        department: Department = DepartmentFactory.create(manager=employee)
+        created_emp: Employee = EmployeeFactory.create()
+        DepartmentFactory.create(manager=created_emp)
 
-    sub_query = Employee.select(Employee.id).where(Employee.name == employee.name)
+    sub_query = Employee.select(col(Employee.id)).where(
+        Employee.name == created_emp.name
+    )
 
-    department = non_none(
-        Department.select().where(Department.manager.in_(sub_query)).get_or_none()
+    department: Department = non_none(
+        Department.select()
+        .where(Department.manager.in_(sub_query))  # type: ignore[attr-defined, unused-ignore]
+        .get_or_none()
     )
 
     # 确认查询结果
-    assert department.org_id == context.get_current_tenant().id
-    assert department.created_by == context.get_current_user().id
-    assert department.manager == employee
+    assert department.org_id == cast(Org, context.get_current_tenant()).id
+    assert department.created_by == cast(Employee, context.get_current_user()).id
+    assert department.manager == created_emp

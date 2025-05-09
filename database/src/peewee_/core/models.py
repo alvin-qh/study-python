@@ -25,12 +25,12 @@ class BaseModel(Model):
         database = db  # 定义数据库连接
 
     # 定义主键字段
-    id: int = BigAutoField(primary_key=True)
+    id: int = cast(int, BigAutoField(primary_key=True))
 
 
 class AuditByMixin(Model):
-    created_by: int = BigIntegerField(null=True)
-    updated_by: int = BigIntegerField(null=True)
+    created_by: int = cast(int, BigIntegerField(null=True))
+    updated_by: int = cast(int, BigIntegerField(null=True))
 
     def save(self, force_insert: bool = False, only: Any = None) -> int:
         """将当前模型对象作为记录插入数据表
@@ -63,7 +63,7 @@ class AuditByMixin(Model):
         if user:
             query.update(created_by=user._get_id(), updated_by=user._get_id())
 
-        return super().create(**query)
+        return cast(Model, super().create(**query))
 
     @classmethod
     def update(cls, __data: Optional[Any] = None, **update: Any) -> ModelUpdate:
@@ -87,10 +87,10 @@ class AuditAtMixin(Model):
     """审计附件类型, 为目标模型加入审计字段"""
 
     # 记录创建时间
-    created_at: datetime = DateTimeField()
+    created_at: datetime = cast(datetime, DateTimeField())
 
     # 记录更新时间
-    updated_at: datetime = DateTimeField()
+    updated_at: datetime = cast(datetime, DateTimeField())
 
     def save(
         self, force_insert: bool = False, only: Optional[List[Field]] = None
@@ -150,7 +150,7 @@ class AuditAtMixin(Model):
 class MultiTenantMixin(Model):
     """多租户附加类型, 为目标类型引入多租户字段"""
 
-    org_id: int = BigIntegerField()
+    org_id: int = cast(int, BigIntegerField())
 
     @classmethod
     def select(cls, *fields: str) -> ModelSelect:
@@ -236,6 +236,6 @@ class MultiTenantMixin(Model):
 
         tenant = context.get_current_tenant()
         if tenant:
-            query = query.where(org_id=tenant._get_id())
+            query = query.where(org_id=tenant._get_id())  # type: ignore[call-arg]
 
         return query

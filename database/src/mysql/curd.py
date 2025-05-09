@@ -1,7 +1,7 @@
 from datetime import date
 from typing import Any, Dict, List, cast
 
-from pymysql import Connection  # type:ignore
+from pymysql import Connection  # type: ignore[import-untyped]
 
 
 def init_tables(conn: Connection) -> None:
@@ -36,8 +36,7 @@ def init_tables(conn: Connection) -> None:
 
 
 def get_all_tables(conn: Connection) -> List[str]:
-    """
-    获取数据库中所有的表
+    """获取数据库中所有的表
 
     Args:
         - `conn` (`Connection`): 数据库连接对象
@@ -102,7 +101,12 @@ def get_user(conn: Connection, id_: int) -> Dict[str, Any]:
 
 
 def update_user(
-    conn: Connection, id_: int, id_num: str, name: str, gender: str, birthday: date
+    conn: Connection,
+    id_: int,
+    id_num: str,
+    name: str,
+    gender: str,
+    birthday: date,
 ) -> int:
     """
     更新用户信息

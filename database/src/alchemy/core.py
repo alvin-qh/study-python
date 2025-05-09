@@ -5,13 +5,10 @@ from sqlalchemy.orm import Query, scoped_session, sessionmaker
 
 
 class ExtQuery(Query[Any]):
-    """
-    扩展查询类, 继承原查询类
-    """
+    """扩展查询类, 继承原查询类"""
 
     def __new__(cls, *args: Any, **kwargs: Any) -> Self:
-        """
-        实例化查询对象
+        """实例化查询对象
 
         Returns:
             ExtQuery: 实例化的查询对象
@@ -26,8 +23,7 @@ class ExtQuery(Query[Any]):
         return query
 
     def _add_soft_delete_filter(self, query_types: Tuple[Type[Any]]) -> Self:
-        """
-        尝试增加 Soft Delete 查询条件
+        """尝试增加 Soft Delete 查询条件
 
         Args:
             - `query_types` (`Tuple[Type]`): 要查询的实体类型

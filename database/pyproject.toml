@@ -22,6 +22,9 @@ readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
+type = [
+    "types-peewee>=3.18.0.20250501"
+]
 lint = [
     "mypy>=1.15.0",
     "autopep8>=2.3.2",

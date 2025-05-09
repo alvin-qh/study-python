@@ -9,7 +9,7 @@ from mysql import (
     insert_user,
     update_user,
 )
-from pymysql import Connection  # type:ignore
+from pymysql import Connection  # type: ignore[import-untyped]
 
 
 def run_curd(conn: Connection) -> None:

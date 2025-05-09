@@ -4,13 +4,10 @@ from alembic import command, config
 
 
 class Command:
-    """
-    Command 类, 通过编程方式操作 Alembic
-    """
+    """通过编程方式操作 Alembic"""
 
     def __init__(self, conn_url: str) -> None:
-        """
-        初始化 Command 类
+        """初始化 `Command` 类
 
         Args:
             - `conn_url` (`str`): 数据库连接地址
@@ -29,8 +26,7 @@ class Command:
 
     @staticmethod
     def _script_location() -> str:
-        """
-        获取数据库脚本位置
+        """获取数据库脚本位置
 
         Returns:
             `str`: 数据库脚本的路径地址
@@ -39,8 +35,7 @@ class Command:
         return os.path.abspath(os.path.join(curdir, "scripts"))
 
     def upgrade(self, revision: str = "head") -> None:
-        """
-        升级数据库
+        """升级数据库
 
         Args:
             - `revision` (`str`, optional): 指定升级到的版本. Defaults to "head", 表示升级到最新版本.
@@ -48,8 +43,7 @@ class Command:
         command.upgrade(self._conf, revision)
 
     def downgrade(self, revision: str = "base") -> None:
-        """
-        降级数据库
+        """降级数据库
 
         Args:
             - `revision` (`str`, optional): 指定降级到的版本. Defaults to "base", 表示降级到最老的版本.
@@ -57,8 +51,6 @@ class Command:
         command.downgrade(self._conf, revision)
 
     def reset(self) -> None:
-        """
-        重置数据库, 即降级到最后版本后重新升级到最新版本
-        """
+        """重置数据库, 即降级到最后版本后重新升级到最新版本"""
         self.downgrade()
         self.upgrade()

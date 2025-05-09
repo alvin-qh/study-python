@@ -107,7 +107,7 @@ def test_current_org() -> None:
     assert org == current_org
 
     # 从上下文中获取当前组织实体
-    org = context.get_current_tenant()
+    org = cast(Org, context.get_current_tenant())
     # 确认上下文中的实体对象
     assert org == current_org
 

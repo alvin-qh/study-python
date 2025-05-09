@@ -2,12 +2,15 @@ from datetime import date
 from random import randint
 from typing import List
 
-import factory
-from alchemy import Gender, Group, User, initialize_tables, session, soft_deleted_select
+from factory import faker, declarations
+from alchemy import Gender, Group, User, initialize_tables, session
+from alchemy.core import soft_deleted_select
 from alchemy.model import UserGroup
 from factory.alchemy import SQLAlchemyModelFactory
 from sqlalchemy import and_, select, update
 from sqlalchemy.orm import aliased
+
+from misc import non_none
 
 
 class BaseFactory(SQLAlchemyModelFactory):
@@ -21,19 +24,19 @@ class UserFactory(BaseFactory):
     class Meta:
         model = User
 
-    id_num = factory.Faker("ean", length=13)
-    name = factory.Faker("name")
-    gender = factory.LazyFunction(
+    id_num = faker.Faker("ean", length=13)
+    name = faker.Faker("name")
+    gender = declarations.LazyFunction(
         lambda: Gender.MALE if randint(0, 1) == 0 else Gender.FEMALE
     )
-    birthday = factory.Faker("date_object")
+    birthday = faker.Faker("date_object")
 
 
 class GroupFactory(BaseFactory):
     class Meta:
         model = Group
 
-    name = factory.Faker("name")
+    name = faker.Faker("name")
 
 
 def setup_function() -> None:
@@ -93,10 +96,10 @@ def test_update_user() -> None:
     修改实体对象并执行事务提交, 即可将对象修改的结果进行持久化
     """
 
-    user: User = UserFactory.create()
+    created_user: User = UserFactory.create()
     session.commit()
 
-    user = session.scalars(select(User).where(User.id == user.id)).one_or_none()
+    user = session.scalars(select(User).where(User.id == created_user.id)).one_or_none()
     assert user is not None
 
     user.name = "Alvin"
@@ -118,17 +121,17 @@ def test_update_user_by_statement() -> None:
     通过执行 `update` 语句对数据表记录进行更新
     """
 
-    user: User = UserFactory.create()
+    created_user: User = UserFactory.create()
     session.commit()
 
     session.execute(
         update(User)
-        .where(User.id == user.id)
+        .where(User.id == created_user.id)
         .values(name="Alvin", gender=Gender.MALE, birthday=date(1981, 3, 17))
     )
     session.commit()
 
-    user = session.scalars(select(User).where(User.id == user.id)).one_or_none()
+    user = session.scalars(select(User).where(User.id == created_user.id)).one_or_none()
     assert user is not None
 
     assert user.name == "Alvin"
@@ -225,14 +228,19 @@ def test_join() -> None:
     # 为实体定义别名
     alias_ug = aliased(UserGroup, name="ug")
 
-    user, group = session.execute(
+    result = session.execute(
         select(User, Group)
         .select_from(User)
         .join(alias_ug)
         .join(Group)
         .where(and_(User.id == expected_user.id, User.deleted == False))  # noqa
-    ).first()
+    )
+    assert result is not None
 
+    user: User
+    group: Group
+
+    user, group = non_none(result.first())
     assert user == expected_user
     assert group == expected_group
 
@@ -286,7 +294,7 @@ def test_join_legacy() -> None:
     alias_u = aliased(User, name="u")
     alias_g = aliased(Group, name="g")
 
-    user, group, _ = (
+    user, group, _ = non_none(
         session.query(User, Group, UserGroup)
         .join(alias_u)
         .join(alias_g)
@@ -303,14 +311,14 @@ def test_soft_delete() -> None:
 
     可以通过自定义的 `soft_deleted_select` 函数, 在其中附加软删除逻辑, 完成软删除的自动处理
     """
-    user: User = UserFactory.create()
+    created_user: User = UserFactory.create()
     session.commit()
 
-    user.soft_delete()
+    created_user.soft_delete()
     session.commit()
 
     user = session.scalars(
-        soft_deleted_select(User).where(User.id == user.id)
+        soft_deleted_select(User).where(User.id == created_user.id)
     ).one_or_none()
     assert user is None
 
@@ -321,11 +329,11 @@ def test_soft_delete_legacy() -> None:
     通过自定义 `alchemy.core.ExtQuery` 类, 为软删除附加额外的过滤条件, 并在创建 `session` 对象时, 通过
     `query_cls=ExtQuery` 指定使用自定义查询类
     """
-    user: User = UserFactory.create()
+    created_user: User = UserFactory.create()
     session.commit()
 
-    user.soft_delete()
+    created_user.soft_delete()
     session.commit()
 
-    user = session.query(User).filter(User.id == user.id).one_or_none()
+    user = session.query(User).filter(User.id == created_user.id).one_or_none()
     assert user is None

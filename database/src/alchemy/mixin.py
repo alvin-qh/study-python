@@ -6,9 +6,7 @@ from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
 class BaseModel(DeclarativeBase):
-    """
-    模型基类
-    """
+    """模型基类"""
 
     # 抽象类
     __abstract__ = True
@@ -29,8 +27,7 @@ class BaseModel(DeclarativeBase):
     )
 
     def jsonify(self) -> Dict[str, Any]:
-        """
-        当前对象转为字段
+        """当前对象转为字段
 
         Returns:
             `Dict[str, Any]`: 返回的字典对象
@@ -42,15 +39,11 @@ class BaseModel(DeclarativeBase):
 
 
 class SoftDeleteMixin:
-    """
-    软删除混入类, 为数据实体添加软删除能力
-    """
+    """软删除混入类, 为数据实体添加软删除能力"""
 
     # 表示删除的字段
     deleted: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
 
     def soft_delete(self) -> None:
-        """
-        软删除当前实体
-        """
+        """软删除当前实体"""
         self.deleted = True

@@ -1,9 +1,9 @@
 from typing import Any, cast
 
-import pymysql  # type:ignore
+import pymysql  # type: ignore[import-untyped]
 from dbutils.pooled_db import PooledDB
 from pymysql import Connection, connect
-from pymysql.cursors import DictCursor  # type:ignore
+from pymysql.cursors import DictCursor  # type: ignore[import-untyped]
 
 from .curd import init_tables
 
@@ -46,7 +46,7 @@ def get_connection() -> Connection:
         `Connection`: 连接对象
     """
     # 根据连接配置连接数据库
-    conn = connect(**_conn_options)
+    conn: Connection = connect(**_conn_options)
     # 关闭自动提交
     conn.autocommit(False)
 
@@ -68,11 +68,11 @@ def get_pooled_connection() -> Connection:
         `Connection`: 连接对象
     """
     # 通过连接池获取连接对象
-    conn = cast(Any, pool.connection())
+    conn: Connection = cast(Any, pool.connection())
     # 关闭自动提交
     conn.autocommit_mode = False
 
     # 初始化数据表
     _init_tables(conn)
 
-    return cast(Connection, conn)
+    return conn
