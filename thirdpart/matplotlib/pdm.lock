@@ -8,7 +8,7 @@ lock_version = "4.5.0"
 content_hash = "sha256:c9ec7893d0d5b33ccd6e0c01bd0ae1fc2f79af81159940c1a3f9a4c505445f36"
 
 [[metadata.targets]]
-requires_python = "==3.13.*"
+requires_python = ">=3.13"
 
 [[package]]
 name = "autopep8"
