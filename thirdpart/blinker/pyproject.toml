@@ -1,5 +1,5 @@
 [project]
-name = "blinker-demo"
+name = "thirdpart-blinker"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
