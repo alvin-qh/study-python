@@ -1,7 +1,6 @@
 import numpy as np
-from matplotlib import pyplot as plt
-
 from matplot import render_axis
+from matplotlib import pyplot as plt
 
 
 def test_draw_text() -> None:
@@ -47,13 +46,13 @@ def test_draw_text() -> None:
     ys = np.array([99, -80, -87, -88, -111, 86, -103, -87, 94, -78, 77, 85, 86])
 
     # 绘制第 1 组点
-    plt.scatter(xs, ys, color="hotpink", marker="o")  # type: ignore
+    plt.scatter(xs, ys, color="hotpink", marker="o")
 
     lx = plt.xlim()
     offset = (lx[1] - lx[0]) / 60.0
 
     for x, y in zip(xs, ys):
-        plt.text(  # type:ignore
+        plt.text(
             x=x + offset,  # x, y 坐标值
             y=y,
             s=f"({x}, {y})",  # 要绘制的文本

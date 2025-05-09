@@ -1,8 +1,9 @@
-from typing import Any, Tuple
+from typing import Any, Iterable, Tuple
 
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.animation import FuncAnimation
+from matplotlib.artist import Artist
 
 
 def test_animated_with_fixed_axis() -> None:
@@ -83,13 +84,14 @@ def test_animated_with_fixed_axis() -> None:
     )
 
     # 更新函数
-    def update(n: int) -> None:
+    def update(n: np.int64) -> Iterable[Artist]:
         # 计算切线坐标
         k = calculate_slope(x[n])  # 计算斜率
         xs, ys = calculate_tangent_line(x[n], y[n], k)  # 计算切线
 
         # 更新曲线上的切点坐标
-        point.set_data(x[n], y[n])
+        point.set_data((x[n],), (y[n],))
+
         # 更新切线的坐标
         tangent_line.set_data(xs, ys)
 
@@ -97,6 +99,8 @@ def test_animated_with_fixed_axis() -> None:
         x_text.set_text(f"x={x[n]:.3f}")
         y_text.set_text(f"y={y[n]:.3f}")
         k_text.set_text(f"k={k:.3f}")
+
+        return point, tangent_line, x_text, y_text, k_text
 
     # 设置动画
     _ = FuncAnimation(  # 这里必须要对变量赋值, 否则动画无法播放

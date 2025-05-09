@@ -1,5 +1,5 @@
 [project]
-name = "matplotlib-demo"
+name = "thirdpart-matplotlib"
 version = "0.1.0"
 description = "Default template for PDM package"
 authors = [
