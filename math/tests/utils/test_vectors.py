@@ -3,7 +3,7 @@ from math import atan2, sqrt, tan
 from typing import List, Sequence
 
 import pytest
-from utils.types import Vector
+from utils.typedef import Vector
 from utils.vector import (
     add,
     angle_between,

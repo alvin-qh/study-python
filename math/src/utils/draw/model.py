@@ -1,23 +1,16 @@
-from typing import Any, Callable, Optional, Sequence, Tuple
+from typing import Any, Callable, Optional, Sequence, Tuple, cast
 
 import matplotlib as mpl
 import OpenGL.GL as gl
 import OpenGL.GLU as glu
 import pygame as game
-from utils.transform import polygon_map
-from utils.types import Matrix, Triangle, Vector3D
-from utils.vector import (
-    dot,
-    multiply_matrix_vector,
-    normal,
-    unit,
-)
 from matplotlib.colors import Colormap
-
 from utils.draw.camera import default_camera
+from utils.transform import polygon_map
+from utils.typedef import Matrix, Triangle, Vector3D
+from utils.vector import dot, multiply_matrix_vector, normal, unit
 
-
-_blues: Colormap = mpl.colormaps["Blues"]  # type: ignore
+_blues: Colormap = mpl.colormaps["Blues"]
 
 
 def shade(
@@ -103,7 +96,7 @@ def draw_model(
     def do_matrix_transform(v: Vector3D) -> Vector3D:
         if get_matrix:
             m = get_matrix(game.time.get_ticks())
-            return multiply_matrix_vector(m, v)  # type: ignore
+            return cast(Vector3D, multiply_matrix_vector(m, v))
 
         return v
 
@@ -113,7 +106,7 @@ def draw_model(
                 game.quit()
                 quit()
 
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)  # type: ignore
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
         gl_axes()
 
         gl.glBegin(gl.GL_TRIANGLES)
@@ -121,7 +114,7 @@ def draw_model(
         transformed_faces = polygon_map(do_matrix_transform, faces)
 
         if not color_map:
-            color_map = mpl.cm.get_cmap("Blues")  # type: ignore
+            color_map = mpl.cm.get_cmap("Blues")  # type: ignore[attr-defined]
 
         for face in transformed_faces:
             color = shade(face, color_map, light)

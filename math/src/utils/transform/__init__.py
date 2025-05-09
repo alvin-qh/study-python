@@ -1,6 +1,6 @@
 from typing import Any, Callable, Iterable, List, Sequence, Tuple
 
-from utils.types import Number, Triangle, Vector2D, Vector3D
+from utils.typedef import Number, Triangle, Vector2D, Vector3D
 from utils.vector import add, as_polygons, as_vector3d, scale, to_cartesian, to_polar
 
 

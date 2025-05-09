@@ -5,11 +5,11 @@
 import math
 import sys
 
-from common.transform import rotate_z
-from common.vector import as_polygons
-from draw import camera
-from draw.model import draw_model
-from draw.teapot import load_model
+from utils.draw import camera
+from utils.draw.model import draw_model
+from utils.draw.teapot import load_model
+from utils.transform import rotate_z
+from utils.vector import as_polygons
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.12_rotate_teapot_z", [0])

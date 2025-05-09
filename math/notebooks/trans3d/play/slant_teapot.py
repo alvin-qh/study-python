@@ -4,10 +4,10 @@
 # to run it, run this script with command line arg --snapshot
 import sys
 
-from common.vector import add, as_polygons
-from draw import camera
-from draw.model import draw_model
-from draw.teapot import load_model
+from utils.draw import camera
+from utils.draw.model import draw_model
+from utils.draw.teapot import load_model
+from utils.vector import add, as_polygons
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.16_slant_teapot", [0])

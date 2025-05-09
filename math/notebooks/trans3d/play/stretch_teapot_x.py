@@ -4,11 +4,11 @@
 # to run it, run this script with command line arg --snapshot
 import sys
 
-from common.transform import stretch
-from common.vector import as_polygons
-from draw import camera
-from draw.model import draw_model
-from draw.teapot import load_model
+from utils.draw import camera
+from utils.draw.model import draw_model
+from utils.draw.teapot import load_model
+from utils.transform import stretch
+from utils.vector import as_polygons
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.13_stretch_teapot_x", [0])

@@ -4,9 +4,9 @@
 # to run it, run this script with command line arg --snapshot
 import sys
 
-from draw.model import draw_model
-from draw.teapot import load_model
-from draw import camera
+from utils.draw import camera
+from utils.draw.model import draw_model
+from utils.draw.teapot import load_model
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig_4.4_draw_teapot", [0])

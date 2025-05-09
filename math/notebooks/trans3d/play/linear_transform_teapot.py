@@ -5,10 +5,10 @@
 
 import sys
 
-from common.transform import apply, polygon_map
-from draw import camera
-from draw.model import draw_model
-from draw.teapot import load_model
+from utils.draw import camera
+from utils.draw.model import draw_model
+from utils.draw.teapot import load_model
+from utils.transform import apply, polygon_map
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig4.35_linear_transform", [0])

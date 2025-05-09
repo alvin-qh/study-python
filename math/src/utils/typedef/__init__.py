@@ -1,6 +1,5 @@
 from typing import Sequence, Tuple, Union
 
-
 # 定义一个数类型
 Number = Union[int, float]
 

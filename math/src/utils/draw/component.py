@@ -1,13 +1,12 @@
 from enum import Enum
 from math import ceil, floor, sqrt
-from typing import Any, Iterable, List, Optional, Sequence, Tuple, Union
+from typing import Any, Iterable, List, Optional, Sequence, Tuple, Union, cast
 
 import matplotlib.pyplot as plt
 import numpy as np
-from utils.types import Number, Vector2D, Vector3D
-from matplotlib.patches import FancyArrowPatch  # type: ignore
-from mpl_toolkits.mplot3d import Axes3D, proj3d  # type:ignore
-
+from matplotlib.patches import FancyArrowPatch
+from mpl_toolkits.mplot3d import Axes3D, proj3d
+from utils.typedef import Number, Vector2D, Vector3D
 
 RGB = Tuple[float, float, float]
 RGBA = Tuple[float, float, float, float]
@@ -271,16 +270,17 @@ def draw2d(
         )
 
     if origin:
-        plt.scatter([0], [0], color="k", marker="x")  # type: ignore
+        plt.scatter([0], [0], c="k", marker="x")
 
     xlim, ylim = plt.xlim(), plt.ylim()
-    gca = plt.gca()  # type: ignore
+    gca = plt.gca()  # type: ignore[attr-defined]
 
     if grid:
         # 绘制网格
         gca.set_xticks(np.arange(xlim[0], xlim[1], grid[0]))
         gca.set_yticks(np.arange(ylim[0], ylim[1], grid[1]))
-        plt.grid(  # type:ignore
+
+        plt.grid(  # type: ignore[call-arg]
             True,
             color="#aaa",
             linestyle=":",
@@ -301,7 +301,7 @@ def draw2d(
                 x1, y1 = o.vertices[i]
                 x2, y2 = o.vertices[(i + 1) % len(o.vertices)]
 
-                plt.plot([x1, x2], [y1, y2], color=o.color.value())  # type: ignore
+                plt.plot([x1, x2], [y1, y2], c=o.color.value())  # type: ignore[arg-type]
 
             if o.fill:
                 xs = [v[0] for v in o.vertices]
@@ -313,14 +313,14 @@ def draw2d(
             xs = [v[0] for v in o.vectors]
             ys = [v[1] for v in o.vectors]
 
-            plt.scatter(xs, ys, color=o.color.value())  # type: ignore
+            plt.scatter(xs, ys, c=o.color.value())  # type: ignore[arg-type]
 
             offset = max(xlim[1] - xlim[0], ylim[1] - ylim[0]) / 60.0
 
             # 绘制文本
             if o.show_coord:
                 for x, y in o.vectors:
-                    plt.text(  # type: ignore
+                    plt.text(  # type: ignore[attr-defined]
                         x=x + offset,
                         y=y,
                         s=f"({round(x, 3)}, {round(y, 3)})",
@@ -360,7 +360,7 @@ def draw2d(
             plt.plot(
                 [x1, x2],
                 [y1, y2],
-                color=o.color.value(),  # type: ignore
+                color=o.color.value(),  # type: ignore[arg-type]
                 linestyle=o.linestyle.value,
             )
 
@@ -374,7 +374,7 @@ def draw2d(
         # 计算坐标宽度
         coords_width = xlim[1] - xlim[0]
 
-        plt.gcf().set_size_inches(  # type: ignore
+        plt.gcf().set_size_inches(  # type: ignore[attr-defined]
             width,
             width * coords_height / coords_width,
         )
@@ -571,10 +571,10 @@ class FancyArrow3D(FancyArrowPatch):
     ) -> Number:
         """绘制 3D 图形"""
         xs3d, ys3d, zs3d = self.verts3d
-        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)  # type: ignore
+        xs, ys, zs = proj3d.proj_transform(xs3d, ys3d, zs3d, self.axes.M)  # type: ignore[attr-defined]
 
         self.set_positions((xs[0], ys[0]), (xs[1], ys[1]))
-        return np.min(zs)
+        return cast(Number, np.min(zs))
 
 
 def draw3d(
@@ -613,10 +613,10 @@ def draw3d(
         `TypeError`: 要绘制的三维图形不被支持
     """
     # 创建 Figure 对象
-    fig = plt.figure(figsize=(6, 6))  # type: ignore
+    fig = plt.figure(figsize=(6, 6))
 
     # 创建三维坐标系
-    ax: Axes3D = fig.add_subplot(111, projection="3d")  # type: ignore
+    ax: Axes3D = fig.add_subplot(111, projection="3d")
 
     # 初始化视图, 设置视图的仰角, 水平的方位角以及旋转轴
     ax.view_init(
@@ -763,15 +763,15 @@ def draw3d(
                 "linestyle": LineStyle.dashed,
                 "color": o.color,
             }
-            draw_segment((0, y, 0), (x, y, 0), **kwargs)  # type: ignore
-            draw_segment((0, 0, z), (0, y, z), **kwargs)  # type: ignore
-            draw_segment((0, 0, z), (x, 0, z), **kwargs)  # type: ignore
-            draw_segment((0, y, 0), (0, y, z), **kwargs)  # type: ignore
-            draw_segment((x, 0, 0), (x, y, 0), **kwargs)  # type: ignore
-            draw_segment((x, 0, 0), (x, 0, z), **kwargs)  # type: ignore
-            draw_segment((0, y, z), (x, y, z), **kwargs)  # type: ignore
-            draw_segment((x, 0, z), (x, y, z), **kwargs)  # type: ignore
-            draw_segment((x, y, 0), (x, y, z), **kwargs)  # type: ignore
+            draw_segment((0, y, 0), (x, y, 0), **kwargs)  # type: ignore[arg-type]
+            draw_segment((0, 0, z), (0, y, z), **kwargs)  # type: ignore[arg-type]
+            draw_segment((0, 0, z), (x, 0, z), **kwargs)  # type: ignore[arg-type]
+            draw_segment((0, y, 0), (0, y, z), **kwargs)  # type: ignore[arg-type]
+            draw_segment((x, 0, 0), (x, y, 0), **kwargs)  # type: ignore[arg-type]
+            draw_segment((x, 0, 0), (x, 0, z), **kwargs)  # type: ignore[arg-type]
+            draw_segment((0, y, z), (x, y, z), **kwargs)  # type: ignore[arg-type]
+            draw_segment((x, 0, z), (x, y, z), **kwargs)  # type: ignore[arg-type]
+            draw_segment((x, y, 0), (x, y, z), **kwargs)  # type: ignore[arg-type]
 
         else:
             raise TypeError(f"Unrecognized object: {o}")

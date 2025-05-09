@@ -4,10 +4,10 @@
 # to run it, run this script with command line arg --snapshot
 import sys
 
-import draw.camera as camera
-from common.vector import add, as_polygons, scale
-from draw.model import draw_model
-from draw.teapot import load_model
+import utils.draw.camera as camera
+from utils.draw.model import draw_model
+from utils.draw.teapot import load_model
+from utils.vector import add, as_polygons, scale
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("fig4.6_scale_translate", [0])

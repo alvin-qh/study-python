@@ -6,7 +6,7 @@ from pytest import fixture
 
 @fixture
 def event_loop(
-    scope="session",
+    scope: str = "session",
 ) -> Generator[asyncio.AbstractEventLoop, None, None]:
     """定义 pytest 的 `fixture`, 为所有使用 `AbstractEventLoop` 对象的测试中提供 `event_loop` 对象
 

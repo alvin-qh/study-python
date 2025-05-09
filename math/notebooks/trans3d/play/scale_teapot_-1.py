@@ -4,10 +4,10 @@
 # to run it, run this script with command line arg --snapshot
 import sys
 
-from common.vector import as_polygons, scale
-from draw import camera
-from draw.model import draw_model
-from draw.teapot import load_model
+from utils.draw import camera
+from utils.draw.model import draw_model
+from utils.draw.teapot import load_model
+from utils.vector import as_polygons, scale
 
 if "--snapshot" in sys.argv:
     camera.default_camera = camera.Camera("MINIPROJ_4.3b", [0])

@@ -24,7 +24,7 @@ lint = [
 ]
 
 [tool.pdm]
-distribution = false
+distribution = true
 
 [tool.pdm.scripts]
 check = { composite = [

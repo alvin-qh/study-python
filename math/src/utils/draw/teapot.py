@@ -3,10 +3,10 @@
 from functools import partial
 from math import pi
 from os import path
-from typing import Iterable, List
+from typing import Iterable, List, cast
 
 from utils.transform import rotate_x, triangulate
-from utils.types import Triangle, Vector3D
+from utils.typedef import Triangle, Vector3D
 from utils.vector import add, as_vector3d, scale
 
 # 打开模型文件
@@ -45,7 +45,7 @@ def load_vertices() -> List[Vector3D]:
         v = tuple(list(map(float, lines[i].split())))
 
         # 对向量进行移动
-        v = as_vector3d(translate_by(v))  # type: ignore
+        v = as_vector3d(translate_by(cast(Vector3D, v)))
         # 对向量转动 90°
         v = rotate_x_by(v)
         # 将向量长度放大 2 被
