@@ -1,11 +1,11 @@
 [project]
-name = "dotenv-demo"
+name = "thirdpart-dotenv"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = [
-    "python-dotenv>=1.0.1",
+    "python-dotenv>=1.1.0",
 ]
-requires-python = "==3.13.*"
+requires-python = ">=3.13"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -14,19 +14,29 @@ test = [
     "pytest>=8.3.5",
 ]
 lint = [
-    "mypy>=1.15.0",
     "autopep8>=2.3.2",
+    "mypy>=1.15.0",
+    "pycln>=2.5.0",
 ]
+
+[tool.pdm]
+distribution = true
+
 
 [tool.pdm.scripts]
 start = { call = "app:main" }
-check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -vvs tests"
+check = { composite = [
+    "pycln --config=pyproject.toml .",
+    "mypy .",
+    "autopep8 .",
+] }
+test = "pytest"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.pycln]
 all = true
+exclude = '\.history'
 
 [tool.mypy]
 python_version = "3.13"
@@ -36,7 +46,10 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$']
+exclude = [
+    '.venv',
+    '.history',
+]
 
 [tool.autopep8]
 max_line_length = 120
@@ -49,4 +62,7 @@ aggressive = 3
 [tool.pytest.ini_options]
 addopts = [
     '-vs',
+]
+testpaths = [
+    'tests',
 ]
