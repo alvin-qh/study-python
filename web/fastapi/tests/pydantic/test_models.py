@@ -1,4 +1,5 @@
 import json
+
 from pydantic_.models import Org
 
 
@@ -33,7 +34,7 @@ def test_org_from_json() -> None:
     """测试从字典对象或者 JSON 字符串产生 `Org` 类型对象"""
 
     # 利用 `Org` 类型构造器, 通过字典对象产生 `Org` 对象
-    org = Org(**{"id": 1001, "name": "Alvin"})
+    org = Org(**{"id": 1001, "name": "Alvin"})  # type: ignore[arg-type, unused-ignore]
     assert org.id == 1001
     assert org.name == "Alvin"
 
