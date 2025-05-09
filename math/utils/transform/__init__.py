@@ -1,14 +1,11 @@
-from typing import Any, Callable, Iterable, List, Sequence, Tuple, TypeVar
+from typing import Any, Callable, Iterable, List, Sequence, Tuple
 
-from .typedef import Number, Triangle, Vector2D, Vector3D
-from .vector import add, as_polygons, as_vector3d, scale, to_cartesian, to_polar
-
-T = TypeVar("T")
+from utils.types import Number, Triangle, Vector2D, Vector3D
+from utils.vector import add, as_polygons, as_vector3d, scale, to_cartesian, to_polar
 
 
-def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
-    """
-    将一系列向量处理组合在一起
+def compose[T](*fns: Callable[[T], T]) -> Callable[[T], T]:
+    """将一系列向量处理组合在一起
 
     Returns:
         Callable[[T], T]: 返回组合处理函数
@@ -26,10 +23,7 @@ def compose(*fns: Callable[[T], T]) -> Callable[[T], T]:
     return fn
 
 
-C = TypeVar("C")
-
-
-def curry2(func: Callable[[T, C], Any]) -> Callable[..., Callable[[C], Any]]:
+def curry2[T, C](func: Callable[[T, C], Any]) -> Callable[..., Callable[[C], Any]]:
     """对一个具备两个参数的函数执行柯里化
 
     结果类似:

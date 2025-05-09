@@ -4,9 +4,9 @@ import matplotlib as mpl
 import OpenGL.GL as gl
 import OpenGL.GLU as glu
 import pygame as game
-from common.transform import polygon_map
-from common.typedef import Matrix, Triangle, Vector3D
-from common.vector import (
+from utils.transform import polygon_map
+from utils.types import Matrix, Triangle, Vector3D
+from utils.vector import (
     dot,
     multiply_matrix_vector,
     normal,
@@ -14,7 +14,7 @@ from common.vector import (
 )
 from matplotlib.colors import Colormap
 
-from .camera import default_camera
+from utils.draw.camera import default_camera
 
 
 _blues: Colormap = mpl.colormaps["Blues"]  # type: ignore

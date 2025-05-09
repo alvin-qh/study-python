@@ -4,7 +4,7 @@ from typing import Any, Iterable, List, Optional, Sequence, Tuple, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
-from common.typedef import Number, Vector2D, Vector3D
+from utils.types import Number, Vector2D, Vector3D
 from matplotlib.patches import FancyArrowPatch  # type: ignore
 from mpl_toolkits.mplot3d import Axes3D, proj3d  # type:ignore
 

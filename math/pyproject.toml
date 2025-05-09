@@ -6,12 +6,11 @@ dependencies = [
     "ipykernel>=6.29.5",
     "matplotlib>=3.10.1",
     "data-science-types>=0.2.23",
-    "numpy>=2.2.3",
+    "numpy>=2.2.5",
     "pygame>=2.6.1",
     "pyopengl>=3.1.9",
 ]
-requires-python = "==3.13.*"
-readme = "README.md"
+requires-python = ">=3.13"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
@@ -21,16 +20,25 @@ test = [
 lint = [
     "autopep8>=2.3.2",
     "mypy>=1.15.0",
+    "pycln>=2.5.0",
 ]
 
+[tool.pdm]
+distribution = false
+
 [tool.pdm.scripts]
-check = { composite = ["mypy src", "autopep8 src tests"] }
-test = "pytest -vvs tests"
+check = { composite = [
+    "pycln --config=pyproject.toml .",
+    "mypy .",
+    "autopep8 .",
+] }
+test = "pytest"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.pycln]
 all = true
+exclude = '\.history'
 
 [tool.mypy]
 python_version = '3.13'
@@ -41,7 +49,10 @@ ignore_missing_imports = true
 disallow_untyped_decorators = false
 disallow_untyped_calls = false
 disallow_subclassing_any = false
-exclude = ['migration/scripts/.+?\.py$']
+exclude = [
+    '.venv',
+    '.history',
+]
 
 [tool.autopep8]
 max_line_length = 120
@@ -55,4 +66,7 @@ aggressive = 3
 addopts = [
     '-vvs',
     '-p no:warnings',
+]
+testpaths = [
+    'tests',
 ]

@@ -3,8 +3,8 @@ from math import atan2, sqrt, tan
 from typing import List, Sequence
 
 import pytest
-from common.typedef import Vector
-from common.vector import (
+from utils.types import Vector
+from utils.vector import (
     add,
     angle_between,
     as_matrix,

@@ -5,9 +5,9 @@ from math import pi
 from os import path
 from typing import Iterable, List
 
-from common.transform import rotate_x, triangulate
-from common.typedef import Triangle, Vector3D
-from common.vector import add, as_vector3d, scale
+from utils.transform import rotate_x, triangulate
+from utils.types import Triangle, Vector3D
+from utils.vector import add, as_vector3d, scale
 
 # 打开模型文件
 with open(path.join(path.dirname(__file__), "models/teapot.off")) as f:

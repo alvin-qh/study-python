@@ -1,7 +1,7 @@
 from typing import Callable
 
-from common.transform import compose, curry2, rotate2d
-from common.vector import to_radian
+from utils.transform import compose, curry2, rotate2d
+from utils.vector import to_radian
 
 
 def test_compose() -> None:

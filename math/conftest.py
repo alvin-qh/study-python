@@ -8,15 +8,14 @@ from pytest import fixture
 def event_loop(
     scope="session",
 ) -> Generator[asyncio.AbstractEventLoop, None, None]:
-    """
-    定义 pytest 的 `fixture`, 为所有使用 `AbstractEventLoop` 对象的测试中提供 `event_loop` 对象
+    """定义 pytest 的 `fixture`, 为所有使用 `AbstractEventLoop` 对象的测试中提供 `event_loop` 对象
 
     Args:
-        scope (str, optional): 该 `fixture` 起作用的测试范围, 可以为 `function`, `class`,
-        `session`. Defaults to `session`.
+        `scope` (`str`, optional): 该 `fixture` 起作用的测试范围, 可以为 `function`, `class`,
+        `session`. `Defaults` to `session`.
 
     Yields:
-        Generator[asyncio.AbstractEventLoop, None, None]: 返回一个生成器, 生成一个
+        `Generator[asyncio.AbstractEventLoop, None, None]`: 返回一个生成器, 生成一个
         `AbstractEventLoop` 对象
     """
     # 获取当前协程的时间循环对象

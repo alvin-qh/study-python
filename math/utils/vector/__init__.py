@@ -1,7 +1,7 @@
 import math
 from typing import Iterable, List, Sequence, TypeVar, cast
 
-from .typedef import (
+from utils.types import (
     Matrix,
     Matrix3D,
     Number,
