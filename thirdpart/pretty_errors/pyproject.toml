@@ -1,16 +1,20 @@
 [project]
-name = "pretty-errors-demo"
+name = "thirdpart-pretty-errors"
 version = "0.1.0"
 authors = [{ name = "Alvin", email = "quhao317@163.com" }]
 dependencies = []
-requires-python = "==3.13.*"
+requires-python = ">=3.13"
 readme = "README.md"
 license = { text = "MIT" }
 
 [project.optional-dependencies]
+test = [
+    "pytest>=8.3.5",
+]
 lint = [
-    "mypy>=1.15.0",
     "autopep8>=2.3.2",
+    "mypy>=1.15.0",
+    "pycln>=2.5.0",
 ]
 debug = [
     "pretty-errors>=1.2.25",
@@ -18,12 +22,18 @@ debug = [
 
 [tool.pdm.scripts]
 start = { call = "main:main" }
-check = { composite = ["mypy src", "autopep8 src tests"] }
+check = { composite = [
+    "pycln --config=pyproject.toml .",
+    "mypy .",
+    "autopep8 .",
+] }
+test = "pytest"
 clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.pycln]
 all = true
+exclude = '\.history'
 
 [tool.mypy]
 python_version = "3.13"
@@ -33,7 +43,10 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$']
+exclude = [
+    '.venv',
+    '.history',
+]
 
 [tool.autopep8]
 max_line_length = 120
@@ -42,3 +55,12 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+    '-p no:warnings',
+]
+testpaths = [
+    'tests',
+]
