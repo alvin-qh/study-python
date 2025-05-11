@@ -1,6 +1,5 @@
-from .math import Additional, add
+from .math import add
 
 __all__ = [
-    "Additional",
     "add",
 ]

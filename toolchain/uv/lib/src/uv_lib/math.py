@@ -1,10 +1,4 @@
-from typing import TypeVar
-
-# 加数类型
-Additional = TypeVar("Additional", int, float, str)
-
-
-def add(a: Additional, b: Additional) -> Additional:
+def add[T: (int, float, str)](a: T, b: T) -> T:
     """加法函数
 
     Args:

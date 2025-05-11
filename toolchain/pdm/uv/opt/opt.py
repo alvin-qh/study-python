@@ -1,10 +1,4 @@
-from typing import TypeVar
-
-
-T = TypeVar("T", int, float, str)
-
-
-def add(a: T, b: T) -> T:
+def add[T: (int, float, str)](a: T, b: T) -> T:
     """定义泛型加法方法
 
     Args:
