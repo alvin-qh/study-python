@@ -1,5 +1,5 @@
 import time
-from typing import List, Sequence, Tuple, TypeVar
+from typing import List, Sequence, Tuple
 
 import hypothesis.strategies as st
 from hypothesis.internal.conjecture.data import ConjectureData
@@ -59,9 +59,6 @@ st.register_type_strategy(
 )
 
 
-E = TypeVar("E")
-
-
 @st.composite
 def list_and_index(
     draw: st.DrawFn,
@@ -87,7 +84,7 @@ def list_and_index(
 
 
 @st.composite
-def element_and_index(
+def element_and_index[E](
     draw: st.DrawFn,
     element: st.SearchStrategy[E],
 ) -> Tuple[int, E]:

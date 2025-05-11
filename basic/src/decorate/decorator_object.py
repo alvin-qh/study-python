@@ -1,10 +1,7 @@
 import io
 import timeit
 from functools import wraps
-from typing import Any, Callable, Dict, TypeVar
-
-# 定义一个函数类型的泛型类型
-F = TypeVar("F", bound=Callable[..., Any])
+from typing import Any, Callable, Dict
 
 
 class App:
@@ -28,7 +25,7 @@ class App:
             `Callable[..., Any]`: 执行函数
         """
 
-        def wrapper(func: F) -> F:
+        def wrapper[F: Callable[..., Any]](func: F) -> F:
             """装饰器方法, 将传入的执行函数进行注册
 
             Args:

@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 from functools import partialmethod
-from typing import Any, Dict, List, Optional, Self, Tuple, TypeVar
+from typing import Any, Dict, List, Optional, Self, Tuple
 
 from builtin import Automate, Delegate
 from pytest import raises
@@ -331,10 +331,6 @@ def test_dynamic_class() -> None:
         c.y
 
 
-# 泛型参数
-T = TypeVar("T", int, float)
-
-
 def test_delegate_class() -> None:
     """
     测试代理类型
@@ -346,7 +342,7 @@ def test_delegate_class() -> None:
         """
 
         @abstractmethod
-        def run(self, a: T, b: T) -> T:
+        def run[T: (int, float)](self, a: T, b: T) -> T:
             """
             接口方法
 
@@ -363,7 +359,7 @@ def test_delegate_class() -> None:
         接口实现类
         """
 
-        def run(self, a: T, b: T) -> T:
+        def run[T: (int, float)](self, a: T, b: T) -> T:
             """
             实现接口方法
 
@@ -381,7 +377,7 @@ def test_delegate_class() -> None:
         接口实现类
         """
 
-        def run(self, a: T, b: T) -> T:
+        def run[T: (int, float)](self, a: T, b: T) -> T:
             """
             实现接口方法
 
@@ -440,11 +436,11 @@ def test_create_dynamic_class() -> None:
     # 通过类型
     a = A(100)
     assert isinstance(a, A)
-    assert a.value == 100  # type: ignore
+    assert a.value == 100  # type: ignore[attr-defined]
 
-    a.value = 10  # type: ignore
-    assert a.value == 10  # type: ignore
-    assert a.work(1) == 11  # type: ignore
+    a.value = 10  # type: ignore[attr-defined]
+    assert a.value == 10  # type: ignore[attr-defined]
+    assert a.work(1) == 11  # type: ignore[attr-defined]
 
 
 def test_class_slot() -> None:
@@ -464,11 +460,11 @@ def test_class_slot() -> None:
     c1 = C1()
 
     # 操作对象的未定义属性, 类型检查失败 (可正常运行)
-    c1.name = "Alvin"  # type: ignore
-    assert c1.name == "Alvin"  # type: ignore
+    c1.name = "Alvin"  # type: ignore[attr-defined]
+    assert c1.name == "Alvin"  # type: ignore[attr-defined]
 
-    c1.age = 41  # type: ignore
-    assert c1.age == 41  # type: ignore
+    c1.age = 41  # type: ignore[attr-defined]
+    assert c1.age == 41  # type: ignore[attr-defined]
 
     assert c1.__dict__ == {
         "name": "Alvin",
@@ -487,18 +483,18 @@ def test_class_slot() -> None:
 
     c2 = C2()
 
-    c2.name = "Alvin"  # type: ignore
-    assert c2.name == "Alvin"  # type: ignore
+    c2.name = "Alvin"  # type: ignore[attr-defined]
+    assert c2.name == "Alvin"  # type: ignore[attr-defined]
 
-    c2.age = 41  # type: ignore
-    assert c2.age == 41  # type: ignore
+    c2.age = 41  # type: ignore[attr-defined]
+    assert c2.age == 41  # type: ignore[attr-defined]
 
     # 定义了 __slots__ 字段后, 对象不在具备 __dict__ 字段, 可访问的属性均有 __slots__ 字段定义
     assert not hasattr(c2, "__dict__")
 
     # 如果访问了未定义在 __slots__ 列表中的属性, 则会抛出异常
     with raises(AttributeError):
-        c2.gender = "M"  # type: ignore
+        c2.gender = "M"  # type: ignore[attr-defined]
 
 
 def test_automate_class() -> None:
@@ -506,11 +502,11 @@ def test_automate_class() -> None:
     测试自动装配类
     """
 
-    class Member(Automate):  # type: ignore[misc]
+    class Member(Automate):  # type: ignore[misc,unused-ignore]
         # 定义可用的属性名
         __slots__ = ("id", "name", "price")
 
-    class Group(Automate):  # type: ignore[misc]
+    class Group(Automate):  # type: ignore[misc,unused-ignore]
         # 定义可用的属性名
         __slots__ = ("id", "name", "members")
 

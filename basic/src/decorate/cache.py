@@ -9,7 +9,6 @@ from typing import (
     Optional,
     Set,
     Tuple,
-    TypeVar,
     cast,
 )
 
@@ -235,9 +234,6 @@ def _interpolate_str(
     return fmt.format(**context)
 
 
-R = TypeVar("R")
-
-
 def memo(key: str) -> Any:
     """返回一个装饰器, 用于通过指定的 `key` 将被装饰函数的返回值进行缓存操作
 
@@ -253,7 +249,7 @@ def memo(key: str) -> Any:
     _check_duplicated_cache_key(key)
 
     @decorator
-    def wrapper(
+    def wrapper[R](
         func: Callable[..., R],
         inst: Optional[Any],
         args: Tuple[Any, ...],
