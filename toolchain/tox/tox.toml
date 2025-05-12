@@ -1,0 +1,40 @@
+requires = ["tox>=4.19"]
+env_list = ["3.13", "3.13t", "type", "lint"]
+
+[env_run_base]
+description = "Run unit tests"
+deps = [
+    "pytest>=8.3",
+]
+allowlist_externals = ["pytest"]
+commands = [
+    ["pytest"],
+]
+
+[env."3.13"]
+description = "run tests on python 3.13"
+requires = ["python==3.13.*"]
+
+[env."3.13t"]
+description = "run tests on python 3.13t"
+requires = ["python==3.13.3t"]
+
+[env.type]
+description = "run type check on code base"
+deps = [
+    "mypy>=1.15",
+]
+commands = [
+    ["mypy", "."],
+]
+
+[env.lint]
+description = "run linting on code base"
+deps = [
+    "autopep8>=2.3",
+    "pycln>=2.5",
+]
+commands = [
+    ["autopep8", "."],
+    ["pycln", "--config=pycln.cfg"],
+]
