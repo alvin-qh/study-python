@@ -1,5 +1,10 @@
 requires = ["tox>=4.19"]
-env_list = ["3.13", "3.13t", "type", "lint"]
+env_list = [
+    "py313", # 可以写为 "3.13"
+    # "py312", # 可写为 "3.12"
+    "type",
+    "lint",
+]
 
 [env_run_base]
 description = "Run unit tests"
@@ -11,13 +16,11 @@ commands = [
     ["pytest"],
 ]
 
-[env."3.13"]
+[env.py313]
 description = "run tests on python 3.13"
-requires = ["python==3.13.*"]
 
-[env."3.13t"]
-description = "run tests on python 3.13t"
-requires = ["python==3.13.3t"]
+[env.py312]
+description = "run tests on python 3.12"
 
 [env.type]
 description = "run type check on code base"
