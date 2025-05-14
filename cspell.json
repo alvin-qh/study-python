@@ -167,6 +167,7 @@
         "Percona",
         "poolclass",
         "portalocker",
+        "posargs",
         "psycopg",
         "pybabel",
         "pycache",

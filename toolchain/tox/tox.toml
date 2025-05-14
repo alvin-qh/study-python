@@ -5,6 +5,7 @@ env_list = [
     "type",
     "lint",
 ]
+isolated_build = true
 
 [env_run_base]
 description = "Run unit tests"
@@ -19,8 +20,8 @@ commands = [
 [env.py313]
 description = "run tests on python 3.13"
 
-[env.py312]
-description = "run tests on python 3.12"
+[env.py313t]
+description = "run tests on python 3.13t"
 
 [env.type]
 description = "run type check on code base"
