@@ -3,6 +3,7 @@
     "language": "en",
     "words": [
         "abce",
+        "abspath",
         "addfinalizer",
         "addopts",
         "ADMINPASSWORD",
@@ -29,6 +30,7 @@
         "azim",
         "backref",
         "barh",
+        "bdist",
         "beautifulsoup",
         "bodyless",
         "bothify",
@@ -205,6 +207,7 @@
         "runtimes",
         "Ryzen",
         "Scikit",
+        "sdist",
         "semp",
         "sessionmaker",
         "setuptools",

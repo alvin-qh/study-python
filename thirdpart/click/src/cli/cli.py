@@ -131,8 +131,7 @@ def cmd_click(name: str, lang: str, count: int, color: str) -> None:
 
 @click.group()
 def cli() -> None:
-    """
-    演示 click 框架命令行功能
+    """演示 click 框架命令行功能
 
     第一个 @click.group() 定义了根命令组, 所有的命令和子命令组需要加入到该命令组中
     """
