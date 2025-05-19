@@ -35,6 +35,8 @@ setup(
     long_description=load_readme(),
     long_description_content_type="text/markdown",
     packages=find_packages(include=["toolchain_setup"]),
+    package_dir={"": "."},
+    include_package_data=True,
     package_data={
         "toolchain_setup": [
             "conf/*.json",
@@ -43,11 +45,11 @@ setup(
     install_requires=[
         "click>=8.1.8",
     ],
-    test_requires=[
-        "pytest>=8.3.5",
-        "pytest-sugar>=1.0.0",
-    ],
-    extras_requires={
+    extras_require={
+        "test": [
+            "pytest>=8.3.5",
+            "pytest-sugar>=1.0.0",
+        ],
         "type": [
             "mypy>=1.15.0",
             "mypy_extensions>=1.1.0",
@@ -62,7 +64,4 @@ setup(
             "toolchain-setup=toolchain_setup.main:main",
         ],
     },
-    scripts=[
-        # "main.py",
-    ],
 )

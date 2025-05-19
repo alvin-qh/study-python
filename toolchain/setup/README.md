@@ -19,7 +19,7 @@ Setuptools 的配置文件为 `setup.py`, 即一段 Python 脚本
 一个典型的 `setup.py` 脚本如下:
 
 ```python
-from setuptools import setup
+from setuptools import setup, find_packages
 
 from os import path
 
@@ -43,7 +43,6 @@ setup(
     version="0.0.1",
     classifiers=[
         "Development Status :: 3 - Production",
-        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python",
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
@@ -57,6 +56,8 @@ setup(
     long_description=load_readme(),
     long_description_content_type="text/markdown",
     packages=find_packages(include=["toolchain_setup"]),
+    package_dir={"": "."},
+    include_package_data=True,
     package_data={
         "toolchain_setup": [
             "conf/*.json",
@@ -65,11 +66,11 @@ setup(
     install_requires=[
         "click>=8.1.8",
     ],
-    test_requires=[
-        "pytest>=8.3.5",
-        "pytest-sugar>=1.0.0",
-    ],
-    extras_requires={
+    extras_require={
+        "test": [
+            "pytest>=8.3.5",
+            "pytest-sugar>=1.0.0",
+        ],
         "type": [
             "mypy>=1.15.0",
             "mypy_extensions>=1.1.0",
@@ -84,9 +85,6 @@ setup(
             "toolchain-setup=toolchain_setup.main:main",
         ],
     },
-    scripts=[
-        # "main.py",
-    ],
 )
 ```
 
@@ -106,10 +104,9 @@ setup(
 10. `packages`: 项目的 Python 包列表, 即需要打包的 Python 包名;
 11. `package_data`: 打包除 Python 包以外的其他文件, 如静态文件, 配置文件等;
 12. `install_requires`: 要安装的支持本项目执行的依赖包列表;
-13. `test_requires`: 要安装的支持本项目测试的依赖包列表;
-14. `extras_require`: 要安装的支持本项目的其它依赖包列表;
-15. `entry_points`: 项目的入口点, 即在命令行中可以执行的命令;
-16. `scripts`: 其它的可执行脚本文件路径, 在当前包安装后, 这些脚本会被复制到系统的 `/usr/bin` 目录下;
+13. `extras_require`: 要安装的支持本项目的其它依赖包列表;
+14. `entry_points`: 项目的入口点, 即在命令行中可以执行的命令;
+15. `scripts`: 其它的可执行脚本文件路径, 在当前包安装后, 这些脚本会被复制到系统的 `/usr/bin` 目录下;
 
 ## 2. 安装和打包
 
@@ -168,4 +165,207 @@ pip install dist/toolchain_setup-0.0.1-py3-none-any.whl
 
 ```bash
 python setup.py sdist bdist_wheel
+```
+
+### 2.3. 使用 `build` 工具
+
+通过 `python setup.py ...` 命令执行打包的方式已经废弃, 后续不再继续支持, Python 推荐使用更新的 `build` 命令进行打包
+
+#### 2.3.1. 安装 `setup` 工具
+
+在当前 Python 环境, 执行安装:
+
+```bash
+pip install -U build
+```
+
+#### 2.3.2. 执行打包
+
+确保当前目录下存在 `setup.py` 文件, 并执行如下命令:
+
+```bash
+python -m build
+```
+
+执行结束后
+
+## 3. `setup.cfg` 文件
+
+除了通过 `setup.py` 脚本进行打包外, 还可以使用 `setup.cfg` 文件进行打包, `setup.cfg` 文件的格式为 `ini` 格式
+
+```ini
+[metadata]
+name = toolchain-setup
+version = 0.0.1
+classifiers =
+    Development Status :: 3 - Production
+    Programming Language :: Python
+    Intended Audience :: Developers
+    Operating System :: OS Independent
+    Programming Language :: Python :: 3.8
+    Programming Language :: Python :: 3.9
+description = Setup toolchain demo
+author = Alvin
+author_email = quhao317@163.com
+license = MIT
+long_description = file: README.md
+long_description_content_type = text/markdown
+
+[options]
+package_dir =
+    =.
+packages = find:
+include_package_data = True
+install_requires =
+    click>=8.1.8
+
+[options.packages.find]
+where = .
+include =
+    toolchain_setup
+
+[options.package_data]
+toolchain_setup =
+    conf/*.json
+
+[options.entry_points]
+console_scripts =
+    toolchain-setup=toolchain_setup.main:main
+
+[options.extras_require]
+test =
+    pytest>=8.3.5
+    pytest-sugar>=1.0.0
+type =
+    mypy>=1.15.0
+    mypy_extensions>=1.1.0
+lint =
+    autopep8>=2.3.2
+    pycln>=2.5.0
+```
+
+可以看到, `setup.cfg` 配置文件中包括的定义可以和 `setup.py` 文件中 `setup` 函数的参数定义一一对应, 但 `setup.cfg` 文件采用 `ini` 格式, 其中的配置项具备层次, 而非 `setup.py` 脚本中 `setup` 函数的参数列表为平面结构, 因此 `setup.cfg` 配置文件更容易阅读和管理
+
+项目中一旦包含了 `setup.cfg` 文件, 那么 `setup.py` 文件就只需要包含一行代码即可:
+
+```python
+from setuptools import setup
+
+setup()
+```
+
+当然, `setup.py` 文件的 `setup` 函数也可以继续包含参数, 但如果参数与 `setup.cfg` 中的配置冲突, 则以 `setup.cfg` 中的配置为准
+
+可以继续沿用如下的打包方法:
+
+```bash
+python setup.py install
+python setup.py sdist bdist_wheel
+
+# 或
+python -m build
+```
+
+## 4. `pyproject.toml` 文件
+
+在现代化 Python 项目中, `setup.py` 文件已经不再被推荐使用, Python 推荐使用 `pyproject.toml` 文件进行打包, `pyproject.toml` 文件的格式为 `toml` 格式, 具有更丰富的表达能力
+
+```toml
+[project]
+name = "toolchain-setup"
+version = "0.1.0"
+description = "Setup toolchain demo"
+readme = "README.md"
+requires-python = ">=3.13"
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
+classifiers = [
+    "Development Status :: 3 - Production",
+    "Programming Language :: Python",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+license = "MIT"
+dependencies = [
+    "click>=8.1.8",
+]
+
+[project.optional-dependencies]
+lint = [
+    "autopep8>=2.3.2",
+    "pycln>=2.5.0",
+]
+type = [
+    "mypy>=1.15.0",
+    "mypy_extensions>=1.1.0",
+]
+test = [
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+]
+
+[project.scripts]
+toolchain-setup = "toolchain_setup.main:main"
+
+[build-system]
+requires = [
+    "setuptools>=80.7.1",
+    "setuptools-scm>=8.3.1",
+]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { '' = '.' }
+include-package-data = true
+
+[tool.setuptools.packages.find]
+exclude = ['tests']
+
+[tool.setuptools.package-data]
+"toolchain_setup" = [
+    "conf/*.json",
+]
+
+[tool.pycln]
+all = true
+exclude = '\.history'
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = [
+    '.venv',
+    '.history',
+]
+
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+]
+testpaths = [
+    'tests',
+]
+```
+
+`pyproject.toml` 文件的配置项与 `setup.cfg` 文件中的配置项基本一致, 但 `pyproject.toml` 文件采用 `toml` 格式, 配置项的层次结构比 `setup.cfg` 文件的层次结构更加清晰
+
+另外, 具备`pyproject.toml` 文件的项目, 无需再包含 `setup.py` 文件, 即可通过如下命令构建项目:
+
+```bash
+python -m build
 ```
