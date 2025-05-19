@@ -8,7 +8,9 @@ _FILE_PATTERNS = [
     "**/.hypothesis",
     "**/.mypy_cache",
     "**/.pytest_cache",
-    ".wheelhouse"
+    "dist",
+    "*.egg-info",
+    "build",
 ]
 
 
