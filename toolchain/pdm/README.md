@@ -159,8 +159,52 @@ testpaths = [
 
 - `[project]`: 用于配置项目的基本信息, 包括项目名称, 版本号, 所依赖 Python 解释器版本, 授权证书以及项目依赖包；
 - `[dependency-groups]`: 配置项目在开发时相关的依赖包, 以分组方式管理, 该配置项下的依赖包不会进行打包分发;
-- `[project.optional-dependencies]`: 当前项目的可选依赖包, 通过添加不同的可选依赖包, 可以让项目具备不同功能
+- `[project.optional-dependencies]`: 当前项目的可选依赖包, 通过添加不同的可选依赖包, 可以让项目具备不同功能;
+- `[tool.xxx]`: 工具配置, 包括打包工具, 测试工具, 代码检测工具, 代码管理工具等;
 
 ## 3. 依赖管理
 
 ### 3.1. 添加依赖
+
+在 `[project]` 的 `dependencies` 项中添加依赖, 用于当前项目的生产环境依赖
+
+```bash
+pdm add <dependency-name>  # 如 pdm add numpy
+pdm add <dependency-name==version>  # 如 pdm add numpy==2.2
+pdm add <dependency-name>=version>  # 如 pdm add numpy>=2.2
+pdm add <dependency-name[optional]>  # 如 pdm add requests[socks]
+
+pdm add <path-to-package>  # 如 pdm add ./libs/data-requirement
+pdm add <url-to-package>  # 如 pdm add https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.5.0/en_core_web_trf-3.5.0-py3-none-any.whl
+
+pdm add "git+<git-repo-url>" # 如 pdm add "git+https://github.com/pypa/pip.git@22.0"
+pdm add "name @ git+<git-repo-url>" # 如 pdm add "pip @ git+https://github.com/pypa/pip.git@22.0"
+                                    # 或 pdm add "git+https://github.com/pypa/pip.git@22.0#egg=pip"
+pdm add "git+<git-repo-url#egg=<name>&subdirectory=<subpath>>" # 如 pdm add "git+https://github.com/owner/repo.git@master#egg=pkg&subdirectory=subpackage"
+```
+
+> 要对 git 使用 ssh 方案，只需将 `https://` 替换为 `ssh://git@`
+
+### 3.2. 添加开发依赖
+
+在 `[dependency-groups]` 中添加分组依赖, 用于当前项目开发环境依赖, 这部分依赖不会被引入到发布的软件包元数据中
+
+```bash
+pdm add <dependency> --dev/-d # 添加到 `dev` 分组中
+pdm add <dependency> -dG <group-name> # 添加到指定名称的分组中
+```
+
+### 3.3. 添加可选依赖
+
+在 `[project.optional-dependencies]` 中添加分组依赖, 这部分依赖作为当前项目的可选依赖, 可以选择性安装
+
+```bash
+pdm add <dependency> --group/-G <group-name> # 添加到指定名称的分组中
+```
+
+## 4. 项目安装
+
+项目安装会完成两件工作
+
+- 安装当前项目中全部的所需依赖;
+- 如果当前项目是 `lib` 或 `package` 类型的, 则将 `src` 目录下的内容作为当前项目的可编辑依赖进行安装
