@@ -1,69 +1,83 @@
 [project]
-name = "pdm-app"
-version = "1.0.0"
-description = "PDM App demo"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
     "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
 ]
-requires-python = ">=3.13"
-readme = "README.md"
+description = "PDM App demo"
 license = { text = "MIT" }
+name = "pdm-app"
+readme = "README.md"
+requires-python = ">=3.13"
+version = "1.0.0"
 
-[project.optional-dependencies]
+[dependency-groups]
 lint = [
-    "mypy>=1.15.0",
     "autopep8>=2.3.2",
     "pycln>=2.5.0",
 ]
 test = [
+    "pytest-sugar>=1.0.0",
     "pytest>=8.3.5",
+]
+type = [
+    "mypy-extensions>=1.1.0",
+    "mypy>=1.15.0",
 ]
 
 [tool.pdm]
 distribution = false
 
 [tool.pdm.scripts]
-start = "main.py"
 check = { composite = [
-    "pycln --config=pyproject.toml .",
-    "mypy .",
-    "autopep8 ."
+    "lint",
+    "test",
+    "type",
 ] }
-test = "pytest"
 clean = { call = "clear:main" }
+lint = { composite = [
+    "autopep8 .",
+    "pycln --config=pyproject.toml .",
+] }
+start = "main.py"
+test = "pytest"
+type = { composite = [
+    "mypy .",
+] }
 
 [tool.pycln]
-all = true
+all     = true
 exclude = '\.history'
 
 [tool.mypy]
+check_untyped_defs = true
+disallow_untyped_decorators = false
+exclude = [
+    '.history',
+    '.venv',
+]
+ignore_missing_imports = true
 python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
-ignore_missing_imports = true
-disallow_untyped_decorators = false
-check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
 
 [tool.autopep8]
-max_line_length = 120
-ignore = ['E501', 'W6']
-in-place = true
-recursive = true
-jobs = -1
 aggressive = 3
+ignore = [
+    'E501',
+    'W6',
+]
+in-place = true
+jobs = -1
+max_line_length = 120
+recursive = true
 
 [tool.pytest.ini_options]
 addopts = [
     '-vvs',
 ]
 testpaths = [
-  'tests',
+    'tests',
 ]
