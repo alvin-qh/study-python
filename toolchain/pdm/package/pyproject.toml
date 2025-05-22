@@ -2,24 +2,32 @@
 name = "pdm-package"
 version = "0.1.0"
 dependencies = [
-    "pdm-lib @ file:///${PROJECT_ROOT}/../lib"
+    "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
 ]
 requires-python = ">=3.13"
-authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
 license = { text = "MIT" }
 
-[project.optional-dependencies]
-lint = [
+[dependency-groups]
+type = [
     "mypy>=1.15.0",
-    "autopep8>=2.3.2",
-    "pycln>=2.5.0",
+    "mypy-extensions>=1.1.0",
 ]
 test = [
     "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+]
+lint = [
+    "autopep8>=2.3.2",
+    "pycln>=2.5.0",
 ]
 
 [build-system]
-requires = ["pdm-backend"]
+requires = [
+    "pdm-backend",
+]
 build-backend = "pdm.backend"
 
 [project.scripts]
@@ -31,9 +39,16 @@ distribution = true
 [tool.pdm.scripts]
 start = { call = "pdm_package:run" }
 check = { composite = [
-    "pycln --config=pyproject.toml .",
+    "lint",
+    "type",
+    "test",
+] }
+type = { composite = [
     "mypy .",
-    "autopep8 ."
+] }
+lint = { composite = [
+    "pycln --config=pyproject.toml .",
+    "autopep8 .",
 ] }
 test = "pytest"
 clean = { call = "clear:main" }
@@ -58,7 +73,10 @@ exclude = [
 
 [tool.autopep8]
 max_line_length = 120
-ignore = ['E501', 'W6']
+ignore = [
+    'E501',
+    'W6',
+]
 in-place = true
 recursive = true
 jobs = -1
