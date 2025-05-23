@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test", "type"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:8045f4f82ce646306e9013ee9ff8882753f4bf13a298f5b2f790f9f5cd80a610"
+content_hash = "sha256:ab14a6fe9207b27c8741f737413af46c5c9c9e90b936d6aacd3f9aca4aa32cc5"
 
 [[metadata.targets]]
 requires_python = "==3.13.*"
@@ -112,27 +112,27 @@ files = [
 
 [[package]]
 name = "faker"
-version = "37.1.0"
+version = "37.3.0"
 summary = ""
 dependencies = [
     "tzdata",
 ]
 files = [
-    {file = "faker-37.1.0-py3-none-any.whl", hash = "sha256:dc2f730be71cb770e9c715b13374d80dbcee879675121ab51f9683d262ae9a1c"},
-    {file = "faker-37.1.0.tar.gz", hash = "sha256:ad9dc66a3b84888b837ca729e85299a96b58fdaef0323ed0baace93c9614af06"},
+    {file = "faker-37.3.0-py3-none-any.whl", hash = "sha256:48c94daa16a432f2d2bc803c7ff602509699fca228d13e97e379cd860a7e216e"},
+    {file = "faker-37.3.0.tar.gz", hash = "sha256:77b79e7a2228d57175133af0bbcdd26dc623df81db390ee52f5104d46c010f2f"},
 ]
 
 [[package]]
 name = "hypothesis"
-version = "6.131.14"
+version = "6.131.23"
 summary = ""
 dependencies = [
     "attrs",
     "sortedcontainers",
 ]
 files = [
-    {file = "hypothesis-6.131.14-py3-none-any.whl", hash = "sha256:4cb939361a75c5946fe3e049d69737b00bde3908f162da6dcea5b2a326cea0a2"},
-    {file = "hypothesis-6.131.14.tar.gz", hash = "sha256:347edc46cfe9bfcfb0598c4c927ed8fd573edfc8bacd2162023c4cf16accb702"},
+    {file = "hypothesis-6.131.23-py3-none-any.whl", hash = "sha256:5c1212d000aec42c949a1e41415aef2bba297cde807cea50058d162520da7d3f"},
+    {file = "hypothesis-6.131.23.tar.gz", hash = "sha256:7723d82885b6cddc39d0ce5b2d8c5b890b3ebc2263a3707d9430ceaf368de402"},
 ]
 
 [[package]]
@@ -375,15 +375,15 @@ files = [
 
 [[package]]
 name = "pytest-rerunfailures"
-version = "15.0"
+version = "15.1"
 summary = ""
 dependencies = [
     "packaging",
     "pytest",
 ]
 files = [
-    {file = "pytest-rerunfailures-15.0.tar.gz", hash = "sha256:2d9ac7baf59f4c13ac730b47f6fa80e755d1ba0581da45ce30b72fb3542b4474"},
-    {file = "pytest_rerunfailures-15.0-py3-none-any.whl", hash = "sha256:dd150c4795c229ef44320adc9a0c0532c51b78bb7a6843a8c53556b9a611df1a"},
+    {file = "pytest_rerunfailures-15.1-py3-none-any.whl", hash = "sha256:f674c3594845aba8b23c78e99b1ff8068556cc6a8b277f728071fdc4f4b0b355"},
+    {file = "pytest_rerunfailures-15.1.tar.gz", hash = "sha256:c6040368abd7b8138c5b67288be17d6e5611b7368755ce0465dda0362c8ece80"},
 ]
 
 [[package]]

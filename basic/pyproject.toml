@@ -41,12 +41,12 @@ lint = [
 test = [
     "pytest>=8.3.5",
     "pytest-asyncio>=0.26.0",
-    "pytest-rerunfailures>=15.0",
+    "pytest-rerunfailures>=15.1",
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.6.1",
-    "hypothesis>=6.131.14",
-    "faker>=37.1.0",
+    "hypothesis>=6.131.23",
+    "faker>=37.3.0",
 ]
 type = [
     "types-python-dateutil>=2.9.0.20241206",
