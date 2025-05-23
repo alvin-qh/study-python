@@ -1,27 +1,33 @@
-# PDM Toolchain
+# UV Toolchain
 
 参考: <https://pdm-project.org/zh-cn/latest>
 
-## 1. 安装 PDM
+## 1. 安装 UV
 
 ### 1.1. Linux/Mac
 
 安装
 
 ```bash
-curl -sSL https://pdm-project.org/install-pdm.py | python3 -
+curl -LsSf https://astral.sh/uv/install.sh | sh
 ```
 
 更新
 
 ```bash
-pdm self update
+uv self update
 ```
 
 卸载
 
 ```bash
-curl -sSL https://pdm-project.org/install-pdm.py | python3 - --remove
+# 清除缓存
+uv cache clean
+rm -r "$(uv python dir)"
+rm -r "$(uv tool dir)"
+
+# 删除 uv
+rm ~/.local/bin/uv ~/.local/bin/uvx
 ```
 
 ### 1.2. Windows
@@ -29,19 +35,24 @@ curl -sSL https://pdm-project.org/install-pdm.py | python3 - --remove
 安装
 
 ```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://pdm-project.org/install-pdm.py | py -"
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
 更新
 
 ```powershell
-pdm self update
+uv self update
 ```
 
-卸载
+```bash
+# 清除缓存
+uv cache clean
+rm -Recurse -Force "$(uv python dir)"
+rm -Recurse -Force "$(uv tool dir)"
 
-```powershell
-powershell -ExecutionPolicy ByPass -c "irm https://pdm-project.org/install-pdm.py | py - --remove"
+# 删除 uv
+rm $HOME\.local\bin\uv.exe
+rm $HOME\.local\bin\uvx.exe
 ```
 
 ### 1.1. 在新目录中创建项目
