@@ -55,45 +55,66 @@ rm $HOME\.local\bin\uv.exe
 rm $HOME\.local\bin\uvx.exe
 ```
 
-### 1.1. 在新目录中创建项目
-
-```bash
-pdm new --name <project_name> --python <python_version/python_path> [--lib] [template] project_path
-```
-
 ## 2. 新建项目
 
 ### 2.1. 安装 Python 解释器
 
-PDM 支持安装 Python 解释器, 也可以基于系统中已有的 Python 解释器 (或 PyEnv 管理的 Python 解释器) 运行项目
+UV 支持安装 Python 解释器, 也可以基于系统中已有的 Python 解释器 (或 PyEnv 管理的 Python 解释器) 运行项目
 
-安装指定版本的解释器
+安装最新版本的 Python 解释器
 
 ```bash
-pdm python install 3.13t
+uv python install
+```
+
+安装指定版本的 Python 解释器
+
+```bash
+uv python install 3.13
+
+# 或者一次安装多个版本的 Python 解释器
+uv python install 3.13 3.13t
+```
+
+或者安装其它 Python 解释器
+
+```bash
+uv python install pypy@3.10
+```
+
+重新安装 Python 解释器
+
+```bash
+uv python install --reinstall
 ```
 
 删除已安装的解释器
 
 ```bash
-pdm python remove 3.13t
+uv python uninstall 3.13t
 ```
 
-列出所有通过 PDM 安装的解释器
+列出所有通过 uv 安装的 Python 解释器
 
 ```bash
-pdm python list
+uv python list
+```
+
+查看某个版本的解释器安装位置
+
+```bash
+uv python find 3.13
 ```
 
 ### 2.2. 创建项目
 
-PDM 可创建三类 Python 项目, 分别为应用 (Application), Python 库 (Lib) 以及 Python 包 (Package), 可参考:
+UV 可创建三类 Python 项目, 分别为应用 (Application), Python 库 (Lib) 以及 Python 包 (Package), 可参考:
 
 - [Application](./app/README.md): 创建 Python 应用程序项目, 代码结构为扁平结构 (flat layout);
 - [Lib](./lib/README.md): 创建 Python 库程序项目, 代码结构为 SRC 结构 (src layout);
 - [Package](./package/README.md): 创建 Python 依赖包项目, 代码结构为 SRC 结构 (src layout);
 
-PDM 创建项目后, 会在项目的根路径下生成 `pyproject.toml` 配置文件, 该文件符合 Python 的 PEP 518 标准, 该文件中管理了当前项目的基本信息, 依赖包, 工具配置, 打包构建配置等
+UV 创建项目后, 会在项目的根路径下生成 `pyproject.toml` 配置文件, 该文件符合 Python 的 PEP 518 标准, 该文件中管理了当前项目的基本信息, 依赖包, 工具配置, 打包构建配置等
 
 一个典型的 `pyproject.toml` 文件内容如下:
 
@@ -191,30 +212,65 @@ testpaths = [
 
 在 `[project]` 的 `dependencies` 项中添加依赖, 用于当前项目的生产环境依赖
 
+#### 3.1.1. 添加 PyPI 仓库中的依赖
+
 ```bash
-pdm add <dependency-name>  # 如 pdm add numpy
-pdm add <dependency-name==version>  # 如 pdm add numpy==2.2
-pdm add <dependency-name>=version>  # 如 pdm add numpy>=2.2
-pdm add <dependency-name[optional]>  # 如 pdm add requests[socks]
+uv add <package-name>  # 如 uv add numpy
+uv add <package-name> -i https://pypi.tuna.tsinghua.edu.cn/simple # 添加依赖到指定源
+uv add <package-name> -U # 升级依赖
 
-pdm add <path-to-package>  # 如 pdm add ./libs/data-requirement
-pdm add <url-to-package>  # 如 pdm add https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.5.0/en_core_web_trf-3.5.0-py3-none-any.whl
+uv add <package-name==version>  # 如 uv add numpy==2.2
+uv add <package-name>=version>  # 如 uv add numpy>=2.2
+uv add <package-name[optional]>  # 如 uv add requests[socks]
+```
 
-pdm add "git+<git-repo-url>" # 如 pdm add "git+https://github.com/pypa/pip.git@22.0"
-pdm add "name @ git+<git-repo-url>" # 如 pdm add "pip @ git+https://github.com/pypa/pip.git@22.0"
-                                    # 或 pdm add "git+https://github.com/pypa/pip.git@22.0#egg=pip"
-pdm add "git+<git-repo-url#egg=<name>&subdirectory=<subpath>>" # 如 pdm add "git+https://github.com/owner/repo.git@master#egg=pkg&subdirectory=subpackage"
+可通过 `UV_DEFAULT_INDEX` 环境变量来指定 PyPI 镜像地址
+
+```bash
+export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+#### 3.1.2. 添加本地 Python 代码作为依赖
+
+```bash
+uv add <path-to-package>  # 如 uv add ./libs/data-requirement
+uv add <url-to-package>  # 如 uv add <https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.5.0/en_core_web_trf-3.5.0-py3-none-any.whl>
+```
+
+此时会在 `pyproject.toml` 文件的 `[project]` 节点下的 `dependencies` 数组项中添加本地依赖包, 并通过 `[tool.uv.sources]` 节点来指定该依赖包的源码路径
+
+```toml
+[project]
+...
+dependencies = [
+  "uv-lib",
+]
+
+[tool.uv.sources]
+uv-lib = { path = "../lib" }
+```
+
+#### 3.1.3. 添加 GIT 代码仓库为依赖
+
+```bash
+uv add "git+<git-repo-url>" # 如 uv add "git+<https://github.com/pypa/pip.git@22.0>"
 ```
 
 > 要对 git 使用 ssh 方案，只需将 `https://` 替换为 `ssh://git@`
+
+#### 3.1.4. 添加 requirements.txt 文件中的依赖
+
+```bash
+uv add -r requirements.txt -c constraints.txt # 添加 requirements.txt 中的全部依赖
+```
 
 ### 3.2. 添加开发依赖
 
 在 `[dependency-groups]` 中添加分组依赖, 用于当前项目开发环境依赖, 这部分依赖不会被引入到发布的软件包元数据中
 
 ```bash
-pdm add <dependency> -d/--dev # 添加到 `dev` 分组中
-pdm add <dependency> -dG <group-name> # 添加到指定名称的分组中
+uv add <dependency> --optional <group-name> # 添加到 `dev` 分组中
+uv add <dependency> --group <group-name> # 添加到指定名称的分组中
 ```
 
 ### 3.3. 添加可选依赖
@@ -222,61 +278,61 @@ pdm add <dependency> -dG <group-name> # 添加到指定名称的分组中
 在 `[project.optional-dependencies]` 中添加分组依赖, 这部分依赖作为当前项目的可选依赖, 可以选择性安装
 
 ```bash
-pdm add <dependency> -G/--group <group-name> # 添加到指定名称的分组中
+uv add <dependency> --optional <group-name> # 添加到指定名称的分组中
 ```
 
 ### 3.4. 同步依赖
 
-同步依赖会根据 `pdm.lock` 文件中的定义, 重新为当前 Python 虚拟环境安装依赖包, 命令如下:
+同步依赖会根据 `uv.lock` 文件中的定义, 重新为当前 Python 虚拟环境安装依赖包, 命令如下:
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖
 
 ```bash
-pdm sync
+uv sync [-i/]
 # 或
-pdm sync -dG:all
+uv sync --all-groups
 ```
 
-只安装 `[project]` 下 `dependencies` 项中定义的全部依赖, 不包含 `[dependency-groups]` 下分组中定义的依赖
+只安装 `[project]` 下 `dependencies` 项中定义的全部依赖, 不包含 `[dependency-groups]` 下 `dev` 分组中定义的依赖
 
 ```bash
-pdm sync --prod/--production
+uv sync --no-dev
 ```
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `dev` 分组中定义的依赖
 
 ```bash
-pdm sync -d/--dev
+uv sync --only-dev
 ```
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `group-name` 分组中定义的依赖
 
 ```bash
-pdm sync -dG <group-name> # -dG 相当于 --dev --group 的组合
+uv sync --group <group-name>
 ```
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下除 `group-name` 分组外的其它分组中定义的全部依赖
 
 ```bash
-pdm sync -d/--dev --without <group-name>
+uv sync --no-group <group-name>
 ```
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下全部分组中定义的全部依赖
 
 ```bash
-pdm sync -G:all/--group:all
+uv sync --all-extras
 ```
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下 `feature-name` 分组中定义的全部依赖
 
 ```bash
-pdm sync -G/--group <feature-name>
+uv sync --extra <feature-name>
 ```
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下除 `feature-name` 分组外, 其它分组中定义的依赖
 
 ```bash
-pdm sync --without <feature-name>
+uv sync --no-extra <feature-name>
 ```
 
 ### 3.5. 同步 Lock 文件
@@ -286,51 +342,51 @@ pdm sync --without <feature-name>
 同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖
 
 ```bash
-pdm lock
+uv lock
 # 或
-pdm lock -dG:all
+uv lock --all-groups
 ```
 
-只同步 `[project]` 下 `dependencies` 项中定义的全部依赖, 不包含 `[dependency-groups]` 下分组中定义的依赖
+只安装 `[project]` 下 `dependencies` 项中定义的全部依赖, 不包含 `[dependency-groups]` 下 `dev` 分组中定义的依赖
 
 ```bash
-pdm lock --prod/--production
+uv sync --no-dev
 ```
 
-同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `dev` 分组中定义的依赖
+安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `dev` 分组中定义的依赖
 
 ```bash
-pdm lock -d/--dev
+uv sync --only-dev
 ```
 
-同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `group-name` 分组中定义的依赖
+安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `group-name` 分组中定义的依赖
 
 ```bash
-pdm lock -dG <group-name> # -dG 相当于 --dev --group 的组合
+uv sync --group <group-name>
 ```
 
-同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下除 `group-name` 分组外的其它分组中定义的全部依赖
+安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下除 `group-name` 分组外的其它分组中定义的全部依赖
 
 ```bash
-pdm lock -d/--dev --without <group-name>
+uv sync --no-group <group-name>
 ```
 
-同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下全部分组中定义的全部依赖
+安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下全部分组中定义的全部依赖
 
 ```bash
-pdm lock -G:all/--group:all
+uv sync --all-extras
 ```
 
-同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下 `feature-name` 分组中定义的全部依赖
+安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下 `feature-name` 分组中定义的全部依赖
 
 ```bash
-pdm lock -G/--group <feature-name>
+uv sync --extra <feature-name>
 ```
 
-同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下除 `feature-name` 分组外, 其它分组中定义的依赖
+安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下除 `feature-name` 分组外, 其它分组中定义的依赖
 
 ```bash
-pdm lock --without <feature-name>
+uv sync --no-extra <feature-name>
 ```
 
 ## 4. 项目安装
