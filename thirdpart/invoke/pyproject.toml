@@ -1,0 +1,81 @@
+[project]
+name = "thirdpart-invoke"
+version = "0.1.0"
+description = "Default template for PDM package"
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
+dependencies = [
+    "invoke>=2.2.0",
+    "colorama>=0.4.6",
+]
+requires-python = ">=3.13"
+readme = "README.md"
+license = { text = "MIT" }
+
+[dependency-groups]
+lint = [
+    "pycln>=2.5.0",
+    "autopep8>=2.3.2",
+]
+test = [
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+]
+type = [
+    "mypy>=1.15.0",
+    "mypy-extensions>=1.1.0",
+]
+
+[tool.pdm]
+distribution = false
+
+[tool.pdm.scripts]
+check = "invoke lint test type"
+clean = { call = "clear:main" }
+lint = { composite = [
+    "autopep8 .",
+    "pycln --config=pyproject.toml",
+] }
+start = "main.py"
+test = "pytest"
+type = { composite = [
+    "mypy .",
+] }
+
+[tool.pycln]
+all = true
+path = "."
+exclude = '\.history'
+
+[tool.mypy]
+check_untyped_defs = true
+disallow_untyped_decorators = false
+exclude = [
+    '.history',
+    '.venv',
+]
+ignore_missing_imports = true
+python_version = "3.13"
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.autopep8]
+aggressive = 3
+ignore = [
+    'E501',
+    'W6',
+]
+in-place = true
+jobs = -1
+max_line_length = 120
+recursive = true
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+]
+testpaths = [
+    'tests',
+]
