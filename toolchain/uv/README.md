@@ -269,8 +269,8 @@ uv add -r requirements.txt -c constraints.txt # 添加 requirements.txt 中的�
 在 `[dependency-groups]` 中添加分组依赖, 用于当前项目开发环境依赖, 这部分依赖不会被引入到发布的软件包元数据中
 
 ```bash
-uv add <dependency> --optional <group-name> # 添加到 `dev` 分组中
-uv add <dependency> --group <group-name> # 添加到指定名称的分组中
+uv add <package-name> --optional <group-name> # 添加到 `dev` 分组中
+uv add <package-name> --group <group-name> # 添加到指定名称的分组中
 ```
 
 ### 3.3. 添加可选依赖
@@ -278,17 +278,27 @@ uv add <dependency> --group <group-name> # 添加到指定名称的分组中
 在 `[project.optional-dependencies]` 中添加分组依赖, 这部分依赖作为当前项目的可选依赖, 可以选择性安装
 
 ```bash
-uv add <dependency> --optional <group-name> # 添加到指定名称的分组中
+uv add <package-name> --optional <group-name> # 添加到指定名称的分组中
 ```
 
-### 3.4. 同步依赖
+### 3.4. 移除依赖
+
+移除依赖, 命令如下:
+
+```bash
+uv remove <package-name> # 移除指定名称的依赖项
+uv remove <package-name> --group <group-name> # 移除开发依赖下指定分组的依赖项
+uv remove <package-name> --optional <group-name> # 移除可选依赖下指定分组的依赖项
+```
+
+### 3.5. 同步依赖
 
 同步依赖会根据 `uv.lock` 文件中的定义, 重新为当前 Python 虚拟环境安装依赖包, 命令如下:
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖
 
 ```bash
-uv sync [-i/]
+uv sync
 # 或
 uv sync --all-groups
 ```
@@ -335,68 +345,15 @@ uv sync --extra <feature-name>
 uv sync --no-extra <feature-name>
 ```
 
-### 3.5. 同步 Lock 文件
+如果当前项目类型为 `lib` 或 `app`, 则 `uv sync` 也会将当前项目本身作为可编辑依赖项 (editable package) 安装到当前 Python 虚拟环境中, 参考 `pip` 命令的 `--editable/-e` 选项
 
-同步 Lock 文件会根据 `pyproject.toml` 文件的定义, 重新产生 `pdm.lock` 文件
+### 3.6. 同步 Lock 文件
 
-同步 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖
+同步 Lock 文件会根据 `pyproject.toml` 文件的定义, 重新产生 `uv.lock` 文件
 
 ```bash
 uv lock
-# 或
-uv lock --all-groups
 ```
-
-只安装 `[project]` 下 `dependencies` 项中定义的全部依赖, 不包含 `[dependency-groups]` 下 `dev` 分组中定义的依赖
-
-```bash
-uv sync --no-dev
-```
-
-安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `dev` 分组中定义的依赖
-
-```bash
-uv sync --only-dev
-```
-
-安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下 `group-name` 分组中定义的依赖
-
-```bash
-uv sync --group <group-name>
-```
-
-安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下除 `group-name` 分组外的其它分组中定义的全部依赖
-
-```bash
-uv sync --no-group <group-name>
-```
-
-安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下全部分组中定义的全部依赖
-
-```bash
-uv sync --all-extras
-```
-
-安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下 `feature-name` 分组中定义的全部依赖
-
-```bash
-uv sync --extra <feature-name>
-```
-
-安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖, 以及 `[project.optional-dependencies]` 下除 `feature-name` 分组外, 其它分组中定义的依赖
-
-```bash
-uv sync --no-extra <feature-name>
-```
-
-## 4. 项目安装
-
-项目安装会完成两件工作
-
-- 安装当前项目中全部的所需依赖;
-- 如果当前项目是 `lib` 或 `package` 类型的, 则将 `src` 目录下的内容作为当前项目的可编辑依赖进行安装, 参考 `pip` 命令的 `--editable/-e` 选项
-
-项目通过 `pdm install ...` 命令安装, 该命令的参数和 `pdm sync` 命令基本一致, 参考 [同步依赖](#34-同步依赖) 章节内容
 
 ## 5. 配置 Python 工具
 
