@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "UV for Python Package Demo"
 readme = "README.md"
 authors = [
-    { name = "AlvinQ", email = "quhao317@163.com" }
+    { name = "AlvinQ", email = "quhao317@163.com" },
 ]
 requires-python = ">=3.13"
 dependencies = [
@@ -12,20 +12,29 @@ dependencies = [
 ]
 
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling",
+]
 build-backend = "hatchling.build"
 
 [project.scripts]
 uv-package = "uv_package:run"
 
 [dependency-groups]
-dev = [
-    "pytest>=8.3.5",
+ext = [
+    "invoke>=2.2.0",
 ]
 lint = [
     "autopep8>=2.3.2",
-    "mypy>=1.15.0",
     "pycln>=2.5.0",
+]
+test = [
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+]
+type = [
+    "mypy>=1.15.0",
+    "mypy-extensions>=1.1.0",
 ]
 
 [tool.uv.sources]
@@ -37,6 +46,8 @@ default = true
 
 [tool.pycln]
 all = true
+path = "."
+exclude = '\.history'
 
 [tool.mypy]
 strict = true
@@ -45,11 +56,17 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = ['^.venv\.py$', '^.test\.py$']
+exclude = [
+    '^.venv\.py$',
+    '^.test\.py$',
+]
 
 [tool.autopep8]
 max_line_length = 120
-ignore = ['E501', 'W6']
+ignore = [
+    'E501',
+    'W6',
+]
 in-place = true
 recursive = true
 jobs = -1

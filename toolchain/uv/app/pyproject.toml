@@ -12,13 +12,20 @@ dependencies = [
 uv-lib = { path = "../lib" }
 
 [dependency-groups]
+ext = [
+    "invoke>=2.2.0",
+]
 lint = [
     "autopep8>=2.3.2",
-    "mypy>=1.15.0",
     "pycln>=2.5.0",
 ]
 test = [
     "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+]
+type = [
+    "mypy>=1.15.0",
+    "mypy-extensions>=1.1.0",
 ]
 
 [[tool.uv.index]]
@@ -26,6 +33,7 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple"
 default = true
 
 [tool.pycln]
+path = "."
 all = true
 exclude = '\.history'
 
@@ -43,10 +51,13 @@ exclude = [
 
 [tool.autopep8]
 max_line_length = 120
-ignore = ['E501', 'W6']
+ignore = [
+    'E501',
+    'W6',
+]
+jobs = -1
 in-place = true
 recursive = true
-jobs = -1
 aggressive = 3
 
 [tool.pytest.ini_options]

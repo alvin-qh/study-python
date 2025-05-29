@@ -501,4 +501,4 @@ pdm build
 pdm-package = "pdm_package:run"
 ```
 
-表示包安装后, 可通过 `pdm_package` 包下的 `run` 函数启动项目
+表示当前项目的执行入口, 当项目打包产生的 `.whl` 文件被安装后, 可通过项目名称直接运行
