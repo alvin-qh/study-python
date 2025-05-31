@@ -41,4 +41,5 @@ uv run autopep8 .
 
 ```bash
 uv run inv check
+uv run inv start
 ```

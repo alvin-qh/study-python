@@ -39,10 +39,13 @@ UV 会在项目中创建 `src` 目录, 所有的项目源代码都应位于 `src
 
 ```bash
 uv run pytest
+
 uv run mypy .
 uv run pycln --config pyproject.toml
 uv run autopep8 .
 ```
+
+各工具执行时, 会读取各自的配置文件, 或从 `pyproject.toml` 中读取该工具的配置, 参见 [配置 Python 工具](../README.md#5-配置-python-工具)
 
 由于 UV 工具没有 PDM 等工具那样的 Shell 脚本定义功能, 故可通过 `invoke` 库编写脚本, 并通过如下命令执行:
 
@@ -66,4 +69,4 @@ uv build
 pip install uv_lib-0.1.0-py3-none-any.whl
 ```
 
-参考 [配置打包](../README.md#4-配置打包)
+UV 打包相关配置参考 [配置打包](../README.md#4-配置打包)
