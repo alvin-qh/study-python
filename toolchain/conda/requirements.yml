@@ -1,46 +1,68 @@
 name: toolchain-conda
 channels:
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/linux-64/
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/
+  - https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge/
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main/
   - https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free/
   - defaults
 dependencies:
   - _libgcc_mutex=0.1=main
   - _openmp_mutex=5.1=1_gnu
-  - autopep8=2.0.4=pyhd3eb1b0_0
+  - autopep8=2.3.2=pyhd8ed1ab_0
   - bzip2=1.0.8=h5eee18b_6
-  - ca-certificates=2025.2.25=h06a4308_0
+  - ca-certificates=2025.4.26=hbd8a1cb_0
+  - click=8.2.1=pyh707e725_0
+  - colorama=0.4.6=pyhd8ed1ab_1
+  - exceptiongroup=1.3.0=pyhd8ed1ab_0
   - expat=2.7.1=h6a678d5_0
   - iniconfig=1.1.1=pyhd3eb1b0_0
   - ld_impl_linux-64=2.40=h12ee557_0
+  - libcst=1.7.0=py313hbc4cf6d_0
   - libffi=3.4.4=h6a678d5_1
   - libgcc-ng=11.2.0=h1234567_1
   - libgomp=11.2.0=h1234567_1
   - libmpdec=4.0.0=h5eee18b_0
   - libstdcxx-ng=11.2.0=h1234567_1
   - libuuid=1.41.5=h5eee18b_0
+  - markdown-it-py=3.0.0=pyhd8ed1ab_1
+  - mdurl=0.1.2=pyhd8ed1ab_1
   - mypy=1.14.1=py313h5eee18b_0
   - mypy_extensions=1.0.0=py313h06a4308_0
   - ncurses=6.4=h6a678d5_0
   - openssl=3.0.16=h5eee18b_0
   - packaging=24.2=py313h06a4308_0
+  - pathspec=0.12.1=pyhd8ed1ab_1
   - pip=25.1=pyhc872135_2
   - pluggy=1.5.0=py313h06a4308_0
   - psutil=5.9.0=py313h5eee18b_1
+  - pycln=2.5.0=pyhd8ed1ab_1
   - pycodestyle=2.12.1=py313h06a4308_0
-  - pytest=8.3.4=py313h06a4308_0
+  - pygments=2.19.1=pyhd8ed1ab_0
+  - pytest=8.3.5=pyhd8ed1ab_0
+  - pytest-sugar=1.0.0=pyhd8ed1ab_1
   - python=3.13.2=hf623796_100_cp313
   - python_abi=3.13=0_cp313
+  - pyyaml=6.0.2=pyhe1237c8_2
   - readline=8.2=h5eee18b_0
+  - rich=14.0.0=pyh29332c3_0
   - setuptools=78.1.1=py313h06a4308_0
+  - shellingham=1.5.4=pyhd8ed1ab_1
   - sqlite=3.45.3=h5eee18b_0
+  - termcolor=3.1.0=pyhd8ed1ab_0
   - tk=8.6.14=h39e8969_0
+  - tomli=2.2.1=pyhd8ed1ab_1
+  - tomlkit=0.13.2=pyha770c72_1
+  - typer=0.16.0=pyh167b9f4_0
+  - typer-slim=0.16.0=pyhe01879c_0
+  - typer-slim-standard=0.16.0=hf964461_0
   - typing-extensions=4.12.2=py313h06a4308_0
   - typing_extensions=4.12.2=py313h06a4308_0
   - tzdata=2025b=h04d1e81_0
   - wheel=0.45.1=py313h06a4308_0
   - xz=5.6.4=h5eee18b_1
+  - yaml=0.2.5=h7f98852_2
   - zlib=1.2.13=h5eee18b_1
 prefix: /home/alvin/miniconda3/envs/toolchain-conda
