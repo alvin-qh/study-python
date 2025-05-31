@@ -1,0 +1,79 @@
+[project]
+name = "uv-workspace"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "uv-workspace-lib",
+    "uv-workspace-utils",
+]
+
+[dependency-groups]
+ext = [
+    "invoke>=2.2.0",
+]
+lint = [
+    "autopep8>=2.3.2",
+    "pycln>=2.5.0",
+]
+test = [
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+]
+type = [
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
+]
+
+[tool.uv.workspace]
+members = [
+    "packages/*",
+]
+exclude = []
+
+[tool.uv.sources]
+uv-workspace-lib = {workspace = true}
+uv-workspace-utils = {workspace = true}
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[tool.pycln]
+path = "."
+all = true
+exclude = '\.history|packages'
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = [
+    '.venv',
+    '.history',
+    'packages',
+]
+
+[tool.autopep8]
+max_line_length = 120
+ignore = [
+    'E501',
+    'W6',
+]
+jobs = -1
+in-place = true
+recursive = true
+aggressive = 3
+exclude = ".venv,.history,packages"
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+]
+testpaths = [
+    'tests',
+]

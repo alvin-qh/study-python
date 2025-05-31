@@ -1,0 +1,66 @@
+[project]
+name = "uv-workspace-utils"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[dependency-groups]
+ext = [
+    "invoke>=2.2.0",
+]
+lint = [
+    "autopep8>=2.3.2",
+    "pycln>=2.5.0",
+]
+test = [
+    "pytest>=8.3.5",
+    "pytest-sugar>=1.0.0",
+]
+type = [
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[[tool.uv.index]]
+url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+default = true
+
+[tool.pycln]
+path = "."
+all = true
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+
+[tool.autopep8]
+max_line_length = 120
+ignore = [
+    'E501',
+    'W6',
+]
+jobs = -1
+in-place = true
+recursive = true
+aggressive = 3
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+]
+testpaths = [
+    'tests',
+]
