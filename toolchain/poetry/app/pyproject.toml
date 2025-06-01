@@ -1,16 +1,73 @@
 [project]
-name = "toolchain-poetry"
+name = "poetry-app"
 version = "0.1.0"
-description = "Demo of poetry toolchain"
+description = "Demo app for poetry tool"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
-license = { text = "MIT" }
+license = "MIT"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.13,<4"
 dependencies = [
+    "poetry-lib @ file:///home/alvin/Workspace/Study/study-python/toolchain/poetry/lib",
 ]
 
-[build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.scripts]
+start = "main:main"
+
+[tool.poetry.dependencies]
+poetry-lib = { develop = true }
+
+[tool.poetry.group.test.dependencies]
+pytest = "^8.3.5"
+pytest-sugar = "^1.0.0"
+
+[tool.poetry.group.type.dependencies]
+mypy = "^1.16.0"
+mypy-extensions = "^1.1.0"
+
+[tool.poetry.group.lint.dependencies]
+autopep8 = "^2.3.2"
+pycln = "^2.5.0"
+
+[tool.poetry.group.ext.dependencies]
+invoke = "^2.2.0"
+
+[tool.pycln]
+path = "."
+all = true
+exclude = '\.history'
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = [
+    '.venv',
+    '.history',
+]
+
+[tool.autopep8]
+max_line_length = 120
+ignore = [
+    'E501',
+    'W6',
+]
+jobs = -1
+in-place = true
+recursive = true
+aggressive = 3
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+]
+testpaths = [
+    'tests',
+]

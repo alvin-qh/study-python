@@ -1,4 +1,4 @@
-from lib import stdin_redirected, stdout_redirected
+from utils import stdin_redirected, stdout_redirected
 
 
 def test_redirect_stdout() -> None:

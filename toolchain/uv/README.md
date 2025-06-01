@@ -523,3 +523,89 @@ pdm-package = "pdm_package:run"
 ```
 
 表示当前项目的执行入口, 当项目打包产生的 `.whl` 文件被安装后, 可通过项目名称直接运行
+
+## 7. PIP 兼容
+
+UV 支持 PIP 兼容命令, 包括导出 `requirements.txt` 文件, 安装依赖, 卸载依赖等
+
+### 7.1. 导出 `requirements.txt` 文件
+
+```bash
+uv export --all-groups --no-hashes --no-editable --format requirements.txt > requirements.txt
+```
+
+也可以通过 `uv pip` 命令
+
+```bash
+uv pip freeze > requirements.txt
+```
+
+### 7.2. 安装依赖
+
+可以通过 PIP 兼容命令, 在当前项目虚拟环境中安装依赖, 包括:
+
+```bash
+uv pip install mypy mypy-extensions
+```
+
+也可以通过 `requirements.txt` 文件批量安装依赖
+
+```bash
+uv pip install -r/--requirement requirements.txt
+```
+
+包括从本地安装依赖, 并将其安装为可编辑依赖包
+
+```bash
+uv pip install -e/--editable ./src
+```
+
+### 7.3. 卸载依赖
+
+可以通过 PIP 兼容命令, 在当前项目虚拟环境中卸载依赖, 包括:
+
+ ```bash
+uv pip uninstall mypy mypy-extensions
+```
+
+也可以通过 `requirements.txt` 文件批量卸载依赖
+
+```bash
+uv pip uninstall -r/--requirement requirements.txt
+```
+
+### 7.4. 查看依赖
+
+通过 PIP 兼容命令, 在当前项目虚拟环境中查看依赖, 包括:
+
+通过 `tabular` 格式查看所有依赖
+
+```bash
+uv pip list
+```
+
+通过 `requirements` 格式查看所有依赖
+
+```bash
+uv pip freeze
+```
+
+查看依赖关系树形结构
+
+```bash
+uv pip tree
+```
+
+查看某个具体依赖包
+
+```bash
+uv pip show mypy
+```
+
+### 7.5. 校验依赖
+
+通过 PIP 兼容命令, 可以校验当前项目虚拟环境中依赖的正确性:
+
+```bash
+uv pip check
+```

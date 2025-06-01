@@ -124,7 +124,11 @@ uv-workspace-utils = {workspace = true}
 
 ## 2. 使用子项目
 
+### 2.1. 主项目引用子项目
+
 正常情况下, 将子项目看作是主项目的依赖, 在主项目中正常引用即可
+
+### 2.2. 针对子项目的 UV 命令
 
 可以进入子项目目录, 通过 UV 命令对子项目进行操作, 就和操作普通项目完全一致
 
@@ -139,3 +143,16 @@ uv add --package uv-workspace-lib mypy mypy-extensions --group type
 ```bash
 uv add mypy mypy-extensions --group type
 ```
+
+### 2.3. 执行子项目工具或脚本
+
+可以在主项目目录下执行子项目相关的工具或脚本, 例如为子项目执行单元测试或代码检查
+
+UV 命令参数 `--package` 无法在执行子项目工具或脚本的场景下生效, 需要使用 `--directory` 参数指定子项目目录, 即要运行工具或脚本的目录,  例如:
+
+```bash
+uv run mypy . # 执行主项目下的 mypy 工具
+uv run --directory packages/lib mypy . # 执行子项目下的 mypy 工具
+```
+
+参考 [tasks.py](./tasks.py) 文件中列举的 UV 命令

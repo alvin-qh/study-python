@@ -502,3 +502,34 @@ pdm-package = "pdm_package:run"
 ```
 
 表示当前项目的执行入口, 当项目打包产生的 `.whl` 文件被安装后, 可通过项目名称直接运行
+
+## 8. 导入导出 PIP 格式依赖文件
+
+### 8.1. 导出 `requirements.txt` 文件
+
+PDM 支持将当前项目 `pyproject.toml` 文件中引入的依赖导出为 `requirements.txt` 文件, 以便之后通过 `pip` 命令安装依赖, 具体命令为:
+
+```bash
+pdm export -dG:all --no-hashes -f/--format requirements > requirements.txt
+```
+
+上述命令表示导出当前项目 `pyproject.toml` 中包含的所有依赖, 包括:
+
+- `[project]` 配置下 `dependencies` 配置项中定义的依赖
+- `[dependency-groups]` 配置下所有分组中的依赖 (`-dG:all` 选项)
+- `[project.optional-dependencies]` 配置下所有分组中的依赖 (`-dG:all` 选项)
+- 导出为 `requirements.txt` 文件 (`-f/--format requirements` 选项)
+
+PDM 可以导出多种格式的依赖文件, 通过 `-f/--format` 选项指定, 参考 `pdm export --help` 帮助信息
+
+### 8.2. 导入 `requirements.txt` 文件
+
+PDM 支持将 `requirements.txt` 文件导入为 `pyproject.toml` 文件, 以便之后通过 PDM 安装依赖, 具体命令为:
+
+```bash
+pdm import -f/--format requirements requirements.txt
+```
+
+PDM 可以导入多种格式的依赖文件, 通过 `-f/--format` 选项指定, 参考 `pdm import --help` 帮助信息
+
+PDM 也可以将 `requirements.txt` 文件中的依赖导入到当前项目 `pyproject.toml` 文件的特定依赖分组中, 参考 `pdm import` 命令的 `--dev` 和 `--group` 选项
