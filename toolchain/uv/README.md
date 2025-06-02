@@ -233,8 +233,8 @@ export UV_DEFAULT_INDEX=https://pypi.tuna.tsinghua.edu.cn/simple
 #### 3.1.2. 添加本地 Python 代码作为依赖
 
 ```bash
-uv add <path-to-package>  # 如 uv add ./libs/data-requirement
-uv add <url-to-package>  # 如 uv add <https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.5.0/en_core_web_trf-3.5.0-py3-none-any.whl>
+uv add <path-to-package> # 如 uv add ./libs/data-requirement
+uv add <url-to-package> # 如 uv add https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.5.0/en_core_web_trf-3.5.0-py3-none-any.whl
 ```
 
 此时会在 `pyproject.toml` 文件的 `[project]` 节点下的 `dependencies` 数组项中添加本地依赖包, 并通过 `[tool.uv.sources]` 节点来指定该依赖包的源码路径
@@ -253,7 +253,7 @@ uv-lib = { path = "../lib" }
 #### 3.1.3. 添加 GIT 代码仓库为依赖
 
 ```bash
-uv add "git+<git-repo-url>" # 如 uv add "git+<https://github.com/pypa/pip.git@22.0>"
+uv add "git+<git-repo-url>" # 如 uv add "git+https://github.com/pypa/pip.git@22.0"
 ```
 
 > 要对 git 使用 ssh 方案，只需将 `https://` 替换为 `ssh://git@`

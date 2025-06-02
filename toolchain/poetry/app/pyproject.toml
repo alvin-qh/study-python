@@ -12,6 +12,9 @@ dependencies = [
     "poetry-lib @ file:///home/alvin/Workspace/Study/study-python/toolchain/poetry/lib",
 ]
 
+[project.optional-dependencies]
+demo = ["click (>=8.2.1,<9.0.0)"]
+
 [tool.poetry]
 package-mode = false
 
