@@ -299,7 +299,6 @@ uv remove <package-name> --optional <group-name> # 移除可选依赖下指定�
 
 ```bash
 uv sync
-
 ```
 
 安装 `[project]` 下 `dependencies` 项中定义的全部依赖以及 `[dependency-groups]` 下所有分组中的全部依赖
@@ -451,6 +450,7 @@ testpaths = [
 ```toml
 [tool.pycln]
 all = true
+path = "."
 exclude = '\.history'
 ```
 
@@ -497,6 +497,7 @@ PDM 可以直接执行当前项目中的任意 `.py` 文件或当前项目虚拟
 可以通过 PDM 的 `run` 命令来运行项目中指定的 Python 文件, 例如:
 
 ```bash
+uv run main.py
 uv run main.py
 ```
 
