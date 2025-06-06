@@ -1,7 +1,7 @@
 import io
 import pickle
 
-from io_.model import PersonModel
+from basic.io_.model import PersonModel
 
 
 def test_dump_load_function() -> None:

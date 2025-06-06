@@ -1,7 +1,8 @@
 from typing import Generator
 
 from pytest import fixture, mark
-from testing.fixture import FixtureName
+
+from basic.testing.fixture import FixtureName
 
 fixture_name = FixtureName()
 

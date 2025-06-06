@@ -1,4 +1,4 @@
-from typing import Dict, Generic, List, Optional, Sequence, Union, TypeVar
+from typing import Dict, Generic, List, Optional, Sequence, TypeVar, Union
 
 # 定义类型 (< Python 3.12)
 NumberA = Union[int, float]
@@ -89,8 +89,9 @@ def test_generic_method() -> None:
     assert generic_func_b(0.1) == [0.1, 0.1, 0.1]
 
     # 参数类型和返回值列表元素类型为 str 类型, 此时 mypy 会报错
-    assert generic_func_a("A") == ["A", "A", "A"]
-    assert generic_func_b("A") == ["A", "A", "A"]
+    # 需要通过 `# type: ignore[type-var]` 忽略 mypy 检查
+    assert generic_func_a("A") == ["A", "A", "A"]  # type: ignore[type-var]
+    assert generic_func_b("A") == ["A", "A", "A"]  # type: ignore[type-var]
 
 
 # 通过 `TypeVar` 定义泛型类型

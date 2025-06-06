@@ -3,8 +3,9 @@ from abc import ABC, abstractmethod
 from functools import partialmethod
 from typing import Any, Dict, List, Optional, Self, Tuple
 
-from builtin import Automate, Delegate
 from pytest import raises
+
+from basic.builtin import Automate, Delegate
 
 _dir = dir()
 

@@ -25,7 +25,8 @@ from hypothesis import assume, given, infer, note
 from hypothesis import provisional as pr
 from hypothesis import strategies as st
 from hypothesis.strategies._internal.core import RandomSeeder  # type: ignore
-from testing.hypothesis import User, UserStrategy, element_and_index
+
+from basic.testing.hypothesis import User, UserStrategy, element_and_index
 
 
 @given(bs=st.binary(min_size=10, max_size=20))

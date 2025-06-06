@@ -1,6 +1,6 @@
 from functools import reduce
 
-from collection.iterator import Iter
+from basic.collection.iterator import Iter
 
 
 def test_sum_function() -> None:

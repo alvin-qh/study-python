@@ -1,8 +1,8 @@
 import logging
 from logging import config
 
-from log.conf import load_log_config
-from log.filter import LogContextFilter
+from basic.log.conf import load_log_config
+from basic.log.filter import LogContextFilter
 
 
 def test_log_filter() -> None:

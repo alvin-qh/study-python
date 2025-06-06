@@ -1,8 +1,9 @@
 import timeit
 from typing import cast
 
-from decorate import Cache, clear_cache, memo
 from pytest import raises
+
+from basic.decorate import Cache, clear_cache, memo
 
 
 class TestCache:
@@ -70,7 +71,7 @@ class TestMemoCache:
 
     def test_check_duplicated_cache_key(self) -> None:
         """测试检测重复 Key 函数"""
-        from decorate.cache import _check_duplicated_cache_key
+        from basic.decorate.cache import _check_duplicated_cache_key
 
         # 第一次检测 Key
         _check_duplicated_cache_key("demo1()")
@@ -86,7 +87,7 @@ class TestMemoCache:
 
     def test_get_default_args(self) -> None:
         """测试获取函数的默认参数列表"""
-        from decorate.cache import _get_default_args
+        from basic.decorate.cache import _get_default_args
 
         # 定义无参函数
         def demo1() -> None:
@@ -107,10 +108,8 @@ class TestMemoCache:
         assert d == {"a": 1, "b": 2}
 
     def test_interpolate_str_by_function(self) -> None:
-        """
-        测试根据所给的函数和参数生成缓存 Key 字符串
-        """
-        from decorate.cache import _interpolate_str
+        """测试根据所给的函数和参数生成缓存 Key 字符串"""
+        from basic.decorate.cache import _interpolate_str
 
         # 用于生成缓存字符串的函数
         def demo(a: int, b: str, c: bool = False) -> None:
@@ -145,7 +144,7 @@ class TestMemoCache:
 
     def test_interpolate_str_by_method(self) -> None:
         """测试根据所给的方法和参数生成缓存 Key 字符串"""
-        from decorate.cache import _interpolate_str
+        from basic.decorate.cache import _interpolate_str
 
         class Demo:
             """测试类"""

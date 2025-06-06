@@ -1,5 +1,6 @@
 from pytest import mark
-from testing import Counter
+
+from basic.testing import Counter
 
 counter = Counter()
 repeat = Counter()

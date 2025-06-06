@@ -1,7 +1,7 @@
 from functools import cmp_to_key
 from random import Random
 
-from collection.model import Foo
+from basic.collection.model import Foo
 
 
 def test_cmp_to_key() -> None:

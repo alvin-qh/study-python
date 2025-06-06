@@ -1,6 +1,6 @@
 import binascii
 
-from io_.crc64 import crc64_long
+from basic.io_.crc64 import crc64_long
 
 
 def test_bytes_and_bytearray() -> None:

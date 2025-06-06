@@ -1,6 +1,8 @@
 from queue import Queue
+
 import pytest
-from network import tcp
+
+from basic.network import tcp
 
 
 def test_sync_tcp() -> None:

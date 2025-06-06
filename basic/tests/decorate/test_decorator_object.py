@@ -1,8 +1,9 @@
 import timeit
 from unittest.mock import MagicMock, patch
 
-from decorate import App, Logger
 from pytest import raises
+
+from basic.decorate import App, Logger
 
 # 产生 App 类型的对象
 app = App()

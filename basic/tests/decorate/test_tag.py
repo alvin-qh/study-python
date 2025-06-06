@@ -1,4 +1,4 @@
-from decorate.tag import HtmlTag, html_tag, tag
+from basic.decorate.tag import HtmlTag, html_tag, tag
 
 
 def test_tag_decorator() -> None:

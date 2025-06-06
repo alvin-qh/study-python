@@ -1,8 +1,8 @@
 import logging
 from logging import config
 
-from log import RequestFormatter
-from log.conf import load_log_config
+from basic.log import RequestFormatter
+from basic.log.conf import load_log_config
 
 # 定义日志格式化模板
 # %(s_org)s 和 %(s_name)s 表示 RequestFormatter 中设定的变量

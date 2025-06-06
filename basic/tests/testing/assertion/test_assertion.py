@@ -1,5 +1,6 @@
 import pytest
-from testing.assertion import add, exception
+
+from basic.testing.assertion import add, exception
 
 
 def test_assertion() -> None:

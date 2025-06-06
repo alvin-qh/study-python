@@ -1,7 +1,8 @@
 from typing import NoReturn
 
 from pytest import fail, mark
-from testing.mark import VERSION
+
+from basic.testing.mark import VERSION
 
 
 @mark.skip(reason="Skip test")

@@ -4,9 +4,10 @@ from threading import Thread
 from typing import Any, Dict, List, Tuple
 
 import pytest
-from concurrence.async_.async_iter import AIOTicker, async_echo, async_ticker
-from concurrence.async_.worker import async_worker
 from pytest import raises
+
+from basic.concurrence.async_.async_iter import AIOTicker, async_echo, async_ticker
+from basic.concurrence.async_.worker import async_worker
 
 
 def test_start_async_coroutine() -> None:

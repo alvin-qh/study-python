@@ -1,8 +1,10 @@
-from queue import Queue
 import threading as th
 import time
+from queue import Queue
+
 import pytest
-from network import udp
+
+from basic.network import udp
 
 
 def test_sync_udp() -> None:

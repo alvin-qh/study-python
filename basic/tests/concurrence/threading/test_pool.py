@@ -9,14 +9,15 @@ with ThreadPool(processes=n_threads) as pool:
 ```
 - `processes` 表示线程池中初始化的线程数
 """
+
 from concurrent.futures import ThreadPoolExecutor, wait
 from functools import partial
 from itertools import repeat
 from multiprocessing.pool import AsyncResult, ThreadPool
 from typing import List, Tuple
 
-from concurrence.threading import N_THREADS
-from concurrence.threading.prime import is_prime_with_extra_arg
+from basic.concurrence.threading import N_THREADS
+from basic.concurrence.threading.prime import is_prime_with_extra_arg
 
 
 def test_pool_apply() -> None:

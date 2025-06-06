@@ -8,7 +8,8 @@ from datetime import timedelta
 from dateutil import parser
 from dateutil import relativedelta as rd
 from dateutil import tz
-from time_ import iso8601_format
+
+from basic.time_ import iso8601_format
 
 
 class TestTime:

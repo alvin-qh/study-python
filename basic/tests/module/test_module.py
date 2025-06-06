@@ -5,7 +5,7 @@ def test_static_import() -> None:
     """测试静态导入"""
 
     # 静态导入所需的标识
-    from module import Class, function, value
+    from basic.module import Class, function, value
 
     # 函数导入
     assert function() == "1.0"
@@ -22,8 +22,8 @@ def test_dynamic_import() -> None:
     """使用 `import_module` 函数动态导入模块"""
 
     # 使用绝对层级导入
-    m = import_module("module.plugin1")
-    assert m.__name__ == "module.plugin1"
+    m = import_module("basic.module.plugin1")
+    assert m.__name__ == "basic.module.plugin1"
 
     # 使用相对层级导入
     # __package__ 表示相对于当前包
@@ -34,7 +34,7 @@ def test_dynamic_import() -> None:
     assert plugin.display() == "Hello"
 
     # 导入另一个包
-    m = import_module("module.plugin2")
+    m = import_module("basic.module.plugin2")
 
     plugin = m.Plugin()
     assert plugin.display() == "World"
@@ -47,8 +47,8 @@ def test_builtin_import() -> None:
     """
     # 导入包, 并指定使用 plugin1 和 plugin2 两个模块
     # 注意: 如果省略了 fromlist 参数, 则不会导入 sub 包, 只会导入 module_ 包
-    m = __import__("module", fromlist=["plugin1", "plugin2"])
-    assert m.__name__ == "module"
+    m = __import__("basic.module", fromlist=["plugin1", "plugin2"])
+    assert m.__name__ == "basic.module"
 
     # 从导入的模块实例化对象
     plugin = m.plugin1.Plugin()

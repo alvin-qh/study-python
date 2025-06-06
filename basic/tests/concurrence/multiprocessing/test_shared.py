@@ -3,8 +3,8 @@ from itertools import repeat
 from multiprocessing import Array, Pipe, Process, Queue
 from typing import Optional, Tuple
 
-from concurrence.multiprocessing.group import ProcessGroup
-from concurrence.multiprocessing.prime import (
+from basic.concurrence.multiprocessing.group import ProcessGroup
+from basic.concurrence.multiprocessing.prime import (
     is_prime_by_event_queue,
     is_prime_by_pipe,
     is_prime_into_synchronized_array,

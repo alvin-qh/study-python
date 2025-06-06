@@ -4,8 +4,8 @@ import shutil
 import zipfile
 from datetime import datetime
 
-from io_.datamaker import make_bytes_data_from_nums
-from io_.utils import compare_file
+from basic.io_.datamaker import make_bytes_data_from_nums
+from basic.io_.utils import compare_file
 
 # 压缩文件名
 ZIP_FILE = "demo.zip"

@@ -17,8 +17,8 @@ from multiprocessing import Manager, Pool
 from multiprocessing.managers import BaseManager
 from typing import Dict, List, Tuple
 
-from concurrence.multiprocessing import N_PROCESSES
-from concurrence.multiprocessing.prime import (
+from basic.concurrence.multiprocessing import N_PROCESSES
+from basic.concurrence.multiprocessing.prime import (
     PrimeResult,
     is_prime_into_dict,
     is_prime_into_list,

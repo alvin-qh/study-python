@@ -1,7 +1,7 @@
 import logging
 from logging import config
 
-from log.conf import load_log_config
+from basic.log.conf import load_log_config
 
 _FORMAT_WITH_EXTRA = (
     "[%(asctime)s][%(name)s][%(levelname)s][%(filename)-8s]"

@@ -1,7 +1,10 @@
 from ctypes import c_bool, c_int
 from multiprocessing import Pool, Value
 
-from concurrence.multiprocessing.prime import initializer, is_prime_by_global_variable
+from basic.concurrence.multiprocessing.prime import (
+    initializer,
+    is_prime_by_global_variable,
+)
 
 
 def test_pool_initializer() -> None:

@@ -6,7 +6,8 @@ from typing import Iterable
 import pytz
 from dateutil.relativedelta import relativedelta
 from faker import Faker
-from testing.faker import last_day_of_month
+
+from basic.testing.faker import last_day_of_month
 
 fake = Faker()
 

@@ -3,7 +3,8 @@ import re
 from string import ascii_letters, ascii_lowercase, ascii_uppercase
 
 from faker import Faker
-from testing.faker import MedicalProfessionsProvider, RandomNumberProvider
+
+from basic.testing.faker import MedicalProfessionsProvider, RandomNumberProvider
 
 fake = Faker()
 

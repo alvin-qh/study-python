@@ -4,7 +4,8 @@ from typing import Callable, List, Sequence
 import pytest
 from hypothesis import HealthCheck, Phase, Verbosity, example, given, settings
 from hypothesis import strategies as st
-from testing.hypothesis import delay_data_generator
+
+from basic.testing.hypothesis import delay_data_generator
 
 _examples = []
 

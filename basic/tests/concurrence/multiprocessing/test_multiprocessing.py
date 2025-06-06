@@ -5,8 +5,8 @@ from ctypes import c_bool
 from itertools import repeat
 from multiprocessing import Array
 
-from concurrence.multiprocessing.group import ProcessGroup
-from concurrence.multiprocessing.prime import is_prime
+from basic.concurrence.multiprocessing.group import ProcessGroup
+from basic.concurrence.multiprocessing.prime import is_prime
 
 
 def test_multiple_processes() -> None:

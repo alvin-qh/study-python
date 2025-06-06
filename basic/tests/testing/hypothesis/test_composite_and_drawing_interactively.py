@@ -3,7 +3,8 @@ from typing import List, Tuple
 from hypothesis import Verbosity, given, note, settings
 from hypothesis import strategies as st
 from hypothesis.strategies._internal.core import DataObject
-from testing.hypothesis import list_and_index
+
+from basic.testing.hypothesis import list_and_index
 
 
 @given(

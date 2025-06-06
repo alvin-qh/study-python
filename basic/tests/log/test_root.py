@@ -1,7 +1,7 @@
 import logging
 from logging import config
 
-from log.conf import load_log_config
+from basic.log.conf import load_log_config
 
 
 def test_root_log() -> None:

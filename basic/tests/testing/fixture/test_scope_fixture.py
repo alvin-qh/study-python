@@ -1,5 +1,6 @@
 from pytest import fixture, mark
-from testing.fixture import FixtureVisitorCount
+
+from basic.testing.fixture import FixtureVisitorCount
 
 counter = FixtureVisitorCount()
 

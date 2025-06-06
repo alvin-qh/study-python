@@ -1,8 +1,8 @@
 [project]
-name = "basic" # 项目名称 (必填项)
-version = "0.1.0" # 项目版本号 (必填项)
-authors = [ # 项目作者 (可选)
-    { name = 'Alvin', email = 'quhao317@163.com' },
+name = "basic"
+version = "0.1.0"
+authors = [
+    {name = 'Alvin', email = 'quhao317@163.com'},
 ]
 dependencies = [
     "pytz>=2025.2",
@@ -13,73 +13,62 @@ dependencies = [
     "tzdata>=2025.2",
     "python-dateutil>=2.9.0.post0",
 ]
-requires-python = ">=3.13" # 要求的 Python 版本, 可以指定最小和最大版本, 例如: '>=3.11,<3.12'
-readme = "README.md" # 指定说明文件
-license = { text = "MIT" }
-classifiers = [ # 分类信息
+requires-python = ">=3.13"
+readme = "README.md"
+license = {text = "MIT"}
+classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
     "Operating System :: OS Independent",
 ]
 
-# [build-system]
-# 配置编译工具链
-# requires = ["pdm-backend"]
-# build-backend = "pdm.backend"
-
-# [tool.pdm.dev-dependencies]
-# PDM 工具提供的 dev 模式依赖包组, 通过 pdm update -d / pdm install -d 进行安装
-# dev = ["pytest", "mypy", "autopep8"]
-
-[project.optional-dependencies]
-# PEP 517 规范提供的可选模式依赖包组, 通过 pdm update -G <group-name> / pdm install -G <group-name> 进行安装
+[dependency-groups]
 lint = [
-    "mypy>=1.15.0",
+    "mypy>=1.16.0",
     "autopep8>=2.3.2",
     "pycln>=2.5.0",
 ]
 test = [
-    "pytest>=8.3.5",
-    "pytest-asyncio>=0.26.0",
+    "pytest>=8.4.0",
+    "pytest-asyncio>=1.0.0",
     "pytest-rerunfailures>=15.1",
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
-    "pytest-xdist>=3.6.1",
-    "hypothesis>=6.131.23",
+    "pytest-xdist>=3.7.0",
+    "hypothesis>=6.135.1",
     "faker>=37.3.0",
+    "pytest-sugar>=1.0.0",
 ]
 type = [
-    "types-python-dateutil>=2.9.0.20241206",
-    "types-pytz>=2025.2.0.20250326",
+    "types-python-dateutil>=2.9.0.20250516",
+    "types-pytz>=2025.2.0.20250516",
 ]
 
 [tool.pdm]
-distribution = true
+distribution = false
 
 [tool.pdm.scripts]
-# 定义执行脚本, 可通过 `pdm run <脚本名称>` 执行
-check = { composite = [
-    "pycln --config=pyproject.toml .",
+check = {composite = [
+    "pycln --config=pyproject.toml",
     "mypy .",
     "autopep8 .",
-] }
-check-win = { composite = [
-    "pycln.exe --config=pyproject.toml .",
-    "mypy.exe src",
-    "autopep8.exe src tests",
-] }
+]}
+check-win = {composite = [
+    "pycln.exe --config=pyproject.toml",
+    "mypy.exe .",
+    "autopep8.exe .",
+]}
 test = "pytest"
 test-win = "pytest.exe"
-clean = { call = "clear:main" }
+clean = {call = "clear:main"}
 type_install = "mypy --install-types"
 
 [tool.pycln]
+path = "."
 all = true
 exclude = '\.history'
 
 [tool.mypy]
-# mypy 配置
-python_version = '3.13'
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -94,7 +83,10 @@ exclude = [
 
 [tool.autopep8]
 max_line_length = 120
-ignore = ['E501', 'W6']
+ignore = [
+    'E501',
+    'W6',
+]
 in-place = true
 recursive = true
 jobs = -1
@@ -109,20 +101,23 @@ use_parentheses = true
 ensure_newline_before_comments = true
 
 [tool.pytest.ini_options]
-# pytest 配置
-# testpaths = ['tests'] # 测试所在路径
-# pythonpath = ['src'] # 指定 Python 路径
-markers = [ # 自定义测试标识, 取消则对应标识的测试不执行
+# pythonpath = ['src']
+testpaths = [
+    "tests",
+]
+markers = [
+    # 自定义测试标识, 取消则对应标识的测试不执行
     'webtest',
 ]
-addopts = [ # -s 允许标准输出; -n auto 自动分配多进程测试; --dist=loadfile 按测试文件分配进程
+addopts = [
+    # -s 允许标准输出
+    # -n auto 自动分配多进程测试
+    # --dist=loadfile 按测试文件分配进程
     "-vvs",
     "--log-cli-level",
     "INFO",
 ]
-filterwarnings = [ # 忽略指定的警告信息
+filterwarnings = [
+    # 忽略指定的警告信息
     'ignore::hypothesis.errors.NonInteractiveExampleWarning',
-]
-testpaths = [
-    'tests',
 ]

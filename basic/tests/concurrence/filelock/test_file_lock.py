@@ -1,9 +1,6 @@
 from itertools import repeat
 
-from concurrence.filelock import (
-    blocked_filelock_worker,
-    run_worker_by_pool,
-)
+from basic.concurrence.filelock import blocked_filelock_worker, run_worker_by_pool
 
 
 def test_file_locked() -> None:

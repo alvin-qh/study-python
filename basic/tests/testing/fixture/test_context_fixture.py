@@ -1,7 +1,8 @@
 from typing import Generator, cast
 
 from pytest import fixture
-from testing.fixture import Context
+
+from basic.testing.fixture import Context
 
 USERNAME = "Alvin"
 ORG_CODE = "alvin.edu"

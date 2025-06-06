@@ -1,6 +1,6 @@
 from pytest import fail, skip
 
-from testing.mark import VERSION
+from basic.testing.mark import VERSION
 
 # skip 函数用于跳过之后的测试，可以用于 function, method 或整个 module
 

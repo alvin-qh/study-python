@@ -3,8 +3,9 @@ import shutil
 from fnmatch import fnmatch
 from typing import Iterator, List, Optional, Union
 
-from io_.finder import find_all_files
 from pytest import raises
+
+from basic.io_.finder import find_all_files
 
 _CUR_DIR = os.path.dirname(__file__)
 

@@ -1,7 +1,8 @@
 from typing import Generator
 
 from pytest import fixture
-from testing import Step
+
+from basic.testing import Step
 
 # 记录步骤的对象
 step = Step()

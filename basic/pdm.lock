@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test", "type"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:ab14a6fe9207b27c8741f737413af46c5c9c9e90b936d6aacd3f9aca4aa32cc5"
+content_hash = "sha256:53f4aa57c1132323fdc593e3e6129d2342d0b7efddffcb3ff45381ed578bb7c5"
 
 [[metadata.targets]]
 requires_python = "==3.13.*"
@@ -124,15 +124,15 @@ files = [
 
 [[package]]
 name = "hypothesis"
-version = "6.131.23"
+version = "6.135.1"
 summary = ""
 dependencies = [
     "attrs",
     "sortedcontainers",
 ]
 files = [
-    {file = "hypothesis-6.131.23-py3-none-any.whl", hash = "sha256:5c1212d000aec42c949a1e41415aef2bba297cde807cea50058d162520da7d3f"},
-    {file = "hypothesis-6.131.23.tar.gz", hash = "sha256:7723d82885b6cddc39d0ce5b2d8c5b890b3ebc2263a3707d9430ceaf368de402"},
+    {file = "hypothesis-6.135.1-py3-none-any.whl", hash = "sha256:14fab728bfe2409a3934e6e1ea6ae0a706d0bc78187137218a253aec7528b4c8"},
+    {file = "hypothesis-6.135.1.tar.gz", hash = "sha256:36eea411ef5dde5612301fcd9a293b6f2a3a5ab96488be2e23e7c5799cbd7b33"},
 ]
 
 [[package]]
@@ -213,21 +213,22 @@ files = [
 
 [[package]]
 name = "mypy"
-version = "1.15.0"
+version = "1.16.0"
 summary = ""
 dependencies = [
     "mypy-extensions",
+    "pathspec",
     "typing-extensions",
 ]
 files = [
-    {file = "mypy-1.15.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:93faf3fdb04768d44bf28693293f3904bbb555d076b781ad2530214ee53e3445"},
-    {file = "mypy-1.15.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:811aeccadfb730024c5d3e326b2fbe9249bb7413553f15499a4050f7c30e801d"},
-    {file = "mypy-1.15.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:98b7b9b9aedb65fe628c62a6dc57f6d5088ef2dfca37903a7d9ee374d03acca5"},
-    {file = "mypy-1.15.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:c43a7682e24b4f576d93072216bf56eeff70d9140241f9edec0c104d0c515036"},
-    {file = "mypy-1.15.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:baefc32840a9f00babd83251560e0ae1573e2f9d1b067719479bfb0e987c6357"},
-    {file = "mypy-1.15.0-cp313-cp313-win_amd64.whl", hash = "sha256:b9378e2c00146c44793c98b8d5a61039a048e31f429fb0eb546d93f4b000bedf"},
-    {file = "mypy-1.15.0-py3-none-any.whl", hash = "sha256:5469affef548bd1895d86d3bf10ce2b44e33d86923c29e4d675b3e323437ea3e"},
-    {file = "mypy-1.15.0.tar.gz", hash = "sha256:404534629d51d3efea5c800ee7c42b72a6554d6c400e6a79eafe15d11341fd43"},
+    {file = "mypy-1.16.0-cp313-cp313-macosx_10_13_x86_64.whl", hash = "sha256:a9e056237c89f1587a3be1a3a70a06a698d25e2479b9a2f57325ddaaffc3567b"},
+    {file = "mypy-1.16.0-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:0b07e107affb9ee6ce1f342c07f51552d126c32cd62955f59a7db94a51ad12c0"},
+    {file = "mypy-1.16.0-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.manylinux_2_28_aarch64.whl", hash = "sha256:c6fb60cbd85dc65d4d63d37cb5c86f4e3a301ec605f606ae3a9173e5cf34997b"},
+    {file = "mypy-1.16.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.manylinux_2_28_x86_64.whl", hash = "sha256:a7e32297a437cc915599e0578fa6bc68ae6a8dc059c9e009c628e1c47f91495d"},
+    {file = "mypy-1.16.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:afe420c9380ccec31e744e8baff0d406c846683681025db3531b32db56962d52"},
+    {file = "mypy-1.16.0-cp313-cp313-win_amd64.whl", hash = "sha256:55f9076c6ce55dd3f8cd0c6fff26a008ca8e5131b89d5ba6d86bd3f47e736eeb"},
+    {file = "mypy-1.16.0-py3-none-any.whl", hash = "sha256:29e1499864a3888bca5c1542f2d7232c6e586295183320caa95758fc84034031"},
+    {file = "mypy-1.16.0.tar.gz", hash = "sha256:84b94283f817e2aa6350a14b4a8fb2a35a53c286f97c9d30f53b63620e7af8ab"},
 ]
 
 [[package]]
@@ -323,17 +324,18 @@ files = [
 
 [[package]]
 name = "pytest"
-version = "8.3.5"
+version = "8.4.0"
 summary = ""
 dependencies = [
     "colorama; sys_platform == \"win32\"",
     "iniconfig",
     "packaging",
     "pluggy",
+    "pygments",
 ]
 files = [
-    {file = "pytest-8.3.5-py3-none-any.whl", hash = "sha256:c69214aa47deac29fad6c2a4f590b9c4a9fdb16a403176fe154b79c0b4d4d820"},
-    {file = "pytest-8.3.5.tar.gz", hash = "sha256:f4efe70cc14e511565ac476b57c279e12a855b11f48f212af1080ef2263d3845"},
+    {file = "pytest-8.4.0-py3-none-any.whl", hash = "sha256:f40f825768ad76c0977cbacdf1fd37c6f7a468e460ea6a0636078f8972d4517e"},
+    {file = "pytest-8.4.0.tar.gz", hash = "sha256:14d920b48472ea0dbf68e45b96cd1ffda4705f33307dcc86c676c1b5104838a6"},
 ]
 
 [[package]]
@@ -351,14 +353,14 @@ files = [
 
 [[package]]
 name = "pytest-asyncio"
-version = "0.26.0"
+version = "1.0.0"
 summary = ""
 dependencies = [
     "pytest",
 ]
 files = [
-    {file = "pytest_asyncio-0.26.0-py3-none-any.whl", hash = "sha256:7b51ed894f4fbea1340262bdae5135797ebbe21d8638978e35d31c6d19f72fb0"},
-    {file = "pytest_asyncio-0.26.0.tar.gz", hash = "sha256:c4df2a697648241ff39e7f0e4a73050b03f123f760673956cf0d72a4990e312f"},
+    {file = "pytest_asyncio-1.0.0-py3-none-any.whl", hash = "sha256:4f024da9f1ef945e680dc68610b52550e36590a67fd31bb3b4943979a1f90ef3"},
+    {file = "pytest_asyncio-1.0.0.tar.gz", hash = "sha256:d15463d13f4456e1ead2594520216b225a16f781e144f8fdf6c5bb4667c48b3f"},
 ]
 
 [[package]]
@@ -387,16 +389,30 @@ files = [
 ]
 
 [[package]]
+name = "pytest-sugar"
+version = "1.0.0"
+summary = ""
+dependencies = [
+    "packaging",
+    "pytest",
+    "termcolor",
+]
+files = [
+    {file = "pytest-sugar-1.0.0.tar.gz", hash = "sha256:6422e83258f5b0c04ce7c632176c7732cab5fdb909cb39cca5c9139f81276c0a"},
+    {file = "pytest_sugar-1.0.0-py3-none-any.whl", hash = "sha256:70ebcd8fc5795dc457ff8b69d266a4e2e8a74ae0c3edc749381c64b5246c8dfd"},
+]
+
+[[package]]
 name = "pytest-xdist"
-version = "3.6.1"
+version = "3.7.0"
 summary = ""
 dependencies = [
     "execnet",
     "pytest",
 ]
 files = [
-    {file = "pytest_xdist-3.6.1-py3-none-any.whl", hash = "sha256:9ed4adfb68a016610848639bb7e02c9352d5d9f03d04809919e2dafc3be4cca7"},
-    {file = "pytest_xdist-3.6.1.tar.gz", hash = "sha256:ead156a4db231eec769737f57668ef58a2084a34b2e55c4a8fa20d861107300d"},
+    {file = "pytest_xdist-3.7.0-py3-none-any.whl", hash = "sha256:7d3fbd255998265052435eb9daa4e99b62e6fb9cfb6efd1f858d4d8c0c7f0ca0"},
+    {file = "pytest_xdist-3.7.0.tar.gz", hash = "sha256:f9248c99a7c15b7d2f90715df93610353a485827bc06eefb6566d23f6400f126"},
 ]
 
 [[package]]
@@ -488,6 +504,15 @@ files = [
 ]
 
 [[package]]
+name = "termcolor"
+version = "3.1.0"
+summary = ""
+files = [
+    {file = "termcolor-3.1.0-py3-none-any.whl", hash = "sha256:591dd26b5c2ce03b9e43f391264626557873ce1d379019786f99b0c2bee140aa"},
+    {file = "termcolor-3.1.0.tar.gz", hash = "sha256:6a6dd7fbee581909eeec6a756cff1d7f7c376063b14e4a298dc4980309e55970"},
+]
+
+[[package]]
 name = "tomlkit"
 version = "0.13.2"
 summary = ""
@@ -513,20 +538,20 @@ files = [
 
 [[package]]
 name = "types-python-dateutil"
-version = "2.9.0.20241206"
+version = "2.9.0.20250516"
 summary = ""
 files = [
-    {file = "types_python_dateutil-2.9.0.20241206-py3-none-any.whl", hash = "sha256:e248a4bc70a486d3e3ec84d0dc30eec3a5f979d6e7ee4123ae043eedbb987f53"},
-    {file = "types_python_dateutil-2.9.0.20241206.tar.gz", hash = "sha256:18f493414c26ffba692a72369fea7a154c502646301ebfe3d56a04b3767284cb"},
+    {file = "types_python_dateutil-2.9.0.20250516-py3-none-any.whl", hash = "sha256:2b2b3f57f9c6a61fba26a9c0ffb9ea5681c9b83e69cd897c6b5f668d9c0cab93"},
+    {file = "types_python_dateutil-2.9.0.20250516.tar.gz", hash = "sha256:13e80d6c9c47df23ad773d54b2826bd52dbbb41be87c3f339381c1700ad21ee5"},
 ]
 
 [[package]]
 name = "types-pytz"
-version = "2025.2.0.20250326"
+version = "2025.2.0.20250516"
 summary = ""
 files = [
-    {file = "types_pytz-2025.2.0.20250326-py3-none-any.whl", hash = "sha256:3c397fd1b845cd2b3adc9398607764ced9e578a98a5d1fbb4a9bc9253edfb162"},
-    {file = "types_pytz-2025.2.0.20250326.tar.gz", hash = "sha256:deda02de24f527066fc8d6a19e284ab3f3ae716a42b4adb6b40e75e408c08d36"},
+    {file = "types_pytz-2025.2.0.20250516-py3-none-any.whl", hash = "sha256:e0e0c8a57e2791c19f718ed99ab2ba623856b11620cb6b637e5f62ce285a7451"},
+    {file = "types_pytz-2025.2.0.20250516.tar.gz", hash = "sha256:e1216306f8c0d5da6dafd6492e72eb080c9a166171fa80dd7a1990fd8be7a7b3"},
 ]
 
 [[package]]

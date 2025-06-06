@@ -1,6 +1,7 @@
-from builtin import Context
 from pytest import raises
-from builtin.context import random_number_context
+
+from basic.builtin import Context
+from basic.builtin.context import random_number_context
 
 
 def test_context_scope() -> None:

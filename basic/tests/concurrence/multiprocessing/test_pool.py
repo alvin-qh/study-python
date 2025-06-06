@@ -5,8 +5,8 @@ from multiprocessing import Pool
 from multiprocessing.pool import AsyncResult
 from typing import List, Tuple
 
-from concurrence.multiprocessing import N_PROCESSES
-from concurrence.multiprocessing.prime import is_prime_with_extra_arg
+from basic.concurrence.multiprocessing import N_PROCESSES
+from basic.concurrence.multiprocessing.prime import is_prime_with_extra_arg
 
 
 def test_pool_apply() -> None:
