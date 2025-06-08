@@ -95,9 +95,8 @@ authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "<package1>=1.0",
-    "<package2>=2.0",
-    "<package3>=2.2",
+    "<package1-name >= <version>",
+    "<package2-name >= <version>",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
@@ -105,22 +104,22 @@ license = { text = "MIT" }
 
 [dependency-groups]
 group1 = [
-  "<group1-dependency1>=1.0>"
-  "<group1-dependency2>=2.0>"
+  "<package3-name >= <version>",
+  "<package4-name >= <version>",
 ]
 group2 = [
-  "<group2-dependency1>=2.0>"
-  "<group2-dependency2>=3.0>"
+  "<package5-name >= <version>",
+  "<package6-name >= <version>",
 ]
 
 [project.optional-dependencies]
-feature1 = [
-    "<feature1-package1>=2.0>",
-    "<feature1-package2>=3.1>",
+group1 = [
+  "<package7-name >= <version>",
+  "<package8-name >= <version>",
 ]
-feature2 = [
-    "<feature2-package1>=2.0>",
-    "<feature2-package2>=1.1>",
+group2 = [
+  "<package9-name >= <version>",
+  "<package10-name >= <version>",
 ]
 
 [tool.pdm.scripts]
@@ -180,15 +179,25 @@ testpaths = [
 
 在 `[project]` 的 `dependencies` 项中添加依赖, 用于当前项目的生产环境依赖
 
-```bash
-pdm add <dependency-name>  # 如 pdm add numpy
-pdm add <dependency-name==version>  # 如 pdm add numpy==2.2
-pdm add <dependency-name>=version>  # 如 pdm add numpy>=2.2
-pdm add <dependency-name[optional]>  # 如 pdm add requests[socks]
+从 PyPI 仓库添加依赖包
 
+```bash
+pdm add <package-name>  # 如 pdm add numpy
+pdm add <package-name==version>  # 如 pdm add numpy==2.2
+pdm add <package-name>=version>  # 如 pdm add numpy>=2.2
+pdm add <package-name[optional]>  # 如 pdm add requests[socks]
+```
+
+从本地或远程代码库添加依赖包
+
+```bash
 pdm add <path-to-package>  # 如 pdm add ./libs/data-requirement
 pdm add <url-to-package>  # 如 pdm add https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.5.0/en_core_web_trf-3.5.0-py3-none-any.whl
+```
 
+从 GIT 代码仓库添加依赖包
+
+```bash
 pdm add "git+<git-repo-url>" # 如 pdm add "git+https://github.com/pypa/pip.git@22.0"
 pdm add "name @ git+<git-repo-url>" # 如 pdm add "pip @ git+https://github.com/pypa/pip.git@22.0"
                                     # 或 pdm add "git+https://github.com/pypa/pip.git@22.0#egg=pip"

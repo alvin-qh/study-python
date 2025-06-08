@@ -16,9 +16,9 @@ Poetry 是一款现代 Python 项目管理工具, 包括项目元数据管理, �
 poetry new <project-path> --name=<project-name>
 ```
 
-上述命令会创建一个名为 `<project-path>` 的子目录, 并在其中生成一个 `pyproject.toml` 文件, 项目命名为 `<project-name>`
-
 如果命令中缺省了 `--name` 参数, 则默认以 `<project-path>` 名称为项目名
+
+上述命令会创建一个名为 `<project-path>` 的子目录, 并在其中生成一个 `pyproject.toml` 文件, 项目命名为 `<project-name>`
 
 ### 1.2. 初始化项目
 
@@ -28,9 +28,91 @@ poetry new <project-path> --name=<project-name>
 poetry init --name=<project-name>
 ```
 
+如果命令中缺省了 `--name` 参数, 则默认以当前目录名称为项目名
+
 上述命令会在当前目录中生成一个 `pyproject.toml` 文件, 项目命名为 `<project-name>`
 
-如果命令中缺省了 `--name` 参数, 则默认以当前目录名称为项目名
+### 1.3. `pyproject.toml` 文件
+
+一个通过 Poetry 生成的 `pyproject.toml` 文件内容如下:
+
+```toml
+[project]
+name = "<project-name>"
+version = "0.1.0"
+description = "<project-description>"
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.13,<4"
+dependencies = [
+  "<package1-name> >= <version>",
+  "<package2-name> >= <version>",
+  "<package3-name> @ file://<path-to-package>",
+]
+
+[project.optional-dependencies]
+group1-name = [
+  "package1-name >= <version>",
+  "package2-name >= <version>",
+]
+group2-name = [
+  "package3-name >= <version>",
+  "package4-name >= <version>",
+]
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+package3-name = { develop = true }
+
+[tool.poetry.group.<group-1>.dependencies]
+package1-name = "^<version>"
+package2-name = "^<version>"
+
+[tool.poetry.group.<group-2>.dependencies]
+package3-name = "^<version>"
+package4-name = "^<version>"
+
+[tool.pycln]
+path = "."
+all = true
+exclude = '\.history'
+
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = [
+    '.venv',
+    '.history',
+]
+
+[tool.autopep8]
+max_line_length = 120
+ignore = [
+    'E501',
+    'W6',
+]
+jobs = -1
+in-place = true
+recursive = true
+aggressive = 3
+
+[tool.pytest.ini_options]
+addopts = [
+    '-vvs',
+]
+testpaths = [
+    'tests',
+]
+```
 
 ### 1.3. 虚拟环境
 
@@ -306,3 +388,5 @@ poetry sync --with cli,doc
 ```
 
 上述命令表示, 在所需同步依赖的基础上, 额外增加 `[project.optional-dependencies]` 配置下的 `cli` 和 `doc` 分组中定义的依赖
+
+## 3
