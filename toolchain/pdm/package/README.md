@@ -11,7 +11,7 @@ Do you want to build this project for distribution(such as wheel)?
 If yes, it will be installed by default when running `pdm install`. [y/n] (n): y
 ```
 
-该类型项目具备 `src` 目录结构, 项目结构如下:
+这样会创建一个 SRC Layout 结构的项目, 该项目结构中包含一个 `src` 目录, 所有的项目源代码都应位于 `src` 目录下, 且 `src` 目录下必须具备一个和项目名相同的包 (本例中为 `pdm_package` 包), 作为当前 Python 库的根包名
 
 ```plaintext
 .
@@ -26,27 +26,19 @@ If yes, it will be installed by default when running `pdm install`. [y/n] (n): y
 └── pdm.lock
 ```
 
-PDM 会在项目中创建 `src` 目录, 所有的项目源代码都应位于 `src` 目录下, 且 `src` 目录下必须具备一个和项目名相同的包 (本例中为 `pdm_package` 包), 作为当前 Python 库的根包名
-
-对于 `package` 类型项目, PDM 会将 `src` 目录下的内容作为 "可编辑" 依赖安装到当前的虚拟环境中 (即 `.venv` 目录)
+对于 `package` 类型项目, PDM 会将 `src` 目录下的内容作为 "可编辑" 依赖安装到当前的虚拟环境中 (即 `.venv` 目录), 参考 [安装项目依赖](../README.md#34-安装项目依赖) 章节
 
 ## 2. 项目配置
 
-项目中的 `pyproject.toml` 文件定义了项目的配置项, 配置内容参见 [PDM 文档](../README.md), 对于 `package` 类型项目, 几项特殊配置项如下:
+`pyproject.toml` 文件中定义了当前项目的配置项, 参见 [PDM 文档](../README.md), 对于 `lib` 类型项目, 需要添加如下配置:
 
-### 2.1. 允许当前项目安装自身
+如下配置允许当前项目作为一个可编辑依赖, 被安装到当前虚拟环境中, 参考 [安装项目依赖](../README.md#34-安装项目依赖) 章节
 
 ```toml
 [tool.pdm]
 distribution = true
 ```
 
-此配置允许当前项目作为一个可编辑依赖, 被安装到当前虚拟环境中
-
-### 2.2. 定义打包器配置
-
-`package` 类型项目需要能够打包安装, 故需要定义打包器配置, 参见 [配置打包构建器](../README.md#71-配置打包构建器) 章节
-
-### 2.3. 定义启动脚本
-
 `package` 类型项目所产生的包, 需要能够在安装后被直接运行, 故需要定义启动脚本, 参见 [配置启动脚本](../README.md#72-配置启动脚本) 章节
+
+`package` 类型项目需要能够打包安装, 需要定义打包器配置, 参见 [配置打包构建器](../README.md#71-配置打包构建器) 章节

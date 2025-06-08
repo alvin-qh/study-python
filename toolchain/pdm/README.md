@@ -44,12 +44,6 @@ pdm self update
 powershell -ExecutionPolicy ByPass -c "irm https://pdm-project.org/install-pdm.py | py - --remove"
 ```
 
-### 1.1. 在新目录中创建项目
-
-```bash
-pdm new --name <project_name> --python <python_version/python_path> [--lib] [template] project_path
-```
-
 ## 2. 新建项目
 
 ### 2.1. 安装 Python 解释器
@@ -76,11 +70,35 @@ pdm python list
 
 ### 2.2. 创建项目
 
+可以通过 `pdm new` 或 `pdm init` 命令创建 Python 项目, 其中:
+
+`pdm new` 会在指定的目录下创建 Python 项目
+
+```bash
+pdm new --name <project_name> \
+       [--python <python_version/python_path>] \
+       [--dist/--lib] [--no-git] \
+       [--backend {pdm-backend,setuptools,flit-core,hatchling} \
+       [template] project_path
+```
+
+`pdm init` 则会在当前目录下创建 Python 项目
+
+```bash
+pdm init --name <project_name> \
+       [--python <python_version/python_path>] \
+       [--dist/--lib] [--no-git] \
+       [--backend {pdm-backend,setuptools,flit-core,hatchling} \
+       [template] project_path
+```
+
+无论哪种方式, 都会创建 `pyproject.toml` 文件作为项目配置文件
+
 PDM 可创建三类 Python 项目, 分别为应用 (Application), Python 库 (Lib) 以及 Python 包 (Package), 可参考:
 
-- [Application](./app/README.md): 创建 Python 应用程序项目, 代码结构为扁平结构 (flat layout);
-- [Lib](./lib/README.md): 创建 Python 库程序项目, 代码结构为 SRC 结构 (src layout);
-- [Package](./package/README.md): 创建 Python 依赖包项目, 代码结构为 SRC 结构 (src layout);
+- [Application](./app/README.md): 创建 Python 应用程序项目, 代码结构为扁平结构 (Flat Layout);
+- [Lib](./lib/README.md): 创建 Python 库程序项目, 代码结构为 SRC 结构 (SRC Layout);
+- [Package](./package/README.md): 创建 Python 依赖包项目, 代码结构为 SRC 结构 (SRC Layout);
 
 PDM 创建项目后, 会在项目的根路径下生成 `pyproject.toml` 配置文件, 该文件符合 Python 的 PEP 518 标准, 该文件中管理了当前项目的基本信息, 依赖包, 工具配置, 打包构建配置等
 
@@ -113,11 +131,11 @@ group2 = [
 ]
 
 [project.optional-dependencies]
-group1 = [
+group3 = [
   "<package7-name >= <version>",
   "<package8-name >= <version>",
 ]
-group2 = [
+group4 = [
   "<package9-name >= <version>",
   "<package10-name >= <version>",
 ]
@@ -168,10 +186,10 @@ testpaths = [
 
 其中:
 
-- `[project]`: 用于配置项目的基本信息, 包括项目名称, 版本号, 所依赖 Python 解释器版本, 授权证书以及项目依赖包；
-- `[dependency-groups]`: 配置项目在开发时相关的依赖包, 以分组方式管理, 该配置项下的依赖包不会进行打包分发;
-- `[project.optional-dependencies]`: 当前项目的可选依赖包, 通过添加不同的可选依赖包, 可以让项目具备不同功能;
-- `[tool.xxx]`: 工具配置, 包括打包工具, 测试工具, 代码检测工具, 代码管理工具等;
+- `[project]`: 用于配置项目的基本信息, 包括项目名称, 版本号, 所依赖 Python 解释器版本, 授权证书以及项目依赖包
+- `[dependency-groups]`: 配置项目在开发时相关的依赖包, 以分组方式管理, 该配置项下的依赖包不会进行打包分发
+- `[project.optional-dependencies]`: 当前项目的可选依赖包, 通过添加不同的可选依赖包, 可以让项目具备不同功能
+- `[tool.xxx]`: 工具配置, 包括打包工具, 测试工具, 代码检测工具, 代码管理工具等
 
 ## 3. 依赖管理
 
@@ -179,7 +197,7 @@ testpaths = [
 
 在 `[project]` 的 `dependencies` 项中添加依赖, 用于当前项目的生产环境依赖
 
-从 PyPI 仓库添加依赖包
+#### 3.1.1. 从 PyPI 仓库添加依赖包
 
 ```bash
 pdm add <package-name>  # 如 pdm add numpy
@@ -188,14 +206,14 @@ pdm add <package-name>=version>  # 如 pdm add numpy>=2.2
 pdm add <package-name[optional]>  # 如 pdm add requests[socks]
 ```
 
-从本地或远程代码库添加依赖包
+#### 3.1.2. 通过源代码添加依赖包
 
 ```bash
 pdm add <path-to-package>  # 如 pdm add ./libs/data-requirement
 pdm add <url-to-package>  # 如 pdm add https://github.com/explosion/spacy-models/releases/download/en_core_web_trf-3.5.0/en_core_web_trf-3.5.0-py3-none-any.whl
 ```
 
-从 GIT 代码仓库添加依赖包
+#### 3.1.3. 从 GIT 代码仓库添加依赖包
 
 ```bash
 pdm add "git+<git-repo-url>" # 如 pdm add "git+https://github.com/pypa/pip.git@22.0"
@@ -211,8 +229,8 @@ pdm add "git+<git-repo-url#egg=<name>&subdirectory=<subpath>>" # 如 pdm add "gi
 在 `[dependency-groups]` 中添加分组依赖, 用于当前项目开发环境依赖, 这部分依赖不会被引入到发布的软件包元数据中
 
 ```bash
-pdm add <dependency> -d/--dev # 添加到 `dev` 分组中
-pdm add <dependency> -dG <group-name> # 添加到指定名称的分组中
+pdm add <package-name> -d/--dev # 添加到 `dev` 分组中
+pdm add <package-name> -dG <group-name> # 添加到指定名称的分组中
 ```
 
 ### 3.3. 添加可选依赖
@@ -220,10 +238,30 @@ pdm add <dependency> -dG <group-name> # 添加到指定名称的分组中
 在 `[project.optional-dependencies]` 中添加分组依赖, 这部分依赖作为当前项目的可选依赖, 可以选择性安装
 
 ```bash
-pdm add <dependency> -G/--group <group-name> # 添加到指定名称的分组中
+pdm add <package-name> -G/--group <group-name> # 添加到指定名称的分组中
 ```
 
-### 3.4. 同步依赖
+### 3.4. 安装项目依赖
+
+项目安装会完成两件工作
+
+- 安装当前项目中全部的所需依赖;
+- 如果当前项目是 SRC Layout 结构, 则将 `src` 目录下的内容作为当前项目的可编辑依赖进行安装, 参考 `pip` 命令的 `--editable/-e` 选项
+
+对于 SRC Layout 结构的代码, 需要在 `pyproject.toml` 文件中添加如下配置项, 表示当前代码会作为可编辑依赖安装到当前 Python 虚拟环境中
+
+```toml
+[tool.pdm]
+distribution = true
+```
+
+项目通过 `pdm install ...` 命令安装, 该命令的参数和 `pdm sync` 命令基本一致, 参考 [同步项目依赖](#35-同步项目依赖) 章节内容, 例如:
+
+```bash
+pdm install -dG:all
+```
+
+### 3.5. 同步项目依赖
 
 同步依赖会根据 `pdm.lock` 文件中的定义, 重新为当前 Python 虚拟环境安装依赖包, 命令如下:
 
@@ -331,15 +369,6 @@ pdm lock -G/--group <feature-name>
 pdm lock --without <feature-name>
 ```
 
-## 4. 项目安装
-
-项目安装会完成两件工作
-
-- 安装当前项目中全部的所需依赖;
-- 如果当前项目是 `lib` 或 `package` 类型的, 则将 `src` 目录下的内容作为当前项目的可编辑依赖进行安装, 参考 `pip` 命令的 `--editable/-e` 选项
-
-项目通过 `pdm install ...` 命令安装, 该命令的参数和 `pdm sync` 命令基本一致, 参考 [同步依赖](#34-同步依赖) 章节内容
-
 ## 5. 配置 Python 工具
 
 可以通过 `pyproject.toml` 文件取代很多 Python 工具的配置文件, 例如 `pytest` 工具的 `pytest.ini` 文件, 可通过在 `pyproject.toml` 文件中添加 `[tool.pytest.ini_options]` 配置项取代
@@ -402,7 +431,7 @@ aggressive = 3
 
 其它配置项参见: <https://github.com/hhatto/autopep8?tab=readme-ov-file#configuration>
 
-## 6. 执行项目脚本
+## 6. 配置项目脚本
 
 PDM 可以直接执行当前项目中的任意 `.py` 文件或当前项目虚拟环境下安装的任意 Python 工具包 (例如 `pytest`)
 
@@ -453,11 +482,42 @@ pdm run test
 pdm run clean
 ```
 
-## 7. 打包构建
+## 7. 导入导出 PIP 格式依赖文件
 
-对于类型为 `lib` 或 `package` 的项目, 可打包为 `.tar.gz` 或 `.whl` 文件, 以便安装在其它环境中
+### 7.1. 导出 `requirements.txt` 文件
 
-### 7.1. 配置打包构建器
+PDM 支持将当前项目 `pyproject.toml` 文件中引入的依赖导出为 `requirements.txt` 文件, 以便之后通过 `pip` 命令安装依赖, 具体命令为:
+
+```bash
+pdm export -dG:all --no-hashes -f/--format requirements > requirements.txt
+```
+
+上述命令表示导出当前项目 `pyproject.toml` 中包含的所有依赖, 包括:
+
+- `[project]` 配置下 `dependencies` 配置项中定义的依赖
+- `[dependency-groups]` 配置下所有分组中的依赖 (`-dG:all` 选项)
+- `[project.optional-dependencies]` 配置下所有分组中的依赖 (`-dG:all` 选项)
+- 导出为 `requirements.txt` 文件 (`-f/--format requirements` 选项)
+
+PDM 可以导出多种格式的依赖文件, 通过 `-f/--format` 选项指定, 参考 `pdm export --help` 帮助信息
+
+### 7.2. 导入 `requirements.txt` 文件
+
+PDM 支持将 `requirements.txt` 文件导入为 `pyproject.toml` 文件, 以便之后通过 PDM 安装依赖, 具体命令为:
+
+```bash
+pdm import -f/--format requirements requirements.txt
+```
+
+PDM 可以导入多种格式的依赖文件, 通过 `-f/--format` 选项指定, 参考 `pdm import --help` 帮助信息
+
+PDM 也可以将 `requirements.txt` 文件中的依赖导入到当前项目 `pyproject.toml` 文件的特定依赖分组中, 参考 `pdm import` 命令的 `--dev` 和 `--group` 选项
+
+## 8. 打包构建
+
+对于类型为 SRC Layout 结构的项目, 可打包为 `.tar.gz` 或 `.whl` 文件, 以便安装在其它环境中
+
+### 8.1. 配置打包构建器
 
 在 `pyproject.toml` 中增加如下配置:
 
@@ -493,52 +553,31 @@ source-includes = [
 package-dir = "my_src"
 ```
 
-可通过如下命令进行打包
-
-```bash
-pdm build
-```
-
-打包结果存储在 `dist` 目录中生成一个 `.tar.gz` 文件和一个 `.whl` 文件
-
-### 7.2. 指定启动脚本
+### 8.2. 指定启动脚本
 
 对于 `package` 类型的项目, 安装包后, 会提供一个执行入口, 用于启动项目, 需要在 `pyproject.toml` 文件中添加如下配置:
 
 ```toml
 [project.scripts]
-pdm-package = "pdm_package:run"
+<executable-entrypoint-name> = "<module-name>:<function-name>"
 ```
 
-表示当前项目的执行入口, 当项目打包产生的 `.whl` 文件被安装后, 可通过项目名称直接运行
-
-## 8. 导入导出 PIP 格式依赖文件
-
-### 8.1. 导出 `requirements.txt` 文件
-
-PDM 支持将当前项目 `pyproject.toml` 文件中引入的依赖导出为 `requirements.txt` 文件, 以便之后通过 `pip` 命令安装依赖, 具体命令为:
+表示当前项目的执行入口, 当项目打包产生的 `.whl` 文件被安装后, 可通过 `<executable-entrypoint-name>` 直接运行
 
 ```bash
-pdm export -dG:all --no-hashes -f/--format requirements > requirements.txt
+# 安装软件包
+pip install <package-file-name>.whl
+
+# 执行软件包
+<executable-entrypoint-name>
 ```
 
-上述命令表示导出当前项目 `pyproject.toml` 中包含的所有依赖, 包括:
+### 8.3. 执行打包
 
-- `[project]` 配置下 `dependencies` 配置项中定义的依赖
-- `[dependency-groups]` 配置下所有分组中的依赖 (`-dG:all` 选项)
-- `[project.optional-dependencies]` 配置下所有分组中的依赖 (`-dG:all` 选项)
-- 导出为 `requirements.txt` 文件 (`-f/--format requirements` 选项)
-
-PDM 可以导出多种格式的依赖文件, 通过 `-f/--format` 选项指定, 参考 `pdm export --help` 帮助信息
-
-### 8.2. 导入 `requirements.txt` 文件
-
-PDM 支持将 `requirements.txt` 文件导入为 `pyproject.toml` 文件, 以便之后通过 PDM 安装依赖, 具体命令为:
+通过 `pdm build` 命令即可执行打包
 
 ```bash
-pdm import -f/--format requirements requirements.txt
+pdm build
 ```
 
-PDM 可以导入多种格式的依赖文件, 通过 `-f/--format` 选项指定, 参考 `pdm import --help` 帮助信息
-
-PDM 也可以将 `requirements.txt` 文件中的依赖导入到当前项目 `pyproject.toml` 文件的特定依赖分组中, 参考 `pdm import` 命令的 `--dev` 和 `--group` 选项
+此命令会在 `dist` 目录下产生 `.whl` 软件包文件和 `.tar.gz` 程序包文件

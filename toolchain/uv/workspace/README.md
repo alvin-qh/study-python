@@ -92,6 +92,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 ```
 
+更多关于打包器说明, 请参见 [配置打包器](../README.md#71-配置打包器)
+
 #### 1.2.2. 关联子项目
 
 主项目需要将子项目添加为依赖, 具体方法如下:

@@ -116,7 +116,7 @@ UV 可创建三类 Python 项目, 分别为应用 (Application), Python 库 (Lib
 
 UV 创建项目后, 会在项目的根路径下生成 `pyproject.toml` 配置文件, 该文件符合 Python 的 PEP 518 标准, 该文件中管理了当前项目的基本信息, 依赖包, 工具配置, 打包构建配置等
 
-一个典型的 `pyproject.toml` 文件内容如下:
+一个典型的通过 UV 创建的 `pyproject.toml` 文件内容如下:
 
 ```toml
 [project]
@@ -127,9 +127,8 @@ authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "<package1>=1.0",
-    "<package2>=2.0",
-    "<package3>=2.2",
+    "<package1-name> >= <version>",
+    "<package2-name> >= <version>",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
@@ -137,22 +136,22 @@ license = { text = "MIT" }
 
 [dependency-groups]
 group1 = [
-  "<group1-dependency1>=1.0>"
-  "<group1-dependency2>=2.0>"
+  "<package3-name> >= <version>",
+  "<package4-name> >= <version>",
 ]
 group2 = [
-  "<group2-dependency1>=2.0>"
-  "<group2-dependency2>=3.0>"
+  "<package5-name> >= <version>",
+  "<package6-name> >= <version>",
 ]
 
 [project.optional-dependencies]
-feature1 = [
-    "<feature1-package1>=2.0>",
-    "<feature1-package2>=3.1>",
+group3 = [
+  "<package7-name> >= <version>",
+  "<package8-name> >= <version>",
 ]
-feature2 = [
-    "<feature2-package1>=2.0>",
-    "<feature2-package2>=1.1>",
+group4 = [
+  "<package9-name> >= <version>",
+  "<package10-name> >= <version>",
 ]
 
 [tool.pdm.scripts]
@@ -243,11 +242,11 @@ uv add <url-to-package> # 如 uv add https://github.com/explosion/spacy-models/r
 [project]
 ...
 dependencies = [
-  "uv-lib",
+  "<local-package>",
 ]
 
 [tool.uv.sources]
-uv-lib = { path = "../lib" }
+<local-package> = { path = "<path-to-package>" }
 ```
 
 #### 3.1.3. 添加 GIT 代码仓库为依赖
@@ -359,11 +358,197 @@ uv sync --no-extra <feature-name>
 uv lock
 ```
 
-## 4. 配置打包
+## 4. 配置 Python 工具
+
+可以通过 `pyproject.toml` 文件取代很多 Python 工具的配置文件, 例如 `pytest` 工具的 `pytest.ini` 文件, 可通过在 `pyproject.toml` 文件中添加 `[tool.pytest.ini_options]` 配置项取代
+
+具体工具配置, 可参考该工具的相关文档
+
+### 4.1. pytest 配置
+
+```toml
+[tool.pytest.ini_options]
+addopts = [
+  '-vvs',
+]
+testpaths = [
+  'tests',
+]
+```
+
+其它配置项参见: <https://docs.pytest.org/en/7.1.x/reference/customize.html>
+
+### 4.2. pycln 配置
+
+```toml
+[tool.pycln]
+all = true
+path = "."
+exclude = '\.history'
+```
+
+其它配置参见参见: <https://hadialqattan.github.io/pycln/#/?id=usage>
+
+### 4.3. mypy 配置
+
+```toml
+[tool.mypy]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = [
+  '.venv',
+  '.history',
+]
+```
+
+其它配置参见: <https://mypy.readthedocs.io/en/stable/config_file.html>
+
+### 4.4. autopep8 配置
+
+```toml
+[tool.autopep8]
+max_line_length = 120
+ignore = ['E501', 'W6']
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+```
+
+其它配置项参见: <https://github.com/hhatto/autopep8?tab=readme-ov-file#configuration>
+
+## 5. 执行项目脚本
+
+PDM 可以直接执行当前项目中的任意 `.py` 文件或当前项目虚拟环境下安装的任意 Python 工具包 (例如 `pytest`)
+
+### 5.1. 运行指定的 Python 文件
+
+可以通过 PDM 的 `run` 命令来运行项目中指定的 Python 文件, 例如:
+
+```bash
+uv run main.py
+uv run main.py
+```
+
+### 5.2. 运行指定 Python 工具包
+
+如果在当前项目的虚拟环境下安装了 Python 工具包, 那么可以通过 UV 的 `run` 命令来运行它, 例如:
+
+```bash
+uv run pytest
+uv run pycln --config=pyproject.toml
+uv run mypy .
+uv run autopep8 .
+```
+
+各工具执行时, 会读取各自的配置文件, 或从 `pyproject.toml` 中读取该工具的配置, 参见 [配置 Python 工具](#4-配置-python-工具) 章节
+
+### 5.3. 指定启动脚本
+
+对于 `package` 类型的项目, 安装包后, 会提供一个执行入口, 用于启动项目, 需要在 `pyproject.toml` 文件中添加如下配置:
+
+```toml
+[project.scripts]
+pdm-package = "pdm_package:run"
+```
+
+表示当前项目的执行入口, 当项目打包产生的 `.whl` 文件被安装后, 可通过项目名称直接运行
+
+## 6. PIP 兼容
+
+UV 支持 PIP 兼容命令, 包括导出 `requirements.txt` 文件, 安装依赖, 卸载依赖等
+
+### 6.1. 导出 `requirements.txt` 文件
+
+```bash
+uv export --all-groups --no-hashes --no-editable --format requirements.txt > requirements.txt
+```
+
+也可以通过 `uv pip` 命令
+
+```bash
+uv pip freeze > requirements.txt
+```
+
+### 6.2. 安装依赖
+
+可以通过 PIP 兼容命令, 在当前项目虚拟环境中安装依赖, 包括:
+
+```bash
+uv pip install mypy mypy-extensions
+```
+
+也可以通过 `requirements.txt` 文件批量安装依赖
+
+```bash
+uv pip install -r/--requirement requirements.txt
+```
+
+包括从本地安装依赖, 并将其安装为可编辑依赖包
+
+```bash
+uv pip install -e/--editable ./src
+```
+
+### 6.3. 卸载依赖
+
+可以通过 PIP 兼容命令, 在当前项目虚拟环境中卸载依赖, 包括:
+
+ ```bash
+uv pip uninstall mypy mypy-extensions
+```
+
+也可以通过 `requirements.txt` 文件批量卸载依赖
+
+```bash
+uv pip uninstall -r/--requirement requirements.txt
+```
+
+### 6.4. 查看依赖
+
+通过 PIP 兼容命令, 在当前项目虚拟环境中查看依赖, 包括:
+
+通过 `tabular` 格式查看所有依赖
+
+```bash
+uv pip list
+```
+
+通过 `requirements` 格式查看所有依赖
+
+```bash
+uv pip freeze
+```
+
+查看依赖关系树形结构
+
+```bash
+uv pip tree
+```
+
+查看某个具体依赖包
+
+```bash
+uv pip show mypy
+```
+
+### 6.5. 校验依赖
+
+通过 PIP 兼容命令, 可以校验当前项目虚拟环境中依赖的正确性:
+
+```bash
+uv pip check
+```
+
+## 7. 配置打包
 
 打包构建器用于将当前项目打包为 `.whl` 文件, 可上传到 `PyPI` 仓库中供其它项目使用
 
-### 4.1. 配置打包器
+### 7.1. 配置打包器
 
 UV 支持多种打包器, 包括 `setuptools`, `hatchling` 和 `uv_build`, 默认使用 `hatchling` 打包器, 可通过在 `pyproject.toml` 文件中添加 `[build-system]` 配置项来配置打包器
 
@@ -379,7 +564,7 @@ build-backend = "hatchling.build"
 uv init --name uv-build-demo --app --backend hatchling
 ```
 
-### 4.2. 配置打包器参数
+### 7.2. 配置打包器参数
 
 可以通过在 `pyproject.toml` 文件中添加 `[tool.uv.build-backend]` 配置项来配置打包器参数
 
@@ -415,7 +600,26 @@ data = [
   - `data`: 数据文件目录, 该目录下的内容复制到当前虚拟环境的的根目录下 (即 `<venv>/` 下)
   - `headers`: 头文件目录, 该目录下的内容会复制到当前系统的头文件m目录下 (对于 Linux, 即 `/usr/include` 下)
 
-### 4.3. 执行打包
+### 7.3. 配置包启动脚本
+
+如果当前 UV 项目为 `package` 类型项目, 则一般需要配置一个启动脚本, 用于指定启动该包主程序的入口
+
+```toml
+[project.scripts]
+<excitable-entrypoint-name> = "<module-name>:<function-name>"
+```
+
+当打包产生的 `.whl` 文件被通过 PIP 安装后, 即可
+
+```bash
+# 安装软件包
+pip install <package-file-name>.whl
+
+# 通过入口点名称执行软件包
+<excitable-entrypoint-name>
+```
+
+### 7.3. 执行打包
 
 可通过如下命令进行打包
 
@@ -424,189 +628,3 @@ uv build
 ```
 
 打包后会在 `dist` 目录下生成 `.whl` 文件以及 `.tar.gz` 文件
-
-## 5. 配置 Python 工具
-
-可以通过 `pyproject.toml` 文件取代很多 Python 工具的配置文件, 例如 `pytest` 工具的 `pytest.ini` 文件, 可通过在 `pyproject.toml` 文件中添加 `[tool.pytest.ini_options]` 配置项取代
-
-具体工具配置, 可参考该工具的相关文档
-
-### 5.1. pytest 配置
-
-```toml
-[tool.pytest.ini_options]
-addopts = [
-  '-vvs',
-]
-testpaths = [
-  'tests',
-]
-```
-
-其它配置项参见: <https://docs.pytest.org/en/7.1.x/reference/customize.html>
-
-### 5.2. pycln 配置
-
-```toml
-[tool.pycln]
-all = true
-path = "."
-exclude = '\.history'
-```
-
-其它配置参见参见: <https://hadialqattan.github.io/pycln/#/?id=usage>
-
-### 5.3. mypy 配置
-
-```toml
-[tool.mypy]
-strict = true
-warn_return_any = true
-warn_unused_configs = true
-ignore_missing_imports = true
-disallow_untyped_decorators = false
-check_untyped_defs = true
-exclude = [
-  '.venv',
-  '.history',
-]
-```
-
-其它配置参见: <https://mypy.readthedocs.io/en/stable/config_file.html>
-
-### 5.4. autopep8 配置
-
-```toml
-[tool.autopep8]
-max_line_length = 120
-ignore = ['E501', 'W6']
-in-place = true
-recursive = true
-jobs = -1
-aggressive = 3
-```
-
-其它配置项参见: <https://github.com/hhatto/autopep8?tab=readme-ov-file#configuration>
-
-## 6. 执行项目脚本
-
-PDM 可以直接执行当前项目中的任意 `.py` 文件或当前项目虚拟环境下安装的任意 Python 工具包 (例如 `pytest`)
-
-### 6.1. 运行指定的 Python 文件
-
-可以通过 PDM 的 `run` 命令来运行项目中指定的 Python 文件, 例如:
-
-```bash
-uv run main.py
-uv run main.py
-```
-
-### 6.2. 运行指定 Python 工具包
-
-如果在当前项目的虚拟环境下安装了 Python 工具包, 那么可以通过 UV 的 `run` 命令来运行它, 例如:
-
-```bash
-uv run pytest
-uv run pycln --config=pyproject.toml
-uv run mypy .
-uv run autopep8 .
-```
-
-各工具执行时, 会读取各自的配置文件, 或从 `pyproject.toml` 中读取该工具的配置, 参见 [配置 Python 工具](#5-配置-python-工具) 章节
-
-### 6.3. 指定启动脚本
-
-对于 `package` 类型的项目, 安装包后, 会提供一个执行入口, 用于启动项目, 需要在 `pyproject.toml` 文件中添加如下配置:
-
-```toml
-[project.scripts]
-pdm-package = "pdm_package:run"
-```
-
-表示当前项目的执行入口, 当项目打包产生的 `.whl` 文件被安装后, 可通过项目名称直接运行
-
-## 7. PIP 兼容
-
-UV 支持 PIP 兼容命令, 包括导出 `requirements.txt` 文件, 安装依赖, 卸载依赖等
-
-### 7.1. 导出 `requirements.txt` 文件
-
-```bash
-uv export --all-groups --no-hashes --no-editable --format requirements.txt > requirements.txt
-```
-
-也可以通过 `uv pip` 命令
-
-```bash
-uv pip freeze > requirements.txt
-```
-
-### 7.2. 安装依赖
-
-可以通过 PIP 兼容命令, 在当前项目虚拟环境中安装依赖, 包括:
-
-```bash
-uv pip install mypy mypy-extensions
-```
-
-也可以通过 `requirements.txt` 文件批量安装依赖
-
-```bash
-uv pip install -r/--requirement requirements.txt
-```
-
-包括从本地安装依赖, 并将其安装为可编辑依赖包
-
-```bash
-uv pip install -e/--editable ./src
-```
-
-### 7.3. 卸载依赖
-
-可以通过 PIP 兼容命令, 在当前项目虚拟环境中卸载依赖, 包括:
-
- ```bash
-uv pip uninstall mypy mypy-extensions
-```
-
-也可以通过 `requirements.txt` 文件批量卸载依赖
-
-```bash
-uv pip uninstall -r/--requirement requirements.txt
-```
-
-### 7.4. 查看依赖
-
-通过 PIP 兼容命令, 在当前项目虚拟环境中查看依赖, 包括:
-
-通过 `tabular` 格式查看所有依赖
-
-```bash
-uv pip list
-```
-
-通过 `requirements` 格式查看所有依赖
-
-```bash
-uv pip freeze
-```
-
-查看依赖关系树形结构
-
-```bash
-uv pip tree
-```
-
-查看某个具体依赖包
-
-```bash
-uv pip show mypy
-```
-
-### 7.5. 校验依赖
-
-通过 PIP 兼容命令, 可以校验当前项目虚拟环境中依赖的正确性:
-
-```bash
-uv pip check
-```

@@ -11,7 +11,7 @@ Do you want to build this project for distribution(such as wheel)?
 If yes, it will be installed by default when running `pdm install`. [y/n] (n): n
 ```
 
-该类型项目具备 `src` 目录结构, 项目结构如下:
+这样会创建一个 Flat Layout 结构的项目, 所有的模块都位于项目根目录下
 
 ```plaintext
 .
@@ -23,17 +23,13 @@ If yes, it will be installed by default when running `pdm install`. [y/n] (n): n
 └── pdm.lock
 ```
 
-Flat 代码布局指的是项目的根目录下面直接包含 Python 包目录以及 Python 模块文件
+### 2. 配置项目
 
-## 2. 项目配置
-
-项目中的 `pyproject.toml` 文件定义了项目的配置项, 配置内容参见 [PDM 文档](../README.md), 对于 `app` 类型项目, 几项特殊配置项如下:
-
-### 2.1. 允许当前项目安装自身
+一般情况下, Application 类型项目无需打包, 可在 `pyproject.toml` 文件中添加如下配置
 
 ```toml
 [tool.pdm]
 distribution = false
 ```
 
-此配置禁止将当前项目作为一个可编辑依赖， `distribution = false` 为默认值, 故也可以省略上述配置项
+此配置禁止将当前项目作为一个可编辑依赖进行安装, 参考 [安装项目依赖](../README.md#34-安装项目依赖)
