@@ -1,7 +1,7 @@
 import json
 from abc import ABC, abstractmethod
 from functools import partialmethod
-from typing import Any, Dict, List, Optional, Self, Tuple
+from typing import Any, Dict, List, Optional, Self, Tuple, cast
 
 from pytest import raises
 
@@ -756,7 +756,7 @@ def test_singleton_class() -> None:
                 cls._inst = super().__new__(cls)
 
             # 返回单例实例
-            return cls._inst  # type:ignore
+            return cast(C, cls._inst)
 
         def __init__(self, value: Any) -> None:
             """

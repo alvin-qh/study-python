@@ -2,7 +2,7 @@
 name = "basic"
 version = "0.1.0"
 authors = [
-    {name = 'Alvin', email = 'quhao317@163.com'},
+    { name = 'Alvin', email = 'quhao317@163.com' },
 ]
 dependencies = [
     "pytz>=2025.2",
@@ -15,7 +15,7 @@ dependencies = [
 ]
 requires-python = ">=3.13"
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -35,7 +35,7 @@ test = [
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.7.0",
-    "hypothesis>=6.135.1",
+    "hypothesis>=6.135.4",
     "faker>=37.3.0",
     "pytest-sugar>=1.0.0",
 ]
@@ -48,19 +48,19 @@ type = [
 distribution = false
 
 [tool.pdm.scripts]
-check = {composite = [
+check = { composite = [
     "pycln --config=pyproject.toml",
-    "mypy .",
     "autopep8 .",
-]}
-check-win = {composite = [
+    "mypy .",
+] }
+check-win = { composite = [
     "pycln.exe --config=pyproject.toml",
-    "mypy.exe .",
     "autopep8.exe .",
-]}
+    "mypy.exe .",
+] }
 test = "pytest"
 test-win = "pytest.exe"
-clean = {call = "clear:main"}
+clean = { call = "clear:main" }
 type_install = "mypy --install-types"
 
 [tool.pycln]
@@ -113,9 +113,8 @@ addopts = [
     # -s 允许标准输出
     # -n auto 自动分配多进程测试
     # --dist=loadfile 按测试文件分配进程
-    "-vvs",
-    "--log-cli-level",
-    "INFO",
+    "-s",
+    "--log-cli-level=INFO",
 ]
 filterwarnings = [
     # 忽略指定的警告信息
