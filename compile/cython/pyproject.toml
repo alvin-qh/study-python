@@ -28,8 +28,8 @@ distribution = true
 
 [tool.pdm.scripts]
 lint = { composite = [
-    "autopep8 .",
     "pycln --config=pyproject.toml",
+    "autopep8 .",
 ] }
 type = { composite = [
     "mypy .",
@@ -41,7 +41,7 @@ check = { composite = [
     "test",
 ] }
 clean = { call = "clear:main" }
-type_install = "mypy --install-types"
+type-install = "mypy . --install-types"
 
 [tool.pycln]
 path = "."

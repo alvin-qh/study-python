@@ -1,47 +1,60 @@
 [project]
 name = "math-demo"
 version = "0.1.0"
-authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
 dependencies = [
     "ipykernel>=6.29.5",
-    "matplotlib>=3.10.1",
+    "matplotlib>=3.10.3",
     "data-science-types>=0.2.23",
-    "numpy>=2.2.5",
+    "numpy>=2.3.0",
     "pygame>=2.6.1",
     "pyopengl>=3.1.9",
 ]
 requires-python = ">=3.13"
 license = { text = "MIT" }
 
-[project.optional-dependencies]
+[dependency-groups]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
+    "pytest-sugar>=1.0.0",
 ]
 lint = [
     "autopep8>=2.3.2",
-    "mypy>=1.15.0",
     "pycln>=2.5.0",
+]
+type = [
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
 ]
 
 [tool.pdm]
 distribution = true
 
 [tool.pdm.scripts]
-check = { composite = [
-    "pycln --config=pyproject.toml .",
-    "mypy .",
+lint = { composite = [
+    "pycln --config=pyproject.toml",
     "autopep8 .",
 ] }
+type = { composite = [
+    "mypy .",
+] }
 test = "pytest"
+check = { composite = [
+    "lint",
+    "type",
+    "test",
+] }
 clean = { call = "clear:main" }
-type_install = "mypy --install-types"
+type-install = "mypy . --install-types"
 
 [tool.pycln]
+path = "."
 all = true
 exclude = '\.history'
 
 [tool.mypy]
-python_version = '3.13'
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -56,7 +69,10 @@ exclude = [
 
 [tool.autopep8]
 max_line_length = 120
-ignore = ['E501', 'W6']
+ignore = [
+    'E501',
+    'W6',
+]
 in-place = true
 recursive = true
 jobs = -1
@@ -64,7 +80,7 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
     '-p no:warnings',
 ]
 testpaths = [

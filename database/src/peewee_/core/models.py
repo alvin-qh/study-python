@@ -236,6 +236,6 @@ class MultiTenantMixin(Model):
 
         tenant = context.get_current_tenant()
         if tenant:
-            query = query.where(org_id=tenant._get_id())  # type: ignore[call-arg]
+            query = query.where(org_id=tenant._get_id())
 
         return query

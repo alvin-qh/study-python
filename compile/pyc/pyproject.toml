@@ -1,46 +1,59 @@
 [project]
 name = "compile-pyc"
 version = "0.1.0"
-authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
 dependencies = [
-    "flask>=3.1.0",
+    "flask>=3.1.1",
     "xxhash>=3.5.0",
 ]
 requires-python = "==3.13.*"
 readme = "README.md"
 license = { text = "MIT" }
 
-[project.optional-dependencies]
+[dependency-groups]
 lint = [
     "autopep8>=2.3.2",
-    "mypy>=1.15.0",
     "pycln>=2.5.0",
 ]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
+    "pytest-sugar>=1.0.0",
+]
+type = [
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
 ]
 
 [tool.pdm]
 distribution = true
 
 [tool.pdm.scripts]
-start = { call = "app:main" }
-check = { composite = [
-    "pycln --config=pyproject.toml .",
-    "mypy .",
+lint = { composite = [
+    "pycln --config=pyproject.toml",
     "autopep8 .",
 ] }
+type = { composite = [
+    "mypy .",
+] }
 test = "pytest"
+check = { composite = [
+    "lint",
+    "type",
+    "test",
+] }
+start = { call = "app:main" }
 compile = "build.py"
 clean = { call = "clear:main" }
-type_install = "mypy --install-types"
+type-install = "mypy . --install-types"
 
 [tool.pycln]
+path = "."
 all = true
 exclude = '\.history'
 
 [tool.mypy]
-python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -66,7 +79,7 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',
