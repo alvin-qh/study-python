@@ -1,45 +1,57 @@
 [project]
 name = "thirdpart-click"
 version = "0.1.0"
-authors = [{ name = "Alvin", email = "quhao317@163.com" }]
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
 dependencies = [
-    "click>=8.1.8",
-    "colorama>=0.4.6",
+    "click>=8.2.1",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
 license = { text = "MIT" }
 
-[project.optional-dependencies]
+[dependency-groups]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
+    "pytest-sugar>=1.0.0",
 ]
 lint = [
     "autopep8>=2.3.2",
-    "mypy>=1.15.0",
     "pycln>=2.5.0",
+]
+type = [
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
 ]
 
 [tool.pdm]
 distribution = true
 
 [tool.pdm.scripts]
-start = { call = "run:main" }
-check = { composite = [
-    "pycln --config=pyproject.toml .",
-    "mypy .",
+lint = { composite = [
+    "pycln --config=pyproject.toml",
     "autopep8 .",
 ] }
+type = { composite = [
+    "mypy .",
+] }
 test = "pytest"
+check = { composite = [
+    "lint",
+    "type",
+    "test",
+] }
+start = { call = "run:main" }
 clean = { call = "clear:main" }
-type_install = "mypy --install-types"
+type-install = "mypy . --install-types"
 
 [tool.pycln]
+path = "."
 all = true
 exclude = '\.history'
 
 [tool.mypy]
-python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -53,7 +65,10 @@ exclude = [
 
 [tool.autopep8]
 max_line_length = 120
-ignore = ['E501', 'W6']
+ignore = [
+    'E501',
+    'W6',
+]
 in-place = true
 recursive = true
 jobs = -1
