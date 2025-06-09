@@ -24,7 +24,6 @@ classifiers = [
 
 [dependency-groups]
 lint = [
-    "mypy>=1.16.0",
     "autopep8>=2.3.2",
     "pycln>=2.5.0",
 ]
@@ -40,18 +39,25 @@ test = [
     "pytest-sugar>=1.0.0",
 ]
 type = [
-    "types-python-dateutil>=2.9.0.20250516",
-    "types-pytz>=2025.2.0.20250516",
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
 ]
 
 [tool.pdm]
 distribution = false
 
 [tool.pdm.scripts]
-check = { composite = [
-    "pycln --config=pyproject.toml",
+lint = { composite = [
     "autopep8 .",
+    "pycln --config=pyproject.toml",
+] }
+type = { composite = [
     "mypy .",
+] }
+check = { composite = [
+    "lint",
+    "type",
+    "test",
 ] }
 check-win = { composite = [
     "pycln.exe --config=pyproject.toml",
