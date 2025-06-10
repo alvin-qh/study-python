@@ -1,7 +1,11 @@
 import sys
 from loguru import logger
 
-import log as _
+from log import init
+
+# 初始化日志
+init()
+
 
 # 删除默认的日志输出
 logger.remove(0)

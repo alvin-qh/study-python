@@ -16,3 +16,8 @@ def type(c: Context) -> None:
 @task
 def test(c: Context) -> None:
     c.run("pytest")
+
+
+@task(pre=[lint, type, test])
+def check(c: Context) -> None:
+    pass

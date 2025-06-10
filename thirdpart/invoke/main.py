@@ -15,6 +15,5 @@ def main() -> None:
                 fg = cm.Fore.BLACK
 
 
-
 if __name__ == "__main__":
     main()

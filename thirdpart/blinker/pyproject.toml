@@ -26,7 +26,7 @@ type = [
 ]
 
 [tool.pdm]
-distribution = true
+distribution = false
 
 [tool.pdm.scripts]
 lint = { composite = [

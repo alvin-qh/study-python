@@ -5,36 +5,53 @@ description = "Default template for PDM package"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
-dependencies = ["loguru>=0.7.3"]
+dependencies = [
+    "loguru>=0.7.3",
+]
 requires-python = ">=3.13"
 readme = "README.md"
 license = { text = "MIT" }
 
-[project.optional-dependencies]
+[dependency-groups]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
+    "pytest-sugar>=1.0.0",
 ]
 lint = [
     "autopep8>=2.3.2",
-    "mypy>=1.15.0",
     "pycln>=2.5.0",
+]
+type = [
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
 ]
 
 [tool.pdm]
-distribution = true
+distribution = false
 
 [tool.pdm.scripts]
-start = { call = "main:main" }
-check = { composite = [
-    "pycln --config=pyproject.toml .",
-    "mypy .",
+lint = { composite = [
+    "pycln --config=pyproject.toml",
     "autopep8 .",
 ] }
+type = { composite = [
+    "mypy .",
+] }
 test = "pytest"
+check = { composite = [
+    "lint",
+    "type",
+    "test",
+] }
+start = { call = "main:main" }
 clean = { call = "clear:main" }
 
+[tool.pycln]
+path = "."
+all = true
+exclude = '\.history'
+
 [tool.mypy]
-python_version = "3.13"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -48,7 +65,10 @@ exclude = [
 
 [tool.autopep8]
 max_line_length = 120
-ignore = ['E501', 'W6']
+ignore = [
+    'E501',
+    'W6',
+]
 in-place = true
 recursive = true
 jobs = -1
@@ -56,7 +76,7 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
     '-p no:warnings',
 ]
 testpaths = [

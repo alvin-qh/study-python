@@ -40,17 +40,27 @@ click_FILE_NAME = "click.txt"
 
 
 @click.command("click")
-@click.option("-n", "--name", "name",
-              type=click.STRING, required=True,
-              help="Name of people")
-@click.option("-l", "--lang", "lang",
-              type=click.Choice(LANGUAGE_SET), required=False,
-              help="Language in {} and \"en\" is default".format(LANGUAGE_SET),
-              default="en")
-@click.option("-c", "--count", "count",
-              type=click.IntRange(1, 20), required=False,
-              help="Number between 1 and 20, default is 10",
-              default=10)
+@click.option(
+    "-n", "--name", "name", type=click.STRING, required=True, help="Name of people"
+)
+@click.option(
+    "-l",
+    "--lang",
+    "lang",
+    type=click.Choice(LANGUAGE_SET),
+    required=False,
+    help='Language in {} and "en" is default'.format(LANGUAGE_SET),
+    default="en",
+)
+@click.option(
+    "-c",
+    "--count",
+    "count",
+    type=click.IntRange(1, 20),
+    required=False,
+    help="Number between 1 and 20, default is 10",
+    default=10,
+)
 @click.argument("color", type=click.STRING)
 def cmd_click(name: str, lang: str, count: int, color: str) -> None:
     """
@@ -82,8 +92,8 @@ def cmd_click(name: str, lang: str, count: int, color: str) -> None:
     # click.echo 输出文本, click.style 用于为部分字符增加样式（前景色、背景色）
     click.echo(f"* name is \"{click.style(name, fg='red')}\"")
     click.echo(f"* language is \"{click.style(lang, bg='blue')}\"")
-    click.echo(f"* count is \"{count}\"")
-    click.echo(f"* color is: \"{click.style(color, fg=color)}\"")
+    click.echo(f'* count is "{count}"')
+    click.echo(f'* color is: "{click.style(color, fg=color)}"')
 
     click.echo("Please input [Y]/n")
     # click.getchar 获取输入的字符
@@ -99,7 +109,7 @@ def cmd_click(name: str, lang: str, count: int, color: str) -> None:
 
     # 获取一个提交信息, 该操作会打开预设的编辑器 (例如 gedit 或者 vim), 输入提交信息并保存
     _get_commit_message()
-    click.echo(f"Your comment is: \"{_get_commit_message()}\"")
+    click.echo(f'Your comment is: "{_get_commit_message()}"')
 
     # 启动编辑器, 编辑名为 click.txt 文件的内容
     click.edit(filename=click_FILE_NAME)
@@ -112,7 +122,7 @@ def cmd_click(name: str, lang: str, count: int, color: str) -> None:
             capture_output=True,
         ).stdout.decode(encoding="utf-8")
 
-        click.echo(f"File content of \"{click_FILE_NAME}\" file is: {output}")
+        click.echo(f'File content of "{click_FILE_NAME}" file is: {output}')
 
     # 输出一个进度条
     max_ = [n for n in range(100)]
@@ -129,8 +139,8 @@ def cmd_click(name: str, lang: str, count: int, color: str) -> None:
             n += n
 
 
-@click.group()
-def cli() -> None:
+@click.group("default")
+def default_group() -> None:
     """演示 click 框架命令行功能
 
     第一个 @click.group() 定义了根命令组, 所有的命令和子命令组需要加入到该命令组中
@@ -138,8 +148,4 @@ def cli() -> None:
 
 
 # 将 click 命令添加到分组中
-cli.add_command(cmd_click)
-
-
-def main() -> None:
-    cli()
+default_group.add_command(cmd_click)

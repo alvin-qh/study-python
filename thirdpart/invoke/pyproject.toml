@@ -19,11 +19,11 @@ lint = [
     "autopep8>=2.3.2",
 ]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
     "pytest-sugar>=1.0.0",
 ]
 type = [
-    "mypy>=1.15.0",
+    "mypy>=1.16.0",
     "mypy-extensions>=1.1.0",
 ]
 
@@ -31,21 +31,18 @@ type = [
 distribution = false
 
 [tool.pdm.scripts]
-check = "invoke lint test type"
-clean = { call = "clear:main" }
-lint = { composite = [
-    "autopep8 .",
-    "pycln --config=pyproject.toml",
-] }
+lint = "invoke lint"
+type = "invoke type"
+test = "invoke test"
+# check = "invoke lint type test"
+check = "invoke check"
 start = "main.py"
-test = "pytest"
-type = { composite = [
-    "mypy .",
-] }
+clean = { call = "clear:main" }
+type-install = "mypy . --install-types"
 
 [tool.pycln]
-all = true
 path = "."
+all = true
 exclude = '\.history'
 
 [tool.mypy]
@@ -74,7 +71,7 @@ recursive = true
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',
