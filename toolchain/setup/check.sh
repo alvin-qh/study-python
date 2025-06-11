@@ -1,7 +1,7 @@
 #/bin/env bash
 
-mypy
-autopep8 .
 pycln --config=pycln.cfg
+autopep8 .
+mypy
 
 pytest
