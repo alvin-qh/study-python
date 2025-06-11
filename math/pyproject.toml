@@ -32,6 +32,9 @@ type = [
 [tool.pdm]
 distribution = true
 
+[tool.setuptools]
+package-dir = { '' = 'lib' }
+
 [tool.pdm.scripts]
 lint = { composite = [
     "pycln --config=pyproject.toml",
