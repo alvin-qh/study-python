@@ -19,38 +19,43 @@ lint = [
 ]
 test = [
     "pytest-sugar>=1.0.0",
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
 ]
 type = [
     "mypy-extensions>=1.1.0",
-    "mypy>=1.15.0",
+    "mypy>=1.16.0",
 ]
 
 [tool.pdm]
 distribution = false
 
 [tool.pdm.scripts]
+lint = { composite = [
+    "pycln --config=pyproject.toml",
+    "autopep8 .",
+] }
+type = { composite = [
+    "mypy",
+] }
+test = "pytest"
 check = { composite = [
     "lint",
-    "test",
     "type",
+    "test",
 ] }
+start = { call = "main:main" }
 clean = { call = "clear:main" }
-lint = { composite = [
-    "autopep8 .",
-    "pycln --config=pyproject.toml .",
-] }
-start = "main.py"
-test = "pytest"
-type = { composite = [
-    "mypy .",
-] }
+type-install = "mypy --install-types"
 
 [tool.pycln]
-all     = true
-exclude = '\.history'
+path = "."
+all = true
+exclude = '\.history|\.venv'
 
 [tool.mypy]
+files = [
+    ".",
+]
 check_untyped_defs = true
 disallow_untyped_decorators = false
 exclude = [
@@ -76,7 +81,7 @@ recursive = true
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',

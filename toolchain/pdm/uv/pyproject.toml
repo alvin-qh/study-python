@@ -17,11 +17,11 @@ lint = [
     "pycln>=2.5.0",
 ]
 type = [
-    "mypy>=1.15.0",
+    "mypy>=1.16.0",
     "mypy-extensions>=1.1.0",
 ]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
     "pytest-sugar>=1.0.0",
 ]
 
@@ -29,28 +29,32 @@ test = [
 distribution = false
 
 [tool.pdm.scripts]
-start = "main.py"
+lint = { composite = [
+    "pycln --config=pyproject.toml",
+    "autopep8 .",
+] }
+type = { composite = [
+    "mypy",
+] }
+test = "pytest"
 check = { composite = [
     "lint",
     "type",
     "test",
 ] }
-lint = { composite = [
-    "pycln --config=pyproject.toml .",
-    "autopep8 .",
-] }
-type = { composite = [
-    "mypy .",
-] }
-test = "pytest"
+start = { call = "main:main" }
 clean = { call = "clear:main" }
+type-install = "mypy --install-types"
 
 [tool.pycln]
 path = '.'
-exclude = '\.history'
+all = true
+exclude = '\.history|\.venv'
 
 [tool.mypy]
-python_version = "3.13"
+files = [
+    '.',
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -75,7 +79,7 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',
