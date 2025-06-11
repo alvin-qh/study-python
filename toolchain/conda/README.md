@@ -259,14 +259,17 @@ conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/
 conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/pytorch/linux-64/
 conda config --set show_channel_urls yes
 
-# 创建虚拟环境 (第一次时需要创建)
-conda create -n toolchain-conda
+# 导入虚拟环节 (第一次时需要创建)
+conda env create -p .venv -f env.yml
+# 激活虚拟环境, 注意前导的 `./` 相对路径, 不能省略
+conda activate ./.venv
 
+# 或
+# conda create -n toolchain-conda
 # 激活虚拟环境
-conda activate toolchain-conda
-
+# conda activate toolchain-conda
 # 安装依赖包
-conda install mypy autopep8 pytest
+# conda install mypy autopep8 pytest
 
 # 运行测试
 bash check.sh
