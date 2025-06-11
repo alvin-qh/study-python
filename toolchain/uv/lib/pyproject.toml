@@ -25,24 +25,27 @@ lint = [
     "pycln>=2.5.0",
 ]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
     "pytest-sugar>=1.0.0",
 ]
 type = [
-    "mypy>=1.15.0",
+    "mypy>=1.16.0",
     "mypy-extensions>=1.1.0",
 ]
 
 [[tool.uv.index]]
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+url = "https://mirrors.aliyun.com/pypi/simple/"
 default = true
 
 [tool.pycln]
-all = true
 path = "."
-exclude = '\.history'
+all = true
+exclude = '\.history|\.venv'
 
 [tool.mypy]
+files = [
+    ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -67,7 +70,7 @@ aggressive = 3
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',

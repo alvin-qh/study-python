@@ -4,7 +4,7 @@ from invoke.context import Context
 
 @task
 def type(c: Context) -> None:
-    c.run("mypy .")
+    c.run("mypy")
 
 
 @task
@@ -26,3 +26,8 @@ def check(c: Context) -> None:
 @task
 def clean(c: Context) -> None:
     c.run("python clear.py")
+
+
+@task
+def type_install(c: Context) -> None:
+    c.run("mypy --install-types")

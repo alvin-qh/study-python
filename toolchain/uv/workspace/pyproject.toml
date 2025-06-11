@@ -18,7 +18,7 @@ lint = [
     "pycln>=2.5.0",
 ]
 test = [
-    "pytest>=8.3.5",
+    "pytest>=8.4.0",
     "pytest-sugar>=1.0.0",
 ]
 type = [
@@ -30,22 +30,26 @@ type = [
 members = [
     "packages/*",
 ]
-exclude = []
+exclude = [
+]
 
 [tool.uv.sources]
-uv-workspace-lib = {workspace = true}
-uv-workspace-utils = {workspace = true}
+uv-workspace-lib = { workspace = true }
+uv-workspace-utils = { workspace = true }
 
 [[tool.uv.index]]
-url = "https://pypi.tuna.tsinghua.edu.cn/simple"
+url = "https://mirrors.aliyun.com/pypi/simple/"
 default = true
 
 [tool.pycln]
 path = "."
 all = true
-exclude = '\.history|packages'
+exclude = '\.history|\.venv|packages'
 
 [tool.mypy]
+files = [
+    ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true

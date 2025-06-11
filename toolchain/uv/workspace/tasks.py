@@ -4,9 +4,9 @@ from invoke.tasks import task
 
 @task
 def type(c: Context) -> None:
-    c.run("uv run mypy .")
-    c.run("uv run --directory packages/lib mypy .")
-    c.run("uv run --directory packages/utils mypy .")
+    c.run("uv run mypy")
+    c.run("uv run --directory packages/lib mypy")
+    c.run("uv run --directory packages/utils mypy")
 
 
 @task
@@ -40,3 +40,8 @@ def clean(c: Context) -> None:
 @task
 def start(c: Context) -> None:
     c.run("python main.py")
+
+
+@task
+def type_install(c: Context) -> None:
+    c.run("mypy --install-types")
