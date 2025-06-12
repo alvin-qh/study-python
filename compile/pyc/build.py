@@ -8,9 +8,9 @@ from itertools import chain
 from os import path
 from typing import Dict, Set
 
-_SRC_DIR = "src"
+_SRC_DIR = "."
 _CUR_DIR = path.dirname(__file__)
-_BUILD_IGNORE = ".buildignore"
+_BUILD_IGNORE = "./.buildignore"
 _DIST_DIR = "dist"
 
 
@@ -93,7 +93,10 @@ def _collect_ignore_files() -> Set[str]:
         chain(
             *[
                 glob.glob(
-                    pattern, root_dir=_CUR_DIR, recursive=True, include_hidden=True
+                    pattern,
+                    root_dir=_CUR_DIR,
+                    recursive=True,
+                    include_hidden=True,
                 )
                 for pattern in read_build_ignore()
             ]
@@ -117,12 +120,13 @@ def build_pyc() -> None:
     ignore_files.add(_BUILD_IGNORE)
 
     for root, dirs, files in os.walk(_SRC_DIR):
+        root = root.removeprefix("./")
         if root in ignore_files:
             dirs[:] = []
             continue
 
         for file in files:
-            file = path.join(root, file).removeprefix("./")
+            file = path.join(root, file)
             if file not in ignore_files:
                 File(file).build()
 

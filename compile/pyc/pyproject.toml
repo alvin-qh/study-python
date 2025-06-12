@@ -8,7 +8,7 @@ dependencies = [
     "flask>=3.1.1",
     "xxhash>=3.5.0",
 ]
-requires-python = "==3.13.*"
+requires-python = ">=3.13"
 readme = "README.md"
 license = { text = "MIT" }
 
@@ -27,7 +27,7 @@ type = [
 ]
 
 [tool.pdm]
-distribution = true
+distribution = false
 
 [tool.pdm.scripts]
 lint = { composite = [
@@ -35,7 +35,7 @@ lint = { composite = [
     "autopep8 .",
 ] }
 type = { composite = [
-    "mypy .",
+    "mypy",
 ] }
 test = "pytest"
 check = { composite = [
@@ -43,7 +43,7 @@ check = { composite = [
     "type",
     "test",
 ] }
-start = { call = "app:main" }
+start = { call = "main:main" }
 compile = "build.py"
 clean = { call = "clear:main" }
 type-install = "mypy . --install-types"
@@ -54,16 +54,16 @@ all = true
 exclude = '\.history'
 
 [tool.mypy]
+files = [
+    '.',
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history'
 
 [tool.autopep8]
 max_line_length = 120
@@ -76,6 +76,7 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+exclude = '.history'
 
 [tool.pytest.ini_options]
 addopts = [

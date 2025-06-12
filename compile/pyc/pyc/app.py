@@ -1,7 +1,7 @@
 import time
 from typing import Any, Dict, Literal, Tuple
 
-from utils import templated, watch_files_for_develop
+from pyc.utils import templated
 
 from flask import Flask, Response, jsonify
 
@@ -37,16 +37,3 @@ def template() -> Dict[str, Any]:
 def use_json() -> Tuple[Response, Literal[200]]:
     tm = time.mktime(time.localtime(time.time()))
     return jsonify(time=int(tm)), 200
-
-
-def main() -> None:
-    app.run(
-        host="127.0.0.1",
-        port=5000,
-        debug=True,
-        extra_files=watch_files_for_develop(app),
-    )
-
-
-if __name__ == "__main__":
-    main()
