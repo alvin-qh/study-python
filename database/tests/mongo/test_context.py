@@ -1,6 +1,7 @@
 from typing import cast
-from mongo.engine.core import context
-from peewee_.core.context import Tenant
+
+from database.mongo.engine.core import context
+from database.peewee_.core.context import Tenant
 
 
 def test_get_set_context_attribute() -> None:

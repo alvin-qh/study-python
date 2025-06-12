@@ -1,9 +1,12 @@
 from random import randint
 from typing import Any, Generator, List, Optional, Type, cast
 
-from factory import base, faker, fuzzy, declarations
+from factory import base, declarations, faker, fuzzy
 from peewee import Model
-from peewee_ import (
+from pytest import fixture
+
+from database.misc import col, non_none
+from database.peewee_ import (
     Department,
     Employee,
     Gender,
@@ -13,8 +16,6 @@ from peewee_ import (
     db,
     initialize_tables,
 )
-from pytest import fixture
-from misc import col, non_none
 
 
 class PeeweeOptions(base.FactoryOptions):

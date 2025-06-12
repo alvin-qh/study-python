@@ -3,7 +3,9 @@ from typing import Generator, Optional, TypeVar, cast
 import factory
 import factory.faker
 from factory.mongoengine import MongoEngineFactory
-from mongo.engine import (
+from pytest import fixture
+
+from database.mongo.engine import (
     Department,
     Employee,
     Org,
@@ -12,7 +14,6 @@ from mongo.engine import (
     context,
     ensure_indexes,
 )
-from pytest import fixture
 
 
 class BaseFactory(MongoEngineFactory):
@@ -102,7 +103,7 @@ def test_current_org() -> None:
     assert current_org is not None
 
     # 从数据库中查询当前组织实体
-    org: Org = Org.objects(name=current_org.name).first()
+    org: Org = Org.objects(name=current_org.name).first()  # type: ignore
     # 确认 current_org 和查询结果一致
     assert org == current_org
 
@@ -116,7 +117,7 @@ def test_create_department() -> None:
     """测试创建部门实体"""
     expected_dept: Department = DepartmentFactory.create()
 
-    dept = Department.objects(name=expected_dept.name).first()
+    dept = Department.objects(name=expected_dept.name).first()  # type: ignore
     assert dept == expected_dept
     assert dept.org == context.get_current_tenant()
 
@@ -124,13 +125,13 @@ def test_create_department() -> None:
 def test_create_employee() -> None:
     """测试创建员工实体"""
     department: Department = DepartmentFactory.create()
-    role: Role = Role.objects(name="manager").first()
+    role: Role = Role.objects(name="manager").first()  # type: ignore
 
     expected_employee: Employee = EmployeeFactory.create().set_department(
         department, role
     )
 
-    employee: Employee = Employee.objects(name=expected_employee.name).first()
+    employee: Employee = Employee.objects(name=expected_employee.name).first()  # type: ignore
     assert employee == expected_employee
     assert employee.org == context.get_current_tenant()
     assert employee.role == role

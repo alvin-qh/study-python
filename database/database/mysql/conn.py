@@ -70,7 +70,7 @@ def get_pooled_connection() -> Connection:
     # 通过连接池获取连接对象
     conn: Connection = cast(Any, pool.connection())
     # 关闭自动提交
-    conn.autocommit_mode = False
+    conn.autocommit_mode = False  # type: ignore
 
     # 初始化数据表
     _init_tables(conn)

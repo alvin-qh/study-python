@@ -1,7 +1,9 @@
 from datetime import date
 
 import pytest
-from mysql import (
+from pymysql import Connection  # type: ignore[import-untyped]
+
+from database.mysql import (
     delete_user,
     get_connection,
     get_pooled_connection,
@@ -9,7 +11,6 @@ from mysql import (
     insert_user,
     update_user,
 )
-from pymysql import Connection  # type: ignore[import-untyped]
 
 
 def run_curd(conn: Connection) -> None:

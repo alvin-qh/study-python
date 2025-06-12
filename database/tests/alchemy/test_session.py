@@ -1,8 +1,9 @@
 from datetime import date
 
-from alchemy import initialize_tables, session
 from sqlalchemy import and_, column, select, table
 from sqlalchemy.orm import aliased
+
+from database.alchemy import initialize_tables, session
 
 
 def setup_function() -> None:

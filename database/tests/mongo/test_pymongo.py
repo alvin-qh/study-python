@@ -1,8 +1,8 @@
 from datetime import date
 from typing import cast
 
-from mongo.pymongo import clear_all, create_user, find_user
-from mongo.pymongo.pymongo import UserModel
+from database.mongo.pymongo import clear_all, create_user, find_user
+from database.mongo.pymongo.pymongo import UserModel
 
 
 def setup_function() -> None:

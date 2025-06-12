@@ -1,7 +1,8 @@
-from migration.command import Command
-from mysql import get_all_tables
 from pymysql import connect  # type: ignore[import-untyped]
 from pymysql.cursors import DictCursor  # type: ignore[import-untyped]
+
+from database.migration.command import Command
+from database.mysql import get_all_tables
 
 
 def test_alembic_command() -> None:

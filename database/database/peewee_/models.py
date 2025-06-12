@@ -2,14 +2,8 @@ from enum import Enum
 from typing import cast
 
 from peewee import CharField, DeferredForeignKey, ForeignKeyField, IntegerField
-from peewee_.core import (
-    AuditAtMixin,
-    AuditByMixin,
-    BaseModel,
-    MultiTenantMixin,
-    Tenant,
-    User,
-)
+
+from .core import AuditAtMixin, AuditByMixin, BaseModel, MultiTenantMixin, Tenant, User
 
 
 class Org(Tenant, BaseModel, AuditAtMixin):

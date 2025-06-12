@@ -2,15 +2,15 @@ from datetime import date
 from random import randint
 from typing import List
 
-from factory import faker, declarations
-from alchemy import Gender, Group, User, initialize_tables, session
-from alchemy.core import soft_deleted_select
-from alchemy.model import UserGroup
+from factory import declarations, faker
 from factory.alchemy import SQLAlchemyModelFactory
 from sqlalchemy import and_, select, update
 from sqlalchemy.orm import aliased
 
-from misc import non_none
+from database.alchemy import Gender, Group, User, initialize_tables, session
+from database.alchemy.core import soft_deleted_select
+from database.alchemy.model import UserGroup
+from database.misc import non_none
 
 
 class BaseFactory(SQLAlchemyModelFactory):

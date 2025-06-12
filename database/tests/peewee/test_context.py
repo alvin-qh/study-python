@@ -1,5 +1,6 @@
 from typing import cast
-from peewee_.core import Tenant, User, context
+
+from database.peewee_.core import Tenant, User, context
 
 
 def test_get_set_context_attribute() -> None:
