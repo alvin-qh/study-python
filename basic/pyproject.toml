@@ -91,7 +91,7 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
-exclude = '.history\**'
+exclude = '.history'
 
 [tool.isort]
 line_length = 120
