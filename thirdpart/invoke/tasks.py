@@ -10,7 +10,7 @@ def lint(c: Context) -> None:
 
 @task
 def type(c: Context) -> None:
-    c.run("mypy .")
+    c.run("mypy")
 
 
 @task

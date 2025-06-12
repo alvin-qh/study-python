@@ -1,7 +1,6 @@
 [project]
 name = "algorithms-heuristic"
 version = "0.1.0"
-description = "Demo of heuristic algorithms"
 authors = [
     { name = "AlvinQ", email = "quhao317@163.com" },
 ]
@@ -35,7 +34,7 @@ lint = { composite = [
     "autopep8 .",
 ] }
 type = { composite = [
-    "mypy .",
+    "mypy",
 ] }
 test = "pytest"
 check = { composite = [
@@ -44,7 +43,7 @@ check = { composite = [
     "test",
 ] }
 clean = { call = "clear:main" }
-type-install = "mypy . --install-types"
+type-install = "mypy --install-types"
 
 [tool.pycln]
 path = "."
@@ -52,6 +51,9 @@ all = true
 exclude = '\.history'
 
 [tool.mypy]
+files = [
+    ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -59,10 +61,7 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history'
 
 [tool.autopep8]
 max_line_length = 120
@@ -74,6 +73,7 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+exclude = '.history'
 
 [tool.isort]
 line_length = 120

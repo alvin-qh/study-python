@@ -10,7 +10,7 @@ from utils.transform import polygon_map
 from utils.typedef import Matrix, Triangle, Vector3D
 from utils.vector import dot, multiply_matrix_vector, normal, unit
 
-_blues: Colormap = mpl.colormaps["Blues"]
+_blues: Colormap = mpl.colormaps["Blues"]  # type: ignore
 
 
 def shade(
@@ -106,7 +106,7 @@ def draw_model(
                 game.quit()
                 quit()
 
-        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
+        gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)  # type: ignore
         gl_axes()
 
         gl.glBegin(gl.GL_TRIANGLES)

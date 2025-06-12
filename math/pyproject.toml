@@ -50,25 +50,26 @@ check = { composite = [
     "test",
 ] }
 clean = { call = "clear:main" }
-type-install = "mypy . --install-types"
+type-install = "mypy --install-types"
 
 [tool.pycln]
 path = "."
 all = true
-exclude = '\.history'
+exclude = '\.history|notebooks'
 
 [tool.mypy]
+files = [
+    '.',
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
+warn_unused_ignores = false
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 disallow_untyped_calls = false
 disallow_subclassing_any = false
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history|notebooks'
 
 [tool.autopep8]
 max_line_length = 120
@@ -80,6 +81,7 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+exclude = '.history,notebooks'
 
 [tool.pytest.ini_options]
 addopts = [

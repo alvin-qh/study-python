@@ -50,23 +50,19 @@ type-install = "mypy --install-types"
 [tool.pycln]
 path = "."
 all = true
-exclude = '\.history|\.venv'
+exclude = '\.history'
 
 [tool.mypy]
 files = [
     ".",
 ]
+strict = true
 check_untyped_defs = true
 disallow_untyped_decorators = false
-exclude = [
-    '.history',
-    '.venv',
-]
 ignore_missing_imports = true
-python_version = "3.13"
-strict = true
 warn_return_any = true
 warn_unused_configs = true
+exclude = '\.history'
 
 [tool.autopep8]
 aggressive = 3
@@ -78,6 +74,7 @@ in-place = true
 jobs = -1
 max_line_length = 120
 recursive = true
+exclude = '.history'
 
 [tool.pytest.ini_options]
 addopts = [

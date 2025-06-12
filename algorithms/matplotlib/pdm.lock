@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:c9ec7893d0d5b33ccd6e0c01bd0ae1fc2f79af81159940c1a3f9a4c505445f36"
+content_hash = "sha256:02a6b2c1bcae953831f861e47ab5a1e3131729016045a1e0e97a05455178a8ef"
 
 [[metadata.targets]]
 requires_python = ">=3.13"
