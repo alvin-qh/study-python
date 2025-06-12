@@ -34,8 +34,8 @@ test = [
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.7.0",
-    "hypothesis>=6.135.4",
-    "faker>=37.3.0",
+    "hypothesis>=6.135.7",
+    "faker>=37.4.0",
     "pytest-sugar>=1.0.0",
 ]
 type = [
@@ -52,7 +52,7 @@ lint = { composite = [
     "autopep8 .",
 ] }
 type = { composite = [
-    "mypy .",
+    "mypy",
 ] }
 test = "pytest"
 check = { composite = [
@@ -69,6 +69,9 @@ all = true
 exclude = '\.history'
 
 [tool.mypy]
+files = [
+    ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
@@ -76,10 +79,7 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history'
 
 [tool.autopep8]
 max_line_length = 120
@@ -91,6 +91,7 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+exclude = '.history\**'
 
 [tool.isort]
 line_length = 120
