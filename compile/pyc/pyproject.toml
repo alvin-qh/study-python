@@ -46,7 +46,7 @@ check = { composite = [
 start = { call = "main:main" }
 compile = "build.py"
 clean = { call = "clear:main" }
-type-install = "mypy . --install-types"
+type-install = "mypy --install-types"
 
 [tool.pycln]
 path = "."

@@ -41,7 +41,7 @@ check = { composite = [
     "test",
 ] }
 clean = { call = "clear:main" }
-type-install = "mypy . --install-types"
+type-install = "mypy --install-types"
 
 [tool.pycln]
 path = "."
