@@ -270,6 +270,10 @@ python -m build
 
 在现代化 Python 项目中, `setup.py` 文件已经不再被推荐使用, Python 推荐使用 `pyproject.toml` 文件进行打包, `pyproject.toml` 文件的格式为 `toml` 格式, 具有更丰富的表达能力
 
+### 4.1. 文件内容
+
+一个典型的 `pyproject.toml` 文件内容如下:
+
 ```toml
 [project]
 name = "toolchain-setup"
@@ -293,7 +297,7 @@ dependencies = [
     "click>=8.1.8",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 lint = [
     "autopep8>=2.3.2",
     "pycln>=2.5.0",
@@ -330,20 +334,21 @@ exclude = ['tests']
 ]
 
 [tool.pycln]
+path = "."
 all = true
-exclude = '\.history'
+exclude = '\.history|build'
 
 [tool.mypy]
+files = [
+    ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history|build'
 
 [tool.autopep8]
 max_line_length = 120
@@ -352,20 +357,39 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+exclude = '.history/**,build/**'
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',
 ]
 ```
 
-`pyproject.toml` 文件的配置项与 `setup.cfg` 文件中的配置项基本一致, 但 `pyproject.toml` 文件采用 `toml` 格式, 配置项的层次结构比 `setup.cfg` 文件的层次结构更加清晰
+`pyproject.toml` 文件有如下特点:
 
-另外, 具备`pyproject.toml` 文件的项目, 无需再包含 `setup.py` 文件, 即可通过如下命令构建项目:
+- 采用 `.toml` 格式, 具备更丰富的表达能力
+- 包含了 `setup.cfg` 文件中的全部内容
+- 包含 `[tool.xxx]` 配置段, 可作为多种 Python 工具 (如 `pytest`, `mypy`, `autopep8`, `pycln` 等) 的配置文件
+
+### 4.2. 安装依赖
+
+可以通过 PIP 工具, 通过 `pyproject.toml` 文件为当前 Python 环境安装依赖, 相比通过 `requirements.txt` 文件安装依赖, `pyproject.toml` 文件的依赖包含更为清晰
+
+```bash
+pip install . --group lint --group type --group test
+```
+
+可以通过 `--group` 参数指定从 `[dependency-groups]` 配置下包含的依赖组
+
+### 4.3. 执行打包
+
+具备`pyproject.toml` 文件的项目, 无需再包含 `setup.py` 文件, 即可通过如下命令构建项目:
 
 ```bash
 python -m build
 ```
+
+该命令会同时构建 `sdist` (`.tar.gz`) 和 `wheel` (`.whl`) 包, 并将构建结果保存在 `dist` 目录下
