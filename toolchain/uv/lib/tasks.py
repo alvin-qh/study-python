@@ -3,14 +3,14 @@ from invoke.context import Context
 
 
 @task
-def type(c: Context) -> None:
-    c.run("mypy")
-
-
-@task
 def lint(c: Context) -> None:
     c.run("pycln --config pyproject.toml")
     c.run("autopep8 .")
+
+
+@task
+def type(c: Context) -> None:
+    c.run("mypy")
 
 
 @task
@@ -18,7 +18,7 @@ def test(c: Context) -> None:
     c.run("pytest")
 
 
-@task(pre=[type, lint, test])
+@task(pre=[lint, type, test])
 def check(c: Context) -> None:
     pass
 

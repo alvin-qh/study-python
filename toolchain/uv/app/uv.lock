@@ -387,10 +387,10 @@ lint = [
     { name = "pycln", specifier = ">=2.5.0" },
 ]
 test = [
-    { name = "pytest", specifier = ">=8.3.5" },
+    { name = "pytest", specifier = ">=8.4.0" },
     { name = "pytest-sugar", specifier = ">=1.0.0" },
 ]
 type = [
-    { name = "mypy", specifier = ">=1.15.0" },
+    { name = "mypy", specifier = ">=1.16.0" },
     { name = "mypy-extensions", specifier = ">=1.1.0" },
 ]

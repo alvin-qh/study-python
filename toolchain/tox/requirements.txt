@@ -20,9 +20,11 @@ pycodestyle==2.13.0
 Pygments==2.19.1
 pyproject-api==1.9.0
 pytest==8.3.5
+pytest-sugar==1.0.0
 PyYAML==6.0.2
 rich==14.0.0
 shellingham==1.5.4
+termcolor==3.1.0
 tomlkit==0.13.2
 tox==4.25.0
 typer==0.15.3

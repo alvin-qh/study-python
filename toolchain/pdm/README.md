@@ -110,11 +110,11 @@ name = "<project-name>"
 version = "1.0.0"
 description = "<project-description>"
 authors = [
-    { name = "Alvin", email = "quhao317@163.com" },
+  { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "<package1-name >= <version>",
-    "<package2-name >= <version>",
+  "<package1-name >= <version>",
+  "<package2-name >= <version>",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
@@ -141,31 +141,39 @@ group4 = [
 ]
 
 [tool.pdm.scripts]
-start = "main.py"
-check = { composite = [
-    "pycln --config=pyproject.toml .",
-    "mypy .",
-    "autopep8 ."
+lint = { composite = [
+  "pycln --config=pyproject.toml",
+  "autopep8 .",
+] }
+type = { composite = [
+  "mypy",
 ] }
 test = "pytest"
+check = { composite = [
+  "lint",
+  "type",
+  "test",
+] }
+start = { call = "main:main" }
 clean = { call = "clear:main" }
+type-install = "mypy --install-types"
 
 [tool.pycln]
+path = "."
 all = true
 exclude = '\.history'
 
 [tool.mypy]
-python_version = "3.13"
+files = [
+  ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history'
 
 [tool.autopep8]
 max_line_length = 120
@@ -174,10 +182,11 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+exclude = '.history'
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+  '-s',
 ]
 testpaths = [
   'tests',
@@ -380,7 +389,7 @@ pdm lock --without <feature-name>
 ```toml
 [tool.pytest.ini_options]
 addopts = [
-  '-vvs',
+  '-s',
 ]
 testpaths = [
   'tests',
@@ -393,6 +402,7 @@ testpaths = [
 
 ```toml
 [tool.pycln]
+path = "."
 all = true
 exclude = '\.history'
 ```
@@ -403,16 +413,16 @@ exclude = '\.history'
 
 ```toml
 [tool.mypy]
+files = [
+  ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-  '.venv',
-  '.history',
-]
+exclude = '\.history'
 ```
 
 其它配置参见: <https://mypy.readthedocs.io/en/stable/config_file.html>
@@ -427,6 +437,7 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
+exclude = '.history'
 ```
 
 其它配置项参见: <https://github.com/hhatto/autopep8?tab=readme-ov-file#configuration>
@@ -448,11 +459,12 @@ pdm run main.py
 如果在当前项目的虚拟环境下安装了 Python 工具包, 那么可以通过 PDM 的 `run` 命令来运行它, 例如:
 
 ```bash
-pdm run pytest
-
-pdm run pycln --config=pyproject.toml .
-pdm run mypy .
+pdm run pycln --config=pyproject.toml
 pdm run autopep8 .
+
+pdm run mypy
+
+pdm run pytest
 ```
 
 各工具执行时, 会读取各自的配置文件, 或从 `pyproject.toml` 中读取该工具的配置, 参见 [配置 Python 工具](#5-配置-python-工具) 章节
@@ -463,22 +475,29 @@ pdm run autopep8 .
 
 ```toml
 [tool.pdm.scripts]
-start = "main.py"
-check = { composite = [
-  "pycln --config=pyproject.toml .",
-  "mypy .",
-  "autopep8 ."
+lint = { composite = [
+  "pycln --config=pyproject.toml",
+  "autopep8 .",
+] }
+type = { composite = [
+  "mypy",
 ] }
 test = "pytest"
+check = { composite = [
+  "lint",
+  "type",
+  "test",
+] }
+start = { call = "main:main" }
 clean = { call = "clear:main" }
+type-install = "mypy --install-types"
 ```
 
 上述脚本可通过如下命令运行:
 
 ```bash
-pdm run start
 pdm run check
-pdm run test
+pdm run start
 pdm run clean
 ```
 

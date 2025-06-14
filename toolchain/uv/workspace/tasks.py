@@ -3,13 +3,6 @@ from invoke.tasks import task
 
 
 @task
-def type(c: Context) -> None:
-    c.run("uv run mypy")
-    c.run("uv run --directory packages/lib mypy")
-    c.run("uv run --directory packages/utils mypy")
-
-
-@task
 def lint(c: Context) -> None:
     c.run("uv run pycln --config pyproject.toml")
     c.run("uv run --directory packages/lib pycln --config pyproject.toml")
@@ -21,13 +14,20 @@ def lint(c: Context) -> None:
 
 
 @task
+def type(c: Context) -> None:
+    c.run("uv run mypy")
+    c.run("uv run --directory packages/lib mypy")
+    c.run("uv run --directory packages/utils mypy")
+
+
+@task
 def test(c: Context) -> None:
     c.run("uv run pytest")
     c.run("uv run --directory packages/lib pytest")
     c.run("uv run --directory packages/utils pytest")
 
 
-@task(pre=[type, lint, test])
+@task(pre=[lint, type, test])
 def check(c: Context) -> None:
     pass
 

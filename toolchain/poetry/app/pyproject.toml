@@ -1,7 +1,6 @@
 [project]
-name = "poetry-app"
+name = "toolchain-poetry-app"
 version = "0.1.0"
-description = "Demo app for poetry tool"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
@@ -9,17 +8,24 @@ license = "MIT"
 readme = "README.md"
 requires-python = ">=3.13,<4"
 dependencies = [
-    "poetry-lib @ file:///home/alvin/Workspace/Study/study-python/toolchain/poetry/lib",
+    "toolchain-poetry-lib @ file:///home/alvin/Workspace/Study/study-python/toolchain/poetry/lib",
 ]
 
-[project.optional-dependencies]
-demo = ["click (>=8.2.1,<9.0.0)"]
+[[tool.poetry.source]]
+name = "ali"
+url = "https://mirrors.aliyun.com/pypi/simple/"
+priority = "primary"
+
+[[tool.poetry.source]]
+name = "tencent"
+url = "https://mirrors.cloud.tencent.com/pypi/simple/"
+priority = "primary"
 
 [tool.poetry]
 package-mode = false
 
 [tool.poetry.dependencies]
-poetry-lib = { develop = true }
+toolchain-poetry-lib = { develop = true }
 
 [tool.poetry.group.test.dependencies]
 pytest = "^8.3.5"
@@ -42,18 +48,21 @@ all = true
 exclude = '\.history'
 
 [tool.mypy]
+files = [
+    ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history'
 
 [tool.autopep8]
+files = [
+    ".",
+]
 max_line_length = 120
 ignore = [
     'E501',
@@ -63,10 +72,11 @@ jobs = -1
 in-place = true
 recursive = true
 aggressive = 3
+exclude = '.history'
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',

@@ -42,7 +42,7 @@ name = "<project-name>"
 version = "0.1.0"
 description = "<project-description>"
 authors = [
-    { name = "Alvin", email = "quhao317@163.com" },
+  { name = "Alvin", email = "quhao317@163.com" },
 ]
 license = "MIT"
 readme = "README.md"
@@ -83,31 +83,32 @@ all = true
 exclude = '\.history'
 
 [tool.mypy]
+files = [
+  ".",
+]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history'
 
 [tool.autopep8]
 max_line_length = 120
 ignore = [
-    'E501',
-    'W6',
+  'E501',
+  'W6',
 ]
 jobs = -1
 in-place = true
 recursive = true
 aggressive = 3
+exclude = '.history'
 
 [tool.pytest.ini_options]
 addopts = [
-    '-vvs',
+    '-s',
 ]
 testpaths = [
     'tests',

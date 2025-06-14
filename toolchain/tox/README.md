@@ -148,8 +148,8 @@ deps = [
     "pycln>=2.5",
 ]
 commands = [
-    ["autopep8", "."],
     ["pycln", "--config=pycln.cfg"],
+    ["autopep8", "."],
 ]
 ```
 
@@ -162,5 +162,5 @@ commands = [
 执行所有环境命令
 
 ```bash
-tox 
+tox
 ```

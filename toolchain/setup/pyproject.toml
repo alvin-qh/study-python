@@ -1,7 +1,6 @@
 [project]
 name = "toolchain-setup"
 version = "0.1.0"
-description = "Setup toolchain demo"
 readme = "README.md"
 requires-python = ">=3.13"
 authors = [
@@ -35,7 +34,7 @@ test = [
 ]
 
 [project.scripts]
-toolchain-setup = "toolchain_setup.main:main"
+toolchain-setup = "main:main"
 
 [build-system]
 requires = [
@@ -73,7 +72,7 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = 'build'
+exclude = '\.history|build'
 
 [tool.autopep8]
 max_line_length = 120
@@ -85,7 +84,7 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
-exclude = '.history/**,build/**'
+exclude = '.history,build'
 
 [tool.pytest.ini_options]
 addopts = [

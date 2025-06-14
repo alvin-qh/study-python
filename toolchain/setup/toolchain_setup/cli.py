@@ -56,12 +56,3 @@ def cli() -> None:
 
 # 为命令行分组添加命令行函数
 cli.add_command(login)
-
-
-def main() -> None:
-    """主方法"""
-    cli()
-
-
-if __name__ == "__main__":
-    main()

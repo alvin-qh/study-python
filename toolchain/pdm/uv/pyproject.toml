@@ -1,7 +1,6 @@
 [project]
-name = "pdm-uv"
+name = "toolchain-pdm-uv"
 version = "0.1.0"
-description = "Integrate PDM and UV together"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
@@ -48,13 +47,13 @@ clean = { call = "clear:main" }
 type-install = "mypy --install-types"
 
 [tool.pycln]
-path = '.'
+path = "."
 all = true
 exclude = '\.history'
 
 [tool.mypy]
 files = [
-    '.',
+    ".",
 ]
 strict = true
 warn_return_any = true

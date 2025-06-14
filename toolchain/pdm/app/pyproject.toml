@@ -1,16 +1,15 @@
 [project]
+name = "toolchain-pdm-app"
+version = "1.0.0"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
+    "toolchain-pdm-lib @ file:///${PROJECT_ROOT}/../lib"
 ]
-description = "PDM App demo"
-license = { text = "MIT" }
-name = "pdm-app"
-readme = "README.md"
 requires-python = ">=3.13"
-version = "1.0.0"
+readme = "README.md"
+license = { text = "MIT" }
 
 [dependency-groups]
 lint = [

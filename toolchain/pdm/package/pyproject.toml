@@ -1,8 +1,8 @@
 [project]
-name = "pdm-package"
+name = "toolchain-pdm-package"
 version = "0.1.0"
 dependencies = [
-    "pdm-lib @ file:///${PROJECT_ROOT}/../lib",
+    "toolchain-pdm-lib @ file:///${PROJECT_ROOT}/../lib",
 ]
 requires-python = ">=3.13"
 authors = [
@@ -31,7 +31,7 @@ requires = [
 build-backend = "pdm.backend"
 
 [project.scripts]
-pdm-package = "pdm_package:run"
+toolchain-pdm-package = "pdm_package:run"
 
 [tool.pdm]
 distribution = true
@@ -61,7 +61,7 @@ exclude = '\.history'
 
 [tool.mypy]
 files = [
-    '.',
+    ".",
 ]
 strict = true
 warn_return_any = true

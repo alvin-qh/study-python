@@ -35,7 +35,7 @@ type = [
 [tool.pycln]
 path = "."
 all = true
-exclude = '\.history|\.venv'
+exclude = '\.history'
 
 [tool.mypy]
 files = [
@@ -47,10 +47,7 @@ warn_unused_configs = true
 ignore_missing_imports = true
 disallow_untyped_decorators = false
 check_untyped_defs = true
-exclude = [
-    '.venv',
-    '.history',
-]
+exclude = '\.history'
 
 [tool.autopep8]
 max_line_length = 120
@@ -62,6 +59,7 @@ jobs = -1
 in-place = true
 recursive = true
 aggressive = 3
+exclude = '.history'
 
 [tool.pytest.ini_options]
 addopts = [

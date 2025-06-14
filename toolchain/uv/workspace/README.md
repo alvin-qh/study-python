@@ -153,8 +153,8 @@ uv add mypy mypy-extensions --group type
 UV 命令参数 `--package` 无法在执行子项目工具或脚本的场景下生效, 需要使用 `--directory` 参数指定子项目目录, 即要运行工具或脚本的目录,  例如:
 
 ```bash
-uv run mypy . # 执行主项目下的 mypy 工具
-uv run --directory packages/lib mypy . # 执行子项目下的 mypy 工具
+uv run mypy # 执行主项目下的 mypy 工具
+uv run --directory packages/lib mypy # 执行子项目下的 mypy 工具
 ```
 
 参考 [tasks.py](./tasks.py) 文件中列举的 UV 命令

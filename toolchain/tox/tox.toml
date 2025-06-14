@@ -1,4 +1,6 @@
-requires = ["tox>=4.19"]
+requires = [
+    "tox>=4.19",
+]
 env_list = [
     "py313",
     "py313t",
@@ -12,9 +14,13 @@ description = "Run unit tests"
 deps = [
     "pytest>=8.3",
 ]
-allowlist_externals = ["pytest"]
+allowlist_externals = [
+    "pytest",
+]
 commands = [
-    ["pytest"],
+    [
+        "pytest",
+    ],
 ]
 
 [env.py313]
@@ -29,7 +35,9 @@ deps = [
     "mypy>=1.15",
 ]
 commands = [
-    ["mypy", "."],
+    [
+        "mypy",
+    ],
 ]
 
 [env.lint]
@@ -39,6 +47,12 @@ deps = [
     "pycln>=2.5",
 ]
 commands = [
-    ["autopep8", "."],
-    ["pycln", "--config=pycln.cfg"],
+    [
+        "pycln",
+        "--config=pycln.cfg",
+    ],
+    [
+        "autopep8",
+        ".",
+    ],
 ]

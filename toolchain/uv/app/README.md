@@ -29,10 +29,12 @@ Application 类型的项目代码结构为 flat layout, 故没有特定的 `src`
 可通过 UV 命令执行项目相关的脚本, 包括:
 
 ```bash
-uv run pytest
-uv run mypy .
 uv run pycln --config pyproject.toml
 uv run autopep8 .
+
+uv run mypy
+
+uv run pytest
 ```
 
 由于 UV 工具没有 PDM 等工具那样的 Shell 脚本定义功能, 故可通过 `invoke` 库编写脚本, 并通过如下命令执行:

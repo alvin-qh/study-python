@@ -1,9 +1,8 @@
 [project]
-name = "package"
+name = "toolchain-poetry-package"
 version = "0.1.0"
-description = ""
 authors = [
-    {name = "Alvin",email = "quhao317@163.com"}
+    { name = "Alvin", email = "quhao317@163.com" },
 ]
 readme = "README.md"
 requires-python = ">=3.13"
@@ -11,9 +10,13 @@ dependencies = [
 ]
 
 [tool.poetry]
-packages = [{include = "package", from = "src"}]
+packages = [
+    { include = "package", from = "src" },
+]
 
 
 [build-system]
-requires = ["poetry-core>=2.0.0,<3.0.0"]
+requires = [
+    "poetry-core>=2.0.0,<3.0.0",
+]
 build-backend = "poetry.core.masonry.api"
