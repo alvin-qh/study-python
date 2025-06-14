@@ -41,7 +41,7 @@ lint = { composite = [
     "autopep8 .",
 ] }
 type = { composite = [
-    "mypy .",
+    "mypy",
 ] }
 test = "pytest"
 check = { composite = [
