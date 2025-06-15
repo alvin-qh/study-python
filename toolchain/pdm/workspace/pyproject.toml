@@ -1,0 +1,80 @@
+[project]
+name = "toolchain-pdm-workspace"
+version = "0.1.0"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+]
+
+[dependency-groups]
+lint = [
+    "autopep8>=2.3.2",
+    "pycln>=2.5.0",
+]
+test = [
+    "pytest>=8.4.0",
+    "pytest-sugar>=1.0.0",
+]
+type = [
+    "mypy>=1.16.0",
+    "mypy-extensions>=1.1.0",
+]
+
+[tool.pdm.dev-dependencies]
+workspaces = [
+    "-e file:///${PROJECT_ROOT}/packages/lib#egg=toolchain-pdm-workspace-lib",
+    "-e file:///${PROJECT_ROOT}/packages/utils#egg=toolchain-pdm-workspace-utils",
+]
+
+[tool.pdm.scripts]
+lint = { composite = [
+    "pycln --config=pyproject.toml",
+    "autopep8 .",
+] }
+type = "mypy"
+test = "pytest"
+check = { composite = [
+    "lint",
+    "type",
+    "test",
+] }
+start = { call = "main:main" }
+clean = { call = "clear:main" }
+type-install = "mypy --install-types"
+
+[tool.pycln]
+path = "."
+all = true
+exclude = '\.history|packages'
+
+[tool.mypy]
+files = [
+    ".",
+]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+check_untyped_defs = true
+exclude = '\.history|packages'
+
+[tool.autopep8]
+max_line_length = 120
+ignore = [
+    'E501',
+    'W6',
+]
+jobs = -1
+in-place = true
+recursive = true
+aggressive = 3
+exclude = ".history,packages"
+
+[tool.pytest.ini_options]
+addopts = [
+    '-s',
+]
+testpaths = [
+    'tests',
+]
