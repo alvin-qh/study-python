@@ -224,6 +224,7 @@
         "staticfilter",
         "stdoffset",
         "subclassing",
+        "tablefmt",
         "testpaths",
         "thirdpart",
         "timedeltas",
