@@ -148,6 +148,7 @@
         "maxfail",
         "mdates",
         "mday",
+        "MECE",
         "Miuiu",
         "mktime",
         "mongoengine",
