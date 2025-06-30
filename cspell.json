@@ -120,6 +120,7 @@
         "ioloop",
         "IPPROTO",
         "ipykernel",
+        "ipywidgets",
         "irange",
         "isdst",
         "isleap",
