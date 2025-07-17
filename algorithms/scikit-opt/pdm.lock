@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test", "type"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:7d5c01742ee578a30e8b8d32cf366e11f203004a52b01405f252ff5307fae2b7"
+content_hash = "sha256:e23bca91baa0d1bd088b29e635f2082572a48e1e77c304eee4452669bc035338"
 
 [[metadata.targets]]
 requires_python = ">=3.13"
@@ -648,6 +648,19 @@ dependencies = [
 files = [
     {file = "rich-14.0.0-py3-none-any.whl", hash = "sha256:1c9491e1951aac09caffd42f448ee3d04e58923ffe14993f6e83068dc395d7e0"},
     {file = "rich-14.0.0.tar.gz", hash = "sha256:82f1bc23a6a21ebca4ae0c45af9bdbc492ed20231dcb63f297d6d1021a9d5725"},
+]
+
+[[package]]
+name = "scikit-opt"
+version = "0.6.6"
+summary = ""
+dependencies = [
+    "numpy",
+    "scipy",
+]
+files = [
+    {file = "scikit-opt-0.6.6.tar.gz", hash = "sha256:3e620789d16a0552f0893497be81c53f75171cfcf0aec0b43a051fa9df8f9879"},
+    {file = "scikit_opt-0.6.6-py3-none-any.whl", hash = "sha256:dd83d33d6748a0c8d4962c241493875f7e1b39eeea17251c6b1f94d5bff79069"},
 ]
 
 [[package]]

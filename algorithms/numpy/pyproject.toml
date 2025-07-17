@@ -1,33 +1,35 @@
 [project]
 name = "algorithms-numpy"
 version = "0.1.0"
-description = "Demo of algorithms with numpy"
 authors = [
-    { name = "AlvinQ", email = "quhao317@163.com" },
+    { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "numpy>=2.3.0",
+    "ipykernel>=6.29.5",
+    "numpy>=2.3.1",
 ]
 requires-python = ">=3.13"
-readme = "README.md"
 license = { text = "MIT" }
-
-[tool.pdm]
-distribution = false
 
 [dependency-groups]
 test = [
-    "pytest>=8.4.0",
+    "pytest>=8.4.1",
     "pytest-sugar>=1.0.0",
 ]
+lint = [
+    "autopep8>=2.3.2",
+    "pycln>=2.5.0",
+]
 type = [
-    "mypy>=1.16.0",
+    "mypy>=1.17.0",
     "mypy-extensions>=1.1.0",
 ]
-lint = [
-    "pycln>=2.5.0",
-    "autopep8>=2.3.2",
-]
+
+[tool.pdm]
+distribution = true
+
+[tool.setuptools]
+package-dir = { '' = 'lib' }
 
 [tool.pdm.scripts]
 lint = { composite = [
@@ -49,20 +51,21 @@ type-install = "mypy --install-types"
 [tool.pycln]
 path = "."
 all = true
-exclude = '\.history'
+exclude = '\.history|notebooks'
 
 [tool.mypy]
 files = [
-    ".",
+    '.',
 ]
 strict = true
 warn_return_any = true
 warn_unused_configs = true
-# warn_unreachable = true
+warn_unused_ignores = false
 ignore_missing_imports = true
 disallow_untyped_decorators = false
-check_untyped_defs = true
-exclude = '\.history'
+disallow_untyped_calls = false
+disallow_subclassing_any = false
+exclude = '\.history|notebooks'
 
 [tool.autopep8]
 max_line_length = 120
@@ -74,22 +77,13 @@ in-place = true
 recursive = true
 jobs = -1
 aggressive = 3
-exclude = '.history'
-
-[tool.isort]
-line_length = 120
-multi_line_output = 3
-include_trailing_comma = true
-force_grid_wrap = 0
-use_parentheses = true
-ensure_newline_before_comments = true
+exclude = '.history,notebooks'
 
 [tool.pytest.ini_options]
-testpaths = [
-    "tests",
-]
 addopts = [
-    "-s",
+    '-s',
+    '-p no:warnings',
 ]
-filterwarnings = [
+testpaths = [
+    'tests',
 ]

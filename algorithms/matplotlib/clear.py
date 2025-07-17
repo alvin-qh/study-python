@@ -9,7 +9,6 @@ _FILE_PATTERNS = [
     "**/.mypy_cache",
     "**/.pytest_cache",
     "**/*.egg-info",
-    "logs",
 ]
 
 
