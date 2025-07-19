@@ -227,6 +227,7 @@
         "skipif",
         "skipifmark",
         "skipmark",
+        "sklearn",
         "Skywalker",
         "socketio",
         "sortedcontainers",
