@@ -1,13 +1,13 @@
 from datetime import datetime
-from typing import Optional, Union, cast
+from typing import cast
 
-from matplotlib import dates as mdates
+import matplotlib.dates as mdates
 
 
 def bytespdate2num(
-    b: Union[str, bytes, bytearray],
+    b: str | bytes | bytearray,
     encoding: str = "utf-8",
-    default: Optional[datetime] = None,
+    default: datetime | None = None,
 ) -> float:
     """将 `bytes` 类型或 `bytearray` 类型表示的时间日期串转换为数值
 

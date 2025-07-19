@@ -1,17 +1,16 @@
-from typing import Union
-from typing import Optional, Tuple
+from typing import cast
 
 import matplotlib.pyplot as plt
 import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
 
-Point = Tuple[float, float]
+Point = tuple[float, float]
 
 
 def render_axis(
-    xlim: Optional[Point] = None,
-    ylim: Optional[Point] = None,
-    grid: Tuple[Union[int, float], Union[int, float]] = (1, 1),
+    xlim: Point | None = None,
+    ylim: Point | None = None,
+    grid: tuple[int | float, int | float] = (1, 1),
     axis: bool = True,
     title: str = "",
 ) -> None:
@@ -68,10 +67,10 @@ def render_axis(
 
 
 def render_axis3d(
-    xlim: Optional[Point] = None,
-    ylim: Optional[Point] = None,
-    zlim: Optional[Point] = None,
-    grid: Tuple[Union[int, float], Union[int, float], Union[int, float]] = (1, 1, 1),
+    xlim: Point | None = None,
+    ylim: Point | None = None,
+    zlim: Point | None = None,
+    grid: tuple[int | float, int | float, int | float] = (1, 1, 1),
     axis: bool = True,
     title: str = "",
 ) -> Axes3D:
@@ -91,7 +90,8 @@ def render_axis3d(
     fig = plt.gcf()
 
     # 添加一个 3d 坐标系
-    ax: Axes3D = fig.add_subplot(111, projection="3d")
+    ax: Axes3D = cast(Axes3D, fig.add_subplot(111, projection="3d"))
+
     # 初始化视图, 设置视角 (即相机位置)
     # elev 设置视角沿着 y 轴旋转
     # azim 设置视角沿着 z 轴旋转
@@ -122,15 +122,15 @@ def render_axis3d(
     # 设置 y 轴的刻度, 从 y 轴的起点到终点, 刻度间距 1
     plt.yticks(np.arange(y[0], y[1], grid[1]))
     # 设置 z 轴的刻度, 从 z 轴的起点到终点, 刻度间距 1
-    ax.set_zticks(np.arange(z[0], z[1], grid[2]))
+    ax.set_zticks(np.arange(z[0], z[1], grid[2]))  # type: ignore
 
     if axis:
         # 绘制原点
-        ax.scatter([0], [0], [0], color="k", marker="x")
+        ax.scatter([0], [0], 0, color="k", marker="x")
 
         def draw_line(
-            start: Tuple[float, float, float],
-            end: Tuple[float, float, float],
+            start: tuple[float, float, float],
+            end: tuple[float, float, float],
         ) -> None:
             """
             绘制 3D 线段
@@ -166,6 +166,6 @@ def get_axis3d(name: str = "3d") -> Axes3D:
         # 判断坐标的名称是否符合
         if ax.name == name:
             # 返回
-            return ax
+            return cast(Axes3D, ax)
 
     raise ValueError(f'invalid axis name "{name}"')
