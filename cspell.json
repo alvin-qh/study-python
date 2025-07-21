@@ -185,6 +185,7 @@
         "poolclass",
         "portalocker",
         "posargs",
+        "printoptions",
         "psycopg",
         "pybabel",
         "pycache",
