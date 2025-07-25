@@ -1,0 +1,92 @@
+[project]
+name = "opencv-demo"
+version = "0.1.0"
+authors = [
+    { name = "Alvin", email = "quhao317@163.com" },
+]
+dependencies = [
+    "ipykernel>=6.30.0",
+    "ipywidgets>=8.1.7",
+    "opencv-python>=4.12.0.88",
+    "opencv-contrib-python>=4.12.0.88",
+    "matplotlib>=3.10.3",
+]
+requires-python = ">=3.13"
+license = { text = "MIT" }
+
+[dependency-groups]
+test = [
+    "pytest>=8.4.1",
+    "pytest-sugar>=1.0.0",
+]
+lint = [
+    "autopep8>=2.3.2",
+    "pycln>=2.5.0",
+]
+type = [
+    "mypy>=1.16.1",
+    "mypy-extensions>=1.1.0",
+]
+
+[tool.pdm]
+distribution = true
+
+[tool.setuptools]
+package-dir = { '' = 'lib' }
+
+[tool.pdm.scripts]
+lint = { composite = [
+    "pycln --config=pyproject.toml",
+    "autopep8 .",
+] }
+type = { composite = [
+    "mypy",
+] }
+test = "pytest"
+check = { composite = [
+    "lint",
+    "type",
+    "test",
+] }
+clean = { call = "clear:main" }
+type-install = "mypy --install-types"
+
+[tool.pycln]
+path = "."
+all = true
+exclude = '\.history|notebooks'
+
+[tool.mypy]
+files = [
+    '.',
+]
+strict = true
+warn_return_any = true
+warn_unused_configs = true
+warn_unused_ignores = false
+ignore_missing_imports = true
+disallow_untyped_decorators = false
+disallow_untyped_calls = false
+disallow_subclassing_any = false
+exclude = '\.history|notebooks'
+
+[tool.autopep8]
+max_line_length = 120
+ignore = [
+    'E501',
+    'W6',
+]
+in-place = true
+recursive = true
+jobs = -1
+aggressive = 3
+exclude = '.history,notebooks'
+
+[tool.pytest.ini_options]
+addopts = [
+    '-s',
+    '-p no:warnings',
+]
+testpaths = [
+    'tests',
+]
