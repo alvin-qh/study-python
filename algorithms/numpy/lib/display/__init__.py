@@ -1,9 +1,14 @@
 import numpy as np
 
 
-def aprint(propmpt: str, /, values: dict[str, np.ndarray | np.matrix]) -> None:
+def aprint(
+    propmpt: str, /, values: dict[str, np.ndarray | np.matrix | int | float]
+) -> None:
     print(f"{propmpt}")
     for key, value in values.items():
         print(f"● {key}:")
         print(f"{value}", end="")
-        print(f", shape={value.shape}")
+        if isinstance(value, (np.ndarray, np.matrix)):
+            print(f", shape={value.shape}")
+        else:
+            print()
