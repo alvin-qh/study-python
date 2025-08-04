@@ -1,9 +1,8 @@
+from typing import Any
 import numpy as np
 
 
-def aprint(
-    propmpt: str, /, values: dict[str, np.ndarray | np.matrix | int | float]
-) -> None:
+def aprint(propmpt: str, /, values: dict[str, Any]) -> None:
     print(f"{propmpt}")
     for key, value in values.items():
         print(f"● {key}:")
