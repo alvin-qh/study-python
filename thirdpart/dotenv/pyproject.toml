@@ -5,7 +5,7 @@ authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "python-dotenv>=1.1.0",
+    "python-dotenv>=1.1.1",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
@@ -13,7 +13,7 @@ license = { text = "MIT" }
 
 [dependency-groups]
 test = [
-    "pytest>=8.4.0",
+    "pytest>=8.4.1",
     "pytest-sugar>=1.0.0",
 ]
 lint = [
@@ -21,7 +21,7 @@ lint = [
     "pycln>=2.5.0",
 ]
 type = [
-    "mypy>=1.16.0",
+    "mypy>=1.17.1",
     "mypy-extensions>=1.1.0",
 ]
 
