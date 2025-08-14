@@ -5,9 +5,9 @@ authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "ipykernel>=6.29.5",
-    "numpy>=2.3.1",
-    "polars>=1.31.0",
+    "ipykernel>=6.30.1",
+    "numpy>=2.3.2",
+    "polars>=1.32.2",
     "colorama>=0.4.6",
 ]
 requires-python = ">=3.13"
@@ -23,7 +23,7 @@ lint = [
     "pycln>=2.5.0",
 ]
 type = [
-    "mypy>=1.17.0",
+    "mypy>=1.17.1",
     "mypy-extensions>=1.1.0",
 ]
 
