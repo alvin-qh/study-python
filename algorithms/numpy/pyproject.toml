@@ -16,7 +16,7 @@ license = { text = "MIT" }
 [dependency-groups]
 test = [
     "pytest>=8.4.1",
-    "pytest-sugar>=1.1.0",
+    "pytest-sugar>=1.1.1",
 ]
 lint = [
     "autopep8>=2.3.2",
