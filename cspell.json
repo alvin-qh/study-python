@@ -76,6 +76,7 @@
         "curdir",
         "cursorclass",
         "cython",
+        "cythonize",
         "darcs",
         "datamaker",
         "dateutil",
