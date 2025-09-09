@@ -9,11 +9,11 @@ dependencies = [
 ]
 
 [tool.uv.sources]
-uv-lib = { path = "../lib" }
+uv-lib = {path = "../lib"}
 
-[[tool.uv.index]]
-url = "https://mirrors.aliyun.com/pypi/simple/"
-default = true
+# [[tool.uv.index]]
+# url = "https://mirrors.aliyun.com/pypi/simple/"
+# default = true
 
 [dependency-groups]
 ext = [
@@ -24,11 +24,11 @@ lint = [
     "pycln>=2.5.0",
 ]
 test = [
-    "pytest>=8.4.0",
-    "pytest-sugar>=1.0.0",
+    "pytest>=8.4.2",
+    "pytest-sugar>=1.1.1",
 ]
 type = [
-    "mypy>=1.16.0",
+    "mypy>=1.17.1",
     "mypy-extensions>=1.1.0",
 ]
 
