@@ -2,20 +2,20 @@
 name = "algorithms-numpy"
 version = "0.1.0"
 authors = [
-    { name = "Alvin", email = "quhao317@163.com" },
+    {name = "Alvin", email = "quhao317@163.com"},
 ]
 dependencies = [
     "ipykernel>=6.30.1",
     "numpy>=2.3.2",
-    "polars>=1.32.3",
+    "polars>=1.33.1",
     "colorama>=0.4.6",
 ]
 requires-python = ">=3.13"
-license = { text = "MIT" }
+license = {text = "MIT"}
 
 [dependency-groups]
 test = [
-    "pytest>=8.4.1",
+    "pytest>=8.4.2",
     "pytest-sugar>=1.1.1",
 ]
 lint = [
@@ -31,23 +31,23 @@ type = [
 distribution = true
 
 [tool.setuptools]
-package-dir = { '' = 'lib' }
+package-dir = {'' = 'lib'}
 
 [tool.pdm.scripts]
-lint = { composite = [
+lint = {composite = [
     "pycln --config=pyproject.toml",
     "autopep8 .",
-] }
-type = { composite = [
+]}
+type = {composite = [
     "mypy",
-] }
+]}
 test = "pytest"
-check = { composite = [
+check = {composite = [
     "lint",
     "type",
     "test",
-] }
-clean = { call = "clear:main" }
+]}
+clean = {call = "clear:main"}
 type-install = "mypy --install-types"
 
 [tool.pycln]
