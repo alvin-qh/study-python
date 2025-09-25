@@ -2,20 +2,20 @@
 name = "basic"
 version = "0.1.0"
 authors = [
-    { name = 'Alvin', email = 'quhao317@163.com' },
+    {name = 'Alvin', email = 'quhao317@163.com'},
 ]
 dependencies = [
     "pytz>=2025.2",
     "atomics>=1.0.3",
     "werkzeug>=3.1.3",
-    "wrapt>=1.17.2",
-    "portalocker>=3.1.1",
+    "wrapt>=1.17.3",
+    "portalocker>=3.2.0",
     "tzdata>=2025.2",
     "python-dateutil>=2.9.0.post0",
 ]
 requires-python = ">=3.13"
 readme = "README.md"
-license = { text = "MIT" }
+license = {text = "MIT"}
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -28,18 +28,18 @@ lint = [
     "pycln>=2.5.0",
 ]
 test = [
-    "pytest>=8.4.0",
-    "pytest-asyncio>=1.0.0",
-    "pytest-rerunfailures>=15.1",
+    "pytest>=8.4.2",
+    "pytest-asyncio>=1.2.0",
+    "pytest-rerunfailures>=16.0.1",
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
-    "pytest-xdist>=3.7.0",
-    "hypothesis>=6.135.7",
-    "faker>=37.4.0",
-    "pytest-sugar>=1.0.0",
+    "pytest-xdist>=3.8.0",
+    "hypothesis>=6.140.2",
+    "faker>=37.8.0",
+    "pytest-sugar>=1.1.1",
 ]
 type = [
-    "mypy>=1.16.0",
+    "mypy>=1.18.2",
     "mypy-extensions>=1.1.0",
 ]
 
@@ -47,20 +47,20 @@ type = [
 distribution = false
 
 [tool.pdm.scripts]
-lint = { composite = [
+lint = {composite = [
     "pycln --config=pyproject.toml",
     "autopep8 .",
-] }
-type = { composite = [
+]}
+type = {composite = [
     "mypy",
-] }
+]}
 test = "pytest"
-check = { composite = [
+check = {composite = [
     "lint",
     "type",
     "test",
-] }
-clean = { call = "clear:main" }
+]}
+clean = {call = "clear:main"}
 type-install = "mypy --install-types"
 
 [tool.pycln]

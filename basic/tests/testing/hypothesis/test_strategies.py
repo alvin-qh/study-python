@@ -20,11 +20,11 @@ from typing import (
 from uuid import UUID
 from xmlrpc.client import Boolean
 
-import pytz
+import pytz  # type: ignore[import-untyped]
 from hypothesis import assume, given, infer, note
 from hypothesis import provisional as pr
 from hypothesis import strategies as st
-from hypothesis.strategies._internal.core import RandomSeeder  # type: ignore
+from hypothesis.strategies._internal.core import RandomSeeder
 
 from basic.testing.hypothesis import User, UserStrategy, element_and_index
 

@@ -29,12 +29,13 @@ class User:
 class UserStrategy(st.SearchStrategy[User]):
     """用于生成 `User` 对象的假设类型"""
 
-    def __init__(self, name: st.SearchStrategy[str]):
+    def __init__(self, name: st.SearchStrategy[str]) -> None:
         """初始化 `User` 对象假设类型
 
         Args:
             - `name` (`st.SearchStrategy[str]`): 产生 `name` 属性的假设对象
         """
+        super().__init__()  # type: ignore[no-untyped-call]
         self._name = name
 
     def do_draw(self, data: ConjectureData) -> User:
