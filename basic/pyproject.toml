@@ -30,12 +30,12 @@ lint = [
 test = [
     "pytest>=8.4.2",
     "pytest-asyncio>=1.2.0",
-    "pytest-rerunfailures>=16.0.1",
+    "pytest-rerunfailures>=16.1",
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.8.0",
-    "hypothesis>=6.140.2",
-    "faker>=37.8.0",
+    "hypothesis>=6.142.1",
+    "faker>=37.11.0",
     "pytest-sugar>=1.1.1",
 ]
 type = [

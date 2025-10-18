@@ -6,5 +6,6 @@
   "python.testing.unittestEnabled": false,
   "python.analysis.diagnosticSeverityOverrides": {
     "reportCallIssue": "information"
-  }
+  },
+  "wolf.disableHotModeWarning": true
 }
