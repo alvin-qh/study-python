@@ -270,7 +270,7 @@ def draw2d(
         )
 
     if origin:
-        plt.scatter([0], [0], c="k", marker="x")
+        plt.scatter([0], [0], c="k", marker="x")  # type: ignore[call-arg]
 
     xlim, ylim = plt.xlim(), plt.ylim()
     gca = plt.gca()  # type: ignore[attr-defined]
