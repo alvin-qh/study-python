@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test", "type"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:d77611192a8ab937062bf4cc0a987c9773eac6f6c34dd5dce904a328681d3fed"
+content_hash = "sha256:733ebc86a555f7bdff05314f9f9af8a37905ea695cde9ea3fed6c775738bb19d"
 
 [[metadata.targets]]
 requires_python = ">=3.13"
@@ -754,6 +754,15 @@ dependencies = [
 files = [
     {file = "stack_data-0.6.3-py3-none-any.whl", hash = "sha256:d5558e0c25a4cb0853cddad3d77da9891a08cb85dd9f9f91b9f8cd66e511e695"},
     {file = "stack_data-0.6.3.tar.gz", hash = "sha256:836a778de4fec4dcd1dcd89ed8abff8a221f58308462e1c4aa2a3cf30148f0b9"},
+]
+
+[[package]]
+name = "tabulate"
+version = "0.9.0"
+summary = ""
+files = [
+    {file = "tabulate-0.9.0-py3-none-any.whl", hash = "sha256:024ca478df22e9340661486f85298cff5f6dcdba14f3813e8830015b9ed1948f"},
+    {file = "tabulate-0.9.0.tar.gz", hash = "sha256:0095b12bf5966de529c0feb1fa08671671b3368eec77d7ef7ab114be2c068b3c"},
 ]
 
 [[package]]
