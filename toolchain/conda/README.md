@@ -229,7 +229,7 @@ conda remove <package1> <package2> ...
 conda update <package1> <package2> ...
 ```
 
-### 3.5. 导出虚拟环境
+### 3.5. 导出/导入虚拟环境
 
 可将 Conda 虚拟环境配置导出, 可在创建新虚拟环境是导入该配置:
 
@@ -243,6 +243,24 @@ conda env export > environment.yml
 
 ```bash
 conda env create -f environment.yml
+```
+
+或者
+
+```bash
+conda env create -f environment.yml -n <env-name>
+```
+
+或者
+
+```bash
+conda env create -f environment.yml -p <env-path>
+```
+
+对于已经创建的虚拟环境, 可以用如下命令导入配置:
+
+```bash
+conda env update -f environment.yml
 ```
 
 ## 4. 本项目 Conda 配置
