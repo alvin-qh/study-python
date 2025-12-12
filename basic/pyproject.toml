@@ -28,7 +28,7 @@ lint = [
     "pycln>=2.6.0",
 ]
 test = [
-    "pytest>=9.0.1",
+    "pytest>=9.0.2",
     "pytest-asyncio>=1.3.0",
     "pytest-rerunfailures>=16.1",
     "pytest-repeat>=0.9.4",
