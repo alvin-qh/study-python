@@ -226,6 +226,7 @@
         "pytz",
         "pywsgi",
         "qsize",
+        "randint",
         "RDONLY",
         "RDWR",
         "readwrite",
