@@ -234,6 +234,7 @@
         "RDONLY",
         "RDWR",
         "readwrite",
+        "refcheck",
         "relativedelta",
         "replicaset",
         "rerunfailures",
