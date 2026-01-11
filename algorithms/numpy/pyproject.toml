@@ -2,7 +2,7 @@
 name = "algorithms-numpy"
 version = "0.1.0"
 authors = [
-    {name = "Alvin", email = "quhao317@163.com"},
+    { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
     "ipykernel>=7.1.0",
@@ -13,7 +13,7 @@ dependencies = [
     "matplotlib>=3.10.8",
 ]
 requires-python = ">=3.13"
-license = {text = "MIT"}
+license = { text = "MIT" }
 
 [dependency-groups]
 test = [
@@ -33,23 +33,23 @@ type = [
 distribution = true
 
 [tool.setuptools]
-package-dir = {'' = 'lib'}
+package-dir = { '' = 'lib' }
 
 [tool.pdm.scripts]
-lint = {composite = [
+lint = { composite = [
     "pycln --config=pyproject.toml",
     "autopep8 .",
-]}
-type = {composite = [
+] }
+type = { composite = [
     "mypy",
-]}
+] }
 test = "pytest"
-check = {composite = [
+check = { composite = [
     "lint",
     "type",
     "test",
-]}
-clean = {call = "clear:main"}
+] }
+clean = { call = "clear:main" }
 type-install = "mypy --install-types"
 
 [tool.pycln]
