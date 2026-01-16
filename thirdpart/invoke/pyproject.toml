@@ -1,12 +1,11 @@
 [project]
 name = "thirdpart-invoke"
 version = "0.1.0"
-description = "Default template for PDM package"
 authors = [
     { name = "Alvin", email = "quhao317@163.com" },
 ]
 dependencies = [
-    "invoke>=2.2.0",
+    "invoke>=2.2.1",
     "colorama>=0.4.6",
 ]
 requires-python = ">=3.13"
@@ -15,15 +14,15 @@ license = { text = "MIT" }
 
 [dependency-groups]
 lint = [
-    "pycln>=2.5.0",
+    "pycln>=2.6.0",
     "autopep8>=2.3.2",
 ]
 test = [
-    "pytest>=8.4.0",
-    "pytest-sugar>=1.0.0",
+    "pytest>=9.0.2",
+    "pytest-sugar>=1.1.1",
 ]
 type = [
-    "mypy>=1.16.0",
+    "mypy>=1.19.1",
     "mypy-extensions>=1.1.0",
 ]
 
