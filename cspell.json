@@ -155,6 +155,7 @@
         "Kenobi",
         "keyfile",
         "keyout",
+        "kwargs",
         "lastrowid",
         "lazyref",
         "levelname",
@@ -333,6 +334,7 @@
         "zlabel",
         "zlim",
         "zorder",
+        "zstandard",
         "zticks"
     ],
     "flagWords": []
