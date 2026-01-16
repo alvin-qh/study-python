@@ -1,53 +1,46 @@
-from datetime import datetime, UTC
-from typing import Any, Callable, Tuple
+from dataclasses import dataclass
+from datetime import UTC, datetime
 
-from blinker import NamedSignal, Signal, signal
+from blinker import Signal, signal
 
-
-def create_named_signal(name: str) -> NamedSignal:
-    """创建一个命名的信号
-
-    Args:
-        `name` (`str`): 信号的名称
-
-    Returns:
-        `NamedSignal`: 返回命名信号对象
-    """
-    return signal(name)
-
-
-# 创建一个名为 "initialized" 的命名信号对象
+# 创建一个命名信号对象
 # 具备相同名称的信号对象表现为 "单例", 即无论创建多少次, 相同名称的信号对象都是同一个对象
-on_initialized = create_named_signal("initialized")
+init_signal = signal("initialized")
+
+# 创建两个匿名信号对象
+ready_signal = Signal()
+complete_signal = Signal()
 
 
-class AnonymousSignals:
-    """匿名信号对象
+@dataclass
+class Log:
+    """日志记录类, 用于记录事件日志"""
 
-    匿名信号对象不具备名称, 所以无法表达为单例模式, 需要通过变量对其进行存储
-    """
-
-    # 实例化两个信号对象
-    on_ready = Signal()
-    on_complete = Signal()
-
-    def go(self, fn: Callable[..., Any]) -> Tuple[Any, Any, Any]:
-        """演示匿名信号的调用
-
-        会在回调函数调用前和调用后, 发送两次信号, 引发对应的事件处理程序
-
+    def __init__(self, message: str) -> None:
+        """初始化日志对象
         Args:
-            `fn` (`Callable`): 回调函数对象
-
-        Returns:
-            `Tuple[Any, Any, Any]`: 第一项为回调函数调用前事件处理返回值;
-                                    第二项为回调函数返回值; 第三项为回调函数调用后的事件处理返回值
+            `message` (`str`): 日志消息
         """
-        r1 = self.on_ready.send(self, timeit=datetime.now(UTC))
-        r2 = fn(r1)
-        r3 = self.on_complete.send(self, timeit=datetime.now(UTC))
-
-        return r1, r2, r3
+        self.message = message
+        self.timestamp = datetime.now(UTC)
 
 
-anonymous_signals = AnonymousSignals()
+class Worker:
+    """模拟一个工作类, 在工作开始和完成时发送信号"""
+
+    logs: list[Log]
+
+    def __init__(self, work_id: str) -> None:
+        """初始化工作对象
+        Args:
+            `work_id` (`str`): 工作标识
+        """
+        self.work_id = work_id
+        self.logs = []
+
+    def record(self, log: Log) -> None:
+        """记录工作事件
+        Args:
+            `log` (`Log`): 事件描述
+        """
+        self.logs.append(log)

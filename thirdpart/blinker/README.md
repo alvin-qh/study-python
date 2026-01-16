@@ -2,7 +2,9 @@
 
 > [Document](https://pythonhosted.org/blinker/)
 
-## Named Signals
+## 命名信号
+
+通过 `signal` 函数创建一个命名信号对象, 并通过一个全局变量进行引用
 
 ```python
 from blinker import signal
@@ -10,21 +12,26 @@ from blinker import signal
 on_initialized = signal('initialized')  # define a named signal
 ```
 
-## Subscribing to Signals
+## 订阅信号
+
+定义一个信号处理函数 (handler), 并通过信号对象的 `.connect` 方法将信号和处理函数进行关联
 
 ```python
 def initialized_subscriber(*args, **kwargs):
+    """定义信号处理函数"""
     ...
     return ...
 
+# 将信号和信号处理函数进行关联
 on_initialized.connect(initialized_subscriber)
 ```
 
-Also can connection subscriber by decorate
+可以通过装饰器方式进行关联
 
 ```python
 @on_initialized.connect
 def initialized_subscriber(*args, **kwargs):
+    """定义信号处理函数, 并通过装饰器和"""
     ...
     return ...
 ```
