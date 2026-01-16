@@ -1,7 +1,7 @@
 import os
 import subprocess
 import time
-from typing import Iterator, Optional
+from typing import Iterator
 
 import click
 
@@ -20,7 +20,7 @@ def _generate_output() -> Iterator[str]:
         yield "Line {}\n".format(i)
 
 
-def _get_commit_message() -> Optional[str]:
+def _get_commit_message() -> str | None:
     """
     获取一条提交信息
 
@@ -40,9 +40,7 @@ click_FILE_NAME = "click.txt"
 
 
 @click.command("click")
-@click.option(
-    "-n", "--name", "name", type=click.STRING, required=True, help="Name of people"
-)
+@click.option("-n", "--name", "name", type=click.STRING, required=True, help="Name of people")
 @click.option(
     "-l",
     "--lang",
