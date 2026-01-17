@@ -1,9 +1,10 @@
 import random
+from typing import Sequence
 
 
 def generate_large_string(
     length: int,
-    charset: list[str] = ["abcdefgABCDEFG0123456789"],
+    charset: Sequence[str] = "abcdefgABCDEFG0123456789",
 ) -> str:
     """根据所给长度生成任意字符串
 
