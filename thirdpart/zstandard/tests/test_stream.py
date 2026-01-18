@@ -1,5 +1,6 @@
-import os
 import io
+import os
+
 import zstandard as zstd
 
 from utils.file_opt import delete_file_finally

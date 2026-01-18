@@ -1,5 +1,6 @@
 import zstandard as zstd
-from utils import generate_large_data, convert_unit
+
+from utils import convert_unit, generate_large_data
 
 
 def test_compress_string() -> None:
