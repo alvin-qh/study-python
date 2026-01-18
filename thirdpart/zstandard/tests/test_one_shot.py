@@ -7,6 +7,8 @@ from utils.generator import generate_large_data
 from utils.unit import convert_unit
 
 # zstandard 提供了三个快捷函数, 可以以最简单的代码进行压缩和解压缩, 对于简单的使用场景非常方便 (例如压缩数据量较小)
+# 1. 通过 zstd.compress 和zstd.decompress 函数进行压缩和解压缩
+# 2. 通过 zstd.open 函数以文件句柄的形式进行压缩和解压缩
 
 
 def test_one_shot_compress_decompress() -> None:
