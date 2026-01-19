@@ -3,13 +3,10 @@ from typing import Any, Callable, Self, Type
 
 
 class Delegate:
-    """
-    定义代理类型
-    """
+    """定义代理类型"""
 
     def __init__(self, inst: Any) -> None:
-        """
-        初始化代理对象
+        """初始化代理对象
 
         Args:
             inst (Any): 被代理的对象实例
@@ -17,8 +14,7 @@ class Delegate:
         self._inst = inst
 
     def __getattribute__(self, name: str) -> Any:
-        """
-        获取对象的属性和方法
+        """获取对象的属性和方法
 
         Args:
             name (str): 属性名
@@ -48,8 +44,7 @@ class Delegate:
         return object.__getattribute__(self, name)
 
     def _wrapper(self, fn: Callable[..., Any]) -> Callable[..., Any]:
-        """
-        对指定的函数 (方法) 进行代理, 返回代理函数 (方法) 对象
+        """对指定的函数 (方法) 进行代理, 返回代理函数 (方法) 对象
 
         Args:
             fn (Callable): 被代理函数 (方法)
@@ -57,10 +52,10 @@ class Delegate:
         Returns:
             Callable: 代理函数 (方法)
         """
+
         @wraps(fn)
         def func(*args: Any, **kwargs: Any) -> str:
-            """
-            代理函数 (方法)
+            """代理函数 (方法)
 
             Returns:
                 str: 将被代理函数 (方法) 返回值格式化后的结果
@@ -71,8 +66,7 @@ class Delegate:
 
     @property
     def __class__(self) -> Type[Self]:
-        """
-        重写代理类型的获取类的方法, 返回被代理对象的类型
+        """重写代理类型的获取类的方法, 返回被代理对象的类型
 
         Returns:
             Any: 被代理对象的类型
@@ -85,8 +79,7 @@ class Delegate:
 
     @property
     def instance(self) -> Any:
-        """
-        获取被代理对象实例
+        """获取被代理对象实例
 
         Returns:
             Any: 被代理对象实例

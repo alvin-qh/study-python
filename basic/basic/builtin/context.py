@@ -1,7 +1,7 @@
 import random
-from types import TracebackType
-from typing import Any, Dict, Generator, Optional, Tuple, Type
 from contextlib import contextmanager
+from types import TracebackType
+from typing import Any, Generator, Type
 
 
 class Context:
@@ -12,8 +12,8 @@ class Context:
     可以通过 `with` 关键字定义上下文对象的有效范围
     """
 
-    _kv: Dict[str, Any]
-    exception: Optional[Tuple[Optional[Type[Exception]], Optional[Exception]]]
+    _kv: dict[str, Any]
+    exception: tuple[Type[Exception] | None, Exception | None] | None
 
     def __init__(self, suppress_exception: bool = False) -> None:
         """构造上下文对象
@@ -64,12 +64,11 @@ class Context:
 
     def __exit__(
         self,
-        exc_type: Optional[Type[Exception]],
-        exc_value: Optional[Exception],
-        exc_tb: Optional[TracebackType],
+        exc_type: Type[Exception] | None,
+        exc_value: Exception | None,
+        exc_tb: TracebackType | None,
     ) -> bool:
-        """
-        退出上下文范围时执行的方法
+        """退出上下文范围时执行的方法
 
         Args:
             `exc_type` (`Optional[Type[Exception]]`): 在上下文范围中抛出异常类型, 无异常则为 `None`

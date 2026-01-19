@@ -1,12 +1,7 @@
-from typing import Any, Dict, List, Set, Tuple, Union
+from typing import Any
 
 # 定义 automate 参数类型
-AutomateArgs = Union[
-    Dict[str, Any],
-    List[Any],
-    Set[Any],
-    Tuple[Any, ...],
-]
+AutomateArgs = dict[str, Any] | list[Any] | set[Any] | tuple[Any, ...]
 
 
 class Automate(dict[str, Any]):
@@ -28,7 +23,7 @@ class Automate(dict[str, Any]):
             self[key] = self._parse_args(args)
 
     @staticmethod
-    def _parse_args(args: AutomateArgs) -> Union["Automate", AutomateArgs]:
+    def _parse_args(args: AutomateArgs) -> "Automate" | AutomateArgs:
         """解析 `AutomateArgs` 类型参数
         - 对于参数类型为 `Dict` 类型, 返回 `Automate` 类型对象
         - 对于参数类型为 `Dict`, `Set` 和 `Tuple` 类型, 返回 `List[Automate]` 类型对象
