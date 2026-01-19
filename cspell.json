@@ -63,6 +63,7 @@
         "CEST",
         "cffi",
         "cfile",
+        "chunker",
         "clazz",
         "cmap",
         "cnames",
@@ -341,6 +342,7 @@
         "zlim",
         "zorder",
         "zstandard",
+        "Zstd",
         "zticks"
     ],
     "flagWords": []
