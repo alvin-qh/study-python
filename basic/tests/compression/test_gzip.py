@@ -1,4 +1,4 @@
-import os
+from os import path
 
 from compression import gzip
 
@@ -30,7 +30,7 @@ def test_compress_and_decompress() -> None:
     assert decompressed_data == raw_data
 
 
-@delete_file_finally("test_one_shot_open_file.gz")
+@delete_file_finally("test_open_compression_file.gz")
 def test_open_compression_file() -> None:
     """测试 zstandard 库一次性打开文件进行压缩和解压缩功能"""
 
@@ -42,15 +42,14 @@ def test_open_compression_file() -> None:
     # - dctx: 用于解压缩的解压缩器对象
     # - encoding: 指定文件编码方式 (对于 mode 为文本模式时有效)
     # - errors: 指定编码错误处理方式 (对于 mode 为文本模式时有效)
-    with gzip.open("test_one_shot_open_file.gz", "wb", compresslevel=9) as f:
+    with gzip.open("test_open_compression_file.gz", "wb", compresslevel=9) as f:
         f.write(raw_data)
 
     # 确认压缩后的文件大小小于原始数据大小
-    stat = os.stat("test_one_shot_open_file.gz")
-    assert stat.st_size < len(raw_data)
+    assert path.getsize("test_open_compression_file.gz") < len(raw_data)
 
     # 使用 zstandard 库创建一个压缩文件句柄, 并读取数据
-    with gzip.open("test_one_shot_open_file.gz", "rb") as f:
+    with gzip.open("test_open_compression_file.gz", "rb") as f:
         decompressed_data = f.read()
 
     # 确认解压缩后的数据与原始数据相同

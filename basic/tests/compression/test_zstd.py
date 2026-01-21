@@ -1,8 +1,9 @@
-import os
+from os import path
 
 from compression import zstd
 
-from basic.compression import convert_unit, delete_file_finally, generate_data
+from basic.compression import convert_unit, generate_data
+from basic.compression.file_opt import delete_file_finally
 
 # 测试使用 `compression.zstd` 库对数据进行压缩
 # 1. 创建 `ZstdCompressor` 压缩器对象和 `ZstdDecompressor` 解压器对象
@@ -31,8 +32,8 @@ def test_compress_and_decompress() -> None:
     assert decompressed_data == raw_data
 
 
-@delete_file_finally("test_one_shot_open_file.zst")
-def test_open_compression_file() -> None:
+@delete_file_finally(".zst")
+def test_open_compression_file(file_name: str) -> None:
     """测试 zstandard 库一次性打开文件进行压缩和解压缩功能"""
 
     # 生成原始数据
@@ -41,15 +42,14 @@ def test_open_compression_file() -> None:
     # 使用 zstd 库创建一个压缩文件句柄, 并写入数据， 其中的 filename 和 mode 参数与 Python 内置的 open 函数类似
     # - encoding: 指定文件编码方式 (对于 mode 为文本模式时有效)
     # - errors: 指定编码错误处理方式 (对于 mode 为文本模式时有效)
-    with zstd.open("test_one_shot_open_file.zst", "wb", level=10) as f:
+    with zstd.open(file_name, "wb", level=10) as f:
         f.write(raw_data)
 
     # 确认压缩后的文件大小小于原始数据大小
-    stat = os.stat("test_one_shot_open_file.zst")
-    assert stat.st_size < len(raw_data)
+    assert path.getsize(file_name) < len(raw_data)
 
     # 使用 zstd 库创建一个压缩文件句柄, 并读取数据
-    with zstd.open("test_one_shot_open_file.zst", "rb") as f:
+    with zstd.open(file_name, "rb") as f:
         decompressed_data = f.read()
 
     # 确认解压缩后的数据与原始数据相同
