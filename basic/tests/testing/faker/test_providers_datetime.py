@@ -3,8 +3,8 @@ import re
 from datetime import date, datetime, time, timedelta, tzinfo
 from typing import Iterable
 
-import pytz
-from dateutil.relativedelta import relativedelta
+import pytz  # type: ignore[import-untyped]
+from dateutil.relativedelta import relativedelta  # type: ignore[import-untyped]
 from faker import Faker
 
 from basic.testing.faker import last_day_of_month

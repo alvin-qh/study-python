@@ -1,6 +1,7 @@
-from queue import Queue
+import asyncio as aio
 
 import pytest
+from pytest import mark
 
 from basic.network import get_available_port, tcp
 
@@ -57,31 +58,12 @@ def test_stream_tcp() -> None:
         client.connect("127.0.0.1", port)
 
         # 客户端发送登录请求数据包
-        pack = tcp.Package(
-            tcp.Header("login"),
-            tcp.Body(
-                tcp.LoginPayload("alvin", "123456"),
-            ),
-        )
-        client.send(pack)
-        # 客户端接收登录响应数据包
-        pack = client.recv()
-        assert pack.header.cmd == "login"
-        assert pack.body.payload.success is True  # type: ignore
-        assert pack.body.payload.err == ""  # type: ignore
+        client.send("hello\n")
 
-        # 客户端发送退出请求包
-        pack = tcp.Package(
-            tcp.Header("bye"),
-            tcp.Body(
-                tcp.ByePayload(),
-            ),
-        )
-        client.send(pack)
-        # 客户端接收退出响应包
-        pack = client.recv()
-        assert pack.header.cmd == "bye"
-        assert pack.body.payload.word == "bye bye"  # type: ignore
+        # 客户端接收登录响应数据包
+        msg = client.recv()
+
+        assert msg == "hello-ack\n"
     finally:
         if "client" in locals():
             client.close()
@@ -90,13 +72,13 @@ def test_stream_tcp() -> None:
             srv.close()
 
 
-@pytest.mark.asyncio
+@mark.asyncio
 async def test_async_tcp() -> None:
     """测试基于协程的异步 UDP 服务端和和客户端"""
     port = get_available_port()
 
     # 保存服务端返回消息的队列
-    res_que: Queue[str] = Queue()
+    res_que: aio.Queue[str] = aio.Queue()
 
     try:
         # 实例化服务端对象
@@ -111,14 +93,19 @@ async def test_async_tcp() -> None:
         # 客户端连接到服务端
         await client.connect("127.0.0.1", port, res_que)
 
-        # 等待服务端关闭
-        await srv.wait()
-
         # 确认客户端收到服务端消息
-        assert res_que.get() == "hello_ack"
+        res = await res_que.get()
+        assert res == "hello_ack"
     finally:
         if "client" in locals():
             client.close()
 
         if "srv" in locals():
             srv.close()
+            await srv.wait()
+
+
+@mark.asyncio
+async def test_async_tcp2() -> None:
+    # aio.start_server()
+    pass

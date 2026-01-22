@@ -1,7 +1,6 @@
 import asyncio as aio
 import logging
 import socket as so
-from queue import Queue
 from typing import cast
 
 from ..common import format_addr
@@ -106,14 +105,14 @@ class ClientProtocol(aio.BaseProtocol):
     def __init__(
         self,
         addr: tuple[str, int],
-        res_que: Queue[str],
+        res_que: aio.Queue[str],
         on_con_lost: aio.Future[bool],
     ) -> None:
         """初始化客户端协议对象
 
         Args:
             `addr` (`addr`): 服务端地址
-            `res_que` (`Queue[str]`): 服务端返回的消息队列
+            `res_que` (`aio.Queue[str]`): 服务端返回的消息队列
             `on_con_lost` (`aio.Future[bool]`): 当连接关闭时, 通知服务端结束的异步量
         """
         self._addr = addr
@@ -144,7 +143,7 @@ class ClientProtocol(aio.BaseProtocol):
         msg = data.decode()
         log.info(f"[CLIENT] Data {msg!r} receive from: {format_addr(addr)!r}")
 
-        self._res_que.put(msg)
+        aio.create_task(self._res_que.put(msg))
         if self._transport:
             self._transport.close()
 
@@ -176,7 +175,7 @@ class AsyncClient:
         self._transport: aio.DatagramTransport | None = None
 
     async def connect(
-        self, host: str, port: int, msg: str, res_que: Queue[str]
+        self, host: str, port: int, msg: str, res_que: aio.Queue[str]
     ) -> None:
         """连接到服务端
 

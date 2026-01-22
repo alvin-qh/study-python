@@ -1,22 +1,10 @@
-from io import BufferedRWPair
 import logging
-import pickle
 import socket as so
 import sys
-from typing import Optional, Tuple, cast
+import threading as th
+from io import BufferedRWPair
 
 from ..common import format_addr
-import threading as th
-
-from .proto import (
-    Body,
-    ByeAckPayload,
-    ByePayload,
-    Header,
-    LoginAckPayload,
-    LoginPayload,
-    Package,
-)
 
 log = logging.getLogger()
 
@@ -26,8 +14,15 @@ class _StreamTcp:
 
     @classmethod
     def _create_tcp(cls) -> so.socket:
-        """创建 TCP socket"""
+        """创建 TCP socket
+
+        Returns:
+            `so.socket`: 设置完毕的 socket 对象
+        """
+        # 创建 socket 对象
         s = so.socket(so.AF_INET, so.SOCK_STREAM)
+
+        # 设置 SO_REUSEADDR 选项, 支持地址复用
         s.setsockopt(so.SOL_SOCKET, so.SO_REUSEADDR, 1)
         return s
 
@@ -38,11 +33,18 @@ class StreamServer(_StreamTcp):
     def __init__(self) -> None:
         """初始化对象"""
         super().__init__()
-        self._so: Optional[so.socket] = None
-        self._accept_td: Optional[th.Thread] = None
+        self._so: so.socket | None = None
+        self._accept_td: th.Thread | None = None
 
     def listen(self, port: int, addr: str = "", backlog: int = 1) -> None:
-        """接收客户端连接"""
+        """接收客户端连接
+
+        Args:
+            `port` (`int`): 要监听的端口
+            `addr` (`str`): 要监听的地址
+            `backlog` (`int`): 监听队列的长度
+        """
+        # 创建服务端 socket 对象
         s = self._create_tcp()
 
         # 绑定本地端口号
@@ -58,7 +60,7 @@ class StreamServer(_StreamTcp):
         self._so = s
         self._accept_td = td
 
-    def _bind(self, s: so.socket, addr: Tuple[str, int]) -> None:
+    def _bind(self, s: so.socket, addr: tuple[str, int]) -> None:
         """服务端绑定本地端口
 
         Args:
@@ -70,10 +72,10 @@ class StreamServer(_StreamTcp):
         log.info(f"[SERVER] Bind to {format_addr(addr)!r}")
 
     def _handle_accept(self, s: so.socket) -> None:
-        """处理 Accept
+        """Accept 线程, 用于监听服务端端口, 接受客户端连接
 
         Args:
-            `s` (`so.socket`): socket 对象
+            `s` (`so.socket`): 服务端 socket 对象
         """
         with s:
             while True:
@@ -84,7 +86,7 @@ class StreamServer(_StreamTcp):
                         f"[SERVER] Accept connection from {format_addr(client_addr)!r}"
                     )
 
-                    # 启动线程接受客户端发送数据
+                    # 启动数据收发线程, 用于处理和客户端的信息交换
                     th.Thread(
                         target=self._handle_recv, args=(client_so, client_addr)
                     ).start()
@@ -92,66 +94,32 @@ class StreamServer(_StreamTcp):
                     log.info("[SERVER] Stop listening")
                     break
 
-    def _handle_recv(self, client_so: so.socket, client_addr: Tuple[str, int]) -> None:
-        """处理数据接收"""
-        with client_so:
-            with client_so.makefile("rwb") as f:
-                while True:
-                    try:
-                        # 接收客户端数据
-                        pack = cast(Package, pickle.load(f))
-                        log.info(
-                            f"[SERVER] Receive {pack!r} from {format_addr(client_addr)!r}"
-                        )
+    def _handle_recv(self, client_so: so.socket, client_addr: tuple[str, int]) -> None:
+        """客户端收发线程, 用于处理和客户端的信息交换
 
-                        # 根据客户端数据包头信息选择后续处理逻辑
-                        match pack.header.cmd:
-                            case "login":
-                                self._handle_login(f, client_addr, pack)
-                            case "bye":
-                                self._handle_bye(f, client_addr, pack)
-                            case _:
-                                log.info(
-                                    f"[SERVER] Unrecognized cmd: {pack.header.cmd}"
-                                )
-                                break
-                    except Exception as e:
-                        log.info(f"[SERVER] Stop receiving, reason {e}")
-                        break
+        Args:
+            `client_so` (`so.socket`): 客户端 socket 对象
+            `client_addr` (`Tuple[str, int]`): 客户端地址
+        """
+        # 通过客户端 socket 对象创建流对象, 并通过流对象接收和发送数据
+        # 完成一次信息交换后, socket 对象和流对象都会被关闭, 从而和客户端断开连接
+        with client_so, client_so.makefile("rwb") as f:
+            while True:
+                try:
+                    # 通过流对象从客户端发送数据中读取一行数据, 并解码为字符串
+                    data = f.readline()
+                    msg = data.decode("utf-8")
 
-    def _handle_login(
-        self, f: BufferedRWPair, client_addr: Tuple[str, int], pack: Package
-    ) -> None:
-        """处理登录逻辑"""
+                    log.info(
+                        f"[SERVER] Receive message {msg} from {format_addr(client_addr)!r}"
+                    )
 
-        # 将数据包类型转为登录包类型
-        p = cast(LoginPayload, pack.body.payload)
-        log.info(
-            f"[SERVER] User {p.username!r} with password {p.password!r} from {format_addr(client_addr)!r}"
-        )
-
-        # 生成登录确认相应包
-        pack = Package(
-            Header(cmd="login"),
-            Body(LoginAckPayload(True, "")),
-        )
-        # 将登录响应包返回
-        pickle.dump(pack, f)
-        f.flush()
-
-    def _handle_bye(
-        self, f: BufferedRWPair, client_addr: Tuple[str, int], pack: Package
-    ) -> None:
-        """处理退出"""
-        p = cast(ByePayload, pack.body.payload)
-        log.info(f"[SERVER] Bye word {p.word!r} from {format_addr(client_addr)!r}")
-
-        pack = Package(
-            Header(cmd="bye"),
-            Body(ByeAckPayload()),
-        )
-        pickle.dump(pack, f)
-        f.flush()
+                    # 向客户端发送数据
+                    f.write(f"{msg.strip()}-ack\n".encode("utf-8"))
+                    f.flush()
+                except Exception as e:
+                    log.info(f"[SERVER] Stop receiving, reason {e}")
+                    break
 
     def close(self) -> None:
         """关闭连接"""
@@ -175,11 +143,9 @@ class StreamClient(_StreamTcp):
     def __init__(self) -> None:
         super().__init__()
 
-        self._so: Optional[so.socket] = None
+        self._so: so.socket | None = None
         self._addr = ("", 0)
-        self._buf = bytearray(0)
-
-        self._f: Optional[BufferedRWPair] = None
+        self._f: BufferedRWPair | None = None
 
     def connect(self, host: str, port: int) -> None:
         """连接到远程服务端
@@ -190,49 +156,53 @@ class StreamClient(_StreamTcp):
         """
         addr = (host, port)
 
+        # 创建客户端 socket 对象
         s = self._create_tcp()
+
+        # 令客户端 socket 对象连接到远程服务端
         s.connect(addr)
 
+        # 通过客户端连接 socket 创建流对象, 用于和服务端通信
         f = s.makefile("rwb")
         log.info(f"[CLIENT] Connect to {format_addr(addr)!r}")
 
         self._so = s
         self._f = f
-
         self._addr = addr
-        self._buf = bytearray(1024)
 
-    def recv(self) -> Package:
+    def recv(self) -> str:
         """接收数据
 
         Returns:
-            `Tuple[int, bytes]`: 接收数据的结果, 为一个三元组, 分别为 `(数据长度, 远端地址, 数据内容)`
+            `str`: 接收数据的结果, 为字符串
         """
         f = self._f
         if not f:
             raise Exception("Not connected")
 
-        pack = cast(Package, pickle.load(f))
-        log.info(f"[CLIENT] Receive {pack!r} from {format_addr(self._addr)!r}")
+        # 通过流对象从服务端接收数据, 接收一行数据并解码为字符串
+        data = f.readline()
+        msg = data.decode("utf-8")
 
-        return pack
+        log.info(f"[CLIENT] Receive message {msg} from {format_addr(self._addr)!r}")
 
-    def send(self, pack: Package) -> None:
+        return msg
+
+    def send(self, msg: str) -> None:
         """发送数据
 
         Args:
-            `pack` (`Package`): 要发送的数据包
-
-        Returns:
-            `int`: 发送数据的长度
+            `msg` (`str`): 要发送的字符串数据
         """
         f = self._f
         if not f:
             raise Exception("Not connected")
 
-        pickle.dump(pack, f)
+        # 通过流对象向服务端发送数据, 发送一整行字符串数据
+        f.write(f"{msg}\n".encode("utf-8"))
         f.flush()
-        log.info(f"[CLIENT] Package {pack} was sent")
+
+        log.info(f"[CLIENT] Message {msg} was sent")
 
     def close(self) -> None:
         """关闭连接"""

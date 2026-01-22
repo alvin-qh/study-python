@@ -7,10 +7,10 @@ authors = [
 dependencies = [
     "pytz>=2025.2",
     "atomics>=1.0.3",
-    "werkzeug>=3.1.4",
+    "werkzeug>=3.1.5",
     "wrapt>=2.0.1",
     "portalocker>=3.2.0",
-    "tzdata>=2025.2",
+    "tzdata>=2025.3",
     "python-dateutil>=2.9.0.post0",
 ]
 requires-python = ">=3.13"
@@ -34,12 +34,12 @@ test = [
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.8.0",
-    "hypothesis>=6.148.7",
-    "faker>=38.2.0",
+    "hypothesis>=6.150.2",
+    "faker>=40.1.2",
     "pytest-sugar>=1.1.1",
 ]
 type = [
-    "mypy>=1.19.0",
+    "mypy>=1.19.1",
     "mypy-extensions>=1.1.0",
 ]
 

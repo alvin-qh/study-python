@@ -1,7 +1,6 @@
 import threading as th
 import time
 import asyncio as aio
-from queue import Empty, Queue
 
 import pytest
 
@@ -71,7 +70,7 @@ async def test_async_udp() -> None:
     port = get_available_port()
 
     # 保存服务端返回消息的队列
-    res_que: Queue[str] = Queue()
+    res_que: aio.Queue[str] = aio.Queue()
 
     try:
         # 实例化服务端对象
@@ -86,21 +85,13 @@ async def test_async_udp() -> None:
         # 客户端连接到服务端
         await client.connect("127.0.0.1", port, "hello", res_que)
 
-        while True:
-            try:
-                res = res_que.get(block=False)
-                assert res == "hello_ack"
-
-                break
-            except Empty:
-                await aio.sleep(0.1)
-
-        # 等待服务端关闭
-        srv.close()
-        await srv.wait()
+        res = await res_que.get()
+        assert res == "hello_ack"
     finally:
         if "client" in locals():
             client.close()
 
         if "srv" in locals():
             srv.close()
+            # 等待服务端关闭
+            await srv.wait()
