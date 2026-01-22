@@ -39,8 +39,10 @@ def get_test_information_fixture(
 
     通过 `SubRequest` 对象, 可以获取目标测试函数的信息, 包括测试函数 id 以及测试函数名称等等
     """
-    nodeid = request.node.nodeid  # 获取当前测试的 nodeid
-    node_name = request.node.name  # 获取当前测试的 name
+    # 获取当前测试的 nodeid
+    nodeid = request.node.nodeid
+    # 获取当前测试的 name
+    node_name = request.node.originalname  # pyright: ignore[reportAttributeAccessIssue]
 
     yield (nodeid, node_name)
 
@@ -80,9 +82,13 @@ def param_fixture(request: SubRequest) -> str:
     - 集合的数量表示测试被调用的次数
     - 每次测试使用的值通过 request.param 参数传入
 
-    返回 `request.param` 的值, 表示每次测试时, 该 `fixture` 函数表示的值, 依次为 `"case1"`, `"case2"` 和 `"case3"`
+    当 `@fixture` 装饰器指定 `params` 参数时, pytest 会自动生成一个测试集合, 并按照 `params` 参数的顺序依次调用测试函数,
+    在测试函数内部, 可通过 `request.param` 参数获取本次传递的测试参数
 
-    另一个参数 `ids` 用于表示每次测试的编号, 便于阅读测试报告
+    `@fixture` 装饰器的另一个参数 `ids` 用于表示每次测试的编号, 便于阅读测试报告
+
+    本例中, 测试函数返回 `request.param` 的值, 表示每次测试时, 该 `fixture` 函数表示的值,
+    依次为 `"case1"`, `"case2"` 和 `"case3"`
 
     Args:
         `request` (`SubRequest`): 测试参数

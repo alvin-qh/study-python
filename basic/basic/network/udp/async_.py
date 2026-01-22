@@ -1,8 +1,8 @@
 import asyncio as aio
 import logging
-from queue import Queue
 import socket as so
-from typing import Optional, Tuple, cast
+from queue import Queue
+from typing import cast
 
 from ..common import format_addr
 
@@ -29,12 +29,12 @@ class ServerProtocol(aio.DatagramProtocol):
         self._transport = cast(aio.DatagramTransport, transport)
         log.info("[SERVER] UDP server bound")
 
-    def datagram_received(self, data: bytes, addr: Tuple[str, int]) -> None:
+    def datagram_received(self, data: bytes, addr: tuple[str, int]) -> None:
         """当数据接收完毕后回调
 
         Args:
             `data` (`bytes`): 接收到的数据
-            `addr` (`Tuple[str, int]`): 客户端地址
+            `addr` (`tuple[str, int]`): 客户端地址
         """
         # 将接收到的数据增加后缀后发送回客户端
         msg = data.decode()
@@ -44,14 +44,11 @@ class ServerProtocol(aio.DatagramProtocol):
         self._transport.sendto(msg.encode(), addr)
         log.info(f"[SERVER] Data {msg!r} send to {format_addr(addr)!r}")
 
-        # 发送完毕后, 关闭服务端
-        self._transport.abort()
-
-    def connection_lost(self, exc: Optional[Exception] = None) -> None:
+    def connection_lost(self, exc: Exception | None = None) -> None:
         """当链接关闭时回调
 
         Args:
-            `exc` (`Optional[Exception]`, optional): 导致连接关闭的异常. Defaults to `None`.
+            `exc` (`Exception | None`, optional): 导致连接关闭的异常. Defaults to `None`.
         """
         self._on_con_lost.set_result(True)
         log.info("[SERVER] Connection closed")
@@ -60,11 +57,11 @@ class ServerProtocol(aio.DatagramProtocol):
 class AsyncServer:
     """异步 UDP 服务端类"""
 
-    def __init__(self, loop: Optional[aio.AbstractEventLoop] = None) -> None:
+    def __init__(self, loop: aio.AbstractEventLoop | None = None) -> None:
         """初始化服务端对象
 
         Args:
-            `loop` (`Optional[aio.AbstractEventLoop]`, optional): 异步事件循环对象. Defaults to `None`.
+            `loop` (`aio.AbstractEventLoop | None`, optional): 异步事件循环对象. Defaults to `None`.
         """
         if loop is not None:
             self._loop = loop
@@ -72,7 +69,7 @@ class AsyncServer:
             # 如果参数未传递事件循环对象, 则获取当前协程的事件循环对象
             self._loop = aio.get_running_loop()
 
-        self._transport: Optional[aio.DatagramTransport] = None
+        self._transport: aio.DatagramTransport | None = None
 
         # 创建连接关闭后的异步通知量
         self._on_con_lost = self._loop.create_future()
@@ -108,7 +105,7 @@ class ClientProtocol(aio.BaseProtocol):
 
     def __init__(
         self,
-        addr: Tuple[str, int],
+        addr: tuple[str, int],
         res_que: Queue[str],
         on_con_lost: aio.Future[bool],
     ) -> None:
@@ -122,7 +119,7 @@ class ClientProtocol(aio.BaseProtocol):
         self._addr = addr
         self._res_que = res_que
         self._on_con_lost = on_con_lost
-        self._transport: Optional[aio.DatagramTransport] = None
+        self._transport: aio.DatagramTransport | None = None
 
     def connection_made(self, transport: aio.BaseTransport) -> None:
         """当连接到服务端后回调
@@ -137,12 +134,12 @@ class ClientProtocol(aio.BaseProtocol):
         self._transport.sendto(data, self._addr)
         log.info(f"[CLIENT] Data {data!r} send to {format_addr(self._addr)!r}")
 
-    def datagram_received(self, data: bytes, addr: Tuple[str, int]) -> None:
+    def datagram_received(self, data: bytes, addr: tuple[str, int]) -> None:
         """当从服务器接收到消息后回调
 
         Args:
             `data` (`bytes`): 接收到的消息
-            `addr` (`Tuple[str, int]`): 服务端地址
+            `addr` (`tuple[str, int]`): 服务端地址
         """
         msg = data.decode()
         log.info(f"[CLIENT] Data {msg!r} receive from: {format_addr(addr)!r}")
@@ -151,11 +148,11 @@ class ClientProtocol(aio.BaseProtocol):
         if self._transport:
             self._transport.close()
 
-    def connection_lost(self, exc: Optional[Exception] = None) -> None:
+    def connection_lost(self, exc: Exception | None = None) -> None:
         """当客户端连接被关闭后回调
 
         Args:
-            `exc` (`Optional[Exception]`, optional): 导致客户端连接关闭的异常. Defaults to `None`.
+            `exc` (`Exception | None`, optional): 导致客户端连接关闭的异常. Defaults to `None`.
         """
         self._on_con_lost.set_result(True)
         log.info("[CLIENT] Connection closed")
@@ -164,11 +161,11 @@ class ClientProtocol(aio.BaseProtocol):
 class AsyncClient:
     """异步 UDP 客户端类"""
 
-    def __init__(self, loop: Optional[aio.AbstractEventLoop] = None) -> None:
+    def __init__(self, loop: aio.AbstractEventLoop | None = None) -> None:
         """初始化异步 UDP 客户端对象实例
 
         Args:
-            `loop` (`Optional[aio.AbstractEventLoop]`, optional): 异步事件循环对象. Defaults to `None`.
+            `loop` (`aio.AbstractEventLoop | None`, optional): 异步事件循环对象. Defaults to `None`.
         """
         if loop is not None:
             self._loop = loop
@@ -176,7 +173,7 @@ class AsyncClient:
             # 如果参数未传递事件循环对象, 则获取当前协程的事件循环对象
             self._loop = aio.get_running_loop()
 
-        self._transport: Optional[aio.DatagramTransport] = None
+        self._transport: aio.DatagramTransport | None = None
 
     async def connect(
         self, host: str, port: int, msg: str, res_que: Queue[str]

@@ -1,9 +1,9 @@
 from os import path
 
 from compression import zstd
+from pytest import mark
 
 from basic.compression import convert_unit, generate_data
-from basic.compression.file_opt import delete_file_finally
 
 # 测试使用 `compression.zstd` 库对数据进行压缩
 # 1. 创建 `ZstdCompressor` 压缩器对象和 `ZstdDecompressor` 解压器对象
@@ -32,9 +32,11 @@ def test_compress_and_decompress() -> None:
     assert decompressed_data == raw_data
 
 
-@delete_file_finally(".zst")
-def test_open_compression_file(file_name: str) -> None:
+@mark.parametrize("delete_file_fixture", [{"extension": ".zst"}], indirect=True)
+def test_open_compression_file(delete_file_fixture: list[str]) -> None:
     """测试 zstandard 库一次性打开文件进行压缩和解压缩功能"""
+
+    file_name = delete_file_fixture[0]
 
     # 生成原始数据
     raw_data = generate_data(1024 * 1024)

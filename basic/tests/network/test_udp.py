@@ -1,14 +1,16 @@
 import threading as th
 import time
-from queue import Queue
+import asyncio as aio
+from queue import Empty, Queue
 
 import pytest
 
-from basic.network import udp
+from basic.network import get_available_port, udp
 
 
 def test_sync_udp() -> None:
     """测试同步 UDP 服务端客户端"""
+    port = get_available_port()
 
     # 通知服务端线程退出的条件量
     exit_cond = th.Condition()
@@ -17,7 +19,7 @@ def test_sync_udp() -> None:
     srv = udp.SyncServer()
 
     # 服务端对象绑定本地端口
-    srv.bind(8899)
+    srv.bind(port)
 
     def server_side() -> None:
         """服务端线程入口函数"""
@@ -44,7 +46,7 @@ def test_sync_udp() -> None:
         """客户端线程入口函数"""
         try:
             # 发送数据到服务端
-            while client.sendto(b"hello", ("127.0.0.1", 8899)) == 0:
+            while client.sendto(b"hello", ("127.0.0.1", port)) == 0:
                 # 如果发送失败, 则等待一段时间后重试
                 time.sleep(0.1)
 
@@ -66,6 +68,7 @@ def test_sync_udp() -> None:
 @pytest.mark.asyncio
 async def test_async_udp() -> None:
     """测试基于协程的异步 UDP 服务端和和客户端"""
+    port = get_available_port()
 
     # 保存服务端返回消息的队列
     res_que: Queue[str] = Queue()
@@ -75,18 +78,26 @@ async def test_async_udp() -> None:
         srv = udp.AsyncServer()
 
         # 服务端绑定端口号, 开始监听
-        await srv.bind(8899)
+        await srv.bind(port)
 
         # 实例化客户端对象
         client = udp.AsyncClient()
 
         # 客户端连接到服务端
-        await client.connect("127.0.0.1", 8899, "hello", res_que)
+        await client.connect("127.0.0.1", port, "hello", res_que)
+
+        while True:
+            try:
+                res = res_que.get(block=False)
+                assert res == "hello_ack"
+
+                break
+            except Empty:
+                await aio.sleep(0.1)
 
         # 等待服务端关闭
+        srv.close()
         await srv.wait()
-
-        assert res_que.get() == "hello_ack"
     finally:
         if "client" in locals():
             client.close()

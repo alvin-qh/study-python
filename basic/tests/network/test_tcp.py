@@ -2,23 +2,29 @@ from queue import Queue
 
 import pytest
 
-from basic.network import tcp
+from basic.network import get_available_port, tcp
 
 
 def test_sync_tcp() -> None:
     """测试 TCP 以同步方式进行通信"""
+    port = get_available_port()
+
     try:
         # 实例化服务端对象
         srv = tcp.SyncServer()
+
         # 启动服务端侦听
-        srv.listen(8899)
+        srv.listen(port)
 
         # 实例化客户端对象
         client = tcp.SyncClient()
+
         # 客户端连接服务端
-        client.connect("127.0.0.1", 8899)
+        client.connect("127.0.0.1", port)
+
         # 客户端发送数据
         client.send(b"hello")
+
         # 客户端接收数据
         n, data = client.recv()
 
@@ -37,16 +43,18 @@ def test_sync_tcp() -> None:
 
 def test_stream_tcp() -> None:
     """测试 TCP 以同步流方式进行通信"""
+    port = get_available_port()
+
     try:
         # 实例化服务端对象
         srv = tcp.StreamServer()
         # 启动服务端侦听
-        srv.listen(8899)
+        srv.listen(port)
 
         # 实例化客户端对象
         client = tcp.StreamClient()
         # 客户端连接服务端
-        client.connect("127.0.0.1", 8899)
+        client.connect("127.0.0.1", port)
 
         # 客户端发送登录请求数据包
         pack = tcp.Package(
@@ -85,6 +93,7 @@ def test_stream_tcp() -> None:
 @pytest.mark.asyncio
 async def test_async_tcp() -> None:
     """测试基于协程的异步 UDP 服务端和和客户端"""
+    port = get_available_port()
 
     # 保存服务端返回消息的队列
     res_que: Queue[str] = Queue()
@@ -94,13 +103,13 @@ async def test_async_tcp() -> None:
         srv = tcp.AsyncServer()
 
         # 服务端绑定端口号, 开始监听
-        await srv.bind(8899)
+        await srv.bind(port)
 
         # 实例化客户端对象
         client = tcp.AsyncClient(lambda: srv.close())
 
         # 客户端连接到服务端
-        await client.connect("127.0.0.1", 8899, res_que)
+        await client.connect("127.0.0.1", port, res_que)
 
         # 等待服务端关闭
         await srv.wait()

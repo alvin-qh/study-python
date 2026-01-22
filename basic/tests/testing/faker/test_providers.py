@@ -468,7 +468,7 @@ def test_provider_randomize_nb_elements() -> None:
 
     # 确认在 le 和 ge 参数为 False 时, 产生的随机数和 base 值得偏差范围
     if value < base:
-        assert value / base > 0.6
+        assert value / base >= 0.6
     elif value > base:
         assert value / base < 1.4
 

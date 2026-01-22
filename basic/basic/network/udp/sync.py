@@ -21,11 +21,11 @@ class _Udp:
         # 创建数据接收缓冲区
         self._buf = bytearray(1024)
 
-    def recv(self) -> Tuple[int, Tuple[str, int], bytes]:
+    def recv(self) -> tuple[int, tuple[str, int], bytes]:
         """接收数据
 
         Returns:
-            `Tuple[int, Tuple[str, int], bytes]`: 接收数据的结果, 为一个三元组, 分别为 `(数据长度, 远端地址, 数据内容)`
+            `tuple[int, tuple[str, int], bytes]`: 接收数据的结果, 为一个三元组, 分别为 `(数据长度, 远端地址, 数据内容)`
         """
         # 接收数据, 并放入缓冲区中, 返回数据长度和远端地址
         n, addr = self._so.recvfrom_into(self._buf, len(self._buf))
