@@ -503,7 +503,7 @@ tests/testing_builtin/
 
 #### 4.3 debug 模块
 
-```
+```plaintext
 basic/debug/
   ├── __init__.py
   ├── pdb_example.py           # pdb 调试器
@@ -517,7 +517,7 @@ tests/debug/
 
 #### 4.4 advanced 模块
 
-```
+```plaintext
 basic/advanced/
   ├── __init__.py
   ├── dis_example.py           # dis 字节码反汇编
@@ -533,7 +533,7 @@ tests/advanced/
 
 #### 4.5 contextlib 模块
 
-```
+```plaintext
 basic/contextlib/
   ├── __init__.py
   ├── contextmanager.py        # @contextmanager 装饰器
