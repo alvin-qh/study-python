@@ -8,13 +8,13 @@ from functools import (
     cmp_to_key,
     lru_cache,
     partial,
+    partialmethod,
     reduce,
     singledispatch,
     singledispatchmethod,
     total_ordering,
     update_wrapper,
     wraps,
-    partialmethod,
 )
 from operator import add
 from typing import Any, Self
@@ -116,25 +116,56 @@ def test_partial_method_with_lambda() -> None:
 def test_create_partial_method_in_class() -> None:
     """测试创建偏函数在类中的使用
 
-    通过 `partialmethod` 函数可以将偏函数定义为指定类的
+    通过 `partialmethod` 函数可以将偏函数定义为指定类的方法
+
+    和 `partial` 函数不同, `partialmethod` 函数在包装目标函数时, 默认会将第一个参数作为 `self` 参数,
+    所以只能在某个类中使用 `partialmethod` 函数来为这个类创建一个偏函数
+
+    和 `partial` 函数类似, `partialmethod` 函数的参数为要包装的目标函数以及目标函数中已确定的参数,
+    目标函数即可以是当前类的方法, 也可以是类外的其它函数, 对于前者可以直接包装, 对于后者, 要确定目标函数的第一个参数必须为一个对象类型
+
+    对于类的其它方法, 如类方法, 静态方法, 则无法通过 `partialmethod` 函数来包装偏函数
     """
 
     def add(self: Any, a: int, b: int) -> int:
+        """测试通过 `partialmethod` 函数为 `Calculator` 类创建偏函数的目标函数
+
+        该函数在 `Calculator` 类外定义, 仍可通过 `partialmethod` 函数来包装偏函数
+
+        注意, 第一个参数必须为对象类型, 否则无法通过 `partialmethod` 函数来包装偏函数
+        """
         return a + b
 
     class Calculator:
+        """测试通过 `partialmethod` 函数创建偏函数的类"""
+
         def multiply(self, a: int, b: int) -> int:
+            """用于测试 `partialmethod` 函数创建偏函数的目标方法
+
+            该方法在 `Calculator` 类内定义, 可直接通过 `partialmethod` 函数来包装偏函数
+            """
             return a * b
 
+        # 通过 `partialmethod` 函数将 `multiply` 创建包装为一个偏函数, 并预设其第一个参数
         double = partialmethod(multiply, 2)
+
+        # 通过 `partialmethod` 函数将 `multiply` 创建包装为一个偏函数, 并预设其第一个参数
         triple = partialmethod(multiply, 3)
 
-        x = partialmethod(add, 100)
+        # 通过 `partialmethod` 函数将 `add` 创建包装为一个偏函数, 并预设其第一个参数
+        increment = partialmethod(add, 1)
 
+    # 创建 `Calculator` 类的一个对象
     calc = Calculator()
+
+    # 确认执行结果为 `multiply` 方法的参数和第二个参数的乘积
     assert calc.double(2) == 4
+
+    # 确认执行结果为 `multiply` 方法的参数和第二个参数的乘积
     assert calc.triple(2) == 6
-    assert calc.x(1) == 101
+
+    # 确认执行结果为 `add` 方法的参数和第二个参数之和
+    assert calc.increment(2) == 3
 
 
 def test_comp_to_key_from_compare_function() -> None:
