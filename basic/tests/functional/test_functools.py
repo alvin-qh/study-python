@@ -4,6 +4,7 @@ import time
 from dataclasses import dataclass
 from functools import (
     cache,
+    cached_property,
     cmp_to_key,
     lru_cache,
     partial,
@@ -11,9 +12,9 @@ from functools import (
     singledispatch,
     singledispatchmethod,
     total_ordering,
-    wraps,
     update_wrapper,
-    cached_property,
+    wraps,
+    partialmethod,
 )
 from operator import add
 from typing import Any, Self
@@ -110,6 +111,30 @@ def test_partial_method_with_lambda() -> None:
 
     # 调用偏函数, 传入第二个参数, 确认执行结果为 `lambda` 函数的参数和第二个参数之和
     assert fn(1) == 101
+
+
+def test_create_partial_method_in_class() -> None:
+    """测试创建偏函数在类中的使用
+
+    通过 `partialmethod` 函数可以将偏函数定义为指定类的
+    """
+
+    def add(self: Any, a: int, b: int) -> int:
+        return a + b
+
+    class Calculator:
+        def multiply(self, a: int, b: int) -> int:
+            return a * b
+
+        double = partialmethod(multiply, 2)
+        triple = partialmethod(multiply, 3)
+
+        x = partialmethod(add, 100)
+
+    calc = Calculator()
+    assert calc.double(2) == 4
+    assert calc.triple(2) == 6
+    assert calc.x(1) == 101
 
 
 def test_comp_to_key_from_compare_function() -> None:
@@ -405,6 +430,11 @@ def test_lru_cache_decorator_on_function() -> None:
 
     `@lru_cache` 装饰器和 `@cache` 装饰器功能类似, 但 `@lru_cache` 具备更多参数, 例如可以设置最大缓存的数量
 
+    当一个函数被 `@lru_cache` 装饰器修饰后, 则该函数上会增加几个方法, 分别为:
+    - `cache_clear` 方法: 用于清除该函数上的缓存
+    - `cache_info` 属性: 用于获取该函数的缓存信息
+    - `cache_parameters` 方法: 用于获取创建缓存时, 所设置的缓存参数
+
     本例中, 通过两种方法计算斐波那契数列, 一种不加缓存, 导致所需时间比较久; 另一种通过 `@lru_cache` 装饰器缓存函数的结果,
     以避免重复计算, 计算效率较高
     """
@@ -432,6 +462,18 @@ def test_lru_cache_decorator_on_function() -> None:
     assert fib_cacheable(30) == 832040
     assert time.perf_counter() - start < 0.01
 
+    # 获取函数上的缓存数据
+    cache_info = fib_cacheable.cache_info()
+
+    # 确认缓存命中次数
+    assert cache_info.hits == 28
+    # 确认缓存未命中次数
+    assert cache_info.misses == 31
+    # 确认缓存的最大数量, `None` 表示无上限, 这里的值为 100, 为设置缓存时设置的缓存最大数量
+    assert cache_info.maxsize == 100
+    # 确认缓存的当前数量
+    assert cache_info.currsize == 31
+
     # 清理 `fib_cacheable` 函数上的缓存
     fib_cacheable.cache_clear()
 
@@ -444,6 +486,11 @@ def test_lru_cache_decorator_on_method() -> None:
 
     `@lru_cache` 装饰器也是用于缓存函数调用结果, 以避免函数重复计算, `@lru_cache` 表示缓存具备淘汰策略,
     可以在缓存数量达到最大值时, 淘汰最久未使用的缓存项
+
+    当一个方法被 `@lru_cache` 装饰器修饰后, 则该函数上会增加几个方法, 分别为:
+    - `cache_clear` 方法: 用于清除该函数上的缓存
+    - `cache_info` 属性: 用于获取该函数的缓存信息
+    - `cache_parameters` 方法: 用于获取创建缓存时, 所设置的缓存参数
 
     本例中, `Fib` 类具备两个方法, 一个不加缓存, 导致所需时间比较久; 一个通过 `@lru_cache` 装饰器缓存函数的结果,
     以避免重复计算, 计算效率较高
@@ -493,6 +540,24 @@ def test_lru_cache_decorator_on_method() -> None:
     assert fib.cacheable(30) == 832040
     assert time.perf_counter() - start < 0.01
 
+    # 获取函数上的缓存数据
+    cache_info = fib.cacheable.cache_info()
+
+    # 确认缓存命中次数
+    assert cache_info.hits == 28
+    # 确认缓存未命中次数
+    assert cache_info.misses == 31
+    # 确认缓存的最大数量, `None` 表示无上限, 这里的值为 100, 为设置缓存时设置的缓存最大数量
+    assert cache_info.maxsize == 100
+    # 确认缓存的当前数量
+    assert cache_info.currsize == 31
+
+    # 清理 `fib_cacheable` 函数上的缓存
+    fib.cacheable.cache_clear()
+
+    # 重新计算斐波那契数列
+    assert fib.cacheable(31) == 1346269
+
 
 def test_cached_property_decorator() -> None:
     """用于对对象的属性值进行缓存
@@ -540,27 +605,31 @@ def test_cached_property_decorator() -> None:
             self._n = n
             del self.result
 
+    # 创建对象
     fib = Fib(30)
 
+    # 获取属性值并记录属性值计算所需时间
     start = time.perf_counter()
     assert fib.result == 832040
     assert time.perf_counter() - start > 0.01
 
+    # 获取属性值并记录属性值计算所需时间, 因为有缓存, 所以计算时间可忽略不计
     start = time.perf_counter()
     assert fib.result == 832040
     assert time.perf_counter() - start < 0.01
 
+    # 修改属性值, 则 n 属性的 setter 方法会触发清除 result 属性的缓存
     fib.n = 31
 
+    # 重新获取属性值, 确认之前的缓存已经失效
     start = time.perf_counter()
     assert fib.result == 1346269
     assert time.perf_counter() - start > 0.01
 
+    # 再次获取属性值, 由于属性值已被缓存, 故属性值计算时间已忽略不计
     start = time.perf_counter()
     assert fib.result == 1346269
     assert time.perf_counter() - start < 0.01
-
-    cached_property.clear()
 
 
 def test_singledispatch_decorator() -> None:
