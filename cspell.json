@@ -82,6 +82,7 @@
         "CREAT",
         "CRPC",
         "curdir",
+        "currsize",
         "cursorclass",
         "cython",
         "cythonize",
