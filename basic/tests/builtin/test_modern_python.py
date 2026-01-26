@@ -1,3 +1,6 @@
+import math
+
+
 def test_match_case_statement_basic() -> None:
     """测试 match case 语句
 
@@ -97,3 +100,56 @@ def test_f_string_with_variable() -> None:
 
     本例中测试在 f-string 中使用变量, 获取变量的值并拼接字符串, 该语法有利于在调试过程中快速输出变量值
     """
+    a = 100
+    b = 200
+
+    # 获取变量值并拼接字符串
+    s = f"{a =}, {b =}, {a + b =}"
+    assert s == "a=100, b='OK'"
+
+
+def test_f_string_with_complex_expressions() -> None:
+    """测试 f-string 增强项
+
+    本例中测试在 f-string 中使用复杂表达式, 可以简化代码结构
+    """
+    radius = 3
+
+    # 在 f-string 中使用复杂表达式, 输出圆面积
+    s = f"S = {math.pi * radius ** 2:.2f}"
+    assert s == "S = 28.27"
+
+
+def test_use_quotes_in_expression_in_f_string() -> None:
+    """测试 f-string 增强项
+
+    本例中测试在 f-string 的表达式中使用引号, 包括访问字典属性, 对象属性访问以及使用字符串常量等
+    """
+    attrs = {
+        "name": "Alvin",
+        "age": 43,
+        "gender": "M",
+    }
+
+    s = (
+        f"{"Mr." if attrs["gender"] == "M" else "Mis."}"  # 在 f-string 表达式中使用字符串常量并访对象属性
+        f" {attrs["name"]} is {attrs["age"]} years old"  # 在 f-string 表达式中使用对象属性访问
+    )
+    assert s == "Mr. Alvin is 43 years old"
+
+
+def test_f_string_with_comments() -> None:
+    """测试 f-string 增强项
+
+    本例中测试在 f-string 中使用注释, 可以在字符串中添加注释, 帮助阅读代码
+
+    注意, 目前只允许在多行 f-string 中使用注释 (即通过 `f\"\"\"` 开始, 通过 `\"\"\"` 结束)
+    """
+    radius = 3
+
+    # 在多行 f-string 中使用注释
+    s = f"""S = {
+        # 计算圆的面积
+        math.pi * radius ** 2:.2f}"""
+
+    assert s == "S = 28.27"
