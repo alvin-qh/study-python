@@ -153,3 +153,40 @@ def test_f_string_with_comments() -> None:
         math.pi * radius ** 2:.2f}"""
 
     assert s == "S = 28.27"
+
+
+def test_f_string_with_multi_level_nesting() -> None:
+    """测试 f-string 增强项
+
+    本例中测试在 f-string 中使用多层嵌套, 可以简化代码结构
+
+    所谓嵌套, 即可以在 f-string 的表达式中继续使用 f-string
+    """
+    name = "Alvin"
+    age = 43
+
+    detail = f"Name: {name}, Age: {age}, Detail: {f"{name} is {age} years old"}"
+    assert detail == "Name: Alvin, Age: 43, Detail: Alvin is 43 years old"
+
+
+def test_f_string_with_number_formats() -> None:
+    """测试 f-string 增强项
+
+    本例中测试在 f-string 中对数值进行格式化, 常用的数值格式化方式有:
+    - `.<n>f`: 保留 `n` 位小数
+    - `#0x`: 十六进制表示, 并增加 `0x` 前缀
+    - `,`: 添加千分位分隔符
+    - `b`: 二进制表示
+    - `o`: 八进制表示
+    - `.<n>e`: 科学计数法表示, 并保留 `n` 位小数
+    - `<mn>`: 填充数字, 宽度为 9, 左侧填充 0
+    """
+    n = 4200
+
+    assert f"{n:.2f}" == "4200.00"
+    assert f"{n:#0x}" == "0x1068"
+    assert f"{n:,}" == "4,200"
+    assert f"{n:b}" == "1000001101000"
+    assert f"{n:o}" == "10150"
+    assert f"{n:.2e}" == "4.20e+03"
+    assert f"{n:09}" == "000004200"
