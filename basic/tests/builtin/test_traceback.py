@@ -4,10 +4,17 @@ from traceback import format_exception, format_stack
 
 
 def raise_exception() -> None:
+    """抛出 `RuntimeError` 异常"""
     raise RuntimeError("This is an exception", 100)
 
 
 def assert_str_contains(src: str, *contains: str) -> None:
+    """断言所给的字符串是否被 `str` 参数字符串包含
+
+    Args:
+        `src` (`str`): 原字符串
+        `contains` (`tuple[str])`): 可能被包含在 `src` 字符串的字符串集合
+    """
     for s in contains:
         assert s in src, f"'{s}' not in '{src}'"
 

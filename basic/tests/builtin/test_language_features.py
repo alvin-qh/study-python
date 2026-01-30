@@ -1,8 +1,23 @@
-from basic.builtin.language_features import check_value_if_true
+from typing import Any
 
 
 def test_if_else_statement() -> None:
-    """测试 if ... else 语句"""
+    """测试 if ... else 语句
+
+    在 Python 中, 所有类型的值都可以表达为 "真" 或 "假", 规则如下:
+
+    - 布尔类型: True 表示真, False 表示假
+    - 集合类型: 非空集合表示真, 空集合表示假
+    - 字典类型: 非空字典表示真, 空字典表示假
+    - 对象类型: 非空对象引用表示真, 空对象引用表示假
+    - 字符串类型: 非空字符串表示真, 空字符串表示假
+    - 数字类型: 非零数字表示真, 零数字表示假
+    """
+
+    def check_value_if_true(val: Any) -> str:
+        """判断给定值是否为真"""
+        return "True" if val else "False"
+
     # 对于布尔类型, True 表示真, False 表示假
     assert check_value_if_true(True) == "True"
     assert check_value_if_true(False) == "False"

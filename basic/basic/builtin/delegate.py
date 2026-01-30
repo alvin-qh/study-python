@@ -9,7 +9,7 @@ class Delegate:
         """初始化代理对象
 
         Args:
-            inst (Any): 被代理的对象实例
+            `inst` (`Any`): 被代理的对象实例
         """
         self._inst = inst
 
@@ -17,10 +17,10 @@ class Delegate:
         """获取对象的属性和方法
 
         Args:
-            name (str): 属性名
+            `name` (`str`): 属性名
 
         Returns:
-            Any: 属性值
+            `Any`: 属性值
         """
         # 获取名为 _inst 属性
         # 通过 object 的 __getattribute__ 方法获取 _inst 属性,
@@ -47,10 +47,10 @@ class Delegate:
         """对指定的函数 (方法) 进行代理, 返回代理函数 (方法) 对象
 
         Args:
-            fn (Callable): 被代理函数 (方法)
+            `fn` (`Callable`): 被代理函数 (方法)
 
         Returns:
-            Callable: 代理函数 (方法)
+            `Callable`: 代理函数 (方法)
         """
 
         @wraps(fn)
@@ -58,7 +58,7 @@ class Delegate:
             """代理函数 (方法)
 
             Returns:
-                str: 将被代理函数 (方法) 返回值格式化后的结果
+                `str`: 将被代理函数 (方法) 返回值格式化后的结果
             """
             return f"Result is: {fn(*args, **kwargs)}"
 
@@ -69,7 +69,7 @@ class Delegate:
         """重写代理类型的获取类的方法, 返回被代理对象的类型
 
         Returns:
-            Any: 被代理对象的类型
+            `Any`: 被代理对象的类型
         """
         return type(self._inst)
 
@@ -82,6 +82,6 @@ class Delegate:
         """获取被代理对象实例
 
         Returns:
-            Any: 被代理对象实例
+            `Any`: 被代理对象实例
         """
         return self._inst

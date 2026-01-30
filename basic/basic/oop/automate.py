@@ -7,7 +7,9 @@ AutomateArgs = dict[str, Any] | list[Any] | set[Any] | tuple[Any, ...]
 class Automate(dict[str, Any]):
     """属性自动组装类型
 
-    该类型从 Dict 类型继承, 底层存储为 Key/Value
+    该类可根据类中定义的 `__slots__` 字段自动装配对象属性值
+
+    该类从 `dict` 类型继承, 底层存储为 Key/Value
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -25,12 +27,13 @@ class Automate(dict[str, Any]):
     @staticmethod
     def _parse_args(args: AutomateArgs) -> "Automate" | AutomateArgs:
         """解析 `AutomateArgs` 类型参数
-        - 对于参数类型为 `Dict` 类型, 返回 `Automate` 类型对象
-        - 对于参数类型为 `Dict`, `Set` 和 `Tuple` 类型, 返回 `List[Automate]` 类型对象
+
+        - 对于参数类型为 `dict` 类型, 返回 `Automate` 类型对象
+        - 对于参数类型为 `dict`, `set` 和 `tuple` 类型, 返回 `list[Automate]` 类型对象
         - 对于其它参数类型, 返回参数本身
 
         Returns:
-            Union["Automate", AutomateArgs]: 返回解析后的参数
+            `"Automate" | AutomateArgs`: 返回解析后的参数
         """
         if isinstance(args, dict):
             # 将参数解析为 Automate 类型对象
@@ -46,10 +49,10 @@ class Automate(dict[str, Any]):
         """根据属性名获取属性值
 
         Args:
-            name (str): 属性名
+            `name` (`str`): 属性名
 
         Returns:
-            Any: 属性值
+            `Any`: 属性值
         """
         return self.get(name)
 
@@ -57,7 +60,7 @@ class Automate(dict[str, Any]):
         """设置属性值
 
         Args:
-            name (str): 属性名
-            value (Any): 属性值
+            `name` (`str`): 属性名
+            `value` (`Any`): 属性值
         """
         self[name] = value

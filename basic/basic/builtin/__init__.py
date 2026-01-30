@@ -1,4 +1,4 @@
-from .automate import Automate
+from ..oop.automate import Automate
 from .context import Context
 from .delegate import Delegate
 

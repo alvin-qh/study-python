@@ -4,8 +4,7 @@ from pytest import raises
 
 
 def test_memoryview() -> None:
-    """
-    `memoryview` 对一个 `ReadableBuffer` 对象进行包装 (`bytes`, `bytearray` 类型),
+    """`memoryview` 对一个 `ReadableBuffer` 对象进行包装 (`bytes`, `bytearray` 类型),
     可以对这部分内存进行直接访问 (内存视图)
     """
     # 创建一个可读写的 memoryview 对象
@@ -44,9 +43,7 @@ def test_memoryview() -> None:
 
 
 def test_memoryview_cast() -> None:
-    """
-    将内存从一种视图类型转为另一种, 而无需内存复制
-    """
+    """将内存从一种视图类型转为另一种, 而无需内存复制"""
     # 创建一个整数数组并用 memoryview 对象包装
     mv_i = memoryview(array("i", range(10)))
     # 此时 memoryview 对象共 40 字节
