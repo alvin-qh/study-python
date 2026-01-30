@@ -86,9 +86,8 @@ def test_find_all_matched_part() -> None:
     r = re.findall(pattern, "123 456 789")
     assert r == ["123", "456", "789"]
 
-    # 查找逻辑同上, 返回 Match 对象的迭代器
+    # 查找逻辑同上, 返回 Match 对象的迭代器, 再通过每个 Match 对象获取匹配结果
     r = re.finditer(pattern, "123 456 789")
-    # 通过每个 Match 对象获取匹配结果
     assert [m.group() for m in r] == ["123", "456", "789"]
 
 
@@ -100,12 +99,10 @@ def test_split() -> None:
 
     # 通过正则表达式对字符串进行切分
     r = re.split(pattern, "abc    def ghi\tjkl")
-    # 验证切分结果
     assert r == ["abc", "def", "ghi", "jkl"]
 
-    # 对切分结果的数量进行限制, maxsplit=2 表示最大返回 3 个结果
+    # 对切分结果的数量进行限制, maxsplit=2 表示最大返回 3 个结果, 3 个之后不再进行切分
     r = re.split(pattern, "abc    def ghi\tjkl", maxsplit=2)
-    # 验证切分结果, 最后一部分因为限制未进行切分
     assert r == ["abc", "def", "ghi\tjkl"]
 
 

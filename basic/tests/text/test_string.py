@@ -1,6 +1,6 @@
 from itertools import repeat
 from string import Template
-from typing import Any, Callable, Optional
+from typing import Any, Callable
 
 
 def test_ascii_convert() -> None:
@@ -8,6 +8,7 @@ def test_ascii_convert() -> None:
 
     # 字符转为 ASCII 码
     assert ord("A") == 65
+
     # ASCII 码转为字符
     assert chr(97) == "a"
 
@@ -15,6 +16,7 @@ def test_ascii_convert() -> None:
 
     # ASCII 字符转为 ASCII 编码表示
     assert ascii("AB") == "'AB'"
+
     # UNICODE 字符转为 ASCII 编码表示
     assert ascii("测试") == "'\\u6d4b\\u8bd5'"
 
@@ -26,26 +28,33 @@ def test_str_slice() -> None:
 
     # 通过下标获取指定位置嗯字符
     assert s[2] == "三"
+
     # 获取一个范围的切片
     assert s[1:4] == "二三四"
+
     # 获取指定位置到结尾的切片
     assert s[2:] == "三四五六七八九零"
+
     # 获取开头到指定位置的切片
     assert s[:3] == "一二三"
+
     # 位置可以使用负数, 表示从字符串末尾倒数计算
     assert s[-4:] == "七八九零"
+
     # 设置切片的步长
     assert s[1:-1:2] == "二四六八"
 
     # 利用 LC 切片发获取每字符串两个字符的集合
-    fivers = [s[k: k + 2] for k in range(0, len(s), 2)]
+    fivers = [s[k : k + 2] for k in range(0, len(s), 2)]
     assert fivers == ["一二", "三四", "五六", "七八", "九零"]
 
     cuts = [2, 5, 9]
+
     # 将首位, 末尾位置加上后, 产生 2 元组序列
     # 相当于 zip([0, 2, 5, 9], [2, 5, 9, 10])
     slices = list(zip([0] + cuts, cuts + [len(s)]))
     assert slices == [(0, 2), (2, 5), (5, 9), (9, 10)]
+
     # 进行切片
     fivers = [s[i:j] for i, j in slices]
     assert fivers == ["一二", "三四五", "六七八九", "零"]
@@ -55,6 +64,7 @@ def test_str_multiplication() -> None:
     """字符串的乘法操作, 相当于将字符串内容重复多次后形成新的字符串"""
 
     s = "xo"
+
     # 验证重复 3 次的结果
     assert s * 3 == "xoxoxo"
 
@@ -89,10 +99,13 @@ def test_counter() -> None:
 
     # 计算字符串中字符个数
     assert s.count("") == 12
+
     # 计算指定字符的个数
     assert s.count("b") == 3
+
     # 计算指定子字符串的个数
     assert s.count("bc") == 3
+
     # 查找 "bcd" 子字符串出现的次数, 并指定查找的起始位置和结束位置
     assert s.count("bcd", 2, -1) == 1
 
@@ -126,6 +139,7 @@ def test_reversed() -> None:
 
     # 通过切片反转字符串
     assert s[::-1] == "fed cba"
+
     # 通过 reversed 函数反转字符串
     assert "".join(reversed(s)) == "fed cba"
 
@@ -271,6 +285,8 @@ def test_format_by_method_for_numbers() -> None:
     c = 3 - 5j
     s = "{0.real}, {0.imag}".format(c)
     assert s == "3.0, -5.0"
+
+    # 使用命名参数
     s = "{c.real}, {c.imag}".format(c=c)
     assert s == "3.0, -5.0"
 
@@ -296,22 +312,21 @@ def test_format_by_method_for_list_index() -> None:
     assert s == "(3, 5), (6, 8)"
 
 
-class Value:
-    """用于测试模板字符串中访问对象属性的类"""
-
-    def __init__(self, id_: str, name: str) -> None:
-        """初始化对象
-
-        Args:
-            - `id_` (`str`): 对象属性
-            - `name` (`str`): 对象属性
-        """
-        self.id = id_
-        self.name = name
-
-
 def test_format_by_method_for_object_attributes() -> None:
     """可以在占位符中通过 `.<attribute name>` 访问对象的属性"""
+
+    class Value:
+        """用于测试模板字符串中访问对象属性的类"""
+
+        def __init__(self, id_: str, name: str) -> None:
+            """初始化对象
+
+            Args:
+                - `id_` (`str`): 对象属性
+                - `name` (`str`): 对象属性
+            """
+            self.id = id_
+            self.name = name
 
     # 产生一个对象
     v = Value("001", "Alvin")
@@ -365,6 +380,7 @@ def test_padding_align_and_fill() -> None:
     for align, text, n in zip("<^>", ["L", "C", "R"], repeat(5)):
         # 指定对齐方式和填充字符的参数
         rs.append("{:{f}{a}{n}}".format(text, f="*", a=align, n=n))
+
     # 确定格式化结果
     assert rs == [
         "L****",
@@ -396,7 +412,7 @@ def test_format_magic_method() -> None:
     当进行字符串格式化操作时 (`format`, `f""` 等), 如果参数对象具备 `__format__` 魔法方法, 则会调用该方法将对象格式化为字符串
     """
 
-    class C:
+    class DemoClass:
         """测试对象格式化的类型"""
 
         # 格式化规则和格式化函数的对应关系
@@ -423,7 +439,8 @@ def test_format_magic_method() -> None:
                 `str`: 格式化结果
             """
             # 根据格式化规则获取格式化函数
-            formatter: Optional[Callable[..., str]] = self._format.get(format_spec)
+            formatter: Callable[..., str] | None = self._format.get(format_spec)
+
             # 对于无效的格式化规则, 返回当前值
             if not formatter:
                 return str(self._value)
@@ -431,7 +448,7 @@ def test_format_magic_method() -> None:
             # 返回格式化后的值
             return formatter(self._value)
 
-    c = C(123)
+    c = DemoClass(123)
 
     # 验证格式化结果
     assert f"{c:m}" == "m123"
