@@ -52,7 +52,7 @@ def test_match_case_statement() -> None:
 
     本例演示了 match case 语句的基本用法, 对指定值进行匹配判断, 并执行对应的逻辑分支
     """
-    res = ""
+    res: str = ""
 
     x = 1
 
@@ -75,7 +75,7 @@ def test_match_case_statement_to_match_list() -> None:
 
     原则上, 对集合的匹配仍是等值匹配, 但 Python 为集合匹配增加了一个元素捕捉功能, 可以匹配集合中的部分元素, 匹配成功则捕获剩余元素
     """
-    res = ""
+    res: str = ""
 
     x = [1, 2, 5]
     match x:
@@ -97,7 +97,7 @@ def test_match_case_statement_with_variable() -> None:
     在 case 语句中, 可以定义变量来捕获 match 语句中指定的值, 并在 case 语句中定义条件判断, 来判断变量的值是否满足要求,
     这种方式使得匹配逻辑更加灵活
     """
-    res = ""
+    res: str = ""
 
     x = 1
     match x:
@@ -120,7 +120,7 @@ def test_match_case_statement_with_unpack_variable() -> None:
 
     本例测试在 case 中捕获变量时, 对被捕获的变量进行 unpack 操作, 之后对 unpack 的变量进行各种匹配操作
     """
-    res = ""
+    res: str = ""
 
     point = (1, 2)
 
