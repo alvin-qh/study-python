@@ -34,7 +34,7 @@ test = [
     "pytest-repeat>=0.9.4",
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.8.0",
-    "hypothesis>=6.150.3",
+    "hypothesis>=6.151.4",
     "faker>=40.1.2",
     "pytest-sugar>=1.1.1",
 ]

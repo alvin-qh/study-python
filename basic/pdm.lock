@@ -5,7 +5,7 @@
 groups = ["default", "lint", "test", "type"]
 strategy = []
 lock_version = "4.5.0"
-content_hash = "sha256:0e4f64db4dee89f4c74f7c29aa1d8ed78615bad8bc447b2bedb6f79acdb9d2cf"
+content_hash = "sha256:7bf5951bd265c8dfb5b8f10b7321b3f3469570b2686b1c2a08772f896fae1631"
 
 [[metadata.targets]]
 requires_python = ">=3.13"
@@ -138,14 +138,14 @@ files = [
 
 [[package]]
 name = "hypothesis"
-version = "6.150.3"
+version = "6.151.4"
 summary = ""
 dependencies = [
     "sortedcontainers",
 ]
 files = [
-    {file = "hypothesis-6.150.3-py3-none-any.whl", hash = "sha256:5577c0f8eff5ac54a8aff1ce32e30c5454167c29360fdabf1bfea0539b1689f9"},
-    {file = "hypothesis-6.150.3.tar.gz", hash = "sha256:32c88d4b7df3a8483e69877561b520320bf7779b0709c11869e392025e9279d4"},
+    {file = "hypothesis-6.151.4-py3-none-any.whl", hash = "sha256:a1cf7e0fdaa296d697a68ff3c0b3912c0050f07aa37e7d2ff33a966749d1d9b4"},
+    {file = "hypothesis-6.151.4.tar.gz", hash = "sha256:658a62da1c3ccb36746ac2f7dc4bb1a6e76bd314e0dc54c4e1aaba2503d5545c"},
 ]
 
 [[package]]
