@@ -140,6 +140,9 @@ def test_multi_inheritance() -> None:
     # 确认 Child 类同时是 Interface_1, Interface_2, Base_1, Base_2 类的子类
     assert issubclass(Child, (Interface_1, Interface_2, Base_1, Base_2))
 
+    # 确认 Child 类的继承顺序
+    assert Child.mro() == [Child, Base_1, Base_2, Interface_1, Interface_2, ABC, object]
+
     # 实例化 C 类对象
     c = Child()
 
