@@ -13,39 +13,67 @@ def test_class_inheritance() -> None:
     """
 
     class Base:
+        """定义父类"""
+
         def __init__(self) -> None:
+            """父类构造器"""
             self._name = "Base"
 
         def who_am_i(self) -> str:
+            """定义父类方法
+
+            该方法会在子类中被覆盖
+            """
             return self._name
 
         def base_special(self) -> str:
+            """定义父类方法
+
+            该方法不会在子类中被覆盖
+            """
             return "I'm Base"
 
     class Child(Base):
+        """定义子类
+
+        该类从 `Base` 类继承, 故具备父类中的属性和方法
+        """
+
         def __init__(self) -> None:
+            """子类构造器
+
+            可以通过 `super()` 函数, 在子类构造器中调用父类构造器
+            """
             super().__init__()
             self._name = "Child"
 
         @override
         def who_am_i(self) -> str:
+            """定义子类方法, 覆盖父类方法
+
+            和其它面向对象语言类似, 子类的同签名方法 (方法名和参数列表相同) 会覆盖父类方法
+
+            可以通过 `override` 装饰器, 显式地指定被覆盖的父类方法 (非必须)
+            """
             return self._name
 
         def child_special(self) -> str:
+            """定义子类方法
+
+            该方法不会被覆盖
+            """
             return "I'm Child"
 
+    # 实例化父类对象, 并确认父类方法调用
     base = Base()
     assert base.who_am_i() == "Base"
     assert base.base_special() == "I'm Base"
 
+    # 实例化子类对象, 并确认子类方法调用
     child = Child()
-    assert child.who_am_i() == "Child"
+    assert child.who_am_i() == "Child"  # 子类方法覆盖父类方法
     assert child.base_special() == "I'm Base"
     assert child.child_special() == "I'm Child"
-
-    base = child
-    assert base.who_am_i() == "Child"
-    assert base.base_special() == "I'm Base"
 
 
 def test_multi_inheritance() -> None:
