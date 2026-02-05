@@ -3,7 +3,13 @@ from typing import Any, Callable, Self, Type
 
 
 class Delegate:
-    """定义代理类型"""
+    """定义代理类型
+
+    代理类型用于代理另一个对象, 让自身的对象具备被代理对象的所有属性和方法, 令代理对象和被代理对象看起来一模一样
+
+    代理对象可以被当作被代理对象来使用, 并且可以在访问被代理对象的属性和方法时, 执行额外的代码, 起到不修改被代理对象类型,
+    可以改变被代理对象的属性和方法执行逻辑
+    """
 
     def __init__(self, inst: Any) -> None:
         """初始化代理对象
@@ -76,6 +82,8 @@ class Delegate:
     @__class__.setter
     def __class__(self, __type: type[object]) -> None:  # noqa
         pass
+
+    def __ins
 
     @property
     def instance(self) -> Any:

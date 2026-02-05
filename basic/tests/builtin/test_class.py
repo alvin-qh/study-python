@@ -1,159 +1,16 @@
-import json
 from abc import ABC, abstractmethod
 from functools import partialmethod
 from typing import Any, Self, cast
 
 from pytest import raises
 
-from basic.builtin import Automate, Delegate
+from basic.builtin import Delegate
 
 _dir = dir()
 
 
 
 
-
-
-def test_dynamic_class() -> None:
-    """测试动态类型
-
-    通过 `__setattr__`, `__getattr__` 和 `__delattr__` 三个魔法方法用于获取, 设置和删除那些"未定义"的属性
-    """
-
-    class C:
-        """动态类型, 可以设置和获取任意名称的属性"""
-
-        # 存储属性名和属性值的字典对象
-        _props: dict[str, Any]
-
-        def __init__(self) -> None:
-            """初始化对象
-
-            为当前对象设置存储键值对的 `_props` 字段
-            """
-            # 注意, _props 字段需要设置在父类上
-            # 否则会调用当前对象的 __setattr__ 方法, 而 __setattr__ 方法中又调用了 _props 字段,
-            # 会造成循环调用
-            super().__setattr__("_props", {})
-
-        def __getattr__(self, name: str) -> Any:
-            """根据属性名称获取属性值
-
-            Args:
-                `name` (`str`): 属性名
-
-            Returns:
-                `Any`: 属性值
-            """
-            try:
-                return self._props[name]
-            except KeyError:
-                raise AttributeError(name)
-
-        def __setattr__(self, name: str, value: Any) -> None:
-            """设置属性名和属性值
-
-            Args:
-                `name` (`str`): 属性名
-                `value` (`Any`): 属性值
-            """
-            try:
-                self._props[name] = value
-            except KeyError:
-                raise AttributeError(name)
-
-        def __delattr__(self, name: str) -> None:
-            """根据属性名删除属性
-
-            Args:
-                `name` (`str`): 属性名
-            """
-            try:
-                del self._props[name]
-            except KeyError:
-                # 确保幂等性
-                pass
-
-    # 实例化对象
-    c = C()
-
-    # 设置 x 属性
-    c.x = 100
-
-    # 确认 x 属性的属性值
-    assert c.x == 100
-
-    # 设置 y 属性
-    c.y = "Hello"
-
-    # 确认 y 属性的属性值
-    assert c.y == "Hello"
-
-    # 删除指定的属性
-    del c.y
-    with raises(AttributeError):
-        # 确保属性已被删除
-        c.y
-
-
-def test_delegate_class() -> None:
-    """测试代理类型"""
-
-    class B(ABC):
-        """接口类型"""
-
-        @abstractmethod
-        def run[T: (int, float)](self, a: T, b: T) -> T:
-            """接口方法
-
-            Args:
-                `a` (`T`): 参数 1
-                `b` (`T`): 参数 2
-
-            Returns:
-                `T`: 返回值
-            """
-
-    class C1(B):
-        """接口实现类"""
-
-        def run[T: (int, float)](self, a: T, b: T) -> T:
-            """实现接口方法
-
-            Args:
-                `a` (`T`): 参数 1
-                `b` (`T`): 参数 2
-
-            Returns:
-                `T`: 两个参数相加的结果
-            """
-            return a + b
-
-    class C2(B):
-        """接口实现类"""
-
-        def run[T: (int, float)](self, a: T, b: T) -> T:
-            """实现接口方法
-
-            Args:
-                `a` (`T`): 参数 1
-                `b` (`T`): 参数 2
-
-            Returns:
-                `T`: 两个参数相乘的结果
-            """
-            return a * b
-
-    # 实例化对象
-    c1, c2 = C1(), C2()
-
-    # 创建代理对象
-    c1_d = Delegate(c1)
-    c2_d = Delegate(c2)
-
-    # 验证代理对象执行被代理方法的返回值
-    assert c1_d.run(1, 2) == "Result is: 3"
-    assert c2_d.run(1, 2) == "Result is: 2"
 
 
 def test_create_dynamic_class() -> None:

@@ -1,4 +1,5 @@
 import json
+from typing import Any
 
 import pytest
 
@@ -175,11 +176,36 @@ def test_dir_magic_member() -> None:
 def test_attribute_magic_member() -> None:
     """属性访问
 
-    通过 `__getattr__` 魔法方法, 可以覆盖属性访问行为.
+    对于 Python 对象, 其属性访问实际上是通过如下几个魔术成员方法进行的, 包括:
+
+    - `__getattr__`: 获取属性值
+    - `__setattr__`: 设置属性名和属性值
+    - `__delattr__`: 删除属性
+
+    本例通过一个动态类来演示对象的属性访问, 通过上述属性访问方法, 利用类中的一个字典来实现为对象设置任意属性并进行访问或删除
     """
 
     class DemoClass:
-        def __getattr__(self, name: str) -> str:
+        """定义动态类型
+
+        本类型内部定义了一个 `_props` 字典字段, 用于存储对象属性名和属性值, 并通过 `__getattr__`, `__setattr__` 以及
+        `__delattr__` 魔术方法来实现属性访问, 设置和删除
+        """
+
+        # 存储属性名和属性值的字典对象
+        _props: dict[str, Any]
+
+        def __init__(self) -> None:
+            """初始化对象
+
+            为当前对象设置存储键值对的 `_props` 字段
+            """
+            # 注意, _props 字段需要设置在父类上
+            # 否则会调用当前对象的 __setattr__ 方法, 而 __setattr__ 方法中又调用了 _props 字段,
+            # 会造成循环调用
+            super().__setattr__("_props", {})
+
+        def __getattr__(self, name: str) -> Any:
             """可以通过 `__getattr__` 魔法方法指定属性访问行为
 
             Args:
@@ -188,3 +214,50 @@ def test_attribute_magic_member() -> None:
             Returns:
                 str: 属性值
             """
+            try:
+                return self._props[name]
+            except KeyError:
+                raise AttributeError(name)
+
+        def __setattr__(self, name: str, value: Any) -> None:
+            """设置属性名和属性值
+
+            Args:
+                `name` (`str`): 属性名
+                `value` (`Any`): 属性值
+            """
+            try:
+                self._props[name] = value
+            except KeyError:
+                raise AttributeError(name)
+
+        def __delattr__(self, name: str) -> None:
+            """根据属性名删除属性
+
+            Args:
+                `name` (`str`): 属性名
+            """
+            try:
+                del self._props[name]
+            except KeyError:
+                # 确保幂等性
+                pass
+
+    # 实例化类对象
+    c = DemoClass()
+
+    # 设置对象属性值
+    c.name = "Alvin"
+    c.age = 45
+
+    # 确认对象属性值设置正确
+    assert c.name == "Alvin"
+    assert c.age == 45
+
+    # 删除指定的属性
+    del c.name
+
+    # 确认属性已被删除
+    with pytest.raises(AttributeError):
+        # 确保属性已被删除
+        c.name
