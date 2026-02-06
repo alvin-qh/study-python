@@ -31,4 +31,6 @@ def test_delegate_class() -> None:
     assert c1_d.run(1, 2) == "Result is: 3"
     assert c2_d.run(1, 2) == "Result is: 2"
 
-    assert isinstance(c1_d, Class1)
+    # 验证代理对象可以访问被代理对象的实例
+    assert c1_d.instance is c1
+    assert c2_d.instance is c2

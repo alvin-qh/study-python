@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import Any, Callable, Self, Type
+from typing import Any, Callable
 
 
 class Delegate:
@@ -18,6 +18,7 @@ class Delegate:
             `inst` (`Any`): 被代理的对象实例
         """
         self._inst = inst
+        self._raw_type = type(inst)
 
     def __getattribute__(self, name: str) -> Any:
         """获取对象的属性和方法
@@ -69,21 +70,6 @@ class Delegate:
             return f"Result is: {fn(*args, **kwargs)}"
 
         return func
-
-    @property
-    def __class__(self) -> Type[Self]:
-        """重写代理类型的获取类的方法, 返回被代理对象的类型
-
-        Returns:
-            `Any`: 被代理对象的类型
-        """
-        return type(self._inst)
-
-    @__class__.setter
-    def __class__(self, __type: type[object]) -> None:  # noqa
-        pass
-
-    def __ins
 
     @property
     def instance(self) -> Any:
