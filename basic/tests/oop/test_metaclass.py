@@ -12,7 +12,9 @@ def _upper_attrs(attrs: dict[str, Any]) -> dict[str, Any]:
     Returns:
         `dict[str, Any]`: 属性名转为大写字母后的属性字典
     """
-    return {key.upper(): value for key, value in attrs.items() if not key.startswith("__")}
+    return {
+        key.upper(): value for key, value in attrs.items() if not key.startswith("__")
+    }
 
 
 def test_metaclass_by_function() -> None:
@@ -43,7 +45,7 @@ def test_metaclass_by_function() -> None:
             _upper_attrs(attrs),  # 处理目标类型的属性集合, 将属性名修改为大写
         )
 
-    class DemoClass(metaclass=metaclass):  # type: ignore
+    class DemoClass(metaclass=metaclass):  # type: ignore[misc]
         """定义类型, 并指定元类型为 `metaclass` 函数
 
         此时, `DemoClass` 类的类型定义由 `metaclass` 函数的返回值来定义

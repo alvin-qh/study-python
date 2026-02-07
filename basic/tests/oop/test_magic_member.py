@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Self, cast
 
 import pytest
 
@@ -261,3 +261,55 @@ def test_attribute_magic_member() -> None:
     with pytest.raises(AttributeError):
         # 确保属性已被删除
         c.name
+
+
+def test_singleton_class() -> None:
+    """测试单例类型
+
+    可以通过 `__new__` 魔术方法完成单例, 即让一个类型只能实例化一个对象
+    """
+
+    class SingletonClass:
+        """单例类型"""
+
+        # 保持单例的类字段
+        _inst: Self | None = None
+
+        def __new__(cls: type[Self], *args: Any, **kwargs: Any) -> "SingletonClass":
+            """创建实例
+
+            为了保证创建实例时单例, 无论执行多少次创建实例方法, 均返回 `_inst` 字段引用的对象
+
+            Args:
+                `cls` (`type[Self]`): 当前类型
+
+            Returns:
+                `SingletonClass`: 当前类型的单例实例
+            """
+            if not cls._inst:
+                # 如果单例未被创建, 则创建单例实例, 并引用到 _inst 字段上
+                cls._inst = super().__new__(cls)
+
+            # 返回单例实例
+            return cast(SingletonClass, cls._inst)
+
+        def __init__(self, value: Any) -> None:
+            """初始化对象, 设置对象的属性
+
+            Args:
+                `value` (`Any`): 属性值
+            """
+            self.value = value
+
+    # 第一次创建单例实例
+    c1 = SingletonClass(100)
+    assert c1.value == 100
+
+    # 再次创建单例实例
+    c2 = SingletonClass(200)
+
+    # 确认两次创建的单例实例是同一个对象
+    assert id(c1) == id(c2)
+
+    # 确认第二次创建对象设置的属性值覆盖了第一次创建对象的属性值
+    assert c2.value == c1.value == 200

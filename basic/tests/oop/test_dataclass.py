@@ -1,6 +1,6 @@
+import time
 from dataclasses import dataclass, field, is_dataclass
-from datetime import datetime
-from typing import Self
+from datetime import datetime, timezone
 
 import pytest
 
@@ -138,12 +138,114 @@ def test_dataclass_options() -> None:
     # 确认 __hash__ 方法生效
     assert hash(v) == 2279747396317938166
 
--
-@dataclass
-class Staff:
-    name: str = field(default="NoName")
-    sn: str = field(default_factory=Self._sn_factory)
 
-    @staticmethod
-    def _sn_factory() -> str:
-        return f"SN-{datetime.now():%Y%m%d%H%M%S%f}"
+@dataclass(
+    repr=True,
+    order=True,
+    unsafe_hash=True,
+)
+class Staff:
+    """通过 field 函数定义字段属性默认值
+
+    `field` 函数可以为 dataclass 类型定义复杂字段, 包括:
+
+    - `default`: 字段默认值
+    - `default_factory`: 字段默认工厂函数
+    - `init`: 是否在 __init__ 方法中初始化字段
+    - `repr`: 是否在 __repr__ 方法中显示字段
+    - `hash`: 是否在 __hash__ 方法中计算字段
+    - `compare`: 是否在 __eq__, __lt__, __gt__, __le__, __ge__ 方法中比较字段
+    - `metadata`: 字段属性的元数据
+
+    本例中为类型 `name`, `created_at` 和 `sn` 三个字段属性的默认值以及字段相关属性, 并通过 `__post_init__` 方法为字段 `sn` 赋值
+    """
+
+    # 通过 field 定义字段属性默认值, 并指定字段属性的选项
+    name: str = field(
+        default="Anonymous",
+        init=True,
+        repr=True,
+        hash=False,
+        compare=True,
+        metadata={"label": "姓名"},
+    )
+
+    # 通过 field 默认工厂函数定义字段属性默认值, 并指定字段属性的选项
+    created_at: datetime = field(
+        default_factory=lambda: datetime.now(timezone.utc),
+        init=True,
+        repr=False,
+        hash=False,
+        compare=True,
+        metadata={"label": "创建时间"},
+    )
+
+    # 通过 field 默认工厂函数定义字段属性默认值, 并指定字段属性的选项
+    sn: str = field(
+        default="",
+        init=True,
+        repr=True,
+        hash=True,
+        compare=False,
+        metadata={"label": "编号"},
+    )
+
+    def __post_init__(self) -> None:
+        self.sn = f"SN-{self.created_at:%Y%m%d%H%M%S%f}"
+
+
+def test_dataclass_fields() -> None:
+    """测试 dataclass 类型的静态方法"""
+    # 创建一个 Staff 类对象
+    s1 = Staff()
+
+    # 间隔 100 毫秒后, 再次创建一个 Staff 类对象, 按类型定义, 两个对象的 name 属性值相同, sn 和 created_at 属性不同
+    time.sleep(0.01)
+    s2 = Staff()
+
+    # 确认两个对象的 name 属性值相同
+    assert s1.name == s2.name == "Anonymous"
+
+    # 确认两个对象的 sn 属性和 created_at 属性值不同
+    assert s1.sn != s2.sn
+    assert s1.created_at != s2.created_at
+
+    # 确认两个对象的 sn 属性值和 created_at 属性值的关系
+    # 该关系在 Staff 类的 __post_init__ 方法中定义
+    assert s1.sn == f"SN-{s1.created_at:%Y%m%d%H%M%S%f}"
+    assert s2.sn == f"SN-{s2.created_at:%Y%m%d%H%M%S%f}"
+
+    # 确认两个对象的比价关系, 两个对象的比较涉及 name 和 created_at 属性
+    assert s1 < s2
+
+    # 改变 sn 属性值, 不改变两个对象的比较关系
+    s1.sn = "ZN-20230101000000000"
+    assert s1 < s2
+
+    # 改变 created_at 属性值, 改变两个对象的比较关系
+    s1.created_at = datetime.now(timezone.utc)
+    assert s1 > s2
+
+    # 改变 name 属性值, 改变两个对象的比较关系
+    s2.name = "Bnonymous"
+    assert s1 < s2
+
+    # 确认两个对象的 __repr__ 方法返回的字符串结果
+    assert str(s1) == f"Staff(name='{s1.name}', sn='{s1.sn}')"
+    assert str(s2) == f"Staff(name='{s2.name}', sn='{s2.sn}')"
+
+    # 确认两个对象的 __hash__ 方法返回的 hash 值, 对象的 hash 值仅依赖 sn 属性值
+    # 计算对象原始 hash 值
+    hv = hash(s1)
+
+    # 改变对象 name 属性值, 不影响对象的 hash 值
+    s1.name = "Tom"
+    assert hash(s1) == hv
+
+    # 改变对象 created_at 属性值, 不影响对象的 hash 值
+    s1.created_at = datetime.now(timezone.utc)
+    assert hash(s1) == hv
+
+    # 改变对象 sn 属性值, 改变对象的 hash 值
+    s1.sn = "SN-20230101000000000"
+    assert hash(s1) != hv
