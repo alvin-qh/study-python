@@ -138,7 +138,7 @@ def test_dataclass_options() -> None:
     # 确认 __hash__ 方法生效
     assert hash(v) == 2279747396317938166
 
-
+-
 @dataclass
 class Staff:
     name: str = field(default="NoName")
