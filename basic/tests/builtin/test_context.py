@@ -1,7 +1,10 @@
+import random
+from contextlib import contextmanager
+from typing import Generator
+
 from pytest import raises
 
 from basic.builtin import Context
-from basic.builtin.context import random_number_context
 
 
 def test_context_scope() -> None:
@@ -39,6 +42,42 @@ def test_context_with_exception() -> None:
     assert str(ctx.exception[1]) == "error"
 
 
+class RandomNumberContext:
+    def __init__(self) -> None:
+        self._context_nums = [1, 2, 3, 4, 5, 6, 7]
+
+    @contextmanager
+    def context(self) -> Generator[int, None, None]:
+        """生成随机数上下文
+
+        被 `@contextmanager` 装饰器修饰的函数可以管理上下文, 该方法返回 `_GeneratorContextManager[T]` 类型对象,
+        (在本例中为 `_GeneratorContextManager[int]` 类型), 相当于一个实现了 `__enter__` 以及 `__exit__` 方法
+        的类型实例
+
+        `@contextmanager` 装饰器可以简化上下文类型的定义, 而使用则完全类似普通的上下文类型实例, 即:
+
+        ```python
+        with random_number_context() as n:
+            ...
+
+        ```
+
+        Yields:
+            `int`: 随机数值
+        """
+        if len(self._context_nums) == 0:
+            raise IndexError("random number out of range")
+
+        # 在读取上下文前执行
+        pos = random.randint(0, len(self._context_nums) - 1)
+
+        # 返回上下文值
+        yield self._context_nums[pos]
+
+        # 在读取上下文后执行
+        del self._context_nums[pos]
+
+
 def test_context_from_contextmanager() -> None:
     """测试上下文管理器
 
@@ -46,9 +85,11 @@ def test_context_from_contextmanager() -> None:
     """
     nums = []
 
+    ctx = RandomNumberContext()
+
     while True:
         try:
-            with random_number_context() as n:
+            with ctx.context() as n:
                 nums.append(n)
         except IndexError as e:
             assert e.args[0] == "random number out of range"

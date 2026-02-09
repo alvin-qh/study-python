@@ -6,6 +6,37 @@ import pytest
 from basic.oop.automate import Automate
 
 
+def test_call_magic_method() -> None:
+    """测试通过类型的 `__call__` 方法将对象模拟为一个函数"""
+
+    class CallableClass:
+        """定义一个可调用类型
+
+        可调用类型需要实现 `__call__` 魔术方法, 这样该类型的对象就可以作为函数使用
+        """
+
+        def __init__(self, base: int) -> None:
+            self._base = base
+
+        def __call__(self, a: int, b: int) -> int:
+            """供可调用类型对象进行仿函数调用的方法
+
+            Args:
+                `a` (`int`): 参数1
+                `b` (`int`): 参数2
+
+            Returns:
+                `int`: 两个参数的计算结果
+            """
+            return a + b + self._base
+
+    # 实例后可调用类型对象实例
+    callable_obj = CallableClass(100)
+
+    # 确认将可调用类型对象作为函数调用的执行结果
+    assert callable_obj(10, 20) == 130
+
+
 def test_slots_magic_member() -> None:
     """`__slots__` 魔法字段用于定义对象具备的属性集合
 

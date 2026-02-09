@@ -1,7 +1,5 @@
-import random
-from contextlib import contextmanager
 from types import TracebackType
-from typing import Any, Generator, Type
+from typing import Any
 
 
 class Context:
@@ -13,7 +11,7 @@ class Context:
     """
 
     _kv: dict[str, Any]
-    exception: tuple[Type[Exception] | None, Exception | None] | None
+    exception: tuple[type[Exception] | None, Exception | None] | None
 
     def __init__(self, suppress_exception: bool = False) -> None:
         """构造上下文对象
@@ -64,7 +62,7 @@ class Context:
 
     def __exit__(
         self,
-        exc_type: Type[Exception] | None,
+        exc_type: type[Exception] | None,
         exc_value: Exception | None,
         exc_tb: TracebackType | None,
     ) -> bool:
@@ -82,38 +80,3 @@ class Context:
         self.exception = (exc_type, exc_value)
 
         return self._suppress_exception
-
-
-_CONTEXT_NUMS = [1, 2, 3, 4, 5, 6, 7]
-
-
-@contextmanager
-def random_number_context() -> Generator[int, None, None]:
-    """生成随机数上下文
-
-    被 `@contextmanager` 装饰器修饰的函数可以管理上下文, 该方法返回 `_GeneratorContextManager[T]` 类型对象,
-    (在本例中为 `_GeneratorContextManager[int]` 类型), 相当于一个实现了 `__enter__` 以及 `__exit__` 方法
-    的类型实例
-
-    `@contextmanager` 装饰器可以简化上下文类型的定义, 而使用则完全类似普通的上下文类型实例, 即:
-
-    ```python
-    with random_number_context() as n:
-        ...
-
-    ```
-
-    Yields:
-        `int`: 随机数值
-    """
-    if len(_CONTEXT_NUMS) == 0:
-        raise IndexError("random number out of range")
-
-    # 在读取上下文前执行
-    pos = random.randint(0, len(_CONTEXT_NUMS) - 1)
-
-    # 返回上下文值
-    yield _CONTEXT_NUMS[pos]
-
-    # 在读取上下文后执行
-    del _CONTEXT_NUMS[pos]

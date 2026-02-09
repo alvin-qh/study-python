@@ -1,4 +1,4 @@
-def test_eval_expression() -> None:
+def test_eval_for_expression() -> None:
     """
     `eval` 函数用于执行一个编译后的 Python 表达式
 
@@ -18,7 +18,7 @@ def test_eval_expression() -> None:
     assert eval("1 + 2") == 3
 
 
-def test_eval_function() -> None:
+def test_exec_for_expression() -> None:
     """
     `eval` 函数用于执行一段编译后的 Python 代码
 
@@ -46,7 +46,7 @@ def test_eval_function() -> None:
     assert _locals["y"] == 3
 
 
-def test_exec_function() -> None:
+def test_exec_for_function() -> None:
     """
     测试通过 `exec` 函数执行复杂 Python 代码
     """
