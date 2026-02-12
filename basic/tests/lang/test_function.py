@@ -1,5 +1,80 @@
 from typing import Any, overload
 
+import pytest
+
+
+def test_keyword_only_arguments() -> None:
+    """测试在函数参数列表中强制必须以名方式传递的参数
+
+    在函数的参数列表中可以增加 `*` 分隔符, 则:
+
+    - 在 `*` 之前的参数可以按位置以及命名方式传参
+    - 在 `*` 之后的参数必须通过命名方式传参
+    """
+
+    def run(a: int, b: int, *, c: int) -> int:
+        """演示参数列表中 `*` 的作用
+
+        - `a` 和 `b` 参数在 `*` 之前, 所以可以使用位置传参以及命名传参的方式进行传参
+        - `c` 参数在 `*` 之后, 所以必须通过命名传参的方式进行传参
+        """
+        return a + b + c
+
+    # 验证传参方式
+
+    # * 前的参数可以为位置参数, * 后的参数可以为命名参数
+    r = run(10, 20, c=30)
+    assert r == 60
+
+    # * 前的参数可以为命名参数, * 后的参数可以为命名参数
+    r = run(a=10, b=20, c=30)
+    assert r == 60
+
+    try:
+        # * 后的参数必须为命名参数
+        run(10, 20, 30)  # type: ignore
+        pytest.fail()
+    except TypeError as e:
+        assert f"{e}".endswith("run() takes 2 positional arguments but 3 were given")
+
+
+def test_placement_only_arguments() -> None:
+    """测试在函数参数列表中强制必须以位置方式传递的参数
+
+    在函数的参数列表中可以增加 `/` 分隔符, 则:
+
+    - 在 `/` 之前的参数必须以位置方式传参
+    - 在 `/` 之后的参数可以通过位置方式及命名方式传参
+    """
+
+    def run(a: int, b: int, /, c: int) -> int:
+        """演示参数列表中 `/` 的作用
+
+        - `a` 和 `b` 参数在 `/` 之前, 所以必须通过位置方式进行传参
+        - `c` 参数在 `/` 之后, 所以可以通过命名方式及位置方式进行传参
+        """
+        return a + b + c
+
+    # 验证传参方式
+
+    # / 前的参数可以为位置参数, / 后的参数可以为命名参数
+    r = run(10, 20, c=30)
+    assert r == 60
+
+    # / 前的参数可以为位置参数, / 后的参数可以为位置参数
+    r = run(10, 20, 30)
+    assert r == 60
+
+    try:
+        # / 前的参数必须为位置参数
+        run(a=10, b=20, c=30)  # type: ignore
+        pytest.fail()
+    except TypeError as e:
+        assert f"{e}".endswith("got some positional-only arguments passed as keyword arguments: 'a, b'")
+
+    # * 前的参数可以为键值对参数, * 后的参数可以为键值对参数
+    run(10, 20, 30)
+
 
 def test_function_overload() -> None:
     """定义函数重载
