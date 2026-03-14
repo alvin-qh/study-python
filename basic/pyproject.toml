@@ -5,10 +5,10 @@ authors = [
     {name = 'Alvin', email = 'quhao317@163.com'},
 ]
 dependencies = [
-    "pytz>=2025.2",
+    "pytz>=2026.1",
     "atomics>=1.0.3",
     "werkzeug>=3.1.6",
-    "wrapt>=2.1.1",
+    "wrapt>=2.1.2",
     "portalocker>=3.2.0",
     "tzdata>=2025.3",
     "python-dateutil>=2.9.0.post0",
@@ -35,7 +35,7 @@ test = [
     "pytest-assume>=2.4.3",
     "pytest-xdist>=3.8.0",
     "hypothesis>=6.151.9",
-    "faker>=40.4.0",
+    "faker>=40.11.0",
     "pytest-sugar>=1.1.1",
 ]
 type = [
